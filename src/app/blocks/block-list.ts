@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { NgComponentOutlet } from '@angular/common';
 import { Block } from '../course/content.model';
 import { CodeBlock } from '../shared/code-block/code-block';
+import { EmbedBlock } from './embed';
 import { WIDGETS } from '../widgets/registry';
 import { Bars, Chips, Stat, TableBlock } from './simple-blocks';
 import { Stages } from './stages';
@@ -16,7 +17,18 @@ import { Tabs } from './tabs';
 @Component({
   selector: 'app-blocks',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgComponentOutlet, CodeBlock, Stages, Chips, Bars, TableBlock, Stat, Tabs, Stepper],
+  imports: [
+    NgComponentOutlet,
+    CodeBlock,
+    EmbedBlock,
+    Stages,
+    Chips,
+    Bars,
+    TableBlock,
+    Stat,
+    Tabs,
+    Stepper,
+  ],
   host: {
     '[class.stack]': 'nested()',
     '[style.display]': 'nested() ? "flex" : "contents"',
@@ -63,6 +75,14 @@ import { Tabs } from './tabs';
               }
               @case ('stat') {
                 <app-stat [items]="b.items" />
+              }
+              @case ('embed') {
+                <app-embed
+                  [src]="b.src"
+                  [title]="b.title"
+                  [description]="b.description"
+                  [height]="b.height ?? 600"
+                />
               }
               @case ('shape') {
                 <div class="shape">{{ b.text }}</div>

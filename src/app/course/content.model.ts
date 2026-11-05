@@ -80,7 +80,9 @@ export type Block =
       nextLabel?: string;
       restartLabel?: string;
     }
-  | { type: 'widget'; name: string; props?: Record<string, unknown> };
+  | { type: 'widget'; name: string; props?: Record<string, unknown> }
+  /** An external https tool, loaded in a sandboxed frame only when the reader clicks. */
+  | { type: 'embed'; src: string; title: string; description?: string; height?: number };
 
 export type BlockType = Block['type'];
 

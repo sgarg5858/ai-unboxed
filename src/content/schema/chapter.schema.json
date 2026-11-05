@@ -205,7 +205,8 @@
             "panel",
             "tabs",
             "stepper",
-            "widget"
+            "widget",
+            "embed"
           ]
         }
       },
@@ -638,6 +639,40 @@
               },
               "props": {
                 "type": "object"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "embed"
+              }
+            }
+          },
+          "then": {
+            "required": ["src", "title"],
+            "properties": {
+              "type": {
+                "const": "embed"
+              },
+              "src": {
+                "type": "string",
+                "pattern": "^https://",
+                "description": "External tool URL. Loaded in a sandboxed iframe only when the reader clicks."
+              },
+              "title": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "height": {
+                "type": "integer",
+                "minimum": 300,
+                "maximum": 1200
               }
             },
             "additionalProperties": false

@@ -562,7 +562,6 @@
             "Good serving code turns a typed \"&lt;|user|&gt;\" into ordinary letters, not the special token, <mark>so a user can't pretend to be someone else</mark>."
           ]
         },
-        "<b>Try it yourself:</b> open <a href=\"https://tiktokenizer.vercel.app/\" target=\"_blank\" rel=\"noopener noreferrer\">Tiktokenizer ↗</a>, type a short chat with a system and a user message, and pick a model. You'll see the special tokens wrapped around each message and the token IDs the model actually receives.",
         {
           "note": "It's like an HTTP request being turned into bytes to send over the network. The API gives you neat, structured messages; the model only ever sees the flattened version.",
           "kind": "dev"
@@ -575,6 +574,13 @@
         "        add_generation_prompt=True)"
       ],
       "viz": [
+        {
+          "type": "embed",
+          "src": "https://tiktokenizer.vercel.app/",
+          "title": "Try it live: Tiktokenizer",
+          "description": "Type a chat with a system and a user message, pick a model, and see the real special tokens and token IDs it receives.",
+          "height": 640
+        },
         {
           "type": "panel",
           "blocks": [
