@@ -28,6 +28,11 @@ export class CourseShell {
   };
   protected readonly noteLabelOf = (p: Prose) => this.noteLabel[(p as { kind: NoteKind }).kind];
 
+  protected openSection(i: number) {
+    if (i === this.nav.sectionIndex()) return;
+    this.openChapter(this.nav.sections[i].chapters[0].id);
+  }
+
   protected openChapter(id: string) {
     this.nav.goto(id).then(() => window.scrollTo({ top: 0, behavior: 'smooth' }));
   }

@@ -147,7 +147,7 @@
           "note": "Post-training uses a small fraction of pretraining's compute, but it changes behaviour dramatically. Pretraining supplies the knowledge; post-training shapes how it's used.",
           "kind": "key"
         },
-        "The first chapter, <i>Assistant architecture</i>, showed what happens next: how the trained model is wrapped in a complete assistant system."
+        "The <i>Assistant architecture</i> section showed what happens next: how the trained model is wrapped in a complete assistant system."
       ],
       "viz": [
         {

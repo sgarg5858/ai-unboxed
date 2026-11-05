@@ -1,7 +1,7 @@
 import Ajv from 'ajv';
 import { WIDGETS } from '../app/widgets/registry';
 import type { Block } from '../app/course/content.model';
-import { COURSE } from './course';
+import { COURSE, SECTIONS } from './course';
 import schema from './schema/chapter.schema.json';
 
 /** Walk every block, including blocks nested in panels, tabs and steppers. */
@@ -24,6 +24,12 @@ describe('course content', () => {
       expect(ok).toBe(true);
     });
   }
+
+  it('groups every chapter into exactly one section, in reading order', () => {
+    expect(SECTIONS.flatMap((x) => x.chapters.map((c) => c.id))).toEqual(COURSE.map((c) => c.id));
+    expect(SECTIONS.every((x) => x.chapters.length > 0)).toBe(true);
+    expect(new Set(SECTIONS.map((x) => x.id)).size).toBe(SECTIONS.length);
+  });
 
   it('has unique chapter ids', () => {
     const ids = COURSE.map((c) => c.id);

@@ -656,3 +656,11 @@ input[type='text'] {
     padding: 5px 10px;
   }
 }
+
+/* Second-level chapter row, shown under the active section */
+nav.chapters.level2{margin:-6px 0 18px;padding-left:12px;border-left:2px solid var(--accent)}
+nav.chapters.level2 button{font-size:13px;padding:4px 12px;background:transparent}
+nav.chapters.level2 button b{font-size:11px}
+nav.chapters.level2 button:hover{border-color:var(--accent);color:var(--ink)}
+nav.chapters.level2 button[aria-current='true']{background:var(--accent-soft);color:var(--accent-ink);border-color:var(--accent)}
+nav.chapters.level2 button[aria-current='true'] b{color:var(--accent-ink)}

@@ -94,6 +94,13 @@ export interface SlideContent {
   viz?: Block[];
 }
 
+/** A top-level group of chapters. The rail shows sections; a section with several chapters shows a second row. */
+export interface SectionContent {
+  id: string;
+  name: string;
+  chapters: ChapterContent[];
+}
+
 export interface ChapterContent {
   id: string;
   name: string;

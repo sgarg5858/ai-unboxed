@@ -7,7 +7,7 @@
       "title": "The whole machine on one screen",
       "summary": "An LLM turns a list of numbers (tokens) into a score for every possible next token. Everything else in this course is detail about how.",
       "body": [
-        "The first chapter treated the model as one box inside a larger system. From here on, we open that box.",
+        "The <i>Assistant architecture</i> section treated the model as one box inside a larger system. This section opens that box.",
         "Strip away the chat window and a large language model is one very large mathematical function. You give it a sequence of integers, one per piece of text, and it gives back a score for every token it knows, saying how likely each one is to come next.",
         "That's all it does. Writing a whole answer is just calling this function again and again, adding one token each time. The next slide shows that loop.",
         { "h": "How to read the shapes" },

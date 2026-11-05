@@ -10,14 +10,25 @@
     </p>
   </header>
 
-  <nav class="chapters" aria-label="Chapters">
-    @for (c of nav.chapters; track c.id; let i = $index) {
-      <button [attr.aria-current]="i === nav.position().chapter" (click)="openChapter(c.id)">
+  <nav class="chapters" aria-label="Sections">
+    @for (sec of nav.sections; track sec.id; let i = $index) {
+      <button [attr.aria-current]="i === nav.sectionIndex()" (click)="openSection(i)">
         <b>{{ pad(i + 1) }}</b
-        >{{ c.name }}
+        >{{ sec.name }}
       </button>
     }
   </nav>
+
+  @if (nav.section().chapters.length > 1) {
+    <nav class="chapters level2" [attr.aria-label]="nav.section().name + ' chapters'">
+      @for (c of nav.section().chapters; track c.id; let i = $index) {
+        <button [attr.aria-current]="c.id === nav.chapter().id" (click)="openChapter(c.id)">
+          <b>{{ nav.sectionIndex() + 1 }}.{{ i + 1 }}</b
+          >{{ c.name }}
+        </button>
+      }
+    </nav>
+  }
 
   <div class="progress">
     @for (s of nav.chapter().slides; track $index; let i = $index) {
@@ -32,7 +43,12 @@
   @let slide = nav.slide();
   <article class="slide" #article aria-live="polite">
     <div class="prose">
-      <p class="eyebrow">Chapter {{ nav.position().chapter + 1 }} · {{ nav.chapter().name }}</p>
+      <p class="eyebrow">
+        {{ nav.section().name }}
+        @if (nav.section().chapters.length > 1) {
+          · {{ nav.chapter().name }}
+        }
+      </p>
       <h2>{{ slide.title }}</h2>
       @if (slide.summary) {
         <p class="lead" [innerHTML]="slide.summary"></p>

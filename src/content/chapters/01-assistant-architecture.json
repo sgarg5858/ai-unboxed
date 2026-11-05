@@ -22,7 +22,7 @@
           "note": "Amber boxes are places where ordinary code or a separate classifier can stop a request. The model itself is only one of the safeguards, which is the point of defense in depth.",
           "kind": "key"
         },
-        "Click any box for a short explanation and a link to the slide that covers it. The later chapters then open the LLM box itself, from tokens and attention to how models are trained.",
+        "Click any box for a short explanation and a link to the slide that covers it. The <i>LLM architecture</i> section then opens the LLM box itself, from tokens and attention to how models are trained.",
         {
           "note": "New to words like <i>token</i> or <i>forward pass</i>? The glossary in <i>The big picture</i> has one-line definitions, and every term is explained properly where it first matters.",
           "kind": "dev"

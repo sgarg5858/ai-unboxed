@@ -2,15 +2,17 @@
 
 An interactive guide to how modern AI works, one layer at a time. It starts with the whole assistant system (auth, guardrails, memory, tools, search, safety training), then opens the LLM inside it, from tokens and attention to training. Built with Angular. The content lives in JSON, so a new topic is just a new chapter file.
 
-| # | Chapter | Covers |
-|---|---------|--------|
-| 01 | Assistant architecture | the whole system on one diagram: auth, guardrails, conversation management, memory, tools and MCP, web search and retrieval, prompt-injection defenses, safety training, human feedback, monitoring |
-| 02 | The big picture | the forward pass end to end, generation loop, vectors primer, glossary |
-| 03 | Tokens & embeddings | BPE, embeddings, positional encoding, RoPE |
-| 04 | Attention | Q/K/V, masking, multi-head, cost |
-| 05 | The transformer block | residual stream, norms, MLP, parameter counts, MoE |
-| 06 | Output & inference | logits, temperature, top-k/top-p, KV cache, context window |
-| 07 | Training | next-token loss, backprop, training loop, SFT and preference tuning |
+| Section | Chapter | Covers |
+|---------|---------|--------|
+| 01 Assistant architecture | Assistant architecture | the whole system on one diagram: auth, guardrails, conversation management, memory, tools and MCP, web search and retrieval, prompt-injection defenses, safety training, human feedback, monitoring |
+| 02 LLM architecture | 2.1 The big picture | the forward pass end to end, generation loop, vectors primer, glossary |
+| | 2.2 Tokens & embeddings | BPE, embeddings, positional encoding, RoPE |
+| | 2.3 Attention | Q/K/V, masking, multi-head, cost |
+| | 2.4 The transformer block | residual stream, norms, MLP, parameter counts, MoE |
+| | 2.5 Output & inference | logits, temperature, top-k/top-p, KV cache, context window |
+| | 2.6 Training | next-token loss, backprop, training loop, SFT and preference tuning |
+
+Chapters are grouped into **sections**. The top row of the page shows sections; a section with more than one chapter shows its chapters as a second row.
 
 ## Running it
 
@@ -31,7 +33,7 @@ Every push to `main` runs [.github/workflows/deploy-pages.yml](.github/workflows
 
 One-time setup: **Settings → Pages → Build and deployment → Source: GitHub Actions**.
 
-URLs use the hash, as in `#/assistant/3` (chapter id, then a 1-based slide number), so the build runs on any static host (GitHub Pages, Netlify, S3) with no rewrite rules. Old `#assistant` links still work.
+URLs use the hash, as in `#/attention/3` (chapter id, then a 1-based slide number; sections don't appear in the URL), so the build runs on any static host (GitHub Pages, Netlify, S3) with no rewrite rules. Old `#assistant` links still work.
 
 The first page is the assistant architecture diagram. When one slide mentions another chapter, it uses the chapter's name rather than its number, so chapters can be reordered freely.
 
@@ -81,7 +83,8 @@ A slide looks like this:
 - **Callouts:** `kind` is `key` (Key idea), `analogy`, `dev` (For developers), `warn` (Watch out) or `example` (Worked example).
 - **Writing style:** open with the intuition, then the mechanism, then numbers and practice. Define every term in bold where it first appears, keep paragraphs to two or three sentences, and give every slide a `summary`.
 - **New slide:** add an object to a chapter's `slides` array.
-- **New chapter:** copy a chapter file, give it a new `id` and `name`, and import it in `src/content/course.ts`.
+- **New chapter:** copy a chapter file, give it a new `id` and `name`, import it in `src/content/course.ts` and add it to a section there.
+- **New topic** (for example RAG or Agents): add a section in `src/content/course.ts` with its chapters. It appears as a new top-level pill. A section with a single chapter shows no second row.
 - Inline `style="…"` attributes in HTML strings are stripped by Angular's sanitizer. Use classes such as `mono`, `cap` or `k` instead.
 
 ### Generic blocks for `viz`

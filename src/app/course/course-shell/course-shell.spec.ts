@@ -24,6 +24,37 @@ describe('CourseShell', () => {
     });
   }
 
+  it('shows chapter sub-navigation only inside a multi-chapter section', async () => {
+    const fixture = TestBed.createComponent(CourseShell);
+    const router = TestBed.inject(Router);
+    const el = fixture.nativeElement as HTMLElement;
+    const current = (nav: Element) =>
+      nav.querySelector('button[aria-current="true"]')?.textContent?.replace(/\s+/g, ' ').trim();
+
+    await router.navigateByUrl('/assistant/1');
+    await fixture.whenStable();
+    expect(el.querySelectorAll('nav.chapters').length).toBe(1);
+    expect(current(el.querySelector('nav.chapters')!)).toContain('Assistant architecture');
+
+    await router.navigateByUrl('/attention/1');
+    await fixture.whenStable();
+    const [top, sub] = Array.from(el.querySelectorAll('nav.chapters'));
+    expect(current(top)).toContain('LLM architecture');
+    expect(sub.querySelectorAll('button').length).toBe(6);
+    expect(current(sub)).toContain('Attention');
+  });
+
+  it('opens a section at its first chapter', async () => {
+    const fixture = TestBed.createComponent(CourseShell);
+    const router = TestBed.inject(Router);
+    await router.navigateByUrl('/assistant/1');
+    await fixture.whenStable();
+    const buttons = fixture.nativeElement.querySelectorAll('nav.chapters:not(.level2) button');
+    (buttons[1] as HTMLButtonElement).click();
+    await fixture.whenStable();
+    expect(router.url).toBe('/' + COURSE[1].id + '/1');
+  });
+
   it('moves to the next slide and across chapters', async () => {
     const fixture = TestBed.createComponent(CourseShell);
     const router = TestBed.inject(Router);
