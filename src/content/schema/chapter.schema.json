@@ -629,6 +629,7 @@
                   "classifier-threshold",
                   "injection-defenses",
                   "assistant-architecture",
+                  "thinking-budget",
                   "singleton-rate",
                   "guess-or-abstain"
                 ],

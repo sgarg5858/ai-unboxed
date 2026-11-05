@@ -4,7 +4,7 @@ import { NavigationEnd, Router } from '@angular/router';
 import { filter, map } from 'rxjs';
 import { COURSE, SECTIONS } from '../../content/course';
 import { ChapterContent, SectionContent } from './content.model';
-import { Position, resolvePosition, step, toPath } from './course-position';
+import { Position, chapterNumber, resolvePosition, step, toPath } from './course-position';
 
 export const COURSE_CONTENT = new InjectionToken<readonly ChapterContent[]>('COURSE_CONTENT', {
   providedIn: 'root',
@@ -35,6 +35,14 @@ export class CourseNav {
     ),
   );
   readonly section = computed(() => this.sections[this.sectionIndex()]);
+  /** e.g. "2.3" for the current chapter. */
+  readonly chapterNumber = computed(() =>
+    chapterNumber(
+      this.sections,
+      this.sectionIndex(),
+      this.section().chapters.findIndex((c) => c.id === this.chapter().id),
+    ),
+  );
   readonly slide = computed(() => this.chapter().slides[this.position().slide]);
   readonly isFirst = computed(() => this.position().chapter === 0 && this.position().slide === 0);
   readonly isLast = computed(

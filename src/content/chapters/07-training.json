@@ -190,7 +190,7 @@
           "kind": "key"
         },
         "The <i>Assistant architecture</i> section showed what happens next: how the trained model is wrapped in a full assistant system.",
-        "Training also explains one of the best-known problems with these models, which the next chapter covers: <i>Why LLMs hallucinate</i>."
+        "Reinforcement learning on checkable tasks is also what creates <i>Reasoning models</i>, the next chapter. After that, <i>Why LLMs hallucinate</i> covers one of the best-known problems with these models."
       ],
       "viz": [
         {

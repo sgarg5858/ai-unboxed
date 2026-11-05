@@ -1,4 +1,4 @@
-import { ChapterContent } from './content.model';
+import { ChapterContent, SectionContent } from './content.model';
 
 /** Where the reader is. Both indexes are 0-based. */
 export interface Position {
@@ -37,3 +37,8 @@ export const toPath = (chapters: readonly ChapterContent[], p: Position): string
   chapters[p.chapter].id,
   String(p.slide + 1),
 ];
+
+/** "01" for a one-chapter section, "2.3" for the third chapter of section 2. Indexes are 0-based. */
+export function chapterNumber(sections: readonly SectionContent[], si: number, ci: number): string {
+  return sections[si].chapters.length > 1 ? `${si + 1}.${ci + 1}` : String(si + 1).padStart(2, '0');
+}

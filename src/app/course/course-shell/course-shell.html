@@ -1,93 +1,98 @@
-<div class="wrap">
+<div class="wrap" [class.nav-hidden]="!sidebar.open()">
   <header class="top">
-    <div class="title-row">
-      <h1>AI, <span>Unboxed</span></h1>
-      <app-theme-switch />
-    </div>
+    <button
+      type="button"
+      class="btn toc-btn"
+      [class.on]="sidebar.wide() && sidebar.open()"
+      [attr.aria-haspopup]="sidebar.wide() ? null : 'dialog'"
+      [attr.aria-controls]="sidebar.wide() ? 'course-sidebar' : null"
+      [attr.aria-expanded]="sidebar.wide() ? sidebar.open() : null"
+      [title]="
+        sidebar.wide() ? (sidebar.open() ? 'Hide contents' : 'Show contents') : 'Open contents'
+      "
+      (click)="toggleContents(drawer)"
+    >
+      <span aria-hidden="true">☰</span> Contents
+    </button>
+    <h1>AI, <span>Unboxed</span></h1>
+    <app-theme-switch />
     <p class="sub">
       how modern AI works, one layer at a time ·
       <span class="kbd">←</span> <span class="kbd">→</span> to move
     </p>
   </header>
 
-  <nav class="chapters" aria-label="Sections">
-    @for (sec of nav.sections; track sec.id; let i = $index) {
-      <button [attr.aria-current]="i === nav.sectionIndex()" (click)="openSection(i)">
-        <b>{{ pad(i + 1) }}</b
-        >{{ sec.name }}
-      </button>
-    }
-  </nav>
+  <app-contents-drawer #drawer />
 
-  @if (nav.section().chapters.length > 1) {
-    <nav class="chapters level2" [attr.aria-label]="nav.section().name + ' chapters'">
-      @for (c of nav.section().chapters; track c.id; let i = $index) {
-        <button [attr.aria-current]="c.id === nav.chapter().id" (click)="openChapter(c.id)">
-          <b>{{ nav.sectionIndex() + 1 }}.{{ i + 1 }}</b
-          >{{ c.name }}
-        </button>
-      }
-    </nav>
-  }
+  <div class="layout">
+    <aside class="sidebar" id="course-sidebar" aria-label="Chapters">
+      <app-course-outline />
+    </aside>
+    <main class="main">
+      <div class="chapter-bar">
+        <span class="num">{{ nav.chapterNumber() }}</span>
+        <span class="name">{{ nav.chapter().name }}</span>
+        <span class="of">
+          @if (nav.section().chapters.length > 1) {
+            {{ nav.section().name }} ·
+          }
+          slide {{ nav.position().slide + 1 }} of {{ nav.chapter().slides.length }}
+        </span>
+      </div>
+      <app-slide-progress />
 
-  <app-slide-progress />
-
-  @let slide = nav.slide();
-  <article class="slide" #article aria-live="polite">
-    <div class="prose">
-      <p class="eyebrow">
-        {{ nav.section().name }}
-        @if (nav.section().chapters.length > 1) {
-          · {{ nav.chapter().name }}
-        }
-      </p>
-      <h2>{{ slide.title }}</h2>
-      @if (slide.summary) {
-        <p class="lead" [innerHTML]="slide.summary"></p>
-      }
-      @for (p of slide.body; track $index) {
-        @switch (kindOf(p)) {
-          @case ('ul') {
-            <ul>
-              @for (li of $any(p).ul; track $index) {
-                <li [innerHTML]="li"></li>
+      @let slide = nav.slide();
+      <article class="slide" #article aria-live="polite">
+        <div class="prose">
+          <h2>{{ slide.title }}</h2>
+          @if (slide.summary) {
+            <p class="lead" [innerHTML]="slide.summary"></p>
+          }
+          @for (p of slide.body; track $index) {
+            @switch (kindOf(p)) {
+              @case ('ul') {
+                <ul>
+                  @for (li of $any(p).ul; track $index) {
+                    <li [innerHTML]="li"></li>
+                  }
+                </ul>
               }
-            </ul>
+              @case ('h') {
+                <h3>{{ $any(p).h }}</h3>
+              }
+              @case ('note') {
+                <aside class="note" [attr.data-kind]="$any(p).kind">
+                  <span class="note-label">{{ noteLabelOf(p) }}</span>
+                  <span [innerHTML]="$any(p).note"></span>
+                </aside>
+              }
+              @default {
+                <p [innerHTML]="p"></p>
+              }
+            }
           }
-          @case ('h') {
-            <h3>{{ $any(p).h }}</h3>
+          @if (slide.code) {
+            <app-code-block [source]="slide.code.join('\n')" />
           }
-          @case ('note') {
-            <aside class="note" [attr.data-kind]="$any(p).kind">
-              <span class="note-label">{{ noteLabelOf(p) }}</span>
-              <span [innerHTML]="$any(p).note"></span>
-            </aside>
+        </div>
+        <div class="viz">
+          @if (slide.viz) {
+            <!-- track by slide identity so widget state resets when the slide changes -->
+            @for (v of [slide]; track v) {
+              <app-blocks [blocks]="v.viz!" />
+            }
           }
-          @default {
-            <p [innerHTML]="p"></p>
-          }
+        </div>
+        @if (slide.figure; as f) {
+          <app-slide-figure class="wide" [figure]="f" />
         }
-      }
-      @if (slide.code) {
-        <app-code-block [source]="slide.code.join('\n')" />
-      }
-    </div>
-    <div class="viz">
-      @if (slide.viz) {
-        <!-- track by slide identity so widget state resets when the slide changes -->
-        @for (v of [slide]; track v) {
-          <app-blocks [blocks]="v.viz!" />
-        }
-      }
-    </div>
-    @if (slide.figure; as f) {
-      <app-slide-figure class="wide" [figure]="f" />
-    }
-  </article>
+      </article>
 
-  <div class="foot">
-    <button class="btn" [disabled]="nav.isFirst()" (click)="move(-1)">← Back</button>
-    <span class="cnt">{{ nav.position().slide + 1 }} / {{ nav.chapter().slides.length }}</span>
-    <button class="btn" (click)="move(1)">{{ nav.nextLabel() }}</button>
+      <div class="foot">
+        <button class="btn" [disabled]="nav.isFirst()" (click)="move(-1)">← Back</button>
+        <span class="cnt">{{ nav.position().slide + 1 }} / {{ nav.chapter().slides.length }}</span>
+        <button class="btn" (click)="move(1)">{{ nav.nextLabel() }}</button>
+      </div>
+    </main>
   </div>
 </div>

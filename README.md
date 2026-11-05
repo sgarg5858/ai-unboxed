@@ -11,9 +11,10 @@ An interactive guide to how modern AI works, one layer at a time. It starts with
 |                           | 2.4 The transformer block | residual stream, norms, MLP, parameter counts, MoE                                                                                                                                                       |
 |                           | 2.5 Output & inference    | logits, temperature, top-k/top-p, KV cache, context window                                                                                                                                               |
 |                           | 2.6 Training              | next-token loss, backprop, training loop, SFT and preference tuning                                                                                                                                      |
-|                           | 2.7 Why LLMs hallucinate  | what a hallucination is, four causes (training objective, rare facts, scoring that rewards guessing, error snowballing), Anthropic's "don't know" circuit, detection with semantic entropy, and defences |
+|                           | 2.7 Reasoning models      | thinking before answering, why extra tokens help (test-time compute), how RL on checkable problems teaches it, thinking budgets, when to use them and their limits                                       |
+|                           | 2.8 Why LLMs hallucinate  | what a hallucination is, four causes (training objective, rare facts, scoring that rewards guessing, error snowballing), Anthropic's "don't know" circuit, detection with semantic entropy, and defences |
 
-Chapters are grouped into **sections**. The top row of the page shows sections; a section with more than one chapter shows its chapters as a second row.
+Chapters are grouped into **sections**. On wide screens a sidebar lists every chapter by name (the **Contents** button at the top left hides or shows it); on smaller screens the same button opens it as a drawer.
 
 ## Running it
 

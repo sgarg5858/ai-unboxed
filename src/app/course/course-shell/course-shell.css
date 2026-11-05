@@ -7,13 +7,74 @@
   padding-right: max(16px, env(safe-area-inset-right, 0px));
   padding-block: 28px 48px;
 }
-header.top {
+.chapter-bar {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
-  justify-content: space-between;
-  gap: 8px 24px;
+  gap: 4px 10px;
+  margin-bottom: 4px;
+}
+.chapter-bar .num,
+.chapter-bar .of {
+  font-family: var(--f-mono);
+  font-size: 12.5px;
+  color: var(--accent-ink);
+}
+.chapter-bar .name {
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: 18px;
+}
+.chapter-bar .of {
+  color: var(--muted);
+}
+.sidebar {
+  display: none;
+}
+@media (min-width: 1360px) {
+  .wrap {
+    max-width: 1500px;
+  }
+  .layout {
+    display: grid;
+    grid-template-columns: 280px minmax(0, 1fr);
+    gap: 28px;
+    align-items: start;
+  }
+  .sidebar {
+    display: block;
+    position: sticky;
+    top: 16px;
+    max-height: calc(100dvh - 32px);
+    overflow-y: auto;
+    padding-right: 4px;
+  }
+  /* The open sidebar already shows the chapter and slide, so don't repeat them above the slide. */
+  .wrap:not(.nav-hidden) .chapter-bar {
+    display: none;
+  }
+  /* Collapsed: the header keeps its width so the toggle never moves; the slide re-centres. */
+  .nav-hidden .layout {
+    display: block;
+  }
+  .nav-hidden .sidebar {
+    display: none;
+  }
+  .nav-hidden .main {
+    max-width: 1180px;
+    margin-inline: auto;
+  }
+}
+/* Contents button | title | theme switch; the subtitle sits under the title, not the button. */
+header.top {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px 14px;
   margin-bottom: 18px;
+}
+header.top .sub {
+  grid-column: 2 / -1;
 }
 h1 {
   font-family: var(--f-display);
@@ -33,42 +94,6 @@ h1 span {
   color: var(--muted);
   margin: 0;
 }
-nav.chapters {
-  display: flex;
-  gap: 6px;
-  overflow-x: auto;
-  padding-bottom: 6px;
-  margin-bottom: 18px;
-  scrollbar-width: thin;
-}
-nav.chapters button {
-  flex: 0 0 auto;
-  font: inherit;
-  font-size: 14px;
-  border: 1px solid var(--line);
-  background: var(--surface);
-  color: var(--muted);
-  border-radius: 999px;
-  padding: 6px 14px;
-  cursor: pointer;
-  white-space: nowrap;
-}
-nav.chapters button b {
-  font-family: var(--f-mono);
-  font-weight: 500;
-  font-size: 12px;
-  margin-right: 6px;
-  color: var(--muted);
-}
-nav.chapters button[aria-current='true'] {
-  background: var(--pill-bg);
-  color: var(--pill-fg);
-  border-color: var(--pill-bg);
-}
-nav.chapters button[aria-current='true'] b {
-  color: var(--pill-fg);
-  opacity: 1;
-}
 .slide {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
@@ -85,14 +110,6 @@ nav.chapters button[aria-current='true'] b {
     gap: 32px;
     padding: 30px;
   }
-}
-.eyebrow {
-  font-family: var(--f-mono);
-  font-size: 12px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--accent-ink);
-  margin: 0 0 6px;
 }
 .slide h2 {
   font-family: var(--f-display);
@@ -201,36 +218,3 @@ nav.chapters button[aria-current='true'] b {
   margin-bottom: 2px;
 }
 /* Theme switch */
-.title-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px 24px;
-  flex: 1 1 100%;
-}
-/* Second-level chapter row, shown under the active section */
-nav.chapters.level2 {
-  margin: -6px 0 18px;
-  padding-left: 12px;
-  border-left: 2px solid var(--accent);
-}
-nav.chapters.level2 button {
-  font-size: 13px;
-  padding: 4px 12px;
-  background: transparent;
-}
-nav.chapters.level2 button b {
-  font-size: 11px;
-}
-nav.chapters.level2 button:hover {
-  border-color: var(--accent);
-  color: var(--ink);
-}
-nav.chapters.level2 button[aria-current='true'] {
-  background: var(--accent-soft);
-  color: var(--accent-ink);
-  border-color: var(--accent);
-}
-nav.chapters.level2 button[aria-current='true'] b {
-  color: var(--accent-ink);
-}

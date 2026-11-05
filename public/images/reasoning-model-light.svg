@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 560" role="img" aria-labelledby="t d" font-family="'Schibsted Grotesk', ui-sans-serif, system-ui, sans-serif">
+  <title id="t">Answer straight away, or think first</title>
+  <desc id="d">The question: a bat and a ball cost 1 dollar 10 together, and the bat costs 1 dollar more than the ball; how much is the ball? Answering straight away gives the tempting wrong answer, 10 cents. A reasoning model first writes thinking tokens: let the ball be x and the bat x plus 1, so 2x plus 1 equals 1.10, 2x equals 0.10, x equals 0.05, then checks 0.05 plus 1.05 equals 1.10. Its answer is 5 cents. It is the same kind of model; it was trained with reinforcement learning to think first, and each thinking token is one more pass of computing, which costs time and money.</desc>
+  <style>
+    .bg{fill:#f2f6f8}.card{fill:#ffffff;stroke:#d5e0e7}.sunk{fill:#edf3f7}
+    .ink{fill:#10212b}.muted{fill:#4a6070}.onacc{fill:#ffffff}
+    .acc{fill:#0a6ea6}.accink{fill:#075585}.accsoft{fill:#ddeef9}
+    .pos{fill:#17906f}.posink{fill:#0b6b52}.possoft{fill:#d8f1e8;stroke:#17906f}
+    .neg{fill:#d9532f}.negink{fill:#b3341a}.negsoft{fill:#fbe1d8;stroke:#d9532f}
+    .heat{fill:#fbebcb;stroke:#cc8200}.heatink{fill:#8a5a00}.heatfill{fill:#cc8200}
+    .line{stroke:#4a6070;fill:none;stroke-width:2}.thin{stroke:#d5e0e7;fill:none;stroke-width:1.5}
+    .dash{stroke:#0a6ea6;fill:none;stroke-width:2;stroke-dasharray:6 5}
+    .stream{stroke:#0a6ea6;fill:none;stroke-width:14;stroke-linecap:round;opacity:.35}
+    .row{fill:#edf3f7}.hit{fill:#ddeef9;stroke:#0a6ea6}
+    .mono{font-family:'JetBrains Mono',ui-monospace,Menlo,monospace}
+    .head{font-size:13px;font-weight:700;letter-spacing:.08em}
+    .arrowhead{fill:#4a6070}.arrowacc{fill:#0a6ea6}
+  </style>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arrowhead"/></marker>
+  </defs>
+  <rect class="bg" width="1200" height="560" rx="18"/>
+  <text x="40" y="52" class="ink" font-size="26" font-weight="700">Answer straight away, or think first</text>
+  <text x="40" y="78" class="muted" font-size="15">Same kind of model, same next-token loop. A reasoning model spends tokens working it out before it answers.</text>
+
+  <!-- shared question -->
+  <rect class="card" x="40" y="110" width="290" height="300" rx="14"/>
+  <text x="60" y="140" class="muted head">THE QUESTION</text>
+  <g class="ink" font-size="15">
+    <text x="60" y="172">A bat and a ball cost $1.10.</text>
+    <text x="60" y="196">The bat costs $1 more</text>
+    <text x="60" y="220">than the ball.</text>
+    <text x="60" y="252" font-weight="700">How much is the ball?</text>
+  </g>
+  <text x="60" y="300" class="muted" font-size="13">A classic trick question: the</text>
+  <text x="60" y="318" class="muted" font-size="13">quick, intuitive answer is wrong.</text>
+
+  <!-- row 1: answer straight away -->
+  <text x="380" y="132" class="muted head">ANSWER STRAIGHT AWAY</text>
+  <path class="line" d="M332 170 H920" marker-end="url(#a)"/>
+  <rect class="bg" x="520" y="156" width="240" height="26"/>
+  <text x="640" y="174" text-anchor="middle" class="muted" font-size="13">no working, first idea wins</text>
+  <rect class="negsoft" x="924" y="136" width="236" height="68" rx="12" stroke-width="2"/>
+  <text x="1042" y="166" text-anchor="middle" class="negink" font-size="20" font-weight="700">10 cents ✗</text>
+  <text x="1042" y="189" text-anchor="middle" class="negink" font-size="12.5">tempting, and wrong</text>
+
+  <!-- row 2: think first -->
+  <text x="380" y="252" class="muted head">THINK FIRST (REASONING MODEL)</text>
+  <path class="line" d="M332 330 H376" marker-end="url(#a)"/>
+  <rect class="sunk" x="380" y="266" width="500" height="144" rx="12"/>
+  <rect x="380" y="266" width="500" height="144" rx="12" class="dash" fill="none"/>
+  <text x="398" y="290" class="accink" font-size="12.5" font-weight="700">thinking tokens · often hidden or summarised</text>
+  <g class="ink mono" font-size="14">
+    <text x="398" y="320">ball = x, bat = x + 1</text>
+    <text x="398" y="344">x + (x + 1) = 1.10 → 2x = 0.10</text>
+    <text x="398" y="368">x = 0.05</text>
+    <text x="398" y="392">check: 0.05 + 1.05 = 1.10 <tspan class="posink" font-weight="700">✓</tspan></text>
+  </g>
+  <path class="line" d="M882 338 H920" marker-end="url(#a)"/>
+  <rect class="possoft" x="924" y="304" width="236" height="68" rx="12" stroke-width="2"/>
+  <text x="1042" y="334" text-anchor="middle" class="posink" font-size="20" font-weight="700">5 cents ✓</text>
+  <text x="1042" y="357" text-anchor="middle" class="posink" font-size="12.5">worked out and checked</text>
+
+  <!-- facts -->
+  <g font-size="14">
+    <rect class="card" x="40" y="440" width="360" height="92" rx="12"/>
+    <text x="60" y="470" class="ink" font-weight="700">How it learned to think</text>
+    <text x="60" y="494" class="muted">Reinforcement learning on problems</text>
+    <text x="60" y="514" class="muted">whose answers can be checked.</text>
+
+    <rect class="card" x="420" y="440" width="360" height="92" rx="12"/>
+    <text x="440" y="470" class="ink" font-weight="700">Why it helps</text>
+    <text x="440" y="494" class="muted">Each thinking token is one more pass of</text>
+    <text x="440" y="514" class="muted">computing, and a note it can read back.</text>
+
+    <rect class="card" x="800" y="440" width="360" height="92" rx="12"/>
+    <text x="820" y="470" class="ink" font-weight="700">What it costs</text>
+    <text x="820" y="494" class="muted">Slower answers, and thinking tokens</text>
+    <text x="820" y="514" class="muted">are billed like output.</text>
+  </g>
+</svg>

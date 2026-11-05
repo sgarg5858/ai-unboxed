@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
-import { COURSE, SECTIONS } from '../../../content/course';
+import { COURSE } from '../../../content/course';
 import { routes } from '../../app.routes';
 import { CourseShell } from './course-shell';
 
@@ -24,37 +24,36 @@ describe('CourseShell', () => {
     });
   }
 
-  it('shows chapter sub-navigation only inside a multi-chapter section', async () => {
+  it('lists every chapter by name in the outline and marks the current one', async () => {
     const fixture = TestBed.createComponent(CourseShell);
     const router = TestBed.inject(Router);
     const el = fixture.nativeElement as HTMLElement;
-    const current = (nav: Element) =>
-      nav.querySelector('button[aria-current="true"]')?.textContent?.replace(/\s+/g, ' ').trim();
-
-    await router.navigateByUrl('/assistant/1');
+    await router.navigateByUrl('/attention/2');
     await fixture.whenStable();
-    expect(el.querySelectorAll('nav.chapters').length).toBe(1);
-    expect(current(el.querySelector('nav.chapters')!)).toContain('Assistant architecture');
-
-    await router.navigateByUrl('/attention/1');
-    await fixture.whenStable();
-    const [top, sub] = Array.from(el.querySelectorAll('nav.chapters'));
-    expect(current(top)).toContain('LLM architecture');
-    expect(sub.querySelectorAll('button').length).toBe(
-      SECTIONS.find((x) => x.id === 'llm')!.chapters.length,
+    const outline = el.querySelector('aside app-course-outline')!;
+    const names = Array.from(outline.querySelectorAll('.ch .name')).map((n) => n.textContent);
+    expect(names).toEqual(COURSE.map((c) => c.name));
+    expect(outline.querySelector('.ch[aria-current="page"]')?.textContent).toContain('Attention');
+    const slides = outline.querySelectorAll('.slides button');
+    expect(slides.length).toBe(COURSE.find((c) => c.id === 'attention')!.slides.length);
+    expect(outline.querySelector('.slides [aria-current="step"]')?.textContent?.trim()).toBe(
+      COURSE.find((c) => c.id === 'attention')!.slides[1].title,
     );
-    expect(current(sub)).toContain('Attention');
+    expect(el.querySelector('.chapter-bar .name')?.textContent).toBe('Attention');
   });
 
-  it('opens a section at its first chapter', async () => {
+  it('jumps to a chapter or a slide from the outline', async () => {
     const fixture = TestBed.createComponent(CourseShell);
     const router = TestBed.inject(Router);
+    const el = fixture.nativeElement as HTMLElement;
     await router.navigateByUrl('/assistant/1');
     await fixture.whenStable();
-    const buttons = fixture.nativeElement.querySelectorAll('nav.chapters:not(.level2) button');
-    (buttons[1] as HTMLButtonElement).click();
+    (el.querySelectorAll('aside .ch')[1] as HTMLButtonElement).click();
     await fixture.whenStable();
     expect(router.url).toBe('/' + COURSE[1].id + '/1');
+    (el.querySelectorAll('aside .slides button')[2] as HTMLButtonElement).click();
+    await fixture.whenStable();
+    expect(router.url).toBe('/' + COURSE[1].id + '/3');
   });
 
   it('moves to the next slide and across chapters', async () => {

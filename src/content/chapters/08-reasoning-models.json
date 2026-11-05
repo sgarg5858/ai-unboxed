@@ -1,0 +1,285 @@
+{
+  "$schema": "../schema/chapter.schema.json",
+  "id": "reasoning",
+  "name": "Reasoning models",
+  "slides": [
+    {
+      "title": "Thinking before answering",
+      "summary": "A reasoning model is a normal LLM that has been trained to write out its thinking before it gives an answer.",
+      "body": [
+        "A standard model starts its answer straight away. A <b>reasoning model</b> first writes a <b>thinking</b> section, working through the problem step by step, and only then writes the answer you see.",
+        "Underneath, <mark>it's the same transformer, predicting one token at a time</mark>. What's different is how it was trained, and how many tokens it spends before answering.",
+        {
+          "ul": [
+            "<b>OpenAI o1</b> (September 2024) was the first widely used reasoning model, followed by o3 and GPT-5's thinking mode.",
+            "<b>DeepSeek-R1</b> (January 2025) published how it was trained, and shows its full thinking.",
+            "<b>Claude</b> (extended thinking) and <b>Gemini</b> (thinking models) work the same way, often with a switch to turn thinking on or off."
+          ]
+        },
+        {
+          "note": "Apps usually hide the raw thinking or show a summary of it. You still pay for those tokens.",
+          "kind": "dev"
+        }
+      ],
+      "viz": [
+        {
+          "type": "panel",
+          "blocks": [
+            {
+              "type": "stages",
+              "items": [
+                {
+                  "label": "<b>Read the question</b>",
+                  "sub": "prompt tokens",
+                  "value": "same as any LLM"
+                },
+                {
+                  "label": "<b>Think</b>",
+                  "sub": "hundreds to thousands of tokens, often hidden",
+                  "value": "the new part",
+                  "highlight": true
+                },
+                {
+                  "label": "<b>Answer</b>",
+                  "sub": "the reply you see",
+                  "value": "same as any LLM"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "caption",
+          "html": "A reasoning model adds one step in the middle. Everything else is the generation loop from <i>The big picture</i>."
+        }
+      ],
+      "figure": {
+        "src": "images/reasoning-model-light.svg",
+        "darkSrc": "images/reasoning-model-dark.svg",
+        "alt": "The question: a bat and a ball cost 1 dollar 10 together, and the bat costs 1 dollar more than the ball; how much is the ball? Answering straight away gives the tempting wrong answer, 10 cents. A reasoning model first writes thinking tokens: let the ball be x and the bat x plus 1, so 2x equals 0.10 and x equals 0.05, then checks that 0.05 plus 1.05 equals 1.10. Its answer is 5 cents.",
+        "width": 1200,
+        "height": 560,
+        "caption": "The same question, answered two ways. Writing the working down catches the tempting mistake."
+      }
+    },
+    {
+      "title": "Why thinking helps",
+      "summary": "Every token gets the same amount of computing. More tokens means more computing, plus notes the model can read back.",
+      "body": [
+        "Each token comes from one run through the model: a fixed amount of work. A hard problem may need more steps than one run can do. Thinking tokens give the model more runs to spend on it.",
+        {
+          "ul": [
+            "<b>More computing per question.</b> 2,000 thinking tokens means 2,000 extra runs spent on the problem. This is called <b>test-time compute</b>: spending more effort when answering, not only when training.",
+            "<b>A scratchpad.</b> <mark>Everything the model writes becomes text it can read on the next step</mark>, like the spelled-out letters in the strawberry example. It doesn't have to hold half-finished results \"in its head\".",
+            "<b>A chance to check.</b> It can try an approach, notice a mistake, and go back."
+          ]
+        },
+        "The idea started as a prompting trick. <b>Chain-of-thought</b> prompting (Wei et al., 2022), and simply adding \"Let's think step by step\" (Kojima et al., 2022), made models much better at maths and logic. Reasoning models are trained to do this by themselves, for much longer.",
+        {
+          "note": "Like doing long division on paper instead of in your head. You're no smarter, but writing each step down means you don't have to hold it all at once.",
+          "kind": "analogy"
+        }
+      ],
+      "viz": [
+        {
+          "type": "panel",
+          "blocks": [
+            {
+              "type": "stages",
+              "items": [
+                {
+                  "label": "<b>Answer straight away</b>",
+                  "sub": "\"10 cents\": about 5 tokens",
+                  "value": "≈ 5 runs of the model"
+                },
+                {
+                  "label": "<b>Think first</b>",
+                  "sub": "working + check + \"5 cents\": about 200 tokens",
+                  "value": "≈ 200 runs of the model",
+                  "highlight": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "caption",
+          "html": "Same model, same work per token. The thinking version simply spends about 40 times more computing on the question."
+        }
+      ]
+    },
+    {
+      "title": "How they learn to think",
+      "summary": "Reasoning comes from reinforcement learning on problems whose answers can be checked automatically.",
+      "body": [
+        "Start with a model that has already had normal training. Then give it lots of problems with checkable answers: maths with a known result, code with tests, puzzles.",
+        {
+          "ul": [
+            "<b>Try:</b> the model writes its thinking and an answer, often many attempts per problem.",
+            "<b>Check:</b> a program marks each answer right or wrong. No person needs to grade it.",
+            "<b>Reward:</b> attempts that got it right are made more likely; wrong ones less likely.",
+            "<b>Repeat</b> across a huge number of problems."
+          ]
+        },
+        "Nobody writes the thinking for it. <mark>The model discovers that checking its work and trying again leads to more right answers</mark>, so those habits grow. DeepSeek reported that during this training its model's thinking got steadily longer, and it began stopping to re-check its own steps.",
+        {
+          "note": "This is called <b>reinforcement learning with verifiable rewards</b>. It works best where answers can be checked, which is why reasoning models got good at maths and code first.",
+          "kind": "key"
+        }
+      ],
+      "viz": [
+        {
+          "type": "stepper",
+          "accumulate": true,
+          "nextLabel": "Next step",
+          "restartLabel": "Start over",
+          "steps": [
+            {
+              "item": {
+                "label": "Problem: \"What is 17 × 24?\"",
+                "value": "task",
+                "tone": "muted"
+              },
+              "caption": "A problem with an answer a program can check."
+            },
+            {
+              "item": {
+                "label": "Attempt A: \"17×24 = 17×20 + 17×4 = 340 + 68 = 408\"",
+                "value": "✓ right",
+                "tone": "pos",
+                "mono": true
+              },
+              "caption": "The model writes its working. A checker compares the final number with the known answer."
+            },
+            {
+              "item": {
+                "label": "Attempt B: \"17×24 ≈ 400, so 418\"",
+                "value": "✗ wrong",
+                "tone": "neg",
+                "mono": true
+              },
+              "caption": "Another attempt at the same problem, which skips the working, gets it wrong."
+            },
+            {
+              "item": {
+                "label": "Update: make attempts like A more likely",
+                "value": "reward",
+                "tone": "accent"
+              },
+              "caption": "Training nudges the weights towards the kind of thinking that led to the right answer."
+            },
+            {
+              "item": {
+                "label": "Repeat across a huge number of problems",
+                "value": "habit",
+                "tone": "accent"
+              },
+              "caption": "Over time, careful step-by-step thinking and self-checking become the model's habit."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Thinking budgets: more thought, more cost",
+      "summary": "You can usually choose how much a reasoning model thinks. More thinking helps on hard problems, but costs time and money.",
+      "body": [
+        "On hard problems, accuracy keeps improving as the model is allowed to think longer, though each extra step helps less than the one before. On easy questions, extra thinking adds almost nothing.",
+        "Most APIs let you set how much it thinks:",
+        {
+          "ul": [
+            "<b>OpenAI:</b> a <code>reasoning_effort</code> setting (for example low, medium or high).",
+            "<b>Anthropic:</b> extended thinking with a <code>budget_tokens</code> limit.",
+            "<b>Google Gemini:</b> a thinking budget setting."
+          ]
+        },
+        "Thinking tokens are billed like output tokens, and the answer can't start until the thinking ends. <mark>A hard maths problem may deserve thousands of thinking tokens; \"What's the capital of France?\" deserves none.</mark> Try both on the right."
+      ],
+      "viz": [
+        {
+          "type": "widget",
+          "name": "thinking-budget"
+        },
+        {
+          "type": "caption",
+          "html": "Illustrative numbers: accuracy curves are made up, at about 100 tokens per second and $10 per million tokens."
+        }
+      ]
+    },
+    {
+      "title": "When to use them, and their limits",
+      "summary": "Use reasoning for problems with several steps. For simple questions it's slower and costs more, and it doesn't stop mistakes.",
+      "body": [
+        "Reasoning pays off when a problem needs several steps that build on each other, where one slip ruins the answer.",
+        {
+          "h": "Limits"
+        },
+        {
+          "ul": [
+            "<b>Still wrong sometimes.</b> Long thinking can talk itself into a mistake, and it can still make up facts it doesn't know.",
+            "<b>Overthinking.</b> It can spend thousands of tokens on an easy question.",
+            "<b>The thinking isn't a perfect window.</b> Anthropic tested whether models admit what influenced their answers (2025). When given a hidden hint, Claude 3.7 Sonnet mentioned using it only about 25% of the time, and DeepSeek-R1 about 39%."
+          ]
+        },
+        {
+          "note": "<mark>Treat the visible thinking as a helpful explanation, not proof of how the answer was reached.</mark>",
+          "kind": "warn"
+        }
+      ],
+      "viz": [
+        {
+          "type": "panel",
+          "blocks": [
+            {
+              "type": "table",
+              "rows": [
+                {
+                  "head": "Good fit",
+                  "cells": [
+                    {
+                      "text": "maths",
+                      "tone": "accent"
+                    },
+                    {
+                      "text": "code & debugging",
+                      "tone": "accent"
+                    },
+                    {
+                      "text": "multi-step plans",
+                      "tone": "accent"
+                    },
+                    {
+                      "text": "agents",
+                      "tone": "accent"
+                    }
+                  ]
+                },
+                {
+                  "head": "Not worth it",
+                  "cells": [
+                    {
+                      "text": "quick facts"
+                    },
+                    {
+                      "text": "chat"
+                    },
+                    {
+                      "text": "rewriting text"
+                    },
+                    {
+                      "text": "when speed matters"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "caption",
+          "html": "Many apps now decide for you, thinking longer only when a question looks hard."
+        }
+      ]
+    }
+  ]
+}

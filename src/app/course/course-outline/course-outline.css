@@ -1,0 +1,91 @@
+.sec {
+  font-family: var(--f-mono);
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 18px 0 6px;
+}
+.sec:first-of-type {
+  margin-top: 0;
+}
+.sec .num {
+  margin-right: 8px;
+}
+ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  border-radius: 8px;
+}
+button:focus-visible {
+  outline: 2px solid var(--accent-ink);
+  outline-offset: 1px;
+}
+.ch {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 7px 10px;
+  min-height: 36px;
+  color: var(--ink);
+  font-size: 14.5px;
+}
+.ch:hover {
+  background: var(--sunk);
+}
+.ch .num,
+.ch .count {
+  font-family: var(--f-mono);
+  font-size: 11.5px;
+  color: var(--muted);
+}
+.ch .num {
+  min-width: 26px;
+}
+.ch .name {
+  flex: 1;
+}
+.current > .ch {
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+  font-weight: 700;
+}
+.current > .ch .num,
+.current > .ch .count {
+  color: var(--accent-ink);
+}
+.slides {
+  margin: 4px 0 8px 22px;
+  border-left: 2px solid var(--line);
+}
+.slides button {
+  display: block;
+  padding: 5px 10px;
+  min-height: 30px;
+  font-size: 13.5px;
+  line-height: 1.35;
+  color: var(--muted);
+  border-radius: 0 6px 6px 0;
+  margin-left: -2px;
+  border-left: 2px solid transparent;
+}
+.slides button:hover {
+  color: var(--ink);
+  background: var(--sunk);
+}
+.slides button.on {
+  color: var(--ink);
+  font-weight: 700;
+  border-left-color: var(--accent);
+}

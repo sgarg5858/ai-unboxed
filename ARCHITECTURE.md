@@ -101,7 +101,7 @@ Slides link to other chapters with `goto: { chapter: "<id>", slide: n }` and ref
 2. The Router emits `NavigationEnd`, and the `CourseNav.url` signal updates.
 3. `resolvePosition(COURSE, '/attention/3')` returns `{ chapter: 3, slide: 2 }`, clamping bad ids or numbers.
 4. `CourseShell` renders:
-   - the section rail and, when the section has several chapters, the chapter row (`level2`);
+   - the course outline (`course/course-outline`): a sidebar on wide screens, toggled by the Contents button and remembered in `localStorage` (`SidebarState`), or a `<dialog>` drawer (`course/contents-drawer`) on narrower ones;
    - the prose of `nav.slide()`;
    - `<app-blocks [blocks]="slide.viz">`.
 5. `BlockList` switches on each block's `type`. For a widget, it looks up `WIDGETS[name]` and renders it through `NgComponentOutlet` with `props`.
