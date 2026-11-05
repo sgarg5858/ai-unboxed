@@ -1,0 +1,133 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 650" role="img" aria-labelledby="t d" font-family="'Schibsted Grotesk', ui-sans-serif, system-ui, sans-serif">
+  <title id="t">From scores to the next token</title>
+  <desc id="d">After "I am learning artificial", the model outputs raw scores (logits): intelligence 7.6, neural nets 4.6, life 4.2, languages 3.9, sweeteners 3.4. Softmax at temperature 1 turns them into probabilities: 89, 4.4, 3.0, 2.2 and 1.3 percent. Top-p at 0.9 keeps only intelligence and neural nets, rescaled to 95 and 5 percent. One token is drawn at random: intelligence. For the next step, the keys and values of earlier tokens are reused from the KV cache and only the new token's are computed. Everything must fit in the context window: system prompt, chat history, documents and tool results, and the reply so far.</desc>
+  <style>
+    .bg{fill:#f2f6f8}.card{fill:#ffffff;stroke:#d5e0e7}.sunk{fill:#edf3f7}
+    .ink{fill:#10212b}.muted{fill:#4a6070}.onacc{fill:#ffffff}
+    .acc{fill:#0a6ea6}.accink{fill:#075585}.accsoft{fill:#ddeef9}
+    .pos{fill:#17906f}.posink{fill:#0b6b52}.possoft{fill:#d8f1e8;stroke:#17906f}
+    .neg{fill:#d9532f}.negink{fill:#b3341a}.negsoft{fill:#fbe1d8;stroke:#d9532f}
+    .heat{fill:#fbebcb;stroke:#cc8200}.heatink{fill:#8a5a00}.heatfill{fill:#cc8200}
+    .line{stroke:#4a6070;fill:none;stroke-width:2}.thin{stroke:#d5e0e7;fill:none;stroke-width:1.5}
+    .dash{stroke:#0a6ea6;fill:none;stroke-width:2;stroke-dasharray:6 5}
+    .stream{stroke:#0a6ea6;fill:none;stroke-width:14;stroke-linecap:round;opacity:.35}
+    .row{fill:#edf3f7}.hit{fill:#ddeef9;stroke:#0a6ea6}
+    .mono{font-family:'JetBrains Mono',ui-monospace,Menlo,monospace}
+    .head{font-size:13px;font-weight:700;letter-spacing:.08em}
+    .arrowhead{fill:#4a6070}.arrowacc{fill:#0a6ea6}
+  </style>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arrowhead"/></marker>
+  </defs>
+  <rect class="bg" width="1200" height="650" rx="18"/>
+  <text x="40" y="52" class="ink" font-size="26" font-weight="700">From scores to the next token</text>
+  <text x="40" y="78" class="muted" font-size="15">The model only outputs scores. Ordinary code you control picks the token, and a cache makes the next step cheap.</text>
+
+  <!-- 1 logits -->
+  <rect class="card" x="40" y="104" width="250" height="250" rx="14"/>
+  <text x="60" y="132" class="muted head">1 · LOGITS</text>
+  <text x="60" y="150" class="muted" font-size="12">raw scores, any size</text>
+  <g class="mono" font-size="12">
+    <text x="60" y="181" class="ink">intelligence</text><rect class="acc" x="160" y="170" width="80" height="14" rx="3"/><text x="272" y="181" text-anchor="end" class="ink" font-weight="700">7.6</text>
+    <text x="60" y="211" class="ink">neural nets</text><rect class="acc" x="160" y="200" width="48" height="14" rx="3" opacity=".7"/><text x="272" y="211" text-anchor="end" class="ink" font-weight="700">4.6</text>
+    <text x="60" y="241" class="ink">life</text><rect class="acc" x="160" y="230" width="44" height="14" rx="3" opacity=".7"/><text x="272" y="241" text-anchor="end" class="ink" font-weight="700">4.2</text>
+    <text x="60" y="271" class="ink">languages</text><rect class="acc" x="160" y="260" width="41" height="14" rx="3" opacity=".7"/><text x="272" y="271" text-anchor="end" class="ink" font-weight="700">3.9</text>
+    <text x="60" y="301" class="ink">sweeteners</text><rect class="acc" x="160" y="290" width="36" height="14" rx="3" opacity=".7"/><text x="272" y="301" text-anchor="end" class="ink" font-weight="700">3.4</text>
+  </g>
+  <text x="60" y="334" class="muted" font-size="12">top 5 of ~128,000, after</text>
+  <text x="60" y="348" class="muted" font-size="12" font-style="italic">"I am learning artificial"</text>
+  <line class="line" x1="292" y1="229" x2="326" y2="229" marker-end="url(#a)"/>
+
+  <!-- 2 softmax + temperature -->
+  <rect class="card" x="330" y="104" width="250" height="250" rx="14"/>
+  <text x="350" y="132" class="muted head">2 · SOFTMAX</text>
+  <text x="350" y="150" class="muted" font-size="12">probabilities that add up to 1 (T = 1)</text>
+  <g class="mono" font-size="12">
+    <text x="350" y="181" class="ink">intelligence</text><rect class="acc" x="450" y="170" width="80" height="14" rx="3"/><text x="562" y="181" text-anchor="end" class="ink" font-weight="700">89%</text>
+    <text x="350" y="211" class="ink">neural nets</text><rect class="acc" x="450" y="200" width="5" height="14" rx="2" opacity=".7"/><text x="562" y="211" text-anchor="end" class="ink" font-weight="700">4.4%</text>
+    <text x="350" y="241" class="ink">life</text><rect class="acc" x="450" y="230" width="4" height="14" rx="2" opacity=".7"/><text x="562" y="241" text-anchor="end" class="ink" font-weight="700">3.0%</text>
+    <text x="350" y="271" class="ink">languages</text><rect class="acc" x="450" y="260" width="3" height="14" rx="1.5" opacity=".7"/><text x="562" y="271" text-anchor="end" class="ink" font-weight="700">2.2%</text>
+    <text x="350" y="301" class="ink">sweeteners</text><rect class="acc" x="450" y="290" width="2" height="14" rx="1" opacity=".7"/><text x="562" y="301" text-anchor="end" class="ink" font-weight="700">1.3%</text>
+  </g>
+  <rect class="accsoft" x="350" y="316" width="212" height="30" rx="8"/>
+  <text x="456" y="330" text-anchor="middle" class="accink" font-size="11.5" font-weight="700">temperature reshapes this</text>
+  <text x="456" y="342" text-anchor="middle" class="accink mono" font-size="10.5">T 0.5 → 99%  ·  T 2 → 59%</text>
+  <line class="line" x1="582" y1="229" x2="616" y2="229" marker-end="url(#a)"/>
+
+  <!-- 3 top-p -->
+  <rect class="card" x="620" y="104" width="250" height="250" rx="14"/>
+  <text x="640" y="132" class="muted head">3 · TOP-P (p = 0.9)</text>
+  <text x="640" y="150" class="muted" font-size="12">keep the top tokens that cover 90%</text>
+  <g class="mono" font-size="12">
+    <text x="640" y="181" class="ink" font-weight="700">intelligence</text><rect class="pos" x="740" y="170" width="76" height="14" rx="3"/><text x="852" y="181" text-anchor="end" class="posink" font-weight="700">95%</text>
+    <text x="640" y="211" class="ink" font-weight="700">neural nets</text><rect class="pos" x="740" y="200" width="6" height="14" rx="2"/><text x="852" y="211" text-anchor="end" class="posink" font-weight="700">5%</text>
+    <g class="muted" opacity=".75">
+      <text x="640" y="241">life</text><text x="640" y="271">languages</text><text x="640" y="301">sweeteners</text>
+      <text x="852" y="241" text-anchor="end">cut</text><text x="852" y="271" text-anchor="end">cut</text><text x="852" y="301" text-anchor="end">cut</text>
+    </g>
+    <line class="thin" x1="640" y1="237" x2="676" y2="237"/><line class="thin" x1="640" y1="267" x2="708" y2="267"/><line class="thin" x1="640" y1="297" x2="716" y2="297"/>
+  </g>
+  <line class="line" x1="636" y1="221" x2="854" y2="221" stroke-dasharray="4 4"/>
+  <text x="640" y="334" class="muted" font-size="12">the rest is rescaled to add up to 1,</text>
+  <text x="640" y="348" class="muted" font-size="12">so one odd token can't derail the text</text>
+  <line class="line" x1="872" y1="229" x2="906" y2="229" marker-end="url(#a)"/>
+
+  <!-- 4 sample -->
+  <rect class="card" x="910" y="104" width="250" height="250" rx="14"/>
+  <text x="930" y="132" class="muted head">4 · SAMPLE</text>
+  <text x="930" y="150" class="muted" font-size="12">draw one, weighted by probability</text>
+  <rect class="acc" x="930" y="186" width="210" height="52" rx="12"/>
+  <text x="1035" y="219" text-anchor="middle" class="onacc mono" font-size="18" font-weight="700">␣intelligence</text>
+  <text x="1035" y="262" text-anchor="middle" class="ink" font-size="13">picked 95% of the time</text>
+  <rect class="row" x="930" y="284" width="210" height="56" rx="10"/>
+  <text x="944" y="306" class="ink" font-size="12.5" font-weight="700">Greedy (T = 0)</text>
+  <text x="944" y="326" class="muted" font-size="12">always takes the top token</text>
+
+  <!-- KV cache -->
+  <rect class="card" x="40" y="380" width="720" height="246" rx="14"/>
+  <text x="60" y="410" class="ink" font-size="17" font-weight="700">Next step: the KV cache</text>
+  <text x="60" y="431" class="muted" font-size="13">Earlier tokens' keys and values never change, so they're saved instead of recomputed.</text>
+  <path class="thin" d="M60 462 V456 H544 V462"/>
+  <text x="302" y="451" text-anchor="middle" class="accink" font-size="12" font-weight="700">saved from earlier steps</text>
+  <text x="612" y="451" text-anchor="middle" class="heatink" font-size="12" font-weight="700">computed now</text>
+  <g class="mono" font-size="13" font-weight="700">
+    <rect class="hit" x="60" y="468" width="52" height="44" rx="6"/><text x="86" y="495" text-anchor="middle" class="accink">K</text>
+    <rect class="hit" x="120" y="468" width="52" height="44" rx="6"/><text x="146" y="495" text-anchor="middle" class="accink">V</text>
+    <rect class="hit" x="184" y="468" width="52" height="44" rx="6"/><text x="210" y="495" text-anchor="middle" class="accink">K</text>
+    <rect class="hit" x="244" y="468" width="52" height="44" rx="6"/><text x="270" y="495" text-anchor="middle" class="accink">V</text>
+    <rect class="hit" x="308" y="468" width="52" height="44" rx="6"/><text x="334" y="495" text-anchor="middle" class="accink">K</text>
+    <rect class="hit" x="368" y="468" width="52" height="44" rx="6"/><text x="394" y="495" text-anchor="middle" class="accink">V</text>
+    <rect class="hit" x="432" y="468" width="52" height="44" rx="6"/><text x="458" y="495" text-anchor="middle" class="accink">K</text>
+    <rect class="hit" x="492" y="468" width="52" height="44" rx="6"/><text x="518" y="495" text-anchor="middle" class="accink">V</text>
+    <rect class="heat" x="556" y="468" width="52" height="44" rx="6"/><text x="582" y="495" text-anchor="middle" class="heatink">K</text>
+    <rect class="heat" x="616" y="468" width="52" height="44" rx="6"/><text x="642" y="495" text-anchor="middle" class="heatink">V</text>
+    <rect class="heat" x="680" y="468" width="60" height="44" rx="6"/><text x="710" y="495" text-anchor="middle" class="heatink">Q</text>
+  </g>
+  <g class="mono" font-size="13">
+    <rect class="card" x="60" y="522" width="112" height="30" rx="8"/><text x="116" y="542" text-anchor="middle" class="ink">I</text>
+    <rect class="card" x="184" y="522" width="112" height="30" rx="8"/><text x="240" y="542" text-anchor="middle" class="ink">␣am</text>
+    <rect class="card" x="308" y="522" width="112" height="30" rx="8"/><text x="364" y="542" text-anchor="middle" class="ink">␣learning</text>
+    <rect class="card" x="432" y="522" width="112" height="30" rx="8"/><text x="488" y="542" text-anchor="middle" class="ink">␣artificial</text>
+    <rect class="heat" x="556" y="522" width="184" height="30" rx="8"/><text x="648" y="542" text-anchor="middle" class="heatink" font-weight="700">␣intelligence (new)</text>
+  </g>
+  <text x="60" y="584" class="ink" font-size="13.5"><tspan font-weight="700">Faster:</tspan><tspan class="muted"> only the new token's Q, K, V are computed; its query reads the saved keys.</tspan></text>
+  <text x="60" y="606" class="ink" font-size="13.5"><tspan font-weight="700">Costs memory:</tspan><tspan class="muted"> the cache grows with every token, in every layer.</tspan></text>
+
+  <!-- context window -->
+  <rect class="card" x="780" y="380" width="380" height="246" rx="14"/>
+  <text x="800" y="410" class="ink" font-size="17" font-weight="700">The context window</text>
+  <text x="800" y="431" class="muted" font-size="13">Everything the model can see at once.</text>
+  <text x="800" y="449" class="muted" font-size="13">There is no other memory.</text>
+  <rect class="acc" x="800" y="468" width="62" height="40" rx="6"/>
+  <rect class="accsoft" x="866" y="468" width="96" height="40" rx="6"/>
+  <rect class="heat" x="966" y="468" width="112" height="40" rx="6"/>
+  <rect class="possoft" x="1082" y="468" width="58" height="40" rx="6"/>
+  <g font-size="12.5">
+    <rect class="acc" x="800" y="526" width="12" height="12" rx="3"/><text x="818" y="537" class="ink">system prompt</text>
+    <rect class="accsoft" x="966" y="526" width="12" height="12" rx="3"/><text x="984" y="537" class="ink">chat history</text>
+    <rect class="heat" x="800" y="550" width="12" height="12" rx="3"/><text x="818" y="561" class="ink">documents, tool results</text>
+    <rect class="possoft" x="966" y="550" width="12" height="12" rx="3"/><text x="984" y="561" class="ink">reply so far</text>
+  </g>
+  <rect class="accsoft" x="800" y="578" width="340" height="32" rx="8"/>
+  <text x="970" y="599" text-anchor="middle" class="accink" font-size="13" font-weight="700">Not in here? The model doesn't know it.</text>
+</svg>

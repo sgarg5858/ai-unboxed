@@ -75,7 +75,15 @@
             }
           ]
         }
-      ]
+      ],
+      "figure": {
+        "src": "images/output-inference-light.svg",
+        "darkSrc": "images/output-inference-dark.svg",
+        "alt": "After \"I am learning artificial\", the model outputs raw scores (logits): intelligence 7.6, neural nets 4.6, life 4.2, languages 3.9, sweeteners 3.4. Softmax at temperature 1 turns them into probabilities: 89, 4.4, 3.0, 2.2 and 1.3 percent. Top-p at 0.9 keeps only intelligence and neural nets, rescaled to 95 and 5 percent, and one token is drawn at random: intelligence. For the next step, earlier tokens' keys and values are reused from the KV cache and only the new token's are computed. Everything must fit in the context window: system prompt, chat history, documents and tool results, and the reply so far.",
+        "width": 1200,
+        "height": 650,
+        "caption": "The whole chapter on one page: scores → probabilities → a shortlist → one token, then the cache and the window that make the next step possible. Numbers are illustrative."
+      }
     },
     {
       "title": "Softmax and temperature",
