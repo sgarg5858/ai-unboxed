@@ -30,24 +30,51 @@
                 {
                   "head": "input",
                   "cells": [
-                    { "text": "I", "tone": "accent" },
-                    { "text": "␣am", "tone": "accent" },
-                    { "text": "␣learning", "tone": "accent" },
-                    { "text": "␣artificial", "tone": "accent" }
+                    {
+                      "text": "I",
+                      "tone": "accent"
+                    },
+                    {
+                      "text": "␣am",
+                      "tone": "accent"
+                    },
+                    {
+                      "text": "␣learning",
+                      "tone": "accent"
+                    },
+                    {
+                      "text": "␣artificial",
+                      "tone": "accent"
+                    }
                   ]
                 },
                 {
                   "head": "target",
                   "cells": [
-                    { "text": "␣am", "tone": "heat" },
-                    { "text": "␣learning", "tone": "heat" },
-                    { "text": "␣artificial", "tone": "heat" },
-                    { "text": "␣intelligence", "tone": "heat" }
+                    {
+                      "text": "␣am",
+                      "tone": "heat"
+                    },
+                    {
+                      "text": "␣learning",
+                      "tone": "heat"
+                    },
+                    {
+                      "text": "␣artificial",
+                      "tone": "heat"
+                    },
+                    {
+                      "text": "␣intelligence",
+                      "tone": "heat"
+                    }
                   ]
                 }
               ]
             },
-            { "type": "caption", "html": "One sequence, four predictions, one pass." }
+            {
+              "type": "caption",
+              "html": "One sequence, four predictions, one pass."
+            }
           ]
         }
       ]
@@ -69,7 +96,12 @@
         "Drag the slider to see how loss and perplexity respond."
       ],
       "code": ["loss = F.cross_entropy(logits.view(-1, V), targets.view(-1))"],
-      "viz": [{ "type": "widget", "name": "cross-entropy" }]
+      "viz": [
+        {
+          "type": "widget",
+          "name": "cross-entropy"
+        }
+      ]
     },
     {
       "title": "Backprop and gradient descent",
@@ -98,7 +130,12 @@
         "        p -= lr * p.grad         # real code: optimizer.step()",
         "model.zero_grad()"
       ],
-      "viz": [{ "type": "widget", "name": "gradient-descent" }]
+      "viz": [
+        {
+          "type": "widget",
+          "name": "gradient-descent"
+        }
+      ]
     },
     {
       "title": "The real training loop",
@@ -128,7 +165,12 @@
         "    torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)",
         "    opt.step(); sched.step(); opt.zero_grad()"
       ],
-      "viz": [{ "type": "widget", "name": "loss-curve" }]
+      "viz": [
+        {
+          "type": "widget",
+          "name": "loss-curve"
+        }
+      ]
     },
     {
       "title": "From text predictor to assistant",
@@ -147,7 +189,8 @@
           "note": "Post-training uses a small fraction of pretraining's compute, but it changes behaviour dramatically. Pretraining supplies the knowledge; post-training shapes how it's used.",
           "kind": "key"
         },
-        "The <i>Assistant architecture</i> section showed what happens next: how the trained model is wrapped in a complete assistant system."
+        "The <i>Assistant architecture</i> section showed what happens next: how the trained model is wrapped in a complete assistant system.",
+        "Training also explains one of the best-known failure modes of these models, which the next chapter takes on: <i>Why LLMs hallucinate</i>."
       ],
       "viz": [
         {
@@ -185,46 +228,6 @@
             {
               "type": "caption",
               "html": "Pretraining is the vast majority of the compute. The later stages are small by comparison but change behaviour dramatically."
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "title": "Where to go from here",
-      "summary": "You've seen the model and the system around it. Building both yourself is the best way to make it stick.",
-      "body": [
-        "You've now seen every component in a modern decoder-only LLM, and the system that turns it into an assistant. The best way to lock it in as an engineer is to build both.",
-        {
-          "ul": [
-            "<b>Andrej Karpathy, \"Let's build GPT\" and nanoGPT</b>: a GPT in a few hundred lines of PyTorch.",
-            "<b>\"Attention Is All You Need\"</b> (Vaswani et al., 2017): the original paper, readable after this course.",
-            "<b>Jay Alammar, \"The Illustrated Transformer\"</b>: more diagrams of the same ideas.",
-            "<b>Anthropic's constitution and system prompt release notes</b>, and <b>OpenAI's Model Spec</b>: how labs write down intended behaviour.",
-            "<b>\"The Instruction Hierarchy\"</b> (Wallace et al., 2024) and <b>\"Defeating Prompt Injections by Design\"</b> (CaMeL, 2025).",
-            "<b>The MCP specification</b> and <b>Simon Willison's writing on prompt injection</b>."
-          ]
-        },
-        "Two good exercises: implement the 4-token attention from the <i>Attention</i> chapter in plain Java or TypeScript and check your numbers match. Then write the 15-line tool loop from <i>Assistant architecture</i> against a real API, and add a permission check before each call."
-      ],
-      "viz": [
-        {
-          "type": "panel",
-          "blocks": [
-            {
-              "type": "code",
-              "title": "The whole forward pass, minus the boilerplate",
-              "source": [
-                "x = embed(ids)                          # [B, n, d]",
-                "for blk in blocks:",
-                "    h = rms_norm(x)",
-                "    q, k, v = rope(Wq(h)), rope(Wk(h)), Wv(h)",
-                "    a = softmax(mask(q @ k.T / sqrt(d_head))) @ v",
-                "    x = x + Wo(a)                       # residual",
-                "    x = x + mlp(rms_norm(x))            # residual",
-                "logits = rms_norm(x)[-1] @ W_unembed    # [V]",
-                "next_id = sample(logits / T, top_p=0.9)"
-              ]
             }
           ]
         }

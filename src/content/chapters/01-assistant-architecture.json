@@ -41,57 +41,90 @@
               "gateway": {
                 "title": "Security & auth",
                 "detail": "Ordinary server code that runs before any GPU work. It authenticates the caller (API key or OAuth session), loads the organisation's policy (allowed models and tools, spend limits, data retention) and enforces rate limits. Credentials stop here; they never become tokens the model could leak.",
-                "link": { "chapter": "assistant", "slide": 3 }
+                "link": {
+                  "chapter": "assistant",
+                  "slide": 3
+                }
               },
               "input": {
                 "title": "Input guardrails",
                 "detail": "Small, fast classifier models score the conversation for harmful content and jailbreak attempts, and can block it before the main model runs. They check the assembled context, not just the newest message, because many jailbreaks are spread across several turns or hidden in documents. Some products run this check alongside the model to save time, cancelling the reply if it fires. Examples: Anthropic's Constitutional Classifiers, Meta's Llama Guard and Prompt Guard, and Gemini's per-category safety settings.",
-                "link": { "chapter": "assistant", "slide": 7 }
+                "link": {
+                  "chapter": "assistant",
+                  "slide": 7
+                }
               },
               "convo": {
                 "title": "Conversation manager",
                 "detail": "The model is stateless, so this layer rebuilds the whole context on every turn: platform system prompt, operator instructions, tool definitions, relevant memories, retrieved documents, the conversation history and the new message, in that order. When the history outgrows the context window, it trims or summarises older turns. The assembled context is what the input guardrails then check.",
-                "link": { "chapter": "assistant", "slide": 4 }
+                "link": {
+                  "chapter": "assistant",
+                  "slide": 4
+                }
               },
               "memory": {
                 "title": "Memory",
                 "detail": "A store of facts kept across conversations, such as the user's name, preferences or ongoing projects. The conversation manager loads relevant entries into the prompt and saves new ones when the user or model asks. The model itself remembers nothing between calls.",
-                "link": { "chapter": "output", "slide": 5 }
+                "link": {
+                  "chapter": "output",
+                  "slide": 5
+                }
               },
               "llm": {
                 "title": "LLM",
                 "detail": "Runs the forward pass over the assembled prompt and streams tokens back, one at a time. Its values come from safety training, and it follows a chain of command: provider rules, then operator, then user. Text that arrives in tool results is treated as data, not as instructions.",
-                "link": { "chapter": "assistant", "slide": 5 }
+                "link": {
+                  "chapter": "assistant",
+                  "slide": 5
+                }
               },
               "runtime": {
                 "title": "Tool runtime",
                 "detail": "When the model emits a tool call (a tool name plus JSON arguments), this code decides whether to run it: auto-approve safe reads, ask the user before writes, deny the rest. It runs the tool, often in a sandbox, and appends the result to the context for the model's next pass. Results are untrusted text, since a web page or file can contain hidden instructions, so they can be scanned for prompt injection (for example Azure Prompt Shields, Prompt Guard 2 or Anthropic's browser classifiers) before the model reads them.",
-                "link": { "chapter": "assistant", "slide": 8 }
+                "link": {
+                  "chapter": "assistant",
+                  "slide": 8
+                }
               },
               "web": {
                 "title": "Web search",
                 "detail": "A server-side tool. The provider runs the query and inserts page text with source URLs, so answers can cite information newer than the training cutoff. Organisations can allow or block specific domains, or turn search off.",
-                "link": { "chapter": "assistant", "slide": 9 }
+                "link": {
+                  "chapter": "assistant",
+                  "slide": 9
+                }
               },
               "files": {
                 "title": "Files & code",
                 "detail": "Uploaded documents plus a sandboxed code-execution environment. The model can read files, run code to analyse data, and produce new files, without touching the host system.",
-                "link": { "chapter": "assistant", "slide": 8 }
+                "link": {
+                  "chapter": "assistant",
+                  "slide": 8
+                }
               },
               "retrieval": {
                 "title": "Retrieval (RAG)",
                 "detail": "Searches a private knowledge base. The question is turned into an embedding vector, the most similar document chunks are fetched from a vector database, and they're added to the context with their sources.",
-                "link": { "chapter": "assistant", "slide": 9 }
+                "link": {
+                  "chapter": "assistant",
+                  "slide": 9
+                }
               },
               "mcp": {
                 "title": "MCP · APIs",
                 "detail": "Connectors to outside systems such as calendars, ticketing tools and databases, through the Model Context Protocol or custom APIs. Each runs with the user's own scoped OAuth credentials, which are held by the runtime, never by the model.",
-                "link": { "chapter": "assistant", "slide": 8 }
+                "link": {
+                  "chapter": "assistant",
+                  "slide": 8
+                }
               },
               "output": {
                 "title": "Output guardrails",
                 "detail": "Classifiers watch the reply as it streams and can halt it mid-sentence if it crosses a line. This catches harm that slipped past the input check, or that only emerged as the conversation went on.",
-                "link": { "chapter": "assistant", "slide": 7 }
+                "link": {
+                  "chapter": "assistant",
+                  "slide": 7
+                }
               },
               "reply": {
                 "title": "Reply to user",
@@ -100,17 +133,26 @@
               "monitoring": {
                 "title": "Monitoring",
                 "detail": "Looks across many conversations for patterns no single request reveals: coordinated abuse, new jailbreak techniques, policy violations. Findings feed back at different speeds: account bans are enforced at Security & auth almost immediately, classifier updates ship in days, and training data for the next model takes months. Which conversations can be used for training depends on the provider's data policy and the user's settings; Anthropic and OpenAI, for example, don't train on API traffic by default. Anthropic's Clio analyses aggregate usage with privacy protections.",
-                "link": { "chapter": "assistant", "slide": 11 }
+                "link": {
+                  "chapter": "assistant",
+                  "slide": 11
+                }
               },
               "feedback": {
                 "title": "Human feedback",
                 "detail": "People rate and compare responses: users give thumbs up or down, trained labellers rank pairs of answers, and red-teamers hunt for failures. AI feedback judged against written principles (RLAIF) supplements human labels at scale. The result is preference data for the next round of training.",
-                "link": { "chapter": "training", "slide": 5 }
+                "link": {
+                  "chapter": "training",
+                  "slide": 5
+                }
               },
               "training": {
                 "title": "Safety training",
                 "detail": "A model's weights start from pretraining on huge amounts of text. Post-training then shapes its behaviour: supervised fine-tuning, preference tuning (RLHF, RLAIF, DPO) and training on a written constitution or model spec. Safety training is part of this stage. It's the slowest layer to change, since it needs a new model release, but the most general: it covers situations no filter anticipated.",
-                "link": { "chapter": "assistant", "slide": 6 }
+                "link": {
+                  "chapter": "assistant",
+                  "slide": 6
+                }
               }
             }
           }
@@ -154,47 +196,74 @@
             {
               "label": "Client → gateway",
               "value": "auth · rate limits · org policy",
-              "goto": { "chapter": "assistant", "slide": 3 }
+              "goto": {
+                "chapter": "assistant",
+                "slide": 3
+              }
             },
             {
               "label": "Prompt assembly",
               "value": "system prompt + memory + history",
-              "goto": { "chapter": "assistant", "slide": 4 }
+              "goto": {
+                "chapter": "assistant",
+                "slide": 4
+              }
             },
             {
               "label": "Chain of command",
               "value": "whose instructions win",
-              "goto": { "chapter": "assistant", "slide": 5 }
+              "goto": {
+                "chapter": "assistant",
+                "slide": 5
+              }
             },
             {
               "label": "Model (trained values)",
               "value": "constitution / spec in the weights",
-              "goto": { "chapter": "assistant", "slide": 6 }
+              "goto": {
+                "chapter": "assistant",
+                "slide": 6
+              }
             },
             {
               "label": "Input & output classifiers",
               "value": "small models that can block or halt",
-              "goto": { "chapter": "assistant", "slide": 7 }
+              "goto": {
+                "chapter": "assistant",
+                "slide": 7
+              }
             },
             {
               "label": "Tool loop",
               "value": "model asks, runtime acts",
-              "goto": { "chapter": "assistant", "slide": 8 }
+              "goto": {
+                "chapter": "assistant",
+                "slide": 8
+              }
             },
             {
               "label": "Web search & retrieval",
               "value": "fresh facts with citations",
-              "goto": { "chapter": "assistant", "slide": 9 }
+              "goto": {
+                "chapter": "assistant",
+                "slide": 9
+              }
             },
             {
               "label": "Injection defenses",
               "value": "untrusted text stays data",
-              "goto": { "chapter": "assistant", "slide": 10 }
+              "goto": {
+                "chapter": "assistant",
+                "slide": 10
+              }
             },
             {
               "label": "Monitoring & outer loop",
               "value": "abuse detection, red-teaming",
-              "goto": { "chapter": "assistant", "slide": 11 }
+              "goto": {
+                "chapter": "assistant",
+                "slide": 11
+              }
             }
           ]
         },
@@ -367,7 +436,9 @@
             "<b>Memory, retrieved documents and history</b>, then the new message."
           ]
         },
-        { "h": "Why the order matters" },
+        {
+          "h": "Why the order matters"
+        },
         "Providers can reuse earlier computation (the KV cache, explained in <i>Output & inference</i>) for any prefix that's identical to a recent request. So the parts that rarely change go first, and the parts that change every turn go last. Toggle the layers on the right and watch how much of the context stays cacheable.",
         {
           "note": "It's like server-side rendering from templates: fixed layout first, then shared partials, then per-request data. The ordering is chosen for caching, much like serving static assets separately from dynamic content.",
@@ -896,7 +967,9 @@
             "<b>Gemini's API</b> exposes adjustable block thresholds per harm category. Core harms such as child-safety content are always blocked."
           ]
         },
-        { "h": "The threshold trade-off" },
+        {
+          "h": "The threshold trade-off"
+        },
         "Every classifier outputs a score, and someone has to choose the cut-off. Set it low and you catch more harm, but you also refuse more innocent requests (<b>over-refusal</b>). Set it high and fewer innocent users are blocked, but more harm slips through. Drag the threshold to feel the trade-off."
       ],
       "code": [
@@ -907,7 +980,10 @@
         "    send(chunk)"
       ],
       "viz": [
-        { "type": "widget", "name": "classifier-threshold" },
+        {
+          "type": "widget",
+          "name": "classifier-threshold"
+        },
         {
           "type": "caption",
           "html": "Toy score distributions. Real classifiers are far better separated, but the trade-off has the same shape."
@@ -1012,7 +1088,7 @@
       "title": "Web search and grounding",
       "summary": "Search puts fresh, cited source text into the context, so answers aren't limited to what the model memorised.",
       "body": [
-        "A model's knowledge is frozen at its <b>training cutoff</b>. Ask about anything newer and it either says it doesn't know or, worse, invents a plausible answer, which is called a <b>hallucination</b>. <b>Grounding</b> fixes this by putting real source text into the context and having the model cite it.",
+        "A model's knowledge is frozen at its <b>training cutoff</b>. Ask about anything newer and it either says it doesn't know or, worse, invents a plausible answer, which is called a <b>hallucination</b>. <b>Grounding</b> fixes this by putting real source text into the context and having the model cite it. Why models do this in the first place is the subject of <i>Why LLMs hallucinate</i>.",
         "How a search turn works:",
         {
           "ul": [

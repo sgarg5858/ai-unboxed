@@ -10,7 +10,9 @@
         "The <i>Assistant architecture</i> section treated the model as one box inside a larger system. This section opens that box.",
         "Strip away the chat window and a large language model is one very large mathematical function. You give it a sequence of integers, one per piece of text, and it gives back a score for every token it knows, saying how likely each one is to come next.",
         "That's all it does. Writing a whole answer is just calling this function again and again, adding one token each time. The next slide shows that loop.",
-        { "h": "How to read the shapes" },
+        {
+          "h": "How to read the shapes"
+        },
         "Each stage on the right turns one block of numbers into another. A block of numbers with several dimensions is called a <b>tensor</b>, and its <b>shape</b> lists the size of each dimension. Following the shapes is the quickest way to understand the architecture. Four letters appear everywhere:",
         {
           "ul": [
@@ -38,33 +40,61 @@
         {
           "type": "stages",
           "items": [
-            { "label": "Text", "value": "string", "goto": { "chapter": "input" } },
-            { "label": "Tokenizer", "value": "[B, n] int ids", "goto": { "chapter": "input" } },
+            {
+              "label": "Text",
+              "value": "string",
+              "goto": {
+                "chapter": "input"
+              }
+            },
+            {
+              "label": "Tokenizer",
+              "value": "[B, n] int ids",
+              "goto": {
+                "chapter": "input"
+              }
+            },
             {
               "label": "Embeddings + position",
               "value": "[B, n, d]",
-              "goto": { "chapter": "input" }
+              "goto": {
+                "chapter": "input"
+              }
             },
             {
               "label": "Transformer block × N",
               "value": "[B, n, d] → [B, n, d]",
-              "goto": { "chapter": "attention" }
+              "goto": {
+                "chapter": "attention"
+              }
             },
             {
               "label": "  · attention",
               "value": "mixes across tokens",
-              "goto": { "chapter": "attention" }
+              "goto": {
+                "chapter": "attention"
+              }
             },
-            { "label": "  · MLP", "value": "thinks per token", "goto": { "chapter": "block" } },
+            {
+              "label": "  · MLP",
+              "value": "thinks per token",
+              "goto": {
+                "chapter": "block"
+              }
+            },
             {
               "label": "Final norm + unembed",
               "value": "[B, n, V] logits",
-              "goto": { "chapter": "output" }
+              "goto": {
+                "chapter": "output"
+              }
             },
             {
               "label": "Softmax + sampling",
               "value": "1 next token id",
-              "goto": { "chapter": "output" }
+              "goto": {
+                "chapter": "output"
+              }
             }
           ]
         },
@@ -80,7 +110,9 @@
       "body": [
         "The model can't write a sentence in one go. It predicts a single next token. The program appends that token to the input, and the model runs again on the longer sequence. This is <b>autoregressive decoding</b>: each output becomes part of the next input.",
         "Press <i>Run one step</i> to watch it happen. Each step reads the whole sequence so far.",
-        { "h": "Two phases with very different costs" },
+        {
+          "h": "Two phases with very different costs"
+        },
         {
           "ul": [
             "<b>Prefill</b>: the prompt is processed first, all of its tokens in one parallel pass. GPUs are good at parallel arithmetic, so here the limit is raw calculation speed (<b>compute-bound</b>). It's the short pause before the first word appears.",
@@ -110,10 +142,19 @@
                 {
                   "type": "chips",
                   "items": [
-                    { "text": "I" },
-                    { "text": "␣am" },
-                    { "text": "␣learning" },
-                    { "text": "?", "dim": true }
+                    {
+                      "text": "I"
+                    },
+                    {
+                      "text": "␣am"
+                    },
+                    {
+                      "text": "␣learning"
+                    },
+                    {
+                      "text": "?",
+                      "dim": true
+                    }
                   ]
                 }
               ],
@@ -124,11 +165,23 @@
                 {
                   "type": "chips",
                   "items": [
-                    { "text": "I" },
-                    { "text": "␣am" },
-                    { "text": "␣learning" },
-                    { "text": "␣artificial", "hot": true },
-                    { "text": "?", "dim": true }
+                    {
+                      "text": "I"
+                    },
+                    {
+                      "text": "␣am"
+                    },
+                    {
+                      "text": "␣learning"
+                    },
+                    {
+                      "text": "␣artificial",
+                      "hot": true
+                    },
+                    {
+                      "text": "?",
+                      "dim": true
+                    }
                   ]
                 }
               ],
@@ -139,12 +192,27 @@
                 {
                   "type": "chips",
                   "items": [
-                    { "text": "I" },
-                    { "text": "␣am" },
-                    { "text": "␣learning" },
-                    { "text": "␣artificial", "hot": false },
-                    { "text": "␣intelligence", "hot": true },
-                    { "text": "?", "dim": true }
+                    {
+                      "text": "I"
+                    },
+                    {
+                      "text": "␣am"
+                    },
+                    {
+                      "text": "␣learning"
+                    },
+                    {
+                      "text": "␣artificial",
+                      "hot": false
+                    },
+                    {
+                      "text": "␣intelligence",
+                      "hot": true
+                    },
+                    {
+                      "text": "?",
+                      "dim": true
+                    }
                   ]
                 }
               ],
@@ -155,13 +223,31 @@
                 {
                   "type": "chips",
                   "items": [
-                    { "text": "I" },
-                    { "text": "␣am" },
-                    { "text": "␣learning" },
-                    { "text": "␣artificial", "hot": false },
-                    { "text": "␣intelligence", "hot": false },
-                    { "text": "␣and", "hot": true },
-                    { "text": "?", "dim": true }
+                    {
+                      "text": "I"
+                    },
+                    {
+                      "text": "␣am"
+                    },
+                    {
+                      "text": "␣learning"
+                    },
+                    {
+                      "text": "␣artificial",
+                      "hot": false
+                    },
+                    {
+                      "text": "␣intelligence",
+                      "hot": false
+                    },
+                    {
+                      "text": "␣and",
+                      "hot": true
+                    },
+                    {
+                      "text": "?",
+                      "dim": true
+                    }
                   ]
                 }
               ],
@@ -172,14 +258,35 @@
                 {
                   "type": "chips",
                   "items": [
-                    { "text": "I" },
-                    { "text": "␣am" },
-                    { "text": "␣learning" },
-                    { "text": "␣artificial", "hot": false },
-                    { "text": "␣intelligence", "hot": false },
-                    { "text": "␣and", "hot": false },
-                    { "text": "␣it", "hot": true },
-                    { "text": "?", "dim": true }
+                    {
+                      "text": "I"
+                    },
+                    {
+                      "text": "␣am"
+                    },
+                    {
+                      "text": "␣learning"
+                    },
+                    {
+                      "text": "␣artificial",
+                      "hot": false
+                    },
+                    {
+                      "text": "␣intelligence",
+                      "hot": false
+                    },
+                    {
+                      "text": "␣and",
+                      "hot": false
+                    },
+                    {
+                      "text": "␣it",
+                      "hot": true
+                    },
+                    {
+                      "text": "?",
+                      "dim": true
+                    }
                   ]
                 }
               ],
@@ -190,15 +297,39 @@
                 {
                   "type": "chips",
                   "items": [
-                    { "text": "I" },
-                    { "text": "␣am" },
-                    { "text": "␣learning" },
-                    { "text": "␣artificial", "hot": false },
-                    { "text": "␣intelligence", "hot": false },
-                    { "text": "␣and", "hot": false },
-                    { "text": "␣it", "hot": false },
-                    { "text": "␣is", "hot": true },
-                    { "text": "?", "dim": true }
+                    {
+                      "text": "I"
+                    },
+                    {
+                      "text": "␣am"
+                    },
+                    {
+                      "text": "␣learning"
+                    },
+                    {
+                      "text": "␣artificial",
+                      "hot": false
+                    },
+                    {
+                      "text": "␣intelligence",
+                      "hot": false
+                    },
+                    {
+                      "text": "␣and",
+                      "hot": false
+                    },
+                    {
+                      "text": "␣it",
+                      "hot": false
+                    },
+                    {
+                      "text": "␣is",
+                      "hot": true
+                    },
+                    {
+                      "text": "?",
+                      "dim": true
+                    }
                   ]
                 }
               ],
@@ -209,16 +340,43 @@
                 {
                   "type": "chips",
                   "items": [
-                    { "text": "I" },
-                    { "text": "␣am" },
-                    { "text": "␣learning" },
-                    { "text": "␣artificial", "hot": false },
-                    { "text": "␣intelligence", "hot": false },
-                    { "text": "␣and", "hot": false },
-                    { "text": "␣it", "hot": false },
-                    { "text": "␣is", "hot": false },
-                    { "text": "␣fun", "hot": true },
-                    { "text": "?", "dim": true }
+                    {
+                      "text": "I"
+                    },
+                    {
+                      "text": "␣am"
+                    },
+                    {
+                      "text": "␣learning"
+                    },
+                    {
+                      "text": "␣artificial",
+                      "hot": false
+                    },
+                    {
+                      "text": "␣intelligence",
+                      "hot": false
+                    },
+                    {
+                      "text": "␣and",
+                      "hot": false
+                    },
+                    {
+                      "text": "␣it",
+                      "hot": false
+                    },
+                    {
+                      "text": "␣is",
+                      "hot": false
+                    },
+                    {
+                      "text": "␣fun",
+                      "hot": true
+                    },
+                    {
+                      "text": "?",
+                      "dim": true
+                    }
                   ]
                 }
               ],
@@ -229,17 +387,47 @@
                 {
                   "type": "chips",
                   "items": [
-                    { "text": "I" },
-                    { "text": "␣am" },
-                    { "text": "␣learning" },
-                    { "text": "␣artificial", "hot": false },
-                    { "text": "␣intelligence", "hot": false },
-                    { "text": "␣and", "hot": false },
-                    { "text": "␣it", "hot": false },
-                    { "text": "␣is", "hot": false },
-                    { "text": "␣fun", "hot": false },
-                    { "text": ".", "hot": true },
-                    { "text": "?", "dim": true }
+                    {
+                      "text": "I"
+                    },
+                    {
+                      "text": "␣am"
+                    },
+                    {
+                      "text": "␣learning"
+                    },
+                    {
+                      "text": "␣artificial",
+                      "hot": false
+                    },
+                    {
+                      "text": "␣intelligence",
+                      "hot": false
+                    },
+                    {
+                      "text": "␣and",
+                      "hot": false
+                    },
+                    {
+                      "text": "␣it",
+                      "hot": false
+                    },
+                    {
+                      "text": "␣is",
+                      "hot": false
+                    },
+                    {
+                      "text": "␣fun",
+                      "hot": false
+                    },
+                    {
+                      "text": ".",
+                      "hot": true
+                    },
+                    {
+                      "text": "?",
+                      "dim": true
+                    }
                   ]
                 }
               ],
@@ -250,17 +438,47 @@
                 {
                   "type": "chips",
                   "items": [
-                    { "text": "I" },
-                    { "text": "␣am" },
-                    { "text": "␣learning" },
-                    { "text": "␣artificial", "hot": false },
-                    { "text": "␣intelligence", "hot": false },
-                    { "text": "␣and", "hot": false },
-                    { "text": "␣it", "hot": false },
-                    { "text": "␣is", "hot": false },
-                    { "text": "␣fun", "hot": false },
-                    { "text": ".", "hot": false },
-                    { "text": "␣<eos>", "hot": true }
+                    {
+                      "text": "I"
+                    },
+                    {
+                      "text": "␣am"
+                    },
+                    {
+                      "text": "␣learning"
+                    },
+                    {
+                      "text": "␣artificial",
+                      "hot": false
+                    },
+                    {
+                      "text": "␣intelligence",
+                      "hot": false
+                    },
+                    {
+                      "text": "␣and",
+                      "hot": false
+                    },
+                    {
+                      "text": "␣it",
+                      "hot": false
+                    },
+                    {
+                      "text": "␣is",
+                      "hot": false
+                    },
+                    {
+                      "text": "␣fun",
+                      "hot": false
+                    },
+                    {
+                      "text": ".",
+                      "hot": false
+                    },
+                    {
+                      "text": "␣<eos>",
+                      "hot": true
+                    }
                   ]
                 }
               ],
@@ -277,16 +495,22 @@
       "summary": "Almost everything inside an LLM is a list of numbers, a vector, and the key operation is measuring how similar two vectors are.",
       "body": [
         "You need very little maths for this course. These three ideas cover most of it.",
-        { "h": "1. A vector is a list of numbers" },
+        {
+          "h": "1. A vector is a list of numbers"
+        },
         "Pick some features and you can describe anything with numbers. Describe fruit by <code>[sweetness, crunchiness, sourness]</code>, each from 0 to 1, and an apple might be <code>[0.7, 0.9, 0.3]</code>. That list is a <b>vector</b>, and each position is a <b>dimension</b>.",
-        { "h": "2. The dot product measures similarity" },
+        {
+          "h": "2. The dot product measures similarity"
+        },
         "The <b>dot product</b> of two vectors multiplies them position by position and adds up the results. It's large when both vectors are large in the same places, so it works as a similarity score.",
         {
           "note": "apple · pear = 0.7×0.8 + 0.9×0.6 + 0.3×0.2 = 0.56 + 0.54 + 0.06 = <b>1.16</b>",
           "kind": "example"
         },
         "<b>Cosine similarity</b> divides the dot product by the length of each vector, so only direction counts, not size. It runs from −1 (opposite) through 0 (unrelated) to 1 (same direction). Try different pairs on the right.",
-        { "h": "3. A matrix multiply is many dot products at once" },
+        {
+          "h": "3. A matrix multiply is many dot products at once"
+        },
         "A <b>matrix</b> is a grid of numbers. Multiplying a vector by a matrix takes one dot product per column of the matrix and produces a new vector. A neural network is mostly long chains of these multiplications, with the matrix values learned from data.",
         {
           "note": "An LLM describes every token with a vector of thousands of numbers. Nobody chooses what those dimensions mean, as we did for fruit; training finds them. But the core idea, similar meaning means similar vectors, runs through the whole course.",
@@ -300,7 +524,12 @@
         "def cosine(a, b):",
         "    return dot(a, b) / (norm(a) * norm(b))   # norm = length"
       ],
-      "viz": [{ "type": "widget", "name": "fruit-similarity" }]
+      "viz": [
+        {
+          "type": "widget",
+          "name": "fruit-similarity"
+        }
+      ]
     },
     {
       "title": "A short glossary",
@@ -367,6 +596,15 @@
               "label": "<b>Softmax</b>",
               "sub": "Turns a list of scores into probabilities that add up to 1.",
               "value": "→ 92%"
+            },
+            {
+              "label": "<b>Hallucination</b>",
+              "sub": "Fluent, confident text that isn't true.",
+              "value": "2.7 →",
+              "goto": {
+                "chapter": "hallucination",
+                "slide": 1
+              }
             },
             {
               "label": "<b>Training / inference</b>",

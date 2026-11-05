@@ -2,15 +2,16 @@
 
 An interactive guide to how modern AI works, one layer at a time. It starts with the whole assistant system (auth, guardrails, memory, tools, search, safety training), then opens the LLM inside it, from tokens and attention to training. Built with Angular. The content lives in JSON, so a new topic is just a new chapter file.
 
-| Section | Chapter | Covers |
-|---------|---------|--------|
-| 01 Assistant architecture | Assistant architecture | the whole system on one diagram: auth, guardrails, conversation management, memory, tools and MCP, web search and retrieval, prompt-injection defenses, safety training, human feedback, monitoring |
-| 02 LLM architecture | 2.1 The big picture | the forward pass end to end, generation loop, vectors primer, glossary |
-| | 2.2 Tokens & embeddings | BPE, embeddings, positional encoding, RoPE |
-| | 2.3 Attention | Q/K/V, masking, multi-head, cost |
-| | 2.4 The transformer block | residual stream, norms, MLP, parameter counts, MoE |
-| | 2.5 Output & inference | logits, temperature, top-k/top-p, KV cache, context window |
-| | 2.6 Training | next-token loss, backprop, training loop, SFT and preference tuning |
+| Section                   | Chapter                   | Covers                                                                                                                                                                                                   |
+| ------------------------- | ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 01 Assistant architecture | Assistant architecture    | the whole system on one diagram: auth, guardrails, conversation management, memory, tools and MCP, web search and retrieval, prompt-injection defenses, safety training, human feedback, monitoring      |
+| 02 LLM architecture       | 2.1 The big picture       | the forward pass end to end, generation loop, vectors primer, glossary                                                                                                                                   |
+|                           | 2.2 Tokens & embeddings   | BPE, embeddings, positional encoding, RoPE                                                                                                                                                               |
+|                           | 2.3 Attention             | Q/K/V, masking, multi-head, cost                                                                                                                                                                         |
+|                           | 2.4 The transformer block | residual stream, norms, MLP, parameter counts, MoE                                                                                                                                                       |
+|                           | 2.5 Output & inference    | logits, temperature, top-k/top-p, KV cache, context window                                                                                                                                               |
+|                           | 2.6 Training              | next-token loss, backprop, training loop, SFT and preference tuning                                                                                                                                      |
+|                           | 2.7 Why LLMs hallucinate  | what a hallucination is, four causes (training objective, rare facts, scoring that rewards guessing, error snowballing), Anthropic's "don't know" circuit, detection with semantic entropy, and defences |
 
 Chapters are grouped into **sections**. The top row of the page shows sections; a section with more than one chapter shows its chapters as a second row.
 
@@ -97,20 +98,20 @@ A slide looks like this:
 
 Top-level blocks each get their own panel. Blocks inside a `panel`, `tabs` or `stepper` render inside it.
 
-| type | What it shows | Key fields |
-|------|---------------|------------|
-| `caption` | small muted text | `html` |
-| `stages` | vertical list of labelled rows (pipelines, layers, message logs) | `items[]`: `label`, `sub`, `value`, `tone`, `highlight`, `dim`, `strike`, `mono`, `spacer`, `goto` |
-| `chips` | a row of token chips | `items[]`: `text`, `sub`, `hot`, `dim` |
-| `bars` | horizontal bars | `items[]`: `label`, `value` (0–1), `display`; `layout`: `inline` or `stacked` |
-| `table` | small labelled table | `rows[]`: `head`, `cells[]`: `text`, `tone` |
-| `stat` | big-number tiles | `items[]`: `value`, `label` |
-| `code` | code block | `source[]` (lines), `title` |
-| `shape` | highlighted monospace tag | `text` |
-| `panel` | group several blocks in one panel | `blocks[]` |
-| `tabs` | buttons that switch between views | `tabs[]`: `label`, `blocks[]` |
-| `stepper` | click-through sequence | `steps[]`: `blocks[]` or `item`, plus `caption`; `accumulate: true` grows a `stages` list one row per step |
-| `widget` | a named interactive component | `name`, `props` |
+| type      | What it shows                                                    | Key fields                                                                                                 |
+| --------- | ---------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `caption` | small muted text                                                 | `html`                                                                                                     |
+| `stages`  | vertical list of labelled rows (pipelines, layers, message logs) | `items[]`: `label`, `sub`, `value`, `tone`, `highlight`, `dim`, `strike`, `mono`, `spacer`, `goto`         |
+| `chips`   | a row of token chips                                             | `items[]`: `text`, `sub`, `hot`, `dim`                                                                     |
+| `bars`    | horizontal bars                                                  | `items[]`: `label`, `value` (0–1), `display`; `layout`: `inline` or `stacked`                              |
+| `table`   | small labelled table                                             | `rows[]`: `head`, `cells[]`: `text`, `tone`                                                                |
+| `stat`    | big-number tiles                                                 | `items[]`: `value`, `label`                                                                                |
+| `code`    | code block                                                       | `source[]` (lines), `title`                                                                                |
+| `shape`   | highlighted monospace tag                                        | `text`                                                                                                     |
+| `panel`   | group several blocks in one panel                                | `blocks[]`                                                                                                 |
+| `tabs`    | buttons that switch between views                                | `tabs[]`: `label`, `blocks[]`                                                                              |
+| `stepper` | click-through sequence                                           | `steps[]`: `blocks[]` or `item`, plus `caption`; `accumulate: true` grows a `stages` list one row per step |
+| `widget`  | a named interactive component                                    | `name`, `props`                                                                                            |
 
 `goto` on a stage row (`{ "chapter": "attention", "slide": 2 }`) makes the row a link.
 

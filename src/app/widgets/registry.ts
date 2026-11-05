@@ -1,6 +1,7 @@
 import { AssistantArchitectureWidget } from './architecture.widget';
 import { FruitSimilarityWidget } from './basics.widgets';
 import { Type } from '@angular/core';
+import { GuessOrAbstainWidget, SingletonRateWidget } from './hallucination.widgets';
 import {
   ClassifierThresholdWidget,
   InjectionDefensesWidget,
@@ -76,4 +77,7 @@ export const WIDGETS: Record<string, Type<unknown>> = {
   'prompt-assembly': PromptAssemblyWidget,
   'classifier-threshold': ClassifierThresholdWidget,
   'injection-defenses': InjectionDefensesWidget,
+  // why LLMs hallucinate
+  'singleton-rate': SingletonRateWidget,
+  'guess-or-abstain': GuessOrAbstainWidget,
 };

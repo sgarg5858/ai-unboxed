@@ -12,6 +12,7 @@ import attention from './chapters/04-attention.json';
 import block from './chapters/05-transformer-block.json';
 import output from './chapters/06-output-inference.json';
 import training from './chapters/07-training.json';
+import hallucination from './chapters/08-why-llms-hallucinate.json';
 
 // JSON imports are typed structurally with widened strings, so they're cast here.
 // course.spec.ts validates every block and widget name at test time.
@@ -22,7 +23,7 @@ export const SECTIONS: readonly SectionContent[] = [
   {
     id: 'llm',
     name: 'LLM architecture',
-    chapters: [bigPicture, tokens, attention, block, output, training].map(chapter),
+    chapters: [bigPicture, tokens, attention, block, output, training, hallucination].map(chapter),
   },
 ];
 

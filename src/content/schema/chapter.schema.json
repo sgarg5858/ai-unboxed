@@ -597,7 +597,9 @@
                   "prompt-assembly",
                   "classifier-threshold",
                   "injection-defenses",
-                  "assistant-architecture"
+                  "assistant-architecture",
+                  "singleton-rate",
+                  "guess-or-abstain"
                 ],
                 "description": "Key in src/app/widgets/registry.ts"
               },

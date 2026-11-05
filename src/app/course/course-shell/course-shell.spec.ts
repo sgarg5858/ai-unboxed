@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
-import { COURSE } from '../../../content/course';
+import { COURSE, SECTIONS } from '../../../content/course';
 import { routes } from '../../app.routes';
 import { CourseShell } from './course-shell';
 
@@ -40,7 +40,9 @@ describe('CourseShell', () => {
     await fixture.whenStable();
     const [top, sub] = Array.from(el.querySelectorAll('nav.chapters'));
     expect(current(top)).toContain('LLM architecture');
-    expect(sub.querySelectorAll('button').length).toBe(6);
+    expect(sub.querySelectorAll('button').length).toBe(
+      SECTIONS.find((x) => x.id === 'llm')!.chapters.length,
+    );
     expect(current(sub)).toContain('Attention');
   });
 
