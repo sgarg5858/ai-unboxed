@@ -69,22 +69,58 @@ nav.chapters button[aria-current='true'] b {
   color: var(--pill-fg);
   opacity: 1;
 }
+/* Slide bar: each segment is a 32px-tall button (WCAG 2.5.8 target size) drawing a slim bar. */
 .progress {
   display: flex;
   gap: 4px;
-  margin-bottom: 16px;
+  margin: -8px 0 8px;
 }
 .progress button {
   flex: 1;
-  height: 6px;
-  border: 0;
-  border-radius: 3px;
-  background: var(--line);
-  cursor: pointer;
+  min-width: 24px;
+  height: 32px;
   padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
 }
-.progress button.done {
+.progress button::before {
+  content: '';
+  flex: 1;
+  height: 8px;
+  border-radius: 4px;
+  /* Unvisited segments need 3:1 contrast against the page (WCAG 1.4.11). */
+  background: color-mix(in srgb, var(--muted) 70%, transparent);
+  transition:
+    height 0.12s ease,
+    background-color 0.12s ease;
+}
+.progress button.done::before {
   background: var(--accent);
+}
+.progress button.current::before {
+  height: 12px;
+  border-radius: 6px;
+  background: var(--accent-ink);
+}
+.progress button:hover::before {
+  height: 12px;
+  border-radius: 6px;
+}
+.progress button:not(.done, .current):hover::before {
+  background: var(--muted);
+}
+.progress button:focus-visible {
+  outline: 2px solid var(--accent-ink);
+  outline-offset: 2px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .progress button::before {
+    transition: none;
+  }
 }
 .slide {
   display: grid;
