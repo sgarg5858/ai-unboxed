@@ -23,6 +23,14 @@ npm test           # validates all content and renders every slide
 npm run build      # static site in dist/inside-an-llm/browser
 ```
 
+Live site: **https://sgarg5858.github.io/inside-an-llm/**
+
+### Deployment
+
+Every push to `main` runs [.github/workflows/deploy-pages.yml](.github/workflows/deploy-pages.yml): it installs dependencies, runs the tests, builds with `npm run build:pages` (base path `/inside-an-llm/`) and publishes to GitHub Pages. If any test fails, nothing is deployed. You can also start it by hand from the repo's Actions tab ("Run workflow").
+
+One-time setup: **Settings → Pages → Build and deployment → Source: GitHub Actions**.
+
 URLs use the hash, as in `#/assistant/3` (chapter id, then a 1-based slide number), so the build runs on any static host (GitHub Pages, Netlify, S3) with no rewrite rules. Old `#assistant` links still work.
 
 The first page is the assistant architecture diagram. When one slide mentions another chapter, it uses the chapter's name rather than its number, so chapters can be reordered freely.
