@@ -4,15 +4,15 @@
   "name": "Output & inference",
   "slides": [
     {
-      "title": "From vectors to logits",
-      "summary": "The final layer turns a token's vector into a score for every token in the vocabulary.",
+      "title": "From vectors to scores",
+      "summary": "The last layer turns a token's vector into a score for every token in the vocabulary.",
       "body": [
-        "After the last block, the stream is normalised once more and multiplied by the <b>unembedding</b> matrix, shape <code>[d, V]</code>. That produces one score for every token in the vocabulary. These raw scores are called <b>logits</b>.",
-        "Logits can be any number, positive or negative. Higher means \"more likely to come next\", but they aren't probabilities yet. The next slide converts them.",
-        "When generating, only the <b>last</b> position's logits matter, because that position predicts the next token. During training every position's logits are used, each predicting the token that follows it.",
+        "After the last block, the stream is normalised once more and multiplied by the <b>unembedding</b> matrix (shape <code>[d, V]</code>). That gives one score for every token in the vocabulary. These raw scores are called <b>logits</b>.",
+        "Logits can be any number, positive or negative. Higher means \"more likely to come next\", but they aren't probabilities yet. The next slide turns them into probabilities.",
+        "When generating, only the scores for the <b>last</b> token matter, because that's the one predicting what comes next. During training, every position's scores are used, each one predicting the token after it.",
         "The bars on the right are the top 8 logits after \"I am learning artificial\".",
         {
-          "note": "This list of 100,000+ scores is the model's entire output. Choosing a token from it is done by ordinary code outside the model, and you control how. That's the next two slides.",
+          "note": "This list of 100,000+ scores is everything the model outputs. Picking a token from it is done by normal code outside the model, and you control how. That's the next two slides.",
           "kind": "key"
         }
       ],
@@ -31,14 +31,46 @@
             {
               "type": "bars",
               "items": [
-                { "label": "intelligence", "value": 0.95, "display": "7.6" },
-                { "label": "neural nets", "value": 0.575, "display": "4.6" },
-                { "label": "life", "value": 0.525, "display": "4.2" },
-                { "label": "languages", "value": 0.4875, "display": "3.9" },
-                { "label": "sweeteners", "value": 0.425, "display": "3.4" },
-                { "label": "flowers", "value": 0.325, "display": "2.6" },
-                { "label": "grass", "value": 0.2, "display": "1.6" },
-                { "label": "banana", "value": 0.1125, "display": "0.9" }
+                {
+                  "label": "intelligence",
+                  "value": 0.95,
+                  "display": "7.6"
+                },
+                {
+                  "label": "neural nets",
+                  "value": 0.575,
+                  "display": "4.6"
+                },
+                {
+                  "label": "life",
+                  "value": 0.525,
+                  "display": "4.2"
+                },
+                {
+                  "label": "languages",
+                  "value": 0.4875,
+                  "display": "3.9"
+                },
+                {
+                  "label": "sweeteners",
+                  "value": 0.425,
+                  "display": "3.4"
+                },
+                {
+                  "label": "flowers",
+                  "value": 0.325,
+                  "display": "2.6"
+                },
+                {
+                  "label": "grass",
+                  "value": 0.2,
+                  "display": "1.6"
+                },
+                {
+                  "label": "banana",
+                  "value": 0.1125,
+                  "display": "0.9"
+                }
               ]
             }
           ]
@@ -49,18 +81,18 @@
       "title": "Softmax and temperature",
       "summary": "Softmax turns scores into probabilities, and temperature controls how adventurous the choice is.",
       "body": [
-        "<b>Softmax</b>, the same function used inside attention, turns logits into probabilities: raise <code>e</code> to the power of each logit, then divide by the total, so everything is positive and adds up to 1.",
-        "<b>Temperature</b> <code>T</code> is applied first: every logit is divided by <code>T</code>, so <code>p = exp(z/T) / Σ exp(z/T)</code>. A small <code>T</code> exaggerates the gaps between scores; a large <code>T</code> shrinks them.",
+        "<b>Softmax</b>, the same function used inside attention, turns scores into probabilities: raise <code>e</code> to the power of each score, then divide by the total, so everything is positive and adds up to 1.",
+        "<b>Temperature</b> <code>T</code> is applied first: every score is divided by <code>T</code>, so <code>p = exp(z/T) / Σ exp(z/T)</code>. A small <code>T</code> makes the gaps between scores bigger; a large <code>T</code> makes them smaller.",
         {
           "ul": [
-            "<b>T near 0</b>: the top token takes almost all the probability. Output is predictable and repeatable, but can get repetitive. Good for code and factual answers.",
-            "<b>T = 1</b>: exactly the distribution the model learned.",
-            "<b>T above 1</b>: flatter, so unlikely tokens get picked more often. More variety and more mistakes. Useful in small doses for brainstorming."
+            "<b>T near 0</b>: the top token gets almost all the probability. The output is predictable and the same each time, but can get repetitive. Good for code and factual answers.",
+            "<b>T = 1</b>: exactly the probabilities the model learned.",
+            "<b>T above 1</b>: flatter, so unlikely tokens get picked more often. More variety, but more mistakes. Useful in small amounts for brainstorming."
           ]
         },
-        "Drag the slider and watch \"intelligence\" go from near-certain to one option among many.",
+        "Drag the slider and watch \"intelligence\" go from almost certain to just one option among many.",
         {
-          "note": "This is the <code>temperature</code> parameter in every LLM API. Setting it to 0 makes output nearly deterministic, though tiny numerical differences on GPUs can still change it occasionally.",
+          "note": "This is the <code>temperature</code> setting in every LLM API. Setting it to 0 makes the output almost the same every time, though tiny rounding differences on GPUs can still change it now and then.",
           "kind": "dev"
         }
       ],
@@ -68,21 +100,26 @@
         "probs = (logits / T).softmax(-1)",
         "next_id = probs.argmax()            # greedy, same as T -> 0"
       ],
-      "viz": [{ "type": "widget", "name": "temperature" }]
+      "viz": [
+        {
+          "type": "widget",
+          "name": "temperature"
+        }
+      ]
     },
     {
-      "title": "Sampling strategies",
-      "summary": "Before picking a token at random, the unlikely tail is usually cut off so the model doesn't wander into nonsense.",
+      "title": "Picking the next token",
+      "summary": "Before picking a token at random, the unlikely options are usually cut off, so the model doesn't drift into nonsense.",
       "body": [
-        "If you sample from the full distribution, every so often a very unlikely token gets picked, and one bad token can derail the rest of the sentence. So most systems trim the tail first:",
+        "If you pick from all the options, now and then a very unlikely token gets chosen, and one bad token can ruin the rest of the sentence. So most systems cut off the unlikely options first:",
         {
           "ul": [
             "<b>Top-k</b>: keep only the <code>k</code> most likely tokens.",
-            "<b>Top-p</b> (nucleus sampling): keep the smallest group of top tokens whose probabilities add up to <code>p</code>. When the model is confident that's one or two tokens; when it's unsure, many. It adapts to the situation.",
-            "<b>Greedy</b>: always take the single most likely token. The same as top-k = 1."
+            "<b>Top-p</b> (nucleus sampling): keep the fewest top tokens whose probabilities add up to <code>p</code>. When the model is confident, that's one or two tokens; when it's unsure, many. It adjusts to the situation.",
+            "<b>Greedy</b>: always pick the single most likely token. The same as top-k = 1."
           ]
         },
-        "What's left is rescaled to add up to 1 again, and one token is drawn at random in proportion to those probabilities.",
+        "The remaining probabilities are rescaled to add up to 1 again, and one token is picked at random, with likelier tokens more likely to be chosen.",
         "Try top-k = 3, then press <i>Sample</i> a few times. Then try top-k = 1."
       ],
       "code": [
@@ -91,24 +128,29 @@
         "probs = top_p(probs, p)      # keep smallest set with sum >= p",
         "next_id = torch.multinomial(probs / probs.sum(), 1)"
       ],
-      "viz": [{ "type": "widget", "name": "sampling" }]
+      "viz": [
+        {
+          "type": "widget",
+          "name": "sampling"
+        }
+      ]
     },
     {
       "title": "The KV cache",
-      "summary": "The keys and values of earlier tokens never change, so they're stored and reused instead of recomputed every step.",
+      "summary": "The keys and values of earlier tokens never change, so they're saved and reused instead of being worked out again every step.",
       "body": [
-        "Each decode step runs over the whole sequence again. But because of the causal mask, earlier tokens never look at later ones, so their keys and values come out identical every step. Recomputing them is wasted work.",
-        "The <b>KV cache</b> stores every token's keys and values, in every layer, the first time they're computed. Each new step then only computes Q, K and V for the one new token, and its query attends over the cached keys and values.",
+        "Each step runs over the whole text again. But because of the causal mask, earlier tokens never look at later ones, so their keys and values come out exactly the same every step. Working them out again is wasted effort.",
+        "The <b>KV cache</b> saves every token's keys and values, in every layer, the first time they're worked out. After that, each step only computes Q, K and V for the one new token, and compares its query against the saved keys and values.",
         {
           "ul": [
-            "<b>Speed</b>: each step's work drops from <code>O(n²)</code> to <code>O(n)</code>. This is what makes long, streamed answers practical.",
-            "<b>Memory</b>: the cache grows with every token, in every layer. For long contexts it can be bigger than the model's weights.",
-            "<b>Fixes</b>: GQA (fewer key/value heads), storing the cache in fewer bits, and managing it in fixed-size pages, the way an operating system manages RAM (PagedAttention, used by vLLM)."
+            "<b>Speed</b>: each step's work drops from <code>O(n²)</code> to <code>O(n)</code>. This is what makes long, streamed answers possible.",
+            "<b>Memory</b>: the cache grows with every token, in every layer. For long texts it can be bigger than the model itself.",
+            "<b>Fixes</b>: GQA (fewer key/value heads), storing the cache with fewer bits, and managing it in fixed-size pages, the way a computer manages RAM (PagedAttention, used by vLLM)."
           ]
         },
-        "Use the sliders to size the cache for a typical 8B model, then push the context to 1M tokens.",
+        "Use the sliders to work out the cache size for a typical 8B model, then push the length up to 1M tokens.",
         {
-          "note": "It's memoisation: caching the results of a computation whose inputs don't change. The trade-off is the classic one, memory for speed.",
+          "note": "It's memoisation: saving results whose inputs don't change. The trade-off is the classic one: more memory for more speed.",
           "kind": "dev"
         }
       ],
@@ -119,26 +161,31 @@
         "cache_v = torch.cat([cache_v, v], dim=2)",
         "out = attention(q, cache_k, cache_v)"
       ],
-      "viz": [{ "type": "widget", "name": "kv-cache" }]
+      "viz": [
+        {
+          "type": "widget",
+          "name": "kv-cache"
+        }
+      ]
     },
     {
       "title": "What the context window really is",
-      "summary": "The context window is everything the model can see at once. There is no other memory.",
+      "summary": "The context window is everything the model can see at once. It has no other memory.",
       "body": [
-        "The <b>context window</b> is the maximum number of tokens the model can process at once. Everything it knows about your conversation has to fit inside: the system prompt, the chat history, any documents or tool results, and its own reply so far.",
+        "The <b>context window</b> is the most tokens the model can handle at once. Everything it knows about your chat has to fit inside: the system prompt, the chat history, any documents or tool results, and its own reply so far.",
         {
           "ul": [
-            "<b>No hidden memory</b>: the model forgets everything between calls. Chat apps resend the whole history every turn. \"Memory\" features work by saving notes and putting them back into the context.",
-            "<b>Cost grows with length</b>: more context means more attention work and a bigger KV cache, so long prompts are slower and cost more.",
-            "<b>Prompt caching</b>: if a request begins with exactly the same tokens as a recent one, the provider can reuse the stored KV cache for that prefix. That's why a stable system prompt at the start is cheaper and faster."
+            "<b>No hidden memory</b>: the model forgets everything between requests. Chat apps send the whole history again every turn. \"Memory\" features work by saving notes and adding them back into the context.",
+            "<b>Longer costs more</b>: more context means more attention work and a bigger KV cache, so long prompts are slower and more expensive.",
+            "<b>Prompt caching</b>: if a request starts with exactly the same tokens as a recent one, the provider can reuse the saved KV cache for that opening part. That's why keeping the same system prompt at the start is cheaper and faster."
           ]
         },
         {
-          "note": "The model is stateless; the context is its entire state. If something isn't in the context, the model doesn't know it, however recently you mentioned it.",
+          "note": "The model has no memory of its own; the context is all it has. If something isn't in the context, the model doesn't know it, no matter how recently you mentioned it.",
           "kind": "key"
         },
         {
-          "note": "A big window doesn't guarantee the model uses all of it well. Details buried in the middle of a very long context are often recalled less reliably than those near the start or end.",
+          "note": "A big window doesn't mean the model uses all of it well. Details buried in the middle of a very long context are often remembered less reliably than those near the start or end.",
           "kind": "warn"
         }
       ],
@@ -150,19 +197,31 @@
               "type": "bars",
               "layout": "stacked",
               "items": [
-                { "label": "System prompt", "display": "cached prefix", "value": 0.22 },
-                { "label": "Conversation history", "display": "grows each turn", "value": 0.38 },
+                {
+                  "label": "System prompt",
+                  "display": "cached prefix",
+                  "value": 0.22
+                },
+                {
+                  "label": "Conversation history",
+                  "display": "grows each turn",
+                  "value": 0.38
+                },
                 {
                   "label": "Retrieved docs / tool output",
                   "display": "often the biggest",
                   "value": 0.28
                 },
-                { "label": "Model's reply so far", "display": "generated", "value": 0.12 }
+                {
+                  "label": "Model's reply so far",
+                  "display": "generated",
+                  "value": 0.12
+                }
               ]
             },
             {
               "type": "caption",
-              "html": "All of it is one token sequence. Illustrative proportions."
+              "html": "It's all one long line of tokens. Sizes are just for illustration."
             }
           ]
         }

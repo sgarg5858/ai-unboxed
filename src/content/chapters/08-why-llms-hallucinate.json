@@ -5,37 +5,37 @@
   "slides": [
     {
       "title": "What a hallucination is",
-      "summary": "A hallucination is fluent, confident text that isn't true. It's the model doing what it was built to do, not a glitch in one place.",
+      "summary": "A hallucination is smooth, confident text that isn't true. It comes from how the model works, not from a bug in one place.",
       "body": [
-        "Ask a model for the author of an obscure paper and it may name someone, add a title and a year, all in a calm, authoritative tone. Every detail can be invented. That's a <b>hallucination</b>. Researchers also use the word <b>confabulation</b>: an arbitrary, incorrect answer that sounds right.",
+        "Ask a model who wrote a little-known paper, and it may give a name, a title and a year, all in a calm, expert tone. Every detail could be made up. That's a <b>hallucination</b>. Researchers also call it <b>confabulation</b>: a random, wrong answer that sounds right.",
         {
-          "h": "Four common shapes"
+          "h": "Four common types"
         },
         {
           "ul": [
-            "<b>Invented facts</b>: a person, date or statistic that never existed.",
-            "<b>Fake sources</b>: citations, links, or function names in an API that don't exist.",
-            "<b>Unfaithful summaries</b>: a summary that contradicts, or adds to, the document you gave the model.",
-            "<b>Faulty reasoning</b>: steps that read fine but contain a wrong calculation or a leap of logic."
+            "<b>Made-up facts</b>: a person, date or number that never existed.",
+            "<b>Fake sources</b>: references, links, or code functions that don't exist.",
+            "<b>Wrong summaries</b>: a summary that disagrees with, or adds to, the document you gave the model.",
+            "<b>Bad reasoning</b>: steps that sound fine but hide a wrong sum or a jump in logic."
           ]
         },
-        "What they share is fluency. Fluent text is the thing a language model is best at, so how confident or polished an answer sounds tells you nothing about whether it's true.",
+        "What they have in common is that they read smoothly. Smooth text is what a language model is best at, so how confident or polished an answer sounds tells you nothing about whether it's true.",
         {
-          "note": "A right answer and a wrong answer come out in the same tone. You can't judge accuracy from style.",
+          "note": "Right and wrong answers come out in the same tone. You can't tell accuracy from style.",
           "kind": "key"
         },
         {
-          "note": "It isn't limited to tricky questions. It happens on ordinary questions about things that are rarely written about, such as small companies, minor papers, and private details of people.",
+          "note": "It doesn't only happen with tricky questions. It happens with everyday questions about things that are rarely written about, like small companies, little-known papers, and personal details about people.",
           "kind": "warn"
         },
-        "The next slides give four causes: what training rewards, what the data can teach, how models are graded, and how generation works. Then we look at how to detect and reduce it."
+        "The next slides cover four causes: what training rewards, what the data can teach, how models are tested, and how text is generated. Then we look at how to spot it and reduce it."
       ],
       "viz": [
         {
           "type": "stages",
           "items": [
             {
-              "label": "<b>Invented fact</b>",
+              "label": "<b>Made-up fact</b>",
               "sub": "“The 2019 paper <i>Rapid Gradient Shaping</i> was written by Dr. Alan Whitmore of MIT.”",
               "value": "no such paper"
             },
@@ -45,12 +45,12 @@
               "value": "no such function"
             },
             {
-              "label": "<b>Unfaithful summary</b>",
+              "label": "<b>Wrong summary</b>",
               "sub": "Document: “Revenue fell 4%.” Summary: “Revenue grew 4%.”",
               "value": "contradicts source"
             },
             {
-              "label": "<b>Faulty reasoning</b>",
+              "label": "<b>Bad reasoning</b>",
               "sub": "“17 × 24 = 17 × 20 + 17 × 4 = 340 + 78 = 418.”",
               "value": "it's 408"
             }
@@ -58,26 +58,26 @@
         },
         {
           "type": "caption",
-          "html": "All four examples are invented for illustration. Each one would read as confident and well-formed."
+          "html": "All four examples are made up to illustrate. Each one would sound confident and correct."
         }
       ]
     },
     {
-      "title": "Cause 1: it predicts plausible text, not true text",
-      "summary": "Training rewards likely next words and never checks facts. The model also always has to output something.",
+      "title": "Cause 1: it predicts likely text, not true text",
+      "summary": "Training rewards likely next words and never checks facts. And the model always has to say something.",
       "body": [
-        "Recall the training objective from the <i>Training</i> chapter: predict the next token of real text. A prediction is rewarded when it matches what the real text said, so the model gets very good at producing text that <i>looks like</i> real text. Truth only comes along for the ride, when real text happens to be true and consistent.",
+        "Remember the training goal from the <i>Training</i> chapter: predict the next token of real text. A guess is rewarded when it matches the real text, so the model gets very good at writing text that <i>looks like</i> real text. It only gets facts right as a side effect, when the real text happens to be true and consistent.",
         {
-          "h": "Peaked or flat"
+          "h": "Confident or spread out"
         },
-        "For a famous fact, the training text agrees with itself almost everywhere, so the model's probability piles onto one answer. For an obscure fact there's nothing consistent to learn, so the probability spreads over many names that all sound plausible. Compare the two cases on the right.",
-        "Generation then does the same thing in both cases: draw a token from the distribution and move on. A peaked distribution gives the right answer almost every time. A flat one gives an arbitrary answer, written in exactly the same confident voice.",
+        "For a famous fact, the training text agrees with itself almost everywhere, so the model puts nearly all its probability on one answer. For an obscure fact, there's nothing consistent to learn, so the probability spreads over lots of names that all sound believable. Compare the two cases on the right.",
+        "Then, in both cases, generation does the same thing: pick a token based on the probabilities and move on. When one answer dominates, it's right almost every time. When the probability is spread out, the answer is basically random, but it's written in the same confident voice.",
         {
-          "note": "The final softmax always returns probabilities that add up to 1. There is no \"null\" output. Saying \"I don't know\" has to be learned as ordinary text, and plain next-token training gives the model little reason to learn it.",
+          "note": "The final softmax always gives probabilities that add up to 1. There's no \"nothing\" option. Saying \"I don't know\" has to be learned as ordinary text, and plain next-token training gives the model little reason to learn it.",
           "kind": "dev"
         },
         {
-          "note": "Plausible and true line up when the training data is dense and consistent. They drift apart when it's thin or contradictory.",
+          "note": "Likely and true match up when the training data has lots of consistent examples. They drift apart when the data is thin or contradicts itself.",
           "kind": "key"
         }
       ],
@@ -128,7 +128,7 @@
                 },
                 {
                   "type": "caption",
-                  "html": "The distribution is peaked. Sampling gives the right answer nearly every time."
+                  "html": "One answer dominates. Picking from these gives the right answer nearly every time."
                 }
               ]
             },
@@ -181,7 +181,7 @@
                 },
                 {
                   "type": "caption",
-                  "html": "The distribution is flat. Every name sounds fine, and whichever is drawn is stated as confidently as “Paris” would be. Numbers are invented for illustration."
+                  "html": "The probability is spread out. Every name sounds fine, and whichever one is picked is stated as confidently as \"Paris\" would be. Numbers are made up for illustration."
                 }
               ]
             }
@@ -190,22 +190,22 @@
       ]
     },
     {
-      "title": "Cause 2: facts seen once can’t be learned reliably",
-      "summary": "A model learns patterns from many examples. An arbitrary fact it saw once, or never, gives it nothing to generalise from.",
+      "title": "Cause 2: facts seen once can't be learned reliably",
+      "summary": "A model learns patterns from many examples. A random fact it saw only once, or never, gives it nothing to learn from.",
       "body": [
-        "Some knowledge has structure the model can learn: spelling, grammar, how code is laid out. Millions of examples teach the pattern, and new cases follow it.",
-        "Other knowledge is arbitrary: a person's birthday, the author of a paper, a phone number. No pattern predicts it. The model can only get it right if it saw that exact fact, and saw it often enough to store it.",
+        "Some knowledge has patterns the model can learn: spelling, grammar, how code is written. Millions of examples teach the pattern, and new cases follow it.",
+        "Other knowledge is random: someone's birthday, who wrote a paper, a phone number. No pattern predicts it. The model can only get it right if it saw that exact fact, and saw it often enough to remember it.",
         {
-          "h": "The singleton rate"
+          "h": "The seen-once rate"
         },
-        "Count how many facts appear exactly once in the training data. Call that share the <b>singleton rate</b>. A 2025 OpenAI paper (Kalai et al., <i>Why Language Models Hallucinate</i>) argues that for arbitrary facts, a pretrained model's error rate has a floor of about that share. If 20% of birthdays appear exactly once, expect it to get at least roughly 20% of birthday questions wrong.",
-        "The intuition: a single sighting isn't enough to tell a true fact from a plausible alternative. Drag the slider to see how the floor moves.",
+        "Count how many facts appear exactly once in the training data. Call that share the <b>singleton rate</b>. A 2025 OpenAI paper (Kalai et al., <i>Why Language Models Hallucinate</i>) argues that for random facts, a pretrained model will get at least about that share wrong. If 20% of birthdays appear only once, expect it to get at least about 20% of birthday questions wrong.",
+        "The idea: seeing something once isn't enough to tell a true fact from a believable alternative. Drag the slider to see how the minimum error changes.",
         {
-          "note": "It's a floor for facts with no learnable pattern, in a model that has only been pretrained (the paper's setting). More data and bigger models shrink the singleton rate, but real text always has a long tail of rare facts.",
+          "note": "This minimum applies to facts with no learnable pattern, in a model that has only been pretrained (the paper's setting). More data and bigger models lower the singleton rate, but real text always has a long tail of rare facts.",
           "kind": "warn"
         },
         {
-          "note": "Hallucinating on rare facts doesn't mean the model is badly trained. It's a statistical consequence of learning from finite text.",
+          "note": "Hallucinating about rare facts doesn't mean the model is badly trained. It's a natural result of learning from a limited amount of text.",
           "kind": "key"
         }
       ],
@@ -218,17 +218,17 @@
     },
     {
       "title": "Cause 3: tests reward guessing",
-      "summary": "Models are tuned and graded on tests where a guess can earn points and “I don't know” earns nothing, so guessing becomes the winning habit.",
+      "summary": "Models are trained and tested on scores where a guess can earn points and \"I don't know\" earns nothing. So guessing becomes a habit.",
       "body": [
-        "Pretraining explains why hallucinations start. Why do they survive the later training stages? The same OpenAI paper points at how models are <i>scored</i>.",
-        "Most benchmarks grade like an exam with no negative marking: a right answer scores 1, a wrong answer scores 0, and \"I don't know\" also scores 0. Under that rule a guess is never worse than abstaining, so a model tuned to score well learns to always answer, however unsure it is. In the paper's words, models are optimised to be good test-takers.",
+        "Pretraining explains why hallucinations start. But why do they survive the later training stages? The same OpenAI paper points to how models are <i>scored</i>.",
+        "Most benchmarks mark like an exam with no penalty for wrong answers: right scores 1, wrong scores 0, and \"I don't know\" also scores 0. With those rules, guessing is never worse than not answering, so a model trained to score well learns to always answer, however unsure it is. As the paper puts it, models are trained to be good at taking tests.",
         {
-          "h": "The arithmetic"
+          "h": "The maths"
         },
-        "Say the model is right with probability <code>p</code> when it guesses, and a wrong answer costs a penalty <code>k</code> (zero in most benchmarks). Guessing scores <code>p − (1 − p)·k</code>. Abstaining scores 0. So guessing only wins when <code>p &gt; k / (1 + k)</code>. With <code>k = 0</code> that threshold is 0, so guessing wins at every confidence level.",
-        "The paper's proposed fix isn't a new hallucination test. It's to change how the existing, widely used benchmarks score answers, so a confident error costs more than saying \"I don't know\". For example: answer only if you're at least 75% sure, and a wrong answer costs 3 points. Try the three grading rules on the right.",
+        "Say the model is right with probability <code>p</code> when it guesses, and a wrong answer loses <code>k</code> points (zero in most benchmarks). Guessing scores <code>p − (1 − p)·k</code> on average. Not answering scores 0. So guessing only pays off when <code>p &gt; k / (1 + k)</code>. With <code>k = 0</code>, that's 0, so guessing always pays off.",
+        "The paper's suggested fix isn't a new hallucination test. It's to change how the existing, popular benchmarks score answers, so a confident mistake costs more than saying \"I don't know\". For example: answer only if you're at least 75% sure, and a wrong answer loses 3 points. Try the three scoring rules on the right.",
         {
-          "note": "Hallucination isn't only about what the model knows. It's also an incentive problem in how models are trained and graded.",
+          "note": "Hallucination isn't only about what the model knows. It's also about what training and testing reward.",
           "kind": "key"
         }
       ],
@@ -247,25 +247,25 @@
     },
     {
       "title": "Cause 4: one wrong token leads to more",
-      "summary": "Text is generated one token at a time with no backspace, so an early mistake becomes context the model then tries to stay consistent with.",
+      "summary": "Text is written one token at a time with no backspace. So an early mistake becomes part of the text, and the model then tries to stay consistent with it.",
       "body": [
-        "Generation is a loop (see <i>The big picture</i>): each token is added to the context and the model continues from there. There's no step where it goes back and deletes a sentence. Once a wrong claim is in the text, it becomes evidence for what comes next.",
-        "Researchers call this <b>hallucination snowballing</b> (Zhang et al., 2023). They asked models questions where the first answer tended to be wrong, then watched them justify it with further false claims. When the same models were asked about those false claims separately, they could often see the errors: GPT-3.5, GPT-4 and Llama-2-70B-chat identified 67%, 87% and 94% of them. The effect persisted with higher temperature, beam search and zero-shot chain-of-thought prompting.",
+        "Generation is a loop (see <i>The big picture</i>): each token is added to the text and the model continues from there. It never goes back and deletes a sentence. Once a wrong claim is written, it becomes evidence for what comes next.",
+        "Researchers call this <b>hallucination snowballing</b> (Zhang et al., 2023). They asked models questions where the first answer was often wrong, then watched them back it up with more false claims. When asked about those false claims separately, the same models could often spot the mistakes: GPT-3.5, GPT-4 and Llama-2-70B-chat caught 67%, 87% and 94% of them. Changing the generation settings or prompting the model to think step by step didn't make the problem go away.",
         {
-          "h": "Other things that add to it"
+          "h": "Other things that make it worse"
         },
         {
           "ul": [
-            "<b>Sampling</b>: at a high temperature or loose top-p, a low-probability token is more likely to be drawn, and one odd token can send a sentence somewhere untrue (see <i>Output & inference</i>).",
-            "<b>Long contexts</b>: details buried in the middle of a very long prompt are recalled less reliably, so the model fills gaps with plausible guesses.",
-            "<b>Stale knowledge</b>: after its training cutoff the model doesn't know what has changed, yet it still answers in the present tense."
+            "<b>Random picking</b>: with a high temperature or loose top-p, unlikely tokens get picked more often, and one odd token can send a sentence somewhere untrue (see <i>Output & inference</i>).",
+            "<b>Long prompts</b>: details buried in the middle of a very long prompt are remembered less reliably, so the model fills the gaps with believable guesses.",
+            "<b>Out-of-date knowledge</b>: the model doesn't know what has changed since its training cutoff, but it still answers as if it's up to date."
           ]
         },
         {
-          "note": "Verify claims in a fresh call. A separate prompt asking \"is this statement true?\" isn't tied to the earlier text, which is why the models in the study could catch many errors they had just made.",
+          "note": "Check claims in a fresh request. A separate prompt asking \"is this true?\" isn't tied to the earlier text. That's why the models in the study could catch many mistakes they had just made.",
           "kind": "dev"
         },
-        "Step through the example on the right. The paper and the author are invented."
+        "Step through the example on the right. The paper and the author are made up."
       ],
       "viz": [
         {
@@ -279,7 +279,7 @@
                 "value": "user",
                 "tone": "muted"
               },
-              "caption": "There is no such paper. The title is invented for this example."
+              "caption": "There is no such paper. The title is made up for this example."
             },
             {
               "item": {
@@ -287,7 +287,7 @@
                 "value": "model",
                 "tone": "accent"
               },
-              "caption": "The model has nothing to retrieve, so it samples a plausible name. This reply is the first error."
+              "caption": "The model has nothing to look up, so it picks a believable name. This reply is the first mistake."
             },
             {
               "item": {
@@ -295,7 +295,7 @@
                 "value": "user",
                 "tone": "muted"
               },
-              "caption": "The question now assumes Whitmore is real. The model's own earlier sentence counts as evidence."
+              "caption": "The question now assumes Whitmore is real. The model treats its own earlier answer as evidence."
             },
             {
               "item": {
@@ -303,7 +303,7 @@
                 "value": "model",
                 "tone": "accent"
               },
-              "caption": "To stay consistent with its earlier reply, the model invents more. The error compounds."
+              "caption": "To stay consistent with what it said before, the model makes up more. The mistake grows."
             },
             {
               "item": {
@@ -311,34 +311,34 @@
                 "value": "user",
                 "tone": "muted"
               },
-              "caption": "Asked on its own, a model is far more likely to say it can't find one. In the study, models spotted most of their own false claims when asked separately."
+              "caption": "Asked on its own, a model is much more likely to say it can't find one. In the study, models spotted most of their own false claims when asked separately."
             }
           ]
         }
       ]
     },
     {
-      "title": "Inside the model: a “don’t know” default that misfires",
-      "summary": "Anthropic found a built-in “I can't answer” default that a feeling of familiarity switches off. When the familiarity is wrong, the model makes something up.",
+      "title": "Inside the model: a \"don't know\" switch that misfires",
+      "summary": "Anthropic found that the model says \"I can't answer\" by default, and a feeling of familiarity switches that off. When the feeling is wrong, the model makes something up.",
       "body": [
-        "Interpretability researchers at Anthropic traced what happens inside Claude 3.5 Haiku when it's asked about people (Lindsey et al., 2025). Their finding cuts against the intuition that a model answers by default and sometimes stops itself:",
+        "Researchers at Anthropic looked inside Claude 3.5 Haiku to see what happens when it's asked about people (Lindsey et al., 2025). What they found is the opposite of what you might expect: the model doesn't answer by default and sometimes stop itself.",
         {
           "ul": [
-            "<b>The default is to decline.</b> A circuit that is on by default makes the model say it doesn't have enough information to answer.",
-            "<b>Familiarity switches it off.</b> When the model recognises the subject (the example is Michael Jordan), \"known entity\" features suppress that default and the model answers.",
-            "<b>An unfamiliar name stays declined.</b> For an invented name like Michael Batkin, nothing overrides the default, so the model says it doesn't know."
+            "<b>The default is to say no.</b> A circuit that's always on makes the model say it doesn't have enough information to answer.",
+            "<b>Familiarity switches it off.</b> When the model recognises the subject (the example is Michael Jordan), \"known person\" signals turn off that default and the model answers.",
+            "<b>An unknown name stays switched on.</b> For a made-up name like Michael Batkin, nothing turns off the default, so the model says it doesn't know."
           ]
         },
         {
           "h": "Where it goes wrong"
         },
-        "A <b>misfire</b> happens when the model recognises a name but knows nothing else about the person. The \"known entity\" feature fires anyway, switches off the \"I don't know\" default, and the model now has to produce an answer, so it produces a plausible but untrue one. In an experiment, the team made the model hallucinate on purpose by artificially boosting those known-answer features.",
+        "A <b>misfire</b> happens when the model recognises a name but knows nothing else about the person. The \"known person\" signal fires anyway and switches off the \"I don't know\" default. Now the model has to answer, so it writes something believable but untrue. In one experiment, the team made the model hallucinate on purpose by artificially boosting those \"I know this\" signals.",
         {
-          "note": "The model isn't being reckless. A recognition signal overrides a \"don't know\" default that was otherwise working.",
+          "note": "The model isn't being careless. A feeling of recognition overrides a \"don't know\" switch that was otherwise working fine.",
           "kind": "key"
         },
         {
-          "note": "This is one mechanism, in one model, on the topic of people. Other hallucinations will have other causes and other models may differ. What it shows is that recognising a topic and actually knowing the answer are separate signals, and they can disagree.",
+          "note": "This is one mechanism, in one model, for questions about people. Other hallucinations have other causes, and other models may work differently. What it shows is that recognising a topic and actually knowing the answer are two separate signals, and they can disagree.",
           "kind": "warn"
         }
       ],
@@ -357,12 +357,12 @@
                   "type": "stages",
                   "items": [
                     {
-                      "label": "“Known entity” feature",
+                      "label": "\"Known person\" signal",
                       "value": "on",
                       "tone": "pos"
                     },
                     {
-                      "label": "Default “can't answer” circuit",
+                      "label": "Default \"can't answer\" switch",
                       "value": "suppressed",
                       "tone": "muted"
                     },
@@ -387,12 +387,12 @@
                   "type": "stages",
                   "items": [
                     {
-                      "label": "“Known entity” feature",
+                      "label": "\"Known person\" signal",
                       "value": "off",
                       "tone": "muted"
                     },
                     {
-                      "label": "Default “can't answer” circuit",
+                      "label": "Default \"can't answer\" switch",
                       "value": "on",
                       "tone": "pos"
                     },
@@ -417,12 +417,12 @@
                   "type": "stages",
                   "items": [
                     {
-                      "label": "“Known entity” feature",
+                      "label": "\"Known person\" signal",
                       "value": "on (misfire)",
                       "tone": "neg"
                     },
                     {
-                      "label": "Default “can't answer” circuit",
+                      "label": "Default \"can't answer\" switch",
                       "value": "suppressed by mistake",
                       "tone": "neg"
                     },
@@ -440,26 +440,26 @@
         },
         {
           "type": "caption",
-          "html": "Simplified from Anthropic's published findings for Claude 3.5 Haiku. Real circuits involve many features."
+          "html": "Simplified from Anthropic's published findings for Claude 3.5 Haiku. Real circuits involve many more signals."
         }
       ]
     },
     {
-      "title": "Detecting hallucinations: ask several times",
-      "summary": "If a model really knows the answer it gives the same answer every time. If it's guessing, the answers scatter.",
+      "title": "Spotting hallucinations: ask more than once",
+      "summary": "If a model really knows the answer, it gives the same answer every time. If it's guessing, the answers are all over the place.",
       "body": [
-        "A model's confidence in a single answer is hard to read, because fluent text hides it. But you can ask the same question several times and compare the answers.",
-        "<b>Semantic entropy</b> (Farquhar et al., <i>Nature</i>, 2024) does exactly that. Sample several answers, group the ones that mean the same thing, and measure how spread out the groups are. Answers that agree in meaning give a low value (the model probably knows). Answers that scatter give a high value (it's probably confabulating).",
-        "Grouping by <i>meaning</i> matters: \"Paris\" and \"It's Paris.\" are the same answer even though the words differ. In the paper a second language model judges whether two answers mean the same.",
-        "The method needs no labelled examples of hallucinations, and in the paper's tests it beat simpler measures. The cost is several samples per question plus the judging step, so it's used where reliability is worth the extra compute.",
+        "It's hard to tell how sure a model is from one answer, because smooth writing hides it. But you can ask the same question several times and compare the answers.",
+        "<b>Semantic entropy</b> (Farquhar et al., <i>Nature</i>, 2024) does exactly that. Get several answers, group the ones that mean the same thing, and measure how spread out the groups are. Answers that agree give a low score (the model probably knows). Answers that are all different give a high score (it's probably making it up).",
+        "Grouping by <i>meaning</i> is important: \"Paris\" and \"It's Paris.\" are the same answer even though the words differ. In the paper, a second language model decides whether two answers mean the same thing.",
+        "The method doesn't need any labelled examples of hallucinations, and in the paper's tests it did better than simpler methods. The downside is that it needs several answers per question plus the grouping step, so it's used where reliability is worth the extra cost.",
         {
           "h": "Other checks"
         },
         {
           "ul": [
-            "<b>Verification outside the model</b>: run the code, look up the citation, check the number in a database.",
-            "<b>A separate fact-check call</b>: ask a fresh prompt whether a claim is true, as in the snowballing study.",
-            "<b>A second model as reviewer</b>: have another model flag claims that lack support in the provided sources."
+            "<b>Check outside the model</b>: run the code, look up the reference, check the number in a database.",
+            "<b>A separate fact-check</b>: ask in a fresh prompt whether a claim is true, as in the snowballing study.",
+            "<b>A second model as reviewer</b>: have another model flag claims that the sources don't back up."
           ]
         }
       ],
@@ -478,7 +478,7 @@
               "blocks": [
                 {
                   "type": "caption",
-                  "html": "Question: “What is the capital of France?” Five samples:"
+                  "html": "Question: \"What is the capital of France?\" Five answers:"
                 },
                 {
                   "type": "stages",
@@ -506,7 +506,7 @@
                 },
                 {
                   "type": "caption",
-                  "html": "All five answers mean the same thing. The model is consistent, so the answer is more likely to be reliable."
+                  "html": "All five answers mean the same thing. The model is consistent, so the answer is more likely to be right."
                 }
               ]
             },
@@ -515,7 +515,7 @@
               "blocks": [
                 {
                   "type": "caption",
-                  "html": "Question: “When was Dr. Alan Whitmore born?” (a made-up person) Five samples:"
+                  "html": "Question: \"When was Dr. Alan Whitmore born?\" (a made-up person) Five answers:"
                 },
                 {
                   "type": "stages",
@@ -556,13 +556,13 @@
                     },
                     {
                       "value": "1.61",
-                      "label": "semantic entropy (the maximum for 5 answers)"
+                      "label": "semantic entropy (the highest possible for 5 answers)"
                     }
                   ]
                 },
                 {
                   "type": "caption",
-                  "html": "Every answer differs. The model has nothing to retrieve, so the scatter gives it away even though each single answer would have sounded confident."
+                  "html": "Every answer is different. The model has nothing to look up, so the spread gives it away, even though each answer on its own would have sounded confident."
                 }
               ]
             }
@@ -571,25 +571,25 @@
       ]
     },
     {
-      "title": "Reducing hallucinations: where each defence sits",
-      "summary": "Hallucination can't be removed at the source, so assistants lower its chances, check outputs, and let the model say “I don't know”.",
+      "title": "Reducing hallucinations: where each defence fits",
+      "summary": "Hallucination can't be removed completely, so assistants make it less likely, check what the model writes, and let it say \"I don't know\".",
       "body": [
-        "The causes are statistical and about incentives, so no single fix removes hallucination. Real systems stack defences, and most of them are layers you've already met in <i>Assistant architecture</i>:",
+        "The causes come from statistics and from what training rewards, so no single fix gets rid of hallucination. Real systems stack defences, and you've already met most of these layers in <i>Assistant architecture</i>:",
         {
           "ul": [
-            "<b>Give the model the facts.</b> Search and retrieval (RAG) put real source text in the context, which turns recall from memory into reading. The model can still misread a source, which is why good answers cite specific passages.",
-            "<b>Make “I don't know” a good answer.</b> Reward calibrated abstention in post-training, grade with scoring that penalises confident errors, and tell the model it's fine to say when it's unsure.",
-            "<b>Use tools for exact things.</b> A calculator for arithmetic, a code runner for code, a database lookup for records.",
-            "<b>Check the output.</b> Consistency checks like semantic entropy, citation verification, or a second model reviewing claims.",
-            "<b>Design the product honestly.</b> Show sources, mark uncertainty, and keep a person in the loop for high-stakes use such as medical, legal and financial answers."
+            "<b>Give the model the facts.</b> Search and retrieval (RAG) put real source text in front of the model, so it reads the answer instead of remembering it. It can still misread a source, which is why good answers point to the exact passages.",
+            "<b>Make \"I don't know\" a good answer.</b> Reward the model in training for admitting when it's unsure, use scoring that punishes confident mistakes, and tell the model it's fine to say when it doesn't know.",
+            "<b>Use tools for exact answers.</b> A calculator for maths, a code runner for code, a database for records.",
+            "<b>Check the output.</b> Consistency checks like semantic entropy, checking references, or a second model reviewing claims.",
+            "<b>Design the product honestly.</b> Show sources, mark when the model is unsure, and have a person check anything important, like medical, legal or financial answers."
           ]
         },
         {
-          "note": "If you're building an app: ground answers in your own data, require citations, and test with questions whose answers you know, including ones the model should refuse. Measure the hallucination rate on your own data, not just on public benchmarks.",
+          "note": "If you're building an app: base answers on your own data, require references, and test with questions you know the answers to, including ones the model should refuse. Measure how often it hallucinates on your own data, not just on public benchmarks.",
           "kind": "dev"
         },
         {
-          "note": "Grounding reduces hallucination but doesn't eliminate it. Models can still misquote or over-generalise a source. Treat a citation as a way to check an answer, not as proof it's right.",
+          "note": "Grounding reduces hallucination but doesn't get rid of it. Models can still misquote a source or read too much into it. Treat a reference as a way to check an answer, not as proof it's right.",
           "kind": "warn"
         }
       ],
@@ -599,7 +599,7 @@
           "items": [
             {
               "label": "<b>Ground in sources</b>",
-              "sub": "Search and retrieval put real text in the context.",
+              "sub": "Search and retrieval put real text in front of the model.",
               "value": "Web search →",
               "goto": {
                 "chapter": "assistant",
@@ -617,7 +617,7 @@
             },
             {
               "label": "<b>Filter and check outputs</b>",
-              "sub": "Classifiers and verification layers.",
+              "sub": "Safety checkers and fact-checking steps.",
               "value": "Classifiers →",
               "goto": {
                 "chapter": "assistant",
@@ -626,7 +626,7 @@
             },
             {
               "label": "<b>Train for honesty</b>",
-              "sub": "Reward calibrated “I don't know”; fix the scoring.",
+              "sub": "Reward honest \"I don't know\"; fix the scoring.",
               "value": "Post-training →",
               "goto": {
                 "chapter": "training",
@@ -635,7 +635,7 @@
             },
             {
               "label": "<b>Detect and flag</b>",
-              "sub": "Sample several times and compare meanings.",
+              "sub": "Ask several times and compare the meanings.",
               "value": "Detecting →",
               "goto": {
                 "chapter": "hallucination",
@@ -654,20 +654,20 @@
       "title": "Where to go from here",
       "summary": "You've seen the model and the system around it. Building both yourself is the best way to make it stick.",
       "body": [
-        "You've now seen every component in a modern decoder-only LLM, and the system that turns it into an assistant. The best way to lock it in as an engineer is to build both.",
+        "You've now seen every part of a modern LLM, and the system that turns it into an assistant. As an engineer, the best way to make it stick is to build both yourself.",
         {
           "ul": [
             "<b>Andrej Karpathy, \"Let's build GPT\" and nanoGPT</b>: a GPT in a few hundred lines of PyTorch.",
-            "<b>\"Attention Is All You Need\"</b> (Vaswani et al., 2017): the original paper, readable after this course.",
+            "<b>\"Attention Is All You Need\"</b> (Vaswani et al., 2017): the original paper. You'll be able to follow it after this course.",
             "<b>Jay Alammar, \"The Illustrated Transformer\"</b>: more diagrams of the same ideas.",
-            "<b>Anthropic's constitution and system prompt release notes</b>, and <b>OpenAI's Model Spec</b>: how labs write down intended behaviour.",
+            "<b>Anthropic's constitution and system prompt release notes</b>, and <b>OpenAI's Model Spec</b>: how AI companies write down how their models should behave.",
             "<b>\"The Instruction Hierarchy\"</b> (Wallace et al., 2024) and <b>\"Defeating Prompt Injections by Design\"</b> (CaMeL, 2025).",
             "<b>The MCP specification</b> and <b>Simon Willison's writing on prompt injection</b>.",
             "<b>\"Why Language Models Hallucinate\"</b> (Kalai et al., OpenAI, 2025) and <b>\"How Language Model Hallucinations Can Snowball\"</b> (Zhang et al., 2023).",
             "<b>Anthropic, \"Tracing the thoughts of a large language model\"</b> (2025) and <b>\"Detecting hallucinations in large language models using semantic entropy\"</b> (Farquhar et al., <i>Nature</i>, 2024)."
           ]
         },
-        "Three good exercises: implement the 4-token attention from the <i>Attention</i> chapter in plain Java or TypeScript and check your numbers match. Then write the 15-line tool loop from <i>Assistant architecture</i> against a real API, and add a permission check before each call. Finally, pick one question you know the answer to and one about an obscure person. Ask each one five times at temperature 1 and compare how much the answers vary."
+        "Three good exercises. First, build the 4-token attention example from the <i>Attention</i> chapter in plain Java or TypeScript, and check your numbers match. Second, write the short tool loop from <i>Assistant architecture</i> against a real API, and add a permission check before each tool call. Third, pick one question you know the answer to and one about a little-known person. Ask each five times at temperature 1 and compare how much the answers change."
       ],
       "viz": [
         {

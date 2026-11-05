@@ -5,18 +5,18 @@
   "slides": [
     {
       "title": "The residual stream",
-      "summary": "Each layer reads the token vectors, computes something and adds the result back, so information builds up instead of being overwritten.",
+      "summary": "Each layer reads the token vectors, works something out and adds the result back. Information builds up instead of being replaced.",
       "body": [
-        "The most useful mental picture of a transformer: a wide <b>stream</b> of vectors, one per token, flows from the bottom of the model to the top.",
-        "Each layer has two parts, attention and an MLP. Each part reads the current stream, computes an update, and <b>adds</b> it back: <code>x = x + f(x)</code>. Nothing is overwritten. Contributions pile up.",
+        "The most helpful way to picture a transformer: a wide <b>stream</b> of vectors, one per token, flows from the bottom of the model to the top.",
+        "Each layer has two parts: attention and an MLP. Each part reads the stream, works out an update, and <b>adds</b> it back: <code>x = x + f(x)</code>. Nothing is replaced. Updates pile up.",
         {
           "ul": [
-            "<b>Why it helps training</b>: learning sends an error signal backwards through every layer. The plain addition gives that signal a direct path to the earliest layers, so even 100-layer models train reliably. This is called a <b>residual</b> or <b>skip connection</b>.",
-            "<b>Why it helps the model think</b>: each layer can make a small, targeted edit, such as adding \"this word is a verb\" or \"this refers to Paris\", which later layers can then read."
+            "<b>Why it helps training</b>: learning sends an error signal backwards through every layer. The simple addition gives that signal a shortcut to the earliest layers, so even 100-layer models train reliably. This is called a <b>residual</b> or <b>skip connection</b>.",
+            "<b>Why it helps the model think</b>: each layer can make a small, focused edit, like adding \"this word is a verb\" or \"this refers to Paris\", which later layers can read."
           ]
         },
         {
-          "note": "A shared document that every layer annotates. Nobody deletes earlier notes; each layer adds its own in the margin, and the final reader sees them all at once.",
+          "note": "Picture a shared document that every layer adds notes to. Nobody deletes earlier notes; each layer writes its own in the margin, and the final reader sees them all at once.",
           "kind": "analogy"
         }
       ],
@@ -27,23 +27,28 @@
         "        x = x + self.mlp(self.norm2(x))",
         "        return x"
       ],
-      "viz": [{ "type": "widget", "name": "residual-stream" }]
+      "viz": [
+        {
+          "type": "widget",
+          "name": "residual-stream"
+        }
+      ]
     },
     {
-      "title": "Normalisation: LayerNorm and RMSNorm",
+      "title": "Normalisation: keeping numbers steady",
       "summary": "Before each part of a layer, vectors are rescaled to a standard size so the numbers stay stable.",
       "body": [
-        "Every layer adds to the stream, so the numbers can grow larger and larger on the way up. Large, swinging values make training unstable.",
-        "So just before each attention or MLP part, a copy of the vector is <b>normalised</b> to a standard scale. Only the copy going into the sublayer is rescaled; the stream itself keeps its values. This placement is called <b>pre-norm</b>, and it's standard in modern LLMs. There are two common recipes:",
+        "Every layer adds to the stream, so the numbers can keep growing on the way up. Big, jumpy numbers make training unstable.",
+        "So just before each attention or MLP part, a copy of the vector is <b>normalised</b> to a standard size. Only the copy going in is rescaled; the stream keeps its values. Doing it at this point is called <b>pre-norm</b>, and it's standard in modern LLMs. There are two common ways:",
         {
           "ul": [
-            "<b>LayerNorm</b>: subtract the average, divide by the standard deviation, then apply a learned scale and shift.",
-            "<b>RMSNorm</b>: skip the average and just divide by the root-mean-square, the typical size of the numbers. Slightly cheaper, works as well, and used by Llama and many others."
+            "<b>LayerNorm</b>: subtract the average, divide by how spread out the numbers are (the standard deviation), then apply a learned scale and shift.",
+            "<b>RMSNorm</b>: skip the average and just divide by the typical size of the numbers (the root-mean-square). Slightly cheaper, works just as well, and used by Llama and many others."
           ]
         },
-        "Try it: scale the input up ten times. The normalised output doesn't change at all.",
+        "Try it: make the input ten times bigger. The normalised output doesn't change at all.",
         {
-          "note": "Normalisation keeps each sublayer's input in a predictable range, however much has built up in the stream. It's a small step, but deep models don't train well without it.",
+          "note": "Normalisation keeps the input to each part in a predictable range, however much has built up in the stream. It's a small step, but deep models don't train well without it.",
           "kind": "key"
         }
       ],
@@ -52,23 +57,30 @@
         "    rms = x.pow(2).mean(-1, keepdim=True).add(eps).sqrt()",
         "    return x / rms * gamma"
       ],
-      "viz": [{ "type": "widget", "name": "rms-norm" }]
+      "viz": [
+        {
+          "type": "widget",
+          "name": "rms-norm"
+        }
+      ]
     },
     {
-      "title": "The MLP: where most parameters live",
-      "summary": "The MLP processes each token on its own. It holds most of the model's parameters and much of its stored knowledge.",
+      "title": "The MLP: where most of the parameters are",
+      "summary": "The MLP works on each token by itself. It holds most of the model's parameters and a lot of what it knows.",
       "body": [
-        "Attention moves information <i>between</i> tokens. The <b>MLP</b> (multi-layer perceptron, also called the feed-forward network) then works on each token <i>on its own</i>, in three steps:",
+        "Attention moves information <i>between</i> tokens. The <b>MLP</b> (multi-layer perceptron, also called the feed-forward network) then works on each token <i>by itself</i>, in three steps:",
         {
           "ul": [
-            "<b>Expand</b>: multiply the vector up to a much wider size, typically about 4 × d.",
-            "<b>Activate</b>: pass every number through a simple curved function (shown on the right).",
-            "<b>Project back</b>: multiply back down to size d, ready to add to the stream."
+            "<b>Expand</b>: multiply the vector up to a much wider size, usually about 4 × d.",
+            "<b>Bend</b>: pass every number through a simple curved function (shown on the right).",
+            "<b>Shrink back</b>: multiply back down to size d, ready to add to the stream."
           ]
         },
-        "About two-thirds of a model's parameters are in these MLPs. Research suggests they act partly like key-value memories for facts: a pattern meaning \"Eiffel Tower\" in the input switches on parts of the MLP that add \"Paris\" to the stream.",
-        { "h": "Why the curve matters" },
-        "Two matrix multiplications in a row are equivalent to one. Without a bend in between, the whole model would collapse into a single linear function, however many layers it had. The curved <b>activation function</b> is what lets stacked layers represent complicated patterns. Modern models use smooth curves like GELU or SiLU, often in a gated form called <b>SwiGLU</b>."
+        "About two-thirds of a model's parameters are in these MLPs. Research suggests they partly work like a memory for facts: a pattern meaning \"Eiffel Tower\" in the input switches on parts of the MLP that add \"Paris\" to the stream.",
+        {
+          "h": "Why the curve matters"
+        },
+        "Two matrix multiplications in a row are the same as one. Without a bend in between, the whole model would collapse into one simple straight-line function, however many layers it had. The curved <b>activation function</b> is what lets stacked layers learn complicated patterns. Modern models use smooth curves like GELU or SiLU, often in a form called <b>SwiGLU</b>."
       ],
       "code": [
         "class SwiGLU(nn.Module):        # Llama-style MLP",
@@ -76,13 +88,18 @@
         "        h = F.silu(self.w1(x)) * self.w3(x)   # [B, n, ~2.7d]",
         "        return self.w2(h)                     # back to [B, n, d]"
       ],
-      "viz": [{ "type": "widget", "name": "activations" }]
+      "viz": [
+        {
+          "type": "widget",
+          "name": "activations"
+        }
+      ]
     },
     {
       "title": "Count the parameters yourself",
-      "summary": "You can estimate a model's size, and the memory it needs, from three numbers.",
+      "summary": "You can estimate a model's size, and how much memory it needs, from three numbers.",
       "body": [
-        "Each layer's weights come from a few matrices, so the parameter count is easy to estimate:",
+        "Each layer's weights come from a few matrices, so the number of parameters is easy to estimate:",
         {
           "ul": [
             "<b>Attention</b>: four <code>d × d</code> matrices (Wq, Wk, Wv, Wo) = <code>4d²</code>.",
@@ -91,14 +108,16 @@
           ]
         },
         {
-          "note": "A 7B-class model has d = 4,096 and N = 32 layers: 12 × 32 × 4,096² ≈ 6.4 billion, plus about 0.1 billion for a 32k-token embedding table. Real designs differ a little (GQA, SwiGLU's three matrices), but the estimate lands close.",
+          "note": "A 7B-size model has d = 4,096 and N = 32 layers: 12 × 32 × 4,096² ≈ 6.4 billion, plus about 0.1 billion for a 32k-token embedding table. Real designs differ a little (GQA, SwiGLU's three matrices), but the estimate comes out close.",
           "kind": "example"
         },
-        { "h": "From parameters to memory" },
-        "Each parameter is stored as a number of fixed size: 2 bytes in bf16 (the usual format), 1 byte at 8 bits, half a byte in 4-bit <b>quantised</b> formats. A 7B model needs about 14 GB in bf16 but only about 3.5 GB at 4 bits. That's how quantisation lets big models run on a laptop.",
+        {
+          "h": "From parameters to memory"
+        },
+        "Each parameter is stored as a fixed-size number: 2 bytes in bf16 (the usual format), 1 byte at 8 bits, or half a byte in 4-bit <b>quantised</b> formats. A 7B model needs about 14 GB in bf16 but only about 3.5 GB at 4 bits. That's how quantisation lets big models run on a laptop.",
         "Try the presets, then move the sliders.",
         {
-          "note": "That's only the weights. Running the model also needs memory for the KV cache (see <i>Output & inference</i>), and training needs several times more again for gradients and optimiser state.",
+          "note": "That's only the weights. Running the model also needs memory for the KV cache (see <i>Output & inference</i>), and training needs several times more for the extra numbers it keeps track of.",
           "kind": "warn"
         }
       ],
@@ -106,24 +125,29 @@
         "params = sum(p.numel() for p in model.parameters())",
         "# 7B params * 2 bytes = ~14 GB just to load in bf16"
       ],
-      "viz": [{ "type": "widget", "name": "param-counter" }]
+      "viz": [
+        {
+          "type": "widget",
+          "name": "param-counter"
+        }
+      ]
     },
     {
       "title": "Stack it N times",
       "summary": "A model is the same layer design repeated many times, each copy with its own weights.",
       "body": [
-        "A full model is one block repeated <code>N</code> times: 32 layers for a typical 7–8B model, 80 or more for the largest open models. Every block has the same design, but each has its own learned weights.",
-        "Interpretability research finds rough tendencies in what different depths do:",
+        "A full model is one block repeated <code>N</code> times: 32 layers for a typical 7–8B model, 80 or more for the biggest open models. Every block has the same design, but each has its own learned weights.",
+        "Research into model internals finds rough patterns in what different layers do:",
         {
           "ul": [
-            "<b>Early layers</b>: local patterns and surface features, such as word pieces joining up into words.",
-            "<b>Middle layers</b>: more abstract features, like topic, meaning and relationships between things.",
-            "<b>Late layers</b>: turning all of that into a prediction for the next token."
+            "<b>Early layers</b>: simple, local patterns, like word pieces joining up into words.",
+            "<b>Middle layers</b>: more abstract ideas, like topic, meaning and how things relate.",
+            "<b>Late layers</b>: turning all of that into a guess for the next token."
           ]
         },
-        "These are tendencies, not hard boundaries.",
+        "These are general trends, not strict rules.",
         {
-          "note": "Because every block maps <code>[B, n, d]</code> to <code>[B, n, d]</code>, depth is just a config value. The main dials of the architecture are width (<code>d</code>), depth (<code>N</code>) and number of heads (<code>h</code>). Making a model bigger mostly means turning these up.",
+          "note": "Because every block takes <code>[B, n, d]</code> in and gives <code>[B, n, d]</code> out, the number of layers is just a setting. The main dials are width (<code>d</code>), depth (<code>N</code>) and number of heads (<code>h</code>). Making a model bigger mostly means turning these up.",
           "kind": "dev"
         }
       ],
@@ -139,33 +163,63 @@
         {
           "type": "stages",
           "items": [
-            { "label": "Final norm → unembed", "value": "[B, n, V]", "highlight": false },
-            { "label": "Block 32", "value": "prediction-shaping", "highlight": true },
-            { "label": "⋮", "spacer": true },
-            { "label": "Block 16", "value": "abstract features", "highlight": true },
-            { "label": "⋮", "spacer": true },
-            { "label": "Block 2", "value": "local syntax", "highlight": true },
-            { "label": "Block 1", "value": "token-level patterns", "highlight": true },
-            { "label": "Embed + position", "value": "[B, n, d]", "highlight": false }
+            {
+              "label": "Final norm → unembed",
+              "value": "[B, n, V]",
+              "highlight": false
+            },
+            {
+              "label": "Block 32",
+              "value": "prediction-shaping",
+              "highlight": true
+            },
+            {
+              "label": "⋮",
+              "spacer": true
+            },
+            {
+              "label": "Block 16",
+              "value": "abstract features",
+              "highlight": true
+            },
+            {
+              "label": "⋮",
+              "spacer": true
+            },
+            {
+              "label": "Block 2",
+              "value": "local syntax",
+              "highlight": true
+            },
+            {
+              "label": "Block 1",
+              "value": "token-level patterns",
+              "highlight": true
+            },
+            {
+              "label": "Embed + position",
+              "value": "[B, n, d]",
+              "highlight": false
+            }
           ]
         }
       ]
     },
     {
       "title": "Mixture of experts",
-      "summary": "Mixture-of-experts models have many MLPs per layer but use only a few for each token, so they're huge yet relatively cheap to run.",
+      "summary": "Mixture-of-experts models have many MLPs per layer but only use a few for each token. So they're huge, but fairly cheap to run.",
       "body": [
-        "Many frontier models replace each layer's single MLP with a set of <b>experts</b>: several separate MLPs, plus a small <b>router</b> network. For each token, the router picks the top few experts (often 2, sometimes 8 out of more than 100) and blends their outputs.",
+        "Many top models replace each layer's single MLP with a group of <b>experts</b>: several separate MLPs, plus a small <b>router</b>. For each token, the router picks the best few experts (often 2, sometimes 8 out of more than 100) and mixes their outputs.",
         {
           "ul": [
-            "<b>The benefit</b>: total parameters, and with them knowledge capacity, grow a lot. Each token only runs through a few experts, so compute per token stays modest.",
-            "<b>The cost</b>: every expert has to sit in GPU memory, even when idle.",
-            "<b>The catch</b>: the router must be trained to spread work evenly. Otherwise it sends everything to a few favourites and the rest are wasted."
+            "<b>The benefit</b>: the total number of parameters, and so how much the model can know, grows a lot. But each token only goes through a few experts, so the work per token stays small.",
+            "<b>The cost</b>: every expert has to be kept in GPU memory, even when it's not being used.",
+            "<b>The catch</b>: the router has to be trained to share the work evenly. Otherwise it sends everything to a few favourites and the rest are wasted."
           ]
         },
         "Pick different tokens on the right to see different experts light up.",
         {
-          "note": "\"Expert\" is a misleading name. Experts don't neatly specialise in subjects like \"maths\" or \"French\". What they learn to specialise in is usually much harder for people to interpret.",
+          "note": "\"Expert\" is a misleading name. Experts don't neatly specialise in subjects like \"maths\" or \"French\". What they actually specialise in is usually much harder for people to make sense of.",
           "kind": "warn"
         }
       ],
@@ -178,7 +232,9 @@
         {
           "type": "widget",
           "name": "moe-router",
-          "props": { "tokens": ["␣learning", "␣artificial", "␣Paris", "␣def", "3.14", "␣because"] }
+          "props": {
+            "tokens": ["␣learning", "␣artificial", "␣Paris", "␣def", "3.14", "␣because"]
+          }
         }
       ]
     }

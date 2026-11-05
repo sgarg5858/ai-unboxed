@@ -5,25 +5,25 @@
   "slides": [
     {
       "title": "The whole machine on one screen",
-      "summary": "An LLM turns a list of numbers (tokens) into a score for every possible next token. Everything else in this course is detail about how.",
+      "summary": "An LLM takes a list of numbers (tokens) and gives a score to every possible next token. The rest of this course explains how.",
       "body": [
-        "The <i>Assistant architecture</i> section treated the model as one box inside a larger system. This section opens that box.",
-        "Strip away the chat window and a large language model is one very large mathematical function. You give it a sequence of integers, one per piece of text, and it gives back a score for every token it knows, saying how likely each one is to come next.",
-        "That's all it does. Writing a whole answer is just calling this function again and again, adding one token each time. The next slide shows that loop.",
+        "The <i>Assistant architecture</i> section treated the model as one box in a bigger system. This section opens that box.",
+        "Take away the chat window and a large language model is one huge maths function. You give it a list of whole numbers, one for each piece of text. It gives back a score for every token it knows, showing how likely each one is to come next.",
+        "That's all it does. To write a whole answer, it runs this function again and again, adding one token each time. The next slide shows that loop.",
         {
           "h": "How to read the shapes"
         },
-        "Each stage on the right turns one block of numbers into another. A block of numbers with several dimensions is called a <b>tensor</b>, and its <b>shape</b> lists the size of each dimension. Following the shapes is the quickest way to understand the architecture. Four letters appear everywhere:",
+        "Each stage on the right turns one block of numbers into another. A block of numbers with several dimensions is called a <b>tensor</b>, and its <b>shape</b> lists how big each dimension is. Following the shapes is the quickest way to understand how the model works. Four letters come up everywhere:",
         {
           "ul": [
-            "<code>B</code>, batch size: how many separate texts are processed at once.",
+            "<code>B</code>, batch size: how many separate texts are handled at once.",
             "<code>n</code>, sequence length: how many tokens are in each text.",
-            "<code>d</code>, model width: how many numbers describe each token. Typically 4,096 or more.",
+            "<code>d</code>, model width: how many numbers describe each token. Usually 4,096 or more.",
             "<code>V</code>, vocabulary size: how many different tokens the model knows. Often 100,000 or more."
           ]
         },
         {
-          "note": "Think of a tensor of shape <code>[B, n, d]</code> as <code>number[][][]</code> in TypeScript: B texts, each with n tokens, each token a list of d numbers. Libraries store it as one flat array for speed, but that's the mental model.",
+          "note": "Think of a tensor of shape <code>[B, n, d]</code> as <code>number[][][]</code> in TypeScript: B texts, each with n tokens, each token a list of d numbers. Libraries store it as one flat array for speed, but this is a good way to picture it.",
           "kind": "dev"
         },
         "Click a stage on the right to jump to its chapter."
@@ -100,7 +100,7 @@
         },
         {
           "type": "caption",
-          "html": "Typical sizes: d = 4,096, N = 32 layers, V = 128,000. Only the last row of logits matters when generating."
+          "html": "Typical sizes: d = 4,096, N = 32 layers, V = 128,000. When generating, only the scores for the last token matter."
         }
       ]
     },
@@ -108,16 +108,16 @@
       "title": "Generation is a loop",
       "summary": "The model only ever predicts one token. Long answers come from running it in a loop and feeding each prediction back in.",
       "body": [
-        "The model can't write a sentence in one go. It predicts a single next token. The program appends that token to the input, and the model runs again on the longer sequence. This is <b>autoregressive decoding</b>: each output becomes part of the next input.",
-        "Press <i>Run one step</i> to watch it happen. Each step reads the whole sequence so far.",
+        "The model can't write a sentence in one go. It predicts just the next token. The program adds that token to the input, and the model runs again on the longer text. This is called <b>autoregressive decoding</b>: each output becomes part of the next input.",
+        "Press <i>Run one step</i> to watch it happen. Each step reads everything so far.",
         {
-          "h": "Two phases with very different costs"
+          "h": "Two stages, with very different costs"
         },
         {
           "ul": [
-            "<b>Prefill</b>: the prompt is processed first, all of its tokens in one parallel pass. GPUs are good at parallel arithmetic, so here the limit is raw calculation speed (<b>compute-bound</b>). It's the short pause before the first word appears.",
-            "<b>Decode</b>: after that, every new token needs its own pass through the whole model. Each pass does little arithmetic but has to read billions of weights from GPU memory, so the limit is memory speed (<b>memory-bound</b>). It's the steady word-by-word streaming you see. The KV cache (see <i>Output & inference</i>) exists to make this phase cheaper.",
-            "<b>Stopping</b>: the loop ends when the model produces a special end-of-sequence token, or when the application's maximum length is reached."
+            "<b>Prefill</b>: first the whole prompt is processed, all its tokens at the same time. GPUs are great at doing lots of maths at once, so the limit here is pure calculation speed (<b>compute-bound</b>). It's the short pause before the first word appears.",
+            "<b>Decode</b>: after that, every new token needs its own run through the whole model. Each run does little maths but has to read billions of weights from GPU memory, so the limit is how fast memory can be read (<b>memory-bound</b>). It's the steady word-by-word typing you see. The KV cache (see <i>Output & inference</i>) exists to make this stage cheaper.",
+            "<b>Stopping</b>: the loop ends when the model writes a special \"end\" token, or when the app's length limit is reached."
           ]
         },
         {
@@ -158,7 +158,7 @@
                   ]
                 }
               ],
-              "caption": "Prompt only. Step 1 is the prefill pass over all 3 tokens."
+              "caption": "Just the prompt. Step 1 processes all 3 tokens at once (prefill)."
             },
             {
               "blocks": [
@@ -185,7 +185,7 @@
                   ]
                 }
               ],
-              "caption": "Pass 2 done. Sequence length is now 4; the model re-reads it all (or reuses its cache)."
+              "caption": "Run 2 done. The text is now 4 tokens long; the model reads it all again (or reuses its cache)."
             },
             {
               "blocks": [
@@ -216,7 +216,7 @@
                   ]
                 }
               ],
-              "caption": "Pass 3 done. Sequence length is now 5; the model re-reads it all (or reuses its cache)."
+              "caption": "Run 3 done. The text is now 5 tokens long; the model reads it all again (or reuses its cache)."
             },
             {
               "blocks": [
@@ -251,7 +251,7 @@
                   ]
                 }
               ],
-              "caption": "Pass 4 done. Sequence length is now 6; the model re-reads it all (or reuses its cache)."
+              "caption": "Run 4 done. The text is now 6 tokens long; the model reads it all again (or reuses its cache)."
             },
             {
               "blocks": [
@@ -290,7 +290,7 @@
                   ]
                 }
               ],
-              "caption": "Pass 5 done. Sequence length is now 7; the model re-reads it all (or reuses its cache)."
+              "caption": "Run 5 done. The text is now 7 tokens long; the model reads it all again (or reuses its cache)."
             },
             {
               "blocks": [
@@ -333,7 +333,7 @@
                   ]
                 }
               ],
-              "caption": "Pass 6 done. Sequence length is now 8; the model re-reads it all (or reuses its cache)."
+              "caption": "Run 6 done. The text is now 8 tokens long; the model reads it all again (or reuses its cache)."
             },
             {
               "blocks": [
@@ -380,7 +380,7 @@
                   ]
                 }
               ],
-              "caption": "Pass 7 done. Sequence length is now 9; the model re-reads it all (or reuses its cache)."
+              "caption": "Run 7 done. The text is now 9 tokens long; the model reads it all again (or reuses its cache)."
             },
             {
               "blocks": [
@@ -431,7 +431,7 @@
                   ]
                 }
               ],
-              "caption": "Pass 8 done. Sequence length is now 10; the model re-reads it all (or reuses its cache)."
+              "caption": "Run 8 done. The text is now 10 tokens long; the model reads it all again (or reuses its cache)."
             },
             {
               "blocks": [
@@ -482,7 +482,7 @@
                   ]
                 }
               ],
-              "caption": "Hit &lt;eos&gt;, so generation stops."
+              "caption": "It wrote the end token &lt;eos&gt;, so it stops."
             }
           ],
           "nextLabel": "Run one step",
@@ -492,28 +492,28 @@
     },
     {
       "title": "Vectors and similarity: the maths you need",
-      "summary": "Almost everything inside an LLM is a list of numbers, a vector, and the key operation is measuring how similar two vectors are.",
+      "summary": "Almost everything inside an LLM is a list of numbers, called a vector. The most important operation is measuring how similar two vectors are.",
       "body": [
         "You need very little maths for this course. These three ideas cover most of it.",
         {
           "h": "1. A vector is a list of numbers"
         },
-        "Pick some features and you can describe anything with numbers. Describe fruit by <code>[sweetness, crunchiness, sourness]</code>, each from 0 to 1, and an apple might be <code>[0.7, 0.9, 0.3]</code>. That list is a <b>vector</b>, and each position is a <b>dimension</b>.",
+        "Pick a few features and you can describe anything with numbers. Describe fruit by <code>[sweetness, crunchiness, sourness]</code>, each from 0 to 1, and an apple might be <code>[0.7, 0.9, 0.3]</code>. That list is a <b>vector</b>, and each slot is a <b>dimension</b>.",
         {
           "h": "2. The dot product measures similarity"
         },
-        "The <b>dot product</b> of two vectors multiplies them position by position and adds up the results. It's large when both vectors are large in the same places, so it works as a similarity score.",
+        "To get the <b>dot product</b> of two vectors, multiply them slot by slot and add up the results. It's big when both vectors are big in the same places, so it works as a similarity score.",
         {
           "note": "apple · pear = 0.7×0.8 + 0.9×0.6 + 0.3×0.2 = 0.56 + 0.54 + 0.06 = <b>1.16</b>",
           "kind": "example"
         },
-        "<b>Cosine similarity</b> divides the dot product by the length of each vector, so only direction counts, not size. It runs from −1 (opposite) through 0 (unrelated) to 1 (same direction). Try different pairs on the right.",
+        "<b>Cosine similarity</b> is the dot product adjusted for each vector's length, so only the direction counts, not the size. It goes from −1 (opposite) through 0 (unrelated) to 1 (same direction). Try different pairs on the right.",
         {
           "h": "3. A matrix multiply is many dot products at once"
         },
-        "A <b>matrix</b> is a grid of numbers. Multiplying a vector by a matrix takes one dot product per column of the matrix and produces a new vector. A neural network is mostly long chains of these multiplications, with the matrix values learned from data.",
+        "A <b>matrix</b> is a grid of numbers. Multiplying a vector by a matrix does one dot product per column and gives a new vector. A neural network is mostly long chains of these multiplications, and the numbers in the matrices are learned from data.",
         {
-          "note": "An LLM describes every token with a vector of thousands of numbers. Nobody chooses what those dimensions mean, as we did for fruit; training finds them. But the core idea, similar meaning means similar vectors, runs through the whole course.",
+          "note": "An LLM describes every token with a vector of thousands of numbers. Nobody decides what those dimensions mean, like we did for fruit; training works them out. But the key idea, that similar meanings have similar vectors, runs through the whole course.",
           "kind": "key"
         }
       ],
@@ -533,18 +533,18 @@
     },
     {
       "title": "A short glossary",
-      "summary": "The handful of words that show up on almost every slide.",
+      "summary": "The few words that come up on almost every slide.",
       "body": [
-        "Each of these terms is explained properly when it first matters. This list is here to come back to if a word on a later slide feels unfamiliar.",
+        "Each term is explained fully the first time it matters. Come back to this list if a word on a later slide feels unfamiliar.",
         "Two ideas matter more than any single definition:",
         {
           "ul": [
-            "<b>Everything is numbers.</b> Text becomes integers, integers become vectors, and the model is arithmetic on those vectors.",
-            "<b>Behaviour comes from learned parameters.</b> Nobody programs an LLM's knowledge or style by hand. Billions of numbers are adjusted during training until the model predicts text well, and everything it can do emerges from those numbers."
+            "<b>Everything is numbers.</b> Text becomes whole numbers, those become vectors, and the model just does maths on the vectors.",
+            "<b>Behaviour comes from learned numbers.</b> Nobody writes an LLM's knowledge or style by hand. Billions of numbers are adjusted during training until the model predicts text well, and everything it can do comes from those numbers."
           ]
         },
         {
-          "note": "A useful split from software: <b>training</b> is like a very long, very expensive build step that produces an artifact (the weights). <b>Inference</b> is running that artifact. Most of this course describes inference; the <i>Training</i> chapter covers the build.",
+          "note": "A handy comparison with software: <b>training</b> is like a very long, very expensive build that produces a file (the weights). <b>Inference</b> is running that file. Most of this course is about inference; the <i>Training</i> chapter covers the build.",
           "kind": "dev"
         }
       ],
@@ -559,7 +559,7 @@
             },
             {
               "label": "<b>Vocabulary</b>",
-              "sub": "The fixed list of every token the model knows, each with an integer ID.",
+              "sub": "The fixed list of every token the model knows, each with a number as its ID.",
               "value": "~100k tokens"
             },
             {
@@ -579,7 +579,7 @@
             },
             {
               "label": "<b>Layer (block)</b>",
-              "sub": "One repeated unit of the model: attention, then an MLP.",
+              "sub": "One repeated unit of the model: attention, then an MLP (a small neural network).",
               "value": "× N"
             },
             {
