@@ -562,6 +562,7 @@
             "Good serving code turns a typed \"&lt;|user|&gt;\" into ordinary letters, not the special token, <mark>so a user can't pretend to be someone else</mark>."
           ]
         },
+        "<b>Try it yourself:</b> open <a href=\"https://tiktokenizer.vercel.app/\" target=\"_blank\" rel=\"noopener noreferrer\">Tiktokenizer ↗</a>, type a short chat with a system and a user message, and pick a model. You'll see the special tokens wrapped around each message and the token IDs the model actually receives.",
         {
           "note": "It's like an HTTP request being turned into bytes to send over the network. The API gives you neat, structured messages; the model only ever sees the flattened version.",
           "kind": "dev"
@@ -623,6 +624,35 @@
               "html": "Amber = special tokens. The model writes its reply right after <span class=\"k\">&lt;|assistant|&gt;</span>. The exact names differ between model families."
             }
           ]
+        }
+      ]
+    },
+    {
+      "title": "The context window: a limit counted in tokens",
+      "summary": "A model can only look at a fixed number of tokens at once. That limit, the context window, is one big reason token counts matter.",
+      "body": [
+        "Every model has a <b>context window</b>: the most tokens it can handle in one request. Everything has to fit inside it: the system prompt, the whole chat so far, any documents you attach, and the reply it's writing.",
+        {
+          "ul": [
+            "<b>Sizes have grown fast.</b> GPT-2 (2019) could handle 1,024 tokens. Many models today take 128,000, and some over 1,000,000.",
+            "<b>Roughly:</b> 1,000 tokens is about 750 English words, so 128,000 tokens is about a 300-page book.",
+            "<b>The reply counts too.</b> The tokens the model writes come out of the same window, and there's usually a separate cap on how long one reply can be."
+          ]
+        },
+        "When a chat gets too long, something has to give: <mark>the app drops or summarises the oldest messages, or the request is rejected</mark>. Anything dropped is simply gone as far as the model is concerned.",
+        {
+          "note": "This is where tokenization hits you in practice. Text that needs more tokens, like some languages or messy formatting, fills the window faster and costs more. How the model uses the window, and why long contexts are slow, comes in <i>Output & inference</i>.",
+          "kind": "dev"
+        }
+      ],
+      "viz": [
+        {
+          "type": "widget",
+          "name": "context-fit"
+        },
+        {
+          "type": "caption",
+          "html": "Token counts are rough. Real apps also reserve room for tool results and the model's thinking."
         }
       ]
     },

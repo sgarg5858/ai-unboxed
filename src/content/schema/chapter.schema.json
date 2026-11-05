@@ -42,7 +42,7 @@
             "oneOf": [
               {
                 "type": "string",
-                "description": "Inline HTML allowed (b, i, code, span class, and at most one <mark> per slide for the key takeaway). Inline style attributes are stripped."
+                "description": "Inline HTML allowed (b, i, code, span class, a href (with target _blank and rel noopener noreferrer), and at most one <mark> per slide for the key takeaway). Inline style attributes are stripped."
               },
               {
                 "type": "object",
@@ -53,7 +53,7 @@
                     "type": "array",
                     "items": {
                       "type": "string",
-                      "description": "Inline HTML allowed (b, i, code, span class, and at most one <mark> per slide for the key takeaway). Inline style attributes are stripped."
+                      "description": "Inline HTML allowed (b, i, code, span class, a href (with target _blank and rel noopener noreferrer), and at most one <mark> per slide for the key takeaway). Inline style attributes are stripped."
                     }
                   }
                 }
@@ -75,7 +75,7 @@
                 "properties": {
                   "note": {
                     "type": "string",
-                    "description": "Inline HTML allowed (b, i, code, span class, and at most one <mark> per slide for the key takeaway). Inline style attributes are stripped."
+                    "description": "Inline HTML allowed (b, i, code, span class, a href (with target _blank and rel noopener noreferrer), and at most one <mark> per slide for the key takeaway). Inline style attributes are stripped."
                   },
                   "kind": {
                     "enum": ["key", "analogy", "dev", "warn", "example"]
@@ -129,7 +129,7 @@
             },
             "caption": {
               "type": "string",
-              "description": "Inline HTML allowed (b, i, code, span class, and at most one <mark> per slide for the key takeaway)."
+              "description": "Inline HTML allowed (b, i, code, span class, a href (with target _blank and rel noopener noreferrer), and at most one <mark> per slide for the key takeaway)."
             }
           }
         }
@@ -156,11 +156,11 @@
       "properties": {
         "label": {
           "type": "string",
-          "description": "Inline HTML allowed (b, i, code, span class, and at most one <mark> per slide for the key takeaway). Inline style attributes are stripped."
+          "description": "Inline HTML allowed (b, i, code, span class, a href (with target _blank and rel noopener noreferrer), and at most one <mark> per slide for the key takeaway). Inline style attributes are stripped."
         },
         "sub": {
           "type": "string",
-          "description": "Inline HTML allowed (b, i, code, span class, and at most one <mark> per slide for the key takeaway). Inline style attributes are stripped."
+          "description": "Inline HTML allowed (b, i, code, span class, a href (with target _blank and rel noopener noreferrer), and at most one <mark> per slide for the key takeaway). Inline style attributes are stripped."
         },
         "value": {
           "type": "string"
@@ -226,7 +226,7 @@
               },
               "html": {
                 "type": "string",
-                "description": "Inline HTML allowed (b, i, code, span class, and at most one <mark> per slide for the key takeaway). Inline style attributes are stripped."
+                "description": "Inline HTML allowed (b, i, code, span class, a href (with target _blank and rel noopener noreferrer), and at most one <mark> per slide for the key takeaway). Inline style attributes are stripped."
               }
             },
             "additionalProperties": false
@@ -574,7 +574,7 @@
                     },
                     "caption": {
                       "type": "string",
-                      "description": "Inline HTML allowed (b, i, code, span class, and at most one <mark> per slide for the key takeaway). Inline style attributes are stripped."
+                      "description": "Inline HTML allowed (b, i, code, span class, a href (with target _blank and rel noopener noreferrer), and at most one <mark> per slide for the key takeaway). Inline style attributes are stripped."
                     }
                   }
                 }
@@ -602,6 +602,7 @@
                   "fruit-similarity",
                   "tokenizer",
                   "letter-count",
+                  "context-fit",
                   "embedding-table",
                   "embedding-geometry",
                   "positional-heatmap",

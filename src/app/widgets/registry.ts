@@ -31,6 +31,7 @@ import {
   PositionalHeatmapWidget,
   ResidualMatrixWidget,
   RopeWidget,
+  ContextFitWidget,
   LetterCountWidget,
   TokenizerWidget,
 } from './tokens.widgets';
@@ -48,6 +49,7 @@ export const WIDGETS: Record<string, Type<unknown>> = {
   // 01 tokens & embeddings
   tokenizer: TokenizerWidget,
   'letter-count': LetterCountWidget,
+  'context-fit': ContextFitWidget,
   'embedding-table': EmbeddingTableWidget,
   'embedding-geometry': EmbeddingGeometryWidget,
   'positional-heatmap': PositionalHeatmapWidget,

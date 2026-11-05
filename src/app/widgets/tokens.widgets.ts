@@ -537,3 +537,143 @@ export class LetterCountWidget {
     return this.letters().map((c) => (c === this.target() ? ++n : 0));
   });
 }
+
+type ContextItem = { id: string; label: string; tokens: number; on: boolean };
+
+/** Context window sizes offered, in tokens. */
+const WINDOWS = [4_096, 32_000, 128_000, 200_000, 1_000_000];
+
+/** "Will it fit?": everything in a request shares one token budget. */
+@Component({
+  selector: 'w-context-fit',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { class: 'contents' },
+  template: `
+    <div class="panel">
+      <p class="cap" style="margin:0 0 6px">Context window</p>
+      <div
+        class="row"
+        role="radiogroup"
+        aria-label="Context window size"
+        style="margin-bottom:14px"
+      >
+        @for (w of windows; track w) {
+          <button
+            class="btn"
+            role="radio"
+            [class.on]="window() === w"
+            [attr.aria-checked]="window() === w"
+            (click)="window.set(w)"
+          >
+            {{ short(w) }}
+          </button>
+        }
+      </div>
+
+      <p class="cap" style="margin:0 0 6px">What goes into this request</p>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        @for (it of items(); track it.id) {
+          <label style="display:flex;align-items:center;gap:8px;font-size:14px;cursor:pointer">
+            <input type="checkbox" [checked]="it.on" (change)="toggle(it.id)" />
+            <span style="flex:1">{{ it.label }}</span>
+            <span class="mono" style="font-size:12.5px;color:var(--muted)">{{
+              fmt(it.tokens)
+            }}</span>
+          </label>
+        }
+      </div>
+
+      <div style="position:relative;margin-top:14px">
+        <div
+          role="img"
+          [attr.aria-label]="fmt(used()) + ' of ' + fmt(window()) + ' tokens used'"
+          style="height:26px;border-radius:8px;background:var(--sunk);overflow:hidden;display:flex;border:1px solid var(--line)"
+        >
+          @for (seg of segments(); track seg.id) {
+            <span
+              [style.width.%]="seg.pct"
+              [style.background]="seg.colour"
+              style="display:block;height:100%;border-right:1px solid var(--surface)"
+            ></span>
+          }
+        </div>
+        @if (!fits()) {
+          <span
+            aria-hidden="true"
+            [style.left.%]="limitPct()"
+            style="position:absolute;top:-6px;bottom:-6px;width:3px;margin-left:-1.5px;background:var(--ink);border-radius:2px"
+          ></span>
+          <span
+            class="cap"
+            aria-hidden="true"
+            [style.left.%]="limitPct()"
+            style="position:absolute;top:34px;transform:translateX(-100%);padding-right:6px;white-space:nowrap"
+            >window ends here</span
+          >
+        }
+      </div>
+      @if (!fits()) {
+        <div style="height:18px"></div>
+      }
+
+      <div class="stat" style="margin-top:12px">
+        <div>
+          <b>{{ fmt(used()) }}</b
+          ><span>tokens used of {{ fmt(window()) }}</span>
+        </div>
+        <div>
+          <b [style.color]="fits() ? 'var(--pos-ink)' : 'var(--neg-ink)'">{{
+            fits() ? 'Fits' : 'Too long'
+          }}</b
+          ><span>{{
+            fits()
+              ? fmt(window() - used()) + ' tokens to spare'
+              : 'over by ' + fmt(used() - window()) + ': drop, summarise or reject'
+          }}</span>
+        </div>
+      </div>
+    </div>
+  `,
+})
+export class ContextFitWidget {
+  protected readonly windows = WINDOWS;
+  protected readonly window = signal(128_000);
+  protected readonly items = signal<ContextItem[]>([
+    { id: 'system', label: 'System prompt and tool descriptions', tokens: 3_000, on: true },
+    { id: 'chat', label: 'Chat history (an hour of back and forth)', tokens: 15_000, on: true },
+    { id: 'report', label: 'A 40-page PDF report', tokens: 30_000, on: false },
+    { id: 'book', label: 'A 300-page book', tokens: 130_000, on: false },
+    { id: 'reply', label: 'Room for the reply', tokens: 4_000, on: true },
+  ]);
+
+  private readonly colours: Record<string, string> = {
+    system: 'var(--accent)',
+    chat: 'var(--accent-soft)',
+    report: 'var(--heat)',
+    book: 'var(--neg)',
+    reply: 'var(--pos)',
+  };
+
+  protected readonly used = computed(() =>
+    this.items().reduce((sum, it) => sum + (it.on ? it.tokens : 0), 0),
+  );
+  protected readonly fits = computed(() => this.used() <= this.window());
+  /** Bar segments as a share of whichever is bigger: the window or what was asked for. */
+  protected readonly segments = computed(() => {
+    const scale = Math.max(this.window(), this.used());
+    return this.items()
+      .filter((it) => it.on)
+      .map((it) => ({ id: it.id, pct: (it.tokens / scale) * 100, colour: this.colours[it.id] }));
+  });
+
+  /** Where the window ends on the bar, when the request is bigger than the window. */
+  protected readonly limitPct = computed(() => (this.window() / this.used()) * 100);
+
+  protected toggle(id: string) {
+    this.items.update((list) => list.map((it) => (it.id === id ? { ...it, on: !it.on } : it)));
+  }
+
+  protected readonly fmt = (n: number) => n.toLocaleString('en-GB');
+  protected readonly short = (n: number) =>
+    n >= 1_000_000 ? `${n / 1_000_000}M` : n === 4_096 ? '4k' : `${n / 1_000}k`;
+}
