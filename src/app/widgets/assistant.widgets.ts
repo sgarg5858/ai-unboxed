@@ -193,7 +193,7 @@ export interface Defense {
       </div>
       <div class="stat" style="margin-top:12px">
         <div>
-          <b [style.color]="r.rate > 0.05 ? 'var(--neg)' : 'var(--pos)'">{{ r.rateText }}</b
+          <b [style.color]="r.rate > 0.05 ? 'var(--neg-ink)' : 'var(--pos-ink)'">{{ r.rateText }}</b
           ><span>attack success (illustrative)</span>
         </div>
         <div>

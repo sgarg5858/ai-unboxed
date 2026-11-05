@@ -177,7 +177,7 @@ export class AttentionWeightsWidget {
     const q = this.q();
     return (v: number, i: number): Cell => ({
       text: f2(v),
-      style: heatCell(v) + (i === q ? ';outline:1.5px solid var(--accent)' : ';opacity:.55'),
+      style: i === q ? heatCell(v) + ';outline:1.5px solid var(--accent)' : heatCell(v * 0.45),
     });
   });
   protected readonly out = computed(() => {

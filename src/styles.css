@@ -20,20 +20,31 @@ img {
 }
 /* Layout: chapter rail on top, each chapter a slide stepper; text column left, live instrument right; shapes printed like a debugger trace */
 :root {
-  --bg: #f3f5f4;
+  --bg: #f2f6f8;
   --surface: #ffffff;
-  --sunk: #e8ecea;
-  --ink: #15201e;
-  --muted: #56635f;
-  --line: #d3dad7;
-  --accent: #0e6e8c;
-  --accent-ink: #0a5068;
-  --accent-soft: #dceef3;
-  --pos: #1c8c74;
-  --neg: #d0583a;
-  --heat: #d9901c;
-  --heat-soft: #f8e8cc;
-  --code-bg: #1b2422;
+  --sunk: #edf3f7;
+  --ink: #10212b;
+  --muted: #4a6070;
+  --line: #d5e0e7;
+  --accent: #0a6ea6;
+  --accent-ink: #075585;
+  --accent-soft: #ddeef9;
+  --pos: #17906f;
+  --neg: #d9532f;
+  --heat: #cc8200;
+  --heat-soft: #fbebcb;
+  /* Text-safe versions of pos/neg/heat (>= 4.5:1 on white and on panels). The plain tokens stay
+     bright for fills, bars and strokes. */
+  --pos-ink: #0b6b52;
+  --neg-ink: #b3341a;
+  --heat-ink: #8a5a00;
+  /* Active pill, page glow, card depth, panel outline */
+  --pill-bg: #0a6ea6;
+  --pill-fg: #ffffff;
+  --bg-top: #e3f0f8;
+  --shadow: 0 1px 2px rgba(16, 33, 43, 0.05), 0 10px 28px -14px rgba(16, 33, 43, 0.18);
+  --panel-border: var(--line);
+  --code-bg: #13232d;
   --code-ink: #dde6e2;
   --code-dim: #8fa39c;
   --code-key: #7fc8dd;
@@ -61,6 +72,14 @@ img {
     --code-dim: #7c8f89;
     --code-key: #7fc8dd;
     color-scheme: dark;
+    --pos-ink: #3fc4a3;
+    --neg-ink: #f07d60;
+    --heat-ink: #f0ac40;
+    --pill-bg: #e4ece9;
+    --pill-fg: #0f1413;
+    --bg-top: #0f1413;
+    --shadow: none;
+    --panel-border: transparent;
   }
 }
 :root[data-theme='light'] {
@@ -85,12 +104,20 @@ img {
   --code-dim: #7c8f89;
   --code-key: #7fc8dd;
   color-scheme: dark;
+  --pos-ink: #3fc4a3;
+  --neg-ink: #f07d60;
+  --heat-ink: #f0ac40;
+  --pill-bg: #e4ece9;
+  --pill-fg: #0f1413;
+  --bg-top: #0f1413;
+  --shadow: none;
+  --panel-border: transparent;
 }
 * {
   box-sizing: border-box;
 }
 body {
-  background: var(--bg);
+  background: var(--bg) linear-gradient(180deg, var(--bg-top) 0, var(--bg) 420px) no-repeat;
   color: var(--ink);
   font-family: var(--f-body);
   font-size: 16px;
@@ -157,13 +184,13 @@ nav.chapters button b {
   color: var(--muted);
 }
 nav.chapters button[aria-current='true'] {
-  background: var(--ink);
-  color: var(--bg);
-  border-color: var(--ink);
+  background: var(--pill-bg);
+  color: var(--pill-fg);
+  border-color: var(--pill-bg);
 }
 nav.chapters button[aria-current='true'] b {
-  color: var(--bg);
-  opacity: 0.7;
+  color: var(--pill-fg);
+  opacity: 1;
 }
 button:focus-visible,
 input:focus-visible,
@@ -196,6 +223,7 @@ select:focus-visible {
   border: 1px solid var(--line);
   border-radius: 14px;
   padding: 22px;
+  box-shadow: var(--shadow);
 }
 @media (min-width: 940px) {
   .slide {
@@ -285,6 +313,7 @@ pre.code .kw {
   border-radius: 10px;
   padding: 16px;
   min-width: 0;
+  border: 1px solid var(--panel-border);
 }
 .cap {
   font-size: 13px;
@@ -361,7 +390,15 @@ input[type='range'] {
   border-color: var(--heat);
 }
 .chip.dim {
-  opacity: 0.4;
+  opacity: 1;
+  background: transparent;
+  color: var(--muted);
+  border: 1px dashed var(--line);
+}
+.stage.dim {
+  background: transparent;
+  border-style: dashed;
+  color: var(--muted);
 }
 .chip.click {
   cursor: pointer;
@@ -583,13 +620,13 @@ input[type='text'] {
   line-height: 1.55;
 }
 .note[data-kind='analogy'] {
-  --c: var(--pos);
+  --c: var(--pos-ink);
 }
 .note[data-kind='dev'] {
-  --c: var(--heat);
+  --c: var(--heat-ink);
 }
 .note[data-kind='warn'] {
-  --c: var(--neg);
+  --c: var(--neg-ink);
 }
 .note[data-kind='example'] {
   --c: var(--muted);
@@ -645,8 +682,8 @@ input[type='text'] {
   color: var(--ink);
 }
 .theme-switch button[aria-pressed='true'] {
-  background: var(--ink);
-  color: var(--bg);
+  background: var(--pill-bg);
+  color: var(--pill-fg);
 }
 @media (max-width: 480px) {
   .theme-switch .theme-label {
@@ -658,9 +695,28 @@ input[type='text'] {
 }
 
 /* Second-level chapter row, shown under the active section */
-nav.chapters.level2{margin:-6px 0 18px;padding-left:12px;border-left:2px solid var(--accent)}
-nav.chapters.level2 button{font-size:13px;padding:4px 12px;background:transparent}
-nav.chapters.level2 button b{font-size:11px}
-nav.chapters.level2 button:hover{border-color:var(--accent);color:var(--ink)}
-nav.chapters.level2 button[aria-current='true']{background:var(--accent-soft);color:var(--accent-ink);border-color:var(--accent)}
-nav.chapters.level2 button[aria-current='true'] b{color:var(--accent-ink)}
+nav.chapters.level2 {
+  margin: -6px 0 18px;
+  padding-left: 12px;
+  border-left: 2px solid var(--accent);
+}
+nav.chapters.level2 button {
+  font-size: 13px;
+  padding: 4px 12px;
+  background: transparent;
+}
+nav.chapters.level2 button b {
+  font-size: 11px;
+}
+nav.chapters.level2 button:hover {
+  border-color: var(--accent);
+  color: var(--ink);
+}
+nav.chapters.level2 button[aria-current='true'] {
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+  border-color: var(--accent);
+}
+nav.chapters.level2 button[aria-current='true'] b {
+  color: var(--accent-ink);
+}

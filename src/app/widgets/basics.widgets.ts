@@ -39,12 +39,12 @@ const norm = (a: number[]) => Math.sqrt(dot(a, a));
           </tr>
           @for (f of fruits; track f[0]; let i = $index) {
             @let on = i === pick()[0] || i === pick()[1];
-            <tr [style.opacity]="on ? 1 : 0.45">
+            <tr>
               <th>{{ f[0] }}</th>
               @for (v of f[1]; track $index) {
                 <td
                   [style.background]="on ? 'var(--accent-soft)' : 'var(--surface)'"
-                  [style.color]="on ? 'var(--accent-ink)' : null"
+                  [style.color]="on ? 'var(--accent-ink)' : 'var(--muted)'"
                 >
                   {{ v.toFixed(1) }}
                 </td>

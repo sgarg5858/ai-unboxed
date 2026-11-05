@@ -40,7 +40,7 @@ import { Tabs } from './tabs';
           @if (widget(b.name); as w) {
             <ng-container *ngComponentOutlet="w; inputs: b.props ? { props: b.props } : {}" />
           } @else {
-            <p class="cap" style="color:var(--neg)">Unknown widget "{{ b.name }}"</p>
+            <p class="cap" style="color:var(--neg-ink)">Unknown widget "{{ b.name }}"</p>
           }
         }
         @case ('panel') {

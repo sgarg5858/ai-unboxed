@@ -18,7 +18,7 @@ import { toneColor } from './tone';
         <div
           class="stage"
           [class.cur]="it.highlight"
-          [style.opacity]="it.dim ? 0.5 : null"
+          [class.dim]="it.dim"
           [attr.role]="it.goto ? 'button' : null"
           [attr.tabindex]="it.goto ? 0 : null"
           (click)="go(it.goto)"
