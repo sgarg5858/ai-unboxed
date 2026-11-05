@@ -33,7 +33,8 @@ jobs:
       # Validates every chapter JSON and renders every slide; a broken slide stops the deploy.
       - run: npm test -- --watch=false
 
-      - run: npm run build:pages
+      # The base path comes from the repo name, so renaming the repo can't break the site's links.
+      - run: npx ng build --base-href "/${{ github.event.repository.name }}/"
 
       - uses: actions/upload-pages-artifact@v3
         with:

@@ -3,7 +3,7 @@ import { Injectable, effect, inject, signal } from '@angular/core';
 
 export type ThemeChoice = 'auto' | 'light' | 'dark';
 
-export const THEME_KEY = 'inside-an-llm:theme';
+export const THEME_KEY = 'ai-unboxed:theme';
 
 const isChoice = (v: unknown): v is ThemeChoice => v === 'auto' || v === 'light' || v === 'dark';
 

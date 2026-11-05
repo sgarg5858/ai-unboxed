@@ -22,14 +22,14 @@ Requires Node `^20.19`, `^22.12` or `>=24`.
 npm install
 npm start          # dev server at http://localhost:4200
 npm test           # validates all content and renders every slide
-npm run build      # static site in dist/inside-an-llm/browser
+npm run build      # static site in dist/ai-unboxed/browser
 ```
 
-Live site: **https://sgarg5858.github.io/inside-an-llm/**
+Live site: **https://sgarg5858.github.io/ai-unboxed/**
 
 ### Deployment
 
-Every push to `main` runs [.github/workflows/deploy-pages.yml](.github/workflows/deploy-pages.yml): it installs dependencies, runs the tests, builds with `npm run build:pages` (base path `/inside-an-llm/`) and publishes to GitHub Pages. If any test fails, nothing is deployed. You can also start it by hand from the repo's Actions tab ("Run workflow").
+Every push to `main` runs [.github/workflows/deploy-pages.yml](.github/workflows/deploy-pages.yml): it installs dependencies, runs the tests, builds with the base path set from the repo name (`/ai-unboxed/`) and publishes to GitHub Pages. If any test fails, nothing is deployed. You can also start it by hand from the repo's Actions tab ("Run workflow").
 
 One-time setup: **Settings → Pages → Build and deployment → Source: GitHub Actions**.
 

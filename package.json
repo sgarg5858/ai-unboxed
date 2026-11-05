@@ -1,11 +1,11 @@
 {
-  "name": "inside-an-llm",
+  "name": "ai-unboxed",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "build:pages": "ng build --base-href /inside-an-llm/",
+    "build:pages": "ng build --base-href /ai-unboxed/",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
