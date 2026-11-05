@@ -342,3 +342,198 @@ export class ResidualMatrixWidget {
     ),
   }));
 }
+
+type LetterCountProps = {
+  word?: string;
+  letter?: string;
+  /** How a tokenizer splits the word; the pieces must join back into the word. */
+  pieces?: string[];
+  /** Illustrative IDs, one per piece. */
+  ids?: number[];
+};
+
+/** Why counting letters is hard: the model gets token IDs, not the letters inside them. */
+@Component({
+  selector: 'w-letter-count',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { class: 'contents' },
+  template: `
+    <div class="panel">
+      <div class="row" role="tablist" aria-label="View" style="margin-bottom:14px">
+        @for (v of views; track v.id) {
+          <button
+            class="btn"
+            role="tab"
+            [class.on]="view() === v.id"
+            [attr.aria-selected]="view() === v.id"
+            (click)="view.set(v.id)"
+          >
+            {{ v.label }}
+          </button>
+        }
+      </div>
+
+      @if (view() === 'model') {
+        <div class="row" [attr.aria-label]="'Tokens: ' + pieces().join(', ')">
+          @for (p of pieces(); track $index) {
+            <span class="chip"
+              >{{ p }}<small>{{ ids()[$index] }}</small></span
+            >
+          }
+        </div>
+        <p class="cap" style="margin:12px 0 0">
+          The model receives only the numbers: <b class="mono">[{{ ids().join(', ') }}]</b>. The
+          letters inside each chunk are hidden from it.
+        </p>
+      } @else if (view() === 'spelled') {
+        <div class="row" [attr.aria-label]="'Letters: ' + letters().join(' ')">
+          @for (ch of letters(); track $index) {
+            <span class="chip" [class.hot]="ch === target()" [class.dim]="ch !== target()">{{
+              ch
+            }}</span>
+          }
+        </div>
+        <p class="cap" style="margin:12px 0 0">
+          Now each letter is its own token, so every <b>{{ target() }}</b> is visible and can be
+          counted.
+        </p>
+      } @else {
+        <p class="cap" style="margin:0 0 8px">
+          <b>1. Think first.</b> Before answering, the model writes the word out, one letter per
+          token. Each letter it writes becomes something it can read.
+        </p>
+        <div class="row" [attr.aria-label]="'Letters written so far: ' + written().join(' ')">
+          @for (ch of letters(); track $index) {
+            @if ($index < step()) {
+              <span
+                class="chip"
+                [class.hot]="ch === target()"
+                [class.dim]="ch !== target()"
+                [style.outline]="$index === step() - 1 ? '2px solid var(--accent)' : null"
+                style="outline-offset: 2px"
+                >{{ ch }}<small>{{ ch === target() ? tally()[$index] : '&nbsp;' }}</small></span
+              >
+            } @else {
+              <span class="chip dim" aria-hidden="true" style="opacity: 0.4"
+                >&nbsp;<small>&nbsp;</small></span
+              >
+            }
+          }
+        </div>
+        <p class="cap" aria-live="polite" style="margin:10px 0 0; min-height: 1.5em">
+          <span [innerHTML]="thought()"></span>
+        </p>
+        <div class="row" style="margin-top:10px">
+          <button class="btn" [disabled]="done()" (click)="step.set(step() + 1)">
+            {{ step() === 0 ? 'Start writing' : 'Write next letter' }}
+          </button>
+          <button class="btn" [disabled]="done()" (click)="step.set(letters().length)">
+            Finish
+          </button>
+          <button class="btn" [disabled]="step() === 0" (click)="step.set(0)">Restart</button>
+        </div>
+        <details class="spell-why" style="margin-top:12px">
+          <summary class="cap" style="cursor:pointer">
+            <b>How does it know the spelling?</b>
+          </summary>
+          <p class="cap" style="margin:8px 0 6px">
+            It memorised how each chunk is spelled, from all the spelled-out words in its training
+            text:
+          </p>
+          <div class="row" style="gap:6px 14px">
+            @for (p of pieces(); track $index) {
+              <span class="cap mono"
+                ><span class="chip">{{ p }}</span> → {{ p.split('').join(' ') }}</span
+              >
+            }
+          </div>
+          <ul class="cap" style="margin:8px 0 0; padding-left:18px">
+            <li>Writing the next letter needs one small fact at a time. That's easy.</li>
+            <li>
+              Counting in one go needs every spelling recalled and added up at once. That's where it
+              guesses.
+            </li>
+            <li>Reasoning models are trained to write it out first because that gets it right.</li>
+          </ul>
+        </details>
+        <p class="cap" style="margin:14px 0 8px">
+          <b>2. Or use a tool.</b> Run code, which sees every character.
+        </p>
+        <div class="row">
+          <span class="chip mono">"{{ word() }}".count("{{ target() }}")</span>
+          <span class="chip hot">→ {{ count() }}</span>
+        </div>
+      }
+
+      <div class="stat" style="margin-top:14px">
+        <div>
+          <b>{{
+            view() === 'model'
+              ? pieces().length
+              : view() === 'modern'
+                ? step() + ' / ' + letters().length
+                : letters().length
+          }}</b
+          ><span>{{
+            view() === 'modern' ? 'letters written so far' : 'tokens the model reads'
+          }}</span>
+        </div>
+        <div>
+          <b>{{ view() === 'model' ? '?' : view() === 'modern' ? countSoFar() : count() }}</b
+          ><span>{{
+            view() === 'modern'
+              ? done()
+                ? 'final answer: correct'
+                : target() + "'s counted so far"
+              : target() + "'s it can see"
+          }}</span>
+        </div>
+      </div>
+    </div>
+  `,
+})
+export class LetterCountWidget {
+  readonly props = input<LetterCountProps>({});
+  protected readonly views = [
+    { id: 'model', label: 'What the model sees' },
+    { id: 'spelled', label: 'Spelled out' },
+    { id: 'modern', label: 'How modern models do it' },
+  ] as const;
+  protected readonly view = signal<'model' | 'spelled' | 'modern'>('model');
+  protected readonly word = computed(() => this.props().word ?? 'strawberry');
+  protected readonly target = computed(() => this.props().letter ?? 'r');
+  protected readonly pieces = computed(() => this.props().pieces ?? ['str', 'aw', 'berry']);
+  protected readonly ids = computed(
+    () => this.props().ids ?? this.pieces().map((_, i) => 1000 + i * 7919),
+  );
+  protected readonly letters = computed(() => [...this.word()]);
+  protected readonly count = computed(
+    () => this.letters().filter((c) => c === this.target()).length,
+  );
+  /** How many letters the model has written so far in the "think first" walkthrough. */
+  protected readonly step = signal(0);
+  protected readonly done = computed(() => this.step() >= this.letters().length);
+  protected readonly written = computed(() => this.letters().slice(0, this.step()));
+  protected readonly countSoFar = computed(
+    () => this.written().filter((c) => c === this.target()).length,
+  );
+  /** One line describing what the model just did. Inline HTML. */
+  protected readonly thought = computed(() => {
+    const k = this.step();
+    const t = this.target();
+    if (k === 0) return 'The question is "how many ' + t + '\'s?". Press <b>Start writing</b>.';
+    const ch = this.letters()[k - 1];
+    const found =
+      ch === t
+        ? `Wrote <b>${ch}</b>. That's an ${t}, so the count is now <b>${this.countSoFar()}</b>.`
+        : `Wrote <b>${ch}</b>. Not an ${t}.`;
+    if (this.done())
+      return `${found} That's every letter, so the answer is <b>${this.count()}</b>.`;
+    return ch === t ? found : `${found} Keep going.`;
+  });
+  /** Running count at each matching letter: 1, 2, 3… */
+  protected readonly tally = computed(() => {
+    let n = 0;
+    return this.letters().map((c) => (c === this.target() ? ++n : 0));
+  });
+}

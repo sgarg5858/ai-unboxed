@@ -511,7 +511,7 @@
           ]
         },
         {
-          "note": "Models don't see letters. That's why tasks that seem easy, like counting the r's in \"strawberry\" or spelling a word backwards, have tripped models up. <mark>The word arrives as one or two ID numbers, not a row of letters.</mark>",
+          "note": "Models don't see letters. That's why tasks that seem easy, like counting the r's in \"strawberry\" or spelling a word backwards, have tripped models up (see the second panel on the right). Newer models fix this by spelling the word out before counting, or by running code. <mark>The word arrives as one or two ID numbers, not a row of letters.</mark>",
           "kind": "warn"
         }
       ],
@@ -532,6 +532,20 @@
         {
           "type": "caption",
           "html": "Small grey numbers are made-up token IDs. ␣ marks a leading space."
+        },
+        {
+          "type": "widget",
+          "name": "letter-count",
+          "props": {
+            "word": "strawberry",
+            "letter": "r",
+            "pieces": ["str", "aw", "berry"],
+            "ids": [496, 675, 15717]
+          }
+        },
+        {
+          "type": "caption",
+          "html": "Why <i>\"How many r's in strawberry?\"</i> trips models up, and how newer models get it right. The split and IDs are illustrative; real tokenizers differ."
         }
       ]
     },

@@ -601,6 +601,7 @@
                 "enum": [
                   "fruit-similarity",
                   "tokenizer",
+                  "letter-count",
                   "embedding-table",
                   "embedding-geometry",
                   "positional-heatmap",

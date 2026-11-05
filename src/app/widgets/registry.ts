@@ -30,6 +30,7 @@ import {
   PositionalHeatmapWidget,
   ResidualMatrixWidget,
   RopeWidget,
+  LetterCountWidget,
   TokenizerWidget,
 } from './tokens.widgets';
 import { CrossEntropyWidget, GradientDescentWidget, LossCurveWidget } from './training.widgets';
@@ -45,6 +46,7 @@ export const WIDGETS: Record<string, Type<unknown>> = {
   'fruit-similarity': FruitSimilarityWidget,
   // 01 tokens & embeddings
   tokenizer: TokenizerWidget,
+  'letter-count': LetterCountWidget,
   'embedding-table': EmbeddingTableWidget,
   'embedding-geometry': EmbeddingGeometryWidget,
   'positional-heatmap': PositionalHeatmapWidget,
