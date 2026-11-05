@@ -2,21 +2,26 @@
   <title id="t">Tokens, tokenizer and vocabulary</title>
   <desc id="d">The sentence "I am learning tokenization" goes into a tokenizer. The tokenizer checks a fixed vocabulary of about 128,000 pieces and splits the text into five tokens: I, space-am, space-learning, space-token and ization. Each token is replaced by its row number in the vocabulary, giving the list 40, 1097, 6975, 4037, 2065, which is what the model reads.</desc>
   <style>
-    .bg{fill:#f2f6f8}.card{fill:#fff;stroke:#d5e0e7}.ink{fill:#10212b}.muted{fill:#4a6070}
-    .acc{fill:#0a6ea6}.accink{fill:#075585}.accsoft{fill:#ddeef9}.heat{fill:#fbebcb;stroke:#cc8200}.heatink{fill:#8a5a00}
-    .line{stroke:#4a6070;fill:none;stroke-width:2}.dash{stroke:#0a6ea6;fill:none;stroke-width:2;stroke-dasharray:6 5}
-    .row{fill:#edf3f7}.hit{fill:#ddeef9;stroke:#0a6ea6}.mono{font-family:'JetBrains Mono',ui-monospace,Menlo,monospace}
-    .head{font-size:13px;font-weight:700;letter-spacing:.08em}.onacc{fill:#fff}
-      .bg{fill:#0f1413}.card{fill:#171e1c;stroke:#2c3835}.ink{fill:#e4ece9}.muted{fill:#9aa9a4}
-      .acc{fill:#4db3d1}.accink{fill:#8fd3e6}.accsoft{fill:#163742}.heat{fill:#3d2e14;stroke:#f0ac40}.heatink{fill:#f0ac40}
-      .line{stroke:#9aa9a4}.dash{stroke:#4db3d1}.row{fill:#1f2826}.hit{fill:#163742;stroke:#4db3d1}.onacc{fill:#0f1413}
+    .bg{fill:#0f1413}.card{fill:#171e1c;stroke:#2c3835}.sunk{fill:#1f2826}
+    .ink{fill:#e4ece9}.muted{fill:#9aa9a4}.onacc{fill:#0f1413}
+    .acc{fill:#4db3d1}.accink{fill:#8fd3e6}.accsoft{fill:#163742}
+    .pos{fill:#3fc4a3}.posink{fill:#3fc4a3}.possoft{fill:#123a30;stroke:#3fc4a3}
+    .neg{fill:#f07d60}.negink{fill:#f07d60}.negsoft{fill:#42221a;stroke:#f07d60}
+    .heat{fill:#3d2e14;stroke:#f0ac40}.heatink{fill:#f0ac40}.heatfill{fill:#f0ac40}
+    .line{stroke:#9aa9a4;fill:none;stroke-width:2}.thin{stroke:#2c3835;fill:none;stroke-width:1.5}
+    .dash{stroke:#4db3d1;fill:none;stroke-width:2;stroke-dasharray:6 5}
+    .stream{stroke:#4db3d1;fill:none;stroke-width:14;stroke-linecap:round;opacity:.35}
+    .row{fill:#1f2826}.hit{fill:#163742;stroke:#4db3d1}
+    .mono{font-family:'JetBrains Mono',ui-monospace,Menlo,monospace}
+    .head{font-size:13px;font-weight:700;letter-spacing:.08em}
+    .arrowhead{fill:#9aa9a4}.arrowacc{fill:#4db3d1}
   </style>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
-      <path d="M0 0L10 5L0 10z" class="muted"/>
+      <path d="M0 0L10 5L0 10z" class="arrowhead"/>
     </marker>
     <marker id="arrowAcc" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
-      <path d="M0 0L10 5L0 10z" class="acc"/>
+      <path d="M0 0L10 5L0 10z" class="arrowacc"/>
     </marker>
   </defs>
 

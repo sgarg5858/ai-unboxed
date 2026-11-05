@@ -8,7 +8,7 @@
       "summary": "Each layer reads the token vectors, works something out and adds the result back. Information builds up instead of being replaced.",
       "body": [
         "The most helpful way to picture a transformer: a wide <b>stream</b> of vectors, one per token, flows from the bottom of the model to the top.",
-        "Each layer has two parts: attention and an MLP. Each part reads the stream, works out an update, and <b>adds</b> it back: <code>x = x + f(x)</code>. Nothing is replaced. Updates pile up.",
+        "Each layer has two parts: attention and an MLP. Each part reads the stream, works out an update, and <b>adds</b> it back: <code>x = x + f(x)</code>. <mark>Nothing is replaced. Updates pile up.</mark>",
         {
           "ul": [
             "<b>Why it helps training</b>: learning sends an error signal backwards through every layer. The simple addition gives that signal a shortcut to the earliest layers, so even 100-layer models train reliably. This is called a <b>residual</b> or <b>skip connection</b>.",
@@ -32,7 +32,15 @@
           "type": "widget",
           "name": "residual-stream"
         }
-      ]
+      ],
+      "figure": {
+        "src": "images/transformer-block-light.svg",
+        "darkSrc": "images/transformer-block-dark.svg",
+        "alt": "The residual stream of token vectors flows from left to right. First a normalised copy goes through attention and the result is added back to the stream. Then another normalised copy goes through the MLP and that result is added back. The shape stays n by d throughout, and the block is repeated N times with its own weights.",
+        "width": 1200,
+        "height": 590,
+        "caption": "Every block in every LLM follows this pattern. The rest of this chapter looks at each part."
+      }
     },
     {
       "title": "Normalisation: keeping numbers steady",
@@ -46,7 +54,7 @@
             "<b>RMSNorm</b>: skip the average and just divide by the typical size of the numbers (the root-mean-square). Slightly cheaper, works just as well, and used by Llama and many others."
           ]
         },
-        "Try it: make the input ten times bigger. The normalised output doesn't change at all.",
+        "Try it: make the input ten times bigger. <mark>The normalised output doesn't change at all.</mark>",
         {
           "note": "Normalisation keeps the input to each part in a predictable range, however much has built up in the stream. It's a small step, but deep models don't train well without it.",
           "kind": "key"
@@ -76,7 +84,7 @@
             "<b>Shrink back</b>: multiply back down to size d, ready to add to the stream."
           ]
         },
-        "About two-thirds of a model's parameters are in these MLPs. Research suggests they partly work like a memory for facts: a pattern meaning \"Eiffel Tower\" in the input switches on parts of the MLP that add \"Paris\" to the stream.",
+        "<mark>About two-thirds of a model's parameters are in these MLPs.</mark> Research suggests they partly work like a memory for facts: a pattern meaning \"Eiffel Tower\" in the input switches on parts of the MLP that add \"Paris\" to the stream.",
         {
           "h": "Why the curve matters"
         },
@@ -114,7 +122,7 @@
         {
           "h": "From parameters to memory"
         },
-        "Each parameter is stored as a fixed-size number: 2 bytes in bf16 (the usual format), 1 byte at 8 bits, or half a byte in 4-bit <b>quantised</b> formats. A 7B model needs about 14 GB in bf16 but only about 3.5 GB at 4 bits. That's how quantisation lets big models run on a laptop.",
+        "Each parameter is stored as a fixed-size number: 2 bytes in bf16 (the usual format), 1 byte at 8 bits, or half a byte in 4-bit <b>quantised</b> formats. <mark>A 7B model needs about 14 GB in bf16 but only about 3.5 GB at 4 bits.</mark> That's how quantisation lets big models run on a laptop.",
         "Try the presets, then move the sliders.",
         {
           "note": "That's only the weights. Running the model also needs memory for the KV cache (see <i>Output & inference</i>), and training needs several times more for the extra numbers it keeps track of.",
@@ -147,7 +155,7 @@
         },
         "These are general trends, not strict rules.",
         {
-          "note": "Because every block takes <code>[B, n, d]</code> in and gives <code>[B, n, d]</code> out, the number of layers is just a setting. The main dials are width (<code>d</code>), depth (<code>N</code>) and number of heads (<code>h</code>). Making a model bigger mostly means turning these up.",
+          "note": "Because every block takes <code>[B, n, d]</code> in and gives <code>[B, n, d]</code> out, the number of layers is just a setting. The main dials are width (<code>d</code>), depth (<code>N</code>) and number of heads (<code>h</code>). <mark>Making a model bigger mostly means turning these up.</mark>",
           "kind": "dev"
         }
       ],
@@ -212,7 +220,7 @@
         "Many top models replace each layer's single MLP with a group of <b>experts</b>: several separate MLPs, plus a small <b>router</b>. For each token, the router picks the best few experts (often 2, sometimes 8 out of more than 100) and mixes their outputs.",
         {
           "ul": [
-            "<b>The benefit</b>: the total number of parameters, and so how much the model can know, grows a lot. But each token only goes through a few experts, so the work per token stays small.",
+            "<b>The benefit</b>: the total number of parameters, and so how much the model can know, grows a lot. <mark>But each token only goes through a few experts, so the work per token stays small.</mark>",
             "<b>The cost</b>: every expert has to be kept in GPU memory, even when it's not being used.",
             "<b>The catch</b>: the router has to be trained to share the work evenly. Otherwise it sends everything to a few favourites and the rest are wasted."
           ]

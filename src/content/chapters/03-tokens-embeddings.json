@@ -15,7 +15,7 @@
             "<b>Parts of words</b>: the middle ground everyone uses. Common words like \"the\" get one token. Rare words are built from common pieces: \"unbelievable\" becomes \"un\" + \"believ\" + \"able\"."
           ]
         },
-        "Modern tokenizers work on raw <b>bytes</b>, not letters, so they can handle any text at all, including emoji, code and every language. Nothing is ever \"unknown\"; unusual text just uses more tokens.",
+        "Modern tokenizers work on raw <b>bytes</b>, not letters, so they can handle any text at all, including emoji, code and every language. <mark>Nothing is ever \"unknown\"; unusual text just uses more tokens.</mark>",
         {
           "note": "Tokens are what you pay for and what limits are counted in. API prices, rate limits and context windows are all measured in tokens, not letters or words.",
           "kind": "dev"
@@ -79,7 +79,7 @@
         {
           "h": "Using it"
         },
-        "To split new text, break it into bytes and replay the saved joins in the same order. The same text always gives the same tokens.",
+        "To split new text, break it into bytes and replay the saved joins in the same order. <mark>The same text always gives the same tokens.</mark>",
         {
           "note": "The tokenizer is trained once, on its own, before the model. Then its vocabulary is locked, and the model learns one vector for each entry.",
           "kind": "key"
@@ -511,7 +511,7 @@
           ]
         },
         {
-          "note": "Models don't see letters. That's why tasks that seem easy, like counting the r's in \"strawberry\" or spelling a word backwards, have tripped models up. The word arrives as one or two ID numbers, not a row of letters.",
+          "note": "Models don't see letters. That's why tasks that seem easy, like counting the r's in \"strawberry\" or spelling a word backwards, have tripped models up. <mark>The word arrives as one or two ID numbers, not a row of letters.</mark>",
           "kind": "warn"
         }
       ],
@@ -545,7 +545,7 @@
           "ul": [
             "The <b>system prompt</b> isn't a separate input. It's just the first tokens in the line.",
             "Each model family has its own template. Use the wrong one and the quality drops a lot, because the model never saw that format in training.",
-            "Good serving code turns a typed \"&lt;|user|&gt;\" into ordinary letters, not the special token, so a user can't pretend to be someone else."
+            "Good serving code turns a typed \"&lt;|user|&gt;\" into ordinary letters, not the special token, <mark>so a user can't pretend to be someone else</mark>."
           ]
         },
         {
@@ -618,7 +618,7 @@
       "body": [
         "A token ID is just a label: the number 6975 says nothing about meaning. So the model's first real step swaps each ID for a list of <code>d</code> numbers (usually thousands) by looking it up in an <b>embedding table</b>.",
         "The table is a matrix <code>E</code> with one row for each vocabulary entry, so its shape is <code>[V, d]</code>. Token 6975 picks row 6975. In code that's just an array lookup, so it costs almost nothing.",
-        "The numbers start out random. Training nudges them millions of times, until tokens used in similar ways have similar vectors. Unlike the fruit example in <i>The big picture</i>, no column means \"sweetness\". Meaning is spread across all <code>d</code> numbers, in ways researchers have to work hard to figure out.",
+        "The numbers start out random. <mark>Training nudges them millions of times, until tokens used in similar ways have similar vectors.</mark> Unlike the fruit example in <i>The big picture</i>, no column means \"sweetness\". Meaning is spread across all <code>d</code> numbers, in ways researchers have to work hard to figure out.",
         "Click a token on the right to see which row it selects.",
         {
           "note": "The embedding table is learned along with everything else. In small models it's one of the biggest parts: GPT-2 small uses 38.6M of its 124M parameters here.",
@@ -645,7 +645,7 @@
       "title": "What the positions of vectors mean",
       "summary": "After training, similar words sit close together, and some relationships point in a consistent direction.",
       "body": [
-        "If you could plot the trained vectors, you'd see a pattern. Words with related meanings group together: fruits near fruits, programming languages near programming languages.",
+        "If you could plot the trained vectors, you'd see a pattern. <mark>Words with related meanings group together</mark>: fruits near fruits, programming languages near programming languages.",
         "Some relationships even become consistent <b>directions</b>. Going from \"man\" to \"woman\" points roughly the same way as going from \"king\" to \"queen\". That's why the famous sum <code>king − man + woman ≈ queen</code> roughly works, first shown with word2vec in 2013.",
         "Closeness is measured with cosine similarity, the same calculation as the fruit comparison in <i>The big picture</i>.",
         {
@@ -673,7 +673,7 @@
       "title": "Word order matters: adding position",
       "summary": "Attention doesn't notice word order by itself, so position information has to be added.",
       "body": [
-        "Attention, the core step in the next chapter, compares every token with every other token. On its own it treats the input like a bag of words: shuffle the tokens and each one gets the same result. It can't tell \"dog bites man\" from \"man bites dog\".",
+        "Attention, the core step in the next chapter, compares every token with every other token. On its own it treats the input like a bag of words: shuffle the tokens and each one gets the same result. It <mark>can't tell \"dog bites man\" from \"man bites dog\"</mark>.",
         "So position has to be added in. The original Transformer (2017) added a fixed pattern of waves to each token's vector:",
         {
           "ul": [
@@ -705,7 +705,7 @@
       "summary": "Modern models mark position by rotating vectors, so attention can directly see how far apart two tokens are.",
       "body": [
         "Most current open models (Llama, Mistral, Qwen and others) use <b>rotary position embeddings</b> (RoPE) instead. Nothing is added to the token's vector. Instead, inside attention, the query and key vectors (next chapter) are <b>rotated</b> by an angle that grows with the token's position.",
-        "Why rotate? Attention scores two tokens with a dot product, and the dot product depends on the angle between the two vectors. Rotate one by position <code>m</code> and the other by position <code>n</code>, and the angle between them only depends on <code>m − n</code>: how far apart they are.",
+        "Why rotate? Attention scores two tokens with a dot product, and the dot product depends on the angle between the two vectors. Rotate one by position <code>m</code> and the other by position <code>n</code>, and <mark>the angle between them only depends on</mark> <code>m − n</code>: how far apart they are.",
         "Try it: move both sliders by the same amount. Both arrows turn, but the angle between them, and so the score, doesn't change.",
         {
           "note": "RoPE tells the model <i>relative</i> position (\"three tokens back\"), not <i>absolute</i> position (\"token 1,207\"). That suits language, where nearby words usually matter most. It's also one reason context windows can be made longer after training.",
@@ -731,7 +731,7 @@
       "summary": "The input stage ends with one vector per token. This is the residual stream that every later layer reads and updates.",
       "body": [
         "Put the steps together: split the text into tokens, look up each token's vector, and add position. The result is a matrix with one row per token and <code>d</code> columns: shape <code>[n, d]</code>, or <code>[B, n, d]</code> for a batch.",
-        "This matrix is called the <b>residual stream</b>, and it's the star of the rest of the course. Every later layer reads from it and adds its own bit back.",
+        "This matrix is called the <b>residual stream</b>, and it's the star of the rest of the course. <mark>Every later layer reads from it and adds its own bit back.</mark>",
         {
           "note": "The shape stays the same all the way through the model until the very end. That's why you can stack 32, 80 or 120 identical layers: each takes <code>[B, n, d]</code> in and gives <code>[B, n, d]</code> out.",
           "kind": "key"

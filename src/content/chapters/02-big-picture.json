@@ -9,7 +9,7 @@
       "body": [
         "The <i>Assistant architecture</i> section treated the model as one box in a bigger system. This section opens that box.",
         "Take away the chat window and a large language model is one huge maths function. You give it a list of whole numbers, one for each piece of text. It gives back a score for every token it knows, showing how likely each one is to come next.",
-        "That's all it does. To write a whole answer, it runs this function again and again, adding one token each time. The next slide shows that loop.",
+        "That's all it does. <mark>To write a whole answer, it runs this function again and again, adding one token each time.</mark> The next slide shows that loop.",
         {
           "h": "How to read the shapes"
         },
@@ -102,7 +102,15 @@
           "type": "caption",
           "html": "Typical sizes: d = 4,096, N = 32 layers, V = 128,000. When generating, only the scores for the last token matter."
         }
-      ]
+      ],
+      "figure": {
+        "src": "images/forward-pass-light.svg",
+        "darkSrc": "images/forward-pass-dark.svg",
+        "alt": "Text is split into token IDs, each ID becomes a vector of d numbers, the vectors flow through N transformer blocks, and the final layer gives a score for every vocabulary token. Softmax turns the last position's scores into probabilities, one token is picked, appended to the text, and the whole pass runs again.",
+        "width": 1200,
+        "height": 560,
+        "caption": "The whole model on one page. Follow the shapes: <code>[n]</code> → <code>[n, d]</code> → <code>[n, V]</code>. Numbers are illustrative."
+      }
     },
     {
       "title": "Generation is a loop",
@@ -121,7 +129,7 @@
           ]
         },
         {
-          "note": "Everything an LLM writes, including code, step-by-step reasoning and tool calls, comes out of this loop one token at a time.",
+          "note": "Everything an LLM writes, including code, step-by-step reasoning and tool calls, <mark>comes out of this loop one token at a time</mark>.",
           "kind": "key"
         }
       ],
@@ -513,7 +521,7 @@
         },
         "A <b>matrix</b> is a grid of numbers. Multiplying a vector by a matrix does one dot product per column and gives a new vector. A neural network is mostly long chains of these multiplications, and the numbers in the matrices are learned from data.",
         {
-          "note": "An LLM describes every token with a vector of thousands of numbers. Nobody decides what those dimensions mean, like we did for fruit; training works them out. But the key idea, that similar meanings have similar vectors, runs through the whole course.",
+          "note": "An LLM describes every token with a vector of thousands of numbers. Nobody decides what those dimensions mean, like we did for fruit; training works them out. But <mark>the key idea, that similar meanings have similar vectors, runs through the whole course</mark>.",
           "kind": "key"
         }
       ],
@@ -540,7 +548,7 @@
         {
           "ul": [
             "<b>Everything is numbers.</b> Text becomes whole numbers, those become vectors, and the model just does maths on the vectors.",
-            "<b>Behaviour comes from learned numbers.</b> Nobody writes an LLM's knowledge or style by hand. Billions of numbers are adjusted during training until the model predicts text well, and everything it can do comes from those numbers."
+            "<b>Behaviour comes from learned numbers.</b> Nobody writes an LLM's knowledge or style by hand. <mark>Billions of numbers are adjusted during training until the model predicts text well</mark>, and everything it can do comes from those numbers."
           ]
         },
         {

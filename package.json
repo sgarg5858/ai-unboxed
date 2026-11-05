@@ -7,7 +7,8 @@
     "build": "ng build",
     "build:pages": "ng build --base-href /ai-unboxed/",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "figures": "node scripts/build-figures.mjs"
   },
   "private": true,
   "packageManager": "npm@10.9.4",

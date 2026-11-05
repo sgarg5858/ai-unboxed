@@ -19,7 +19,7 @@
             "<b>Bad reasoning</b>: steps that sound fine but hide a wrong sum or a jump in logic."
           ]
         },
-        "What they have in common is that they read smoothly. Smooth text is what a language model is best at, so how confident or polished an answer sounds tells you nothing about whether it's true.",
+        "What they have in common is that they read smoothly. Smooth text is what a language model is best at, so <mark>how confident or polished an answer sounds tells you nothing about whether it's true</mark>.",
         {
           "note": "Right and wrong answers come out in the same tone. You can't tell accuracy from style.",
           "kind": "key"
@@ -60,7 +60,15 @@
           "type": "caption",
           "html": "All four examples are made up to illustrate. Each one would sound confident and correct."
         }
-      ]
+      ],
+      "figure": {
+        "src": "images/why-hallucinate-light.svg",
+        "darkSrc": "images/why-hallucinate-dark.svg",
+        "alt": "Four causes lead to a fluent, confident answer whether or not the model knows: training rewards likely text, facts seen once can't be learned reliably, tests score a guess as no worse than \"I don't know\", and early wrong tokens become context the model stays consistent with. What helps: grounding in sources, rewarding \"I don't know\", tools for exact answers, checking outputs by asking several times, and honest product design.",
+        "width": 1200,
+        "height": 650,
+        "caption": "The whole chapter on one page. Each cause and defence has its own slide."
+      }
     },
     {
       "title": "Cause 1: it predicts likely text, not true text",
@@ -71,7 +79,7 @@
           "h": "Confident or spread out"
         },
         "For a famous fact, the training text agrees with itself almost everywhere, so the model puts nearly all its probability on one answer. For an obscure fact, there's nothing consistent to learn, so the probability spreads over lots of names that all sound believable. Compare the two cases on the right.",
-        "Then, in both cases, generation does the same thing: pick a token based on the probabilities and move on. When one answer dominates, it's right almost every time. When the probability is spread out, the answer is basically random, but it's written in the same confident voice.",
+        "Then, in both cases, generation does the same thing: pick a token based on the probabilities and move on. When one answer dominates, it's right almost every time. <mark>When the probability is spread out, the answer is basically random, but it's written in the same confident voice.</mark>",
         {
           "note": "The final softmax always gives probabilities that add up to 1. There's no \"nothing\" option. Saying \"I don't know\" has to be learned as ordinary text, and plain next-token training gives the model little reason to learn it.",
           "kind": "dev"
@@ -199,7 +207,7 @@
           "h": "The seen-once rate"
         },
         "Count how many facts appear exactly once in the training data. Call that share the <b>singleton rate</b>. A 2025 OpenAI paper (Kalai et al., <i>Why Language Models Hallucinate</i>) argues that for random facts, a pretrained model will get at least about that share wrong. If 20% of birthdays appear only once, expect it to get at least about 20% of birthday questions wrong.",
-        "The idea: seeing something once isn't enough to tell a true fact from a believable alternative. Drag the slider to see how the minimum error changes.",
+        "The idea: <mark>seeing something once isn't enough to tell a true fact from a believable alternative</mark>. Drag the slider to see how the minimum error changes.",
         {
           "note": "This minimum applies to facts with no learnable pattern, in a model that has only been pretrained (the paper's setting). More data and bigger models lower the singleton rate, but real text always has a long tail of rare facts.",
           "kind": "warn"
@@ -221,7 +229,7 @@
       "summary": "Models are trained and tested on scores where a guess can earn points and \"I don't know\" earns nothing. So guessing becomes a habit.",
       "body": [
         "Pretraining explains why hallucinations start. But why do they survive the later training stages? The same OpenAI paper points to how models are <i>scored</i>.",
-        "Most benchmarks mark like an exam with no penalty for wrong answers: right scores 1, wrong scores 0, and \"I don't know\" also scores 0. With those rules, guessing is never worse than not answering, so a model trained to score well learns to always answer, however unsure it is. As the paper puts it, models are trained to be good at taking tests.",
+        "Most benchmarks mark like an exam with no penalty for wrong answers: right scores 1, wrong scores 0, and \"I don't know\" also scores 0. With those rules, <mark>guessing is never worse than not answering</mark>, so a model trained to score well learns to always answer, however unsure it is. As the paper puts it, models are trained to be good at taking tests.",
         {
           "h": "The maths"
         },
@@ -249,7 +257,7 @@
       "title": "Cause 4: one wrong token leads to more",
       "summary": "Text is written one token at a time with no backspace. So an early mistake becomes part of the text, and the model then tries to stay consistent with it.",
       "body": [
-        "Generation is a loop (see <i>The big picture</i>): each token is added to the text and the model continues from there. It never goes back and deletes a sentence. Once a wrong claim is written, it becomes evidence for what comes next.",
+        "Generation is a loop (see <i>The big picture</i>): each token is added to the text and the model continues from there. It never goes back and deletes a sentence. <mark>Once a wrong claim is written, it becomes evidence for what comes next.</mark>",
         "Researchers call this <b>hallucination snowballing</b> (Zhang et al., 2023). They asked models questions where the first answer was often wrong, then watched them back it up with more false claims. When asked about those false claims separately, the same models could often spot the mistakes: GPT-3.5, GPT-4 and Llama-2-70B-chat caught 67%, 87% and 94% of them. Changing the generation settings or prompting the model to think step by step didn't make the problem go away.",
         {
           "h": "Other things that make it worse"
@@ -338,7 +346,7 @@
           "kind": "key"
         },
         {
-          "note": "This is one mechanism, in one model, for questions about people. Other hallucinations have other causes, and other models may work differently. What it shows is that recognising a topic and actually knowing the answer are two separate signals, and they can disagree.",
+          "note": "This is one mechanism, in one model, for questions about people. Other hallucinations have other causes, and other models may work differently. What it shows is that <mark>recognising a topic and actually knowing the answer are two separate signals</mark>, and they can disagree.",
           "kind": "warn"
         }
       ],
@@ -448,7 +456,7 @@
       "title": "Spotting hallucinations: ask more than once",
       "summary": "If a model really knows the answer, it gives the same answer every time. If it's guessing, the answers are all over the place.",
       "body": [
-        "It's hard to tell how sure a model is from one answer, because smooth writing hides it. But you can ask the same question several times and compare the answers.",
+        "It's hard to tell how sure a model is from one answer, because smooth writing hides it. But you can <mark>ask the same question several times and compare the answers</mark>.",
         "<b>Semantic entropy</b> (Farquhar et al., <i>Nature</i>, 2024) does exactly that. Get several answers, group the ones that mean the same thing, and measure how spread out the groups are. Answers that agree give a low score (the model probably knows). Answers that are all different give a high score (it's probably making it up).",
         "Grouping by <i>meaning</i> is important: \"Paris\" and \"It's Paris.\" are the same answer even though the words differ. In the paper, a second language model decides whether two answers mean the same thing.",
         "The method doesn't need any labelled examples of hallucinations, and in the paper's tests it did better than simpler methods. The downside is that it needs several answers per question plus the grouping step, so it's used where reliability is worth the extra cost.",
@@ -589,7 +597,7 @@
           "kind": "dev"
         },
         {
-          "note": "Grounding reduces hallucination but doesn't get rid of it. Models can still misquote a source or read too much into it. Treat a reference as a way to check an answer, not as proof it's right.",
+          "note": "Grounding reduces hallucination but doesn't get rid of it. Models can still misquote a source or read too much into it. <mark>Treat a reference as a way to check an answer, not as proof it's right.</mark>",
           "kind": "warn"
         }
       ],

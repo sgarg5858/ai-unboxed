@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 650" role="img" aria-labelledby="t d" font-family="'Schibsted Grotesk', ui-sans-serif, system-ui, sans-serif">
+  <title id="t">Why models hallucinate, and what helps</title>
+  <desc id="d">Four causes lead to a fluent, confident answer whether or not the model knows. One: training rewards likely text, so a famous fact gives one peaked answer while an obscure fact spreads over many plausible ones. Two: facts seen only once in training can't be learned reliably. Three: tests score a guess as no worse than "I don't know". Four: an early wrong token becomes context the model stays consistent with. What helps: grounding in sources, rewarding "I don't know", tools for exact answers, checking outputs by asking several times, and honest product design.</desc>
+  <style>
+    .bg{fill:#0f1413}.card{fill:#171e1c;stroke:#2c3835}.sunk{fill:#1f2826}
+    .ink{fill:#e4ece9}.muted{fill:#9aa9a4}.onacc{fill:#0f1413}
+    .acc{fill:#4db3d1}.accink{fill:#8fd3e6}.accsoft{fill:#163742}
+    .pos{fill:#3fc4a3}.posink{fill:#3fc4a3}.possoft{fill:#123a30;stroke:#3fc4a3}
+    .neg{fill:#f07d60}.negink{fill:#f07d60}.negsoft{fill:#42221a;stroke:#f07d60}
+    .heat{fill:#3d2e14;stroke:#f0ac40}.heatink{fill:#f0ac40}.heatfill{fill:#f0ac40}
+    .line{stroke:#9aa9a4;fill:none;stroke-width:2}.thin{stroke:#2c3835;fill:none;stroke-width:1.5}
+    .dash{stroke:#4db3d1;fill:none;stroke-width:2;stroke-dasharray:6 5}
+    .stream{stroke:#4db3d1;fill:none;stroke-width:14;stroke-linecap:round;opacity:.35}
+    .row{fill:#1f2826}.hit{fill:#163742;stroke:#4db3d1}
+    .mono{font-family:'JetBrains Mono',ui-monospace,Menlo,monospace}
+    .head{font-size:13px;font-weight:700;letter-spacing:.08em}
+    .arrowhead{fill:#9aa9a4}.arrowacc{fill:#4db3d1}
+  </style>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arrowhead"/></marker>
+  </defs>
+  <rect class="bg" width="1200" height="650" rx="18"/>
+  <text x="40" y="52" class="ink" font-size="26" font-weight="700">Why models hallucinate</text>
+  <text x="40" y="78" class="muted" font-size="15">Four causes push toward a confident answer, whether or not the model actually knows.</text>
+
+  <!-- card 1: peaked vs flat -->
+  <rect class="card" x="40" y="104" width="262" height="230" rx="14"/>
+  <text x="60" y="134" class="ink" font-size="16" font-weight="700">1 · Likely, not true</text>
+  <text x="60" y="154" class="muted" font-size="13">Training rewards text that looks real.</text>
+  <g>
+    <line class="thin" x1="60" y1="270" x2="160" y2="270"/>
+    <rect class="pos" x="66" y="182" width="18" height="88" rx="3"/>
+    <rect class="pos" x="88" y="264" width="18" height="6" rx="2" opacity=".5"/><rect class="pos" x="110" y="266" width="18" height="4" rx="2" opacity=".5"/><rect class="pos" x="132" y="267" width="18" height="3" rx="2" opacity=".5"/>
+    <text x="110" y="290" text-anchor="middle" class="muted" font-size="12">famous fact</text>
+    <text x="110" y="306" text-anchor="middle" class="posink" font-size="12" font-weight="700">one clear answer</text>
+    <line class="thin" x1="180" y1="270" x2="282" y2="270"/>
+    <rect class="heatfill" x="184" y="238" width="13" height="32" rx="2"/><rect class="heatfill" x="200" y="244" width="13" height="26" rx="2"/><rect class="heatfill" x="216" y="240" width="13" height="30" rx="2"/><rect class="heatfill" x="232" y="246" width="13" height="24" rx="2"/><rect class="heatfill" x="248" y="242" width="13" height="28" rx="2"/><rect class="heatfill" x="264" y="248" width="13" height="22" rx="2"/>
+    <text x="231" y="290" text-anchor="middle" class="muted" font-size="12">obscure fact</text>
+    <text x="231" y="306" text-anchor="middle" class="heatink" font-size="12" font-weight="700">spread over guesses</text>
+  </g>
+
+  <!-- card 2: seen once -->
+  <rect class="card" x="326" y="104" width="262" height="230" rx="14"/>
+  <text x="346" y="134" class="ink" font-size="16" font-weight="700">2 · Rare facts</text>
+  <text x="346" y="154" class="muted" font-size="13">Seen once is not enough to learn.</text>
+  <g>
+    <circle class="pos" cx="366" cy="196" r="9"/><circle class="pos" cx="392" cy="196" r="9"/><circle class="pos" cx="418" cy="196" r="9"/><circle class="pos" cx="444" cy="196" r="9"/><circle class="heat" cx="470" cy="196" r="9" stroke-width="2"/>
+    <circle class="pos" cx="366" cy="224" r="9"/><circle class="heat" cx="392" cy="224" r="9" stroke-width="2"/><circle class="pos" cx="418" cy="224" r="9"/><circle class="pos" cx="444" cy="224" r="9"/><circle class="pos" cx="470" cy="224" r="9"/>
+    <text x="496" y="201" class="muted" font-size="12">seen</text><text x="496" y="216" class="muted" font-size="12">often</text>
+    <circle class="pos" cx="358" cy="262" r="6"/><text x="372" y="266" class="muted" font-size="12">seen many times</text>
+    <circle class="heat" cx="480" cy="262" r="6" stroke-width="2"/><text x="494" y="266" class="muted" font-size="12">seen once</text>
+    <text x="346" y="296" class="heatink" font-size="12.5" font-weight="700">2 of 10 seen once → expect at</text>
+    <text x="346" y="313" class="heatink" font-size="12.5" font-weight="700">least ~20% of them wrong</text>
+  </g>
+
+  <!-- card 3: scoring -->
+  <rect class="card" x="612" y="104" width="262" height="230" rx="14"/>
+  <text x="632" y="134" class="ink" font-size="16" font-weight="700">3 · Tests reward guessing</text>
+  <text x="632" y="154" class="muted" font-size="13">Most benchmarks score like this:</text>
+  <g font-size="14">
+    <rect class="row" x="632" y="172" width="222" height="30" rx="6"/><text x="646" y="192" class="ink">Right answer</text><text x="840" y="192" text-anchor="end" class="posink mono" font-weight="700">+1</text>
+    <rect class="row" x="632" y="208" width="222" height="30" rx="6"/><text x="646" y="228" class="ink">Wrong answer</text><text x="840" y="228" text-anchor="end" class="ink mono" font-weight="700">0</text>
+    <rect class="row" x="632" y="244" width="222" height="30" rx="6"/><text x="646" y="264" class="ink">"I don't know"</text><text x="840" y="264" text-anchor="end" class="ink mono" font-weight="700">0</text>
+  </g>
+  <text x="632" y="302" class="heatink" font-size="12.5" font-weight="700">A guess never scores worse, so</text>
+  <text x="632" y="319" class="heatink" font-size="12.5" font-weight="700">models learn to always answer</text>
+
+  <!-- card 4: snowball -->
+  <rect class="card" x="898" y="104" width="262" height="230" rx="14"/>
+  <text x="918" y="134" class="ink" font-size="16" font-weight="700">4 · Snowballing</text>
+  <text x="918" y="154" class="muted" font-size="13">No backspace: errors become context.</text>
+  <g font-size="12.5">
+    <rect class="heat" x="918" y="170" width="200" height="30" rx="15"/><text x="934" y="190" class="heatink">"Whitmore wrote it."</text>
+    <path class="line" d="M1018 202 V212" marker-end="url(#a)"/>
+    <rect class="heat" x="934" y="214" width="208" height="30" rx="15"/><text x="950" y="234" class="heatink">"He also wrote…"</text>
+    <path class="line" d="M1038 246 V256" marker-end="url(#a)"/>
+    <rect class="negsoft" x="918" y="258" width="222" height="30" rx="15"/><text x="934" y="278" class="negink" font-weight="700">"…and founded a startup."</text>
+  </g>
+  <text x="918" y="316" class="heatink" font-size="12.5" font-weight="700">Each claim backs up the last</text>
+
+  <!-- converge -->
+  <g class="line">
+    <path d="M171 336 C171 380 520 370 560 400" marker-end="url(#a)"/>
+    <path d="M457 336 C457 370 560 372 580 396" marker-end="url(#a)"/>
+    <path d="M743 336 C743 370 640 372 620 396" marker-end="url(#a)"/>
+    <path d="M1029 336 C1029 380 680 370 640 400" marker-end="url(#a)"/>
+  </g>
+  <rect class="negsoft" x="390" y="402" width="420" height="66" rx="14" stroke-width="2"/>
+  <text x="600" y="430" text-anchor="middle" class="negink" font-size="18" font-weight="700">A fluent, confident answer</text>
+  <text x="600" y="452" text-anchor="middle" class="negink" font-size="13">right or wrong, it sounds exactly the same</text>
+
+  <!-- what helps -->
+  <rect class="card" x="40" y="500" width="1120" height="124" rx="14"/>
+  <text x="60" y="530" class="ink" font-size="16" font-weight="700">What helps</text>
+  <text x="160" y="530" class="muted" font-size="13">No single fix: real systems stack these.</text>
+  <g font-size="13.5">
+    <rect class="possoft" x="60" y="548" width="200" height="56" rx="10"/>
+    <text x="76" y="572" class="posink" font-weight="700">Ground in sources</text><text x="76" y="592" class="posink">search, RAG, citations</text>
+    <rect class="possoft" x="276" y="548" width="200" height="56" rx="10"/>
+    <text x="292" y="572" class="posink" font-weight="700">Reward "I don't know"</text><text x="292" y="592" class="posink">penalise confident errors</text>
+    <rect class="possoft" x="492" y="548" width="200" height="56" rx="10"/>
+    <text x="508" y="572" class="posink" font-weight="700">Use tools</text><text x="508" y="592" class="posink">maths, code, lookups</text>
+    <rect class="possoft" x="708" y="548" width="200" height="56" rx="10"/>
+    <text x="724" y="572" class="posink" font-weight="700">Check outputs</text><text x="724" y="592" class="posink">ask several times, compare</text>
+    <rect class="possoft" x="924" y="548" width="216" height="56" rx="10"/>
+    <text x="940" y="572" class="posink" font-weight="700">Design honestly</text><text x="940" y="592" class="posink">show sources, flag doubt</text>
+  </g>
+</svg>

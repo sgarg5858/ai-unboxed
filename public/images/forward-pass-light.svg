@@ -1,0 +1,118 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 560" role="img" aria-labelledby="t d" font-family="'Schibsted Grotesk', ui-sans-serif, system-ui, sans-serif">
+  <title id="t">One forward pass, and the generation loop</title>
+  <desc id="d">Text is split into token IDs, each ID becomes a vector of d numbers, the vectors flow through N transformer blocks, and the final layer gives a score for every vocabulary token. Softmax turns the last position's scores into probabilities, one token is picked, appended to the text, and the whole pass runs again.</desc>
+  <style>
+    .bg{fill:#f2f6f8}.card{fill:#ffffff;stroke:#d5e0e7}.sunk{fill:#edf3f7}
+    .ink{fill:#10212b}.muted{fill:#4a6070}.onacc{fill:#ffffff}
+    .acc{fill:#0a6ea6}.accink{fill:#075585}.accsoft{fill:#ddeef9}
+    .pos{fill:#17906f}.posink{fill:#0b6b52}.possoft{fill:#d8f1e8;stroke:#17906f}
+    .neg{fill:#d9532f}.negink{fill:#b3341a}.negsoft{fill:#fbe1d8;stroke:#d9532f}
+    .heat{fill:#fbebcb;stroke:#cc8200}.heatink{fill:#8a5a00}.heatfill{fill:#cc8200}
+    .line{stroke:#4a6070;fill:none;stroke-width:2}.thin{stroke:#d5e0e7;fill:none;stroke-width:1.5}
+    .dash{stroke:#0a6ea6;fill:none;stroke-width:2;stroke-dasharray:6 5}
+    .stream{stroke:#0a6ea6;fill:none;stroke-width:14;stroke-linecap:round;opacity:.35}
+    .row{fill:#edf3f7}.hit{fill:#ddeef9;stroke:#0a6ea6}
+    .mono{font-family:'JetBrains Mono',ui-monospace,Menlo,monospace}
+    .head{font-size:13px;font-weight:700;letter-spacing:.08em}
+    .arrowhead{fill:#4a6070}.arrowacc{fill:#0a6ea6}
+  </style>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arrowhead"/></marker>
+    <marker id="b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arrowacc"/></marker>
+  </defs>
+  <rect class="bg" width="1200" height="560" rx="18"/>
+  <text x="40" y="52" class="ink" font-size="26" font-weight="700">One forward pass</text>
+  <text x="40" y="78" class="muted" font-size="15">Numbers in, one score per possible next token out. Writing an answer is this pass in a loop.</text>
+
+  <!-- stage headers -->
+  <g class="muted head">
+    <text x="40" y="128">TEXT</text>
+    <text x="200" y="128">TOKEN IDs</text>
+    <text x="350" y="128">EMBEDDINGS</text>
+    <text x="545" y="128">TRANSFORMER</text>
+    <text x="790" y="128">LOGITS</text>
+    <text x="965" y="128">NEXT TOKEN</text>
+  </g>
+
+  <!-- text -->
+  <rect class="card" x="40" y="190" width="130" height="110" rx="12"/>
+  <text x="105" y="232" text-anchor="middle" class="ink mono" font-size="15">I am</text>
+  <text x="105" y="256" text-anchor="middle" class="ink mono" font-size="15">learning</text>
+  <line class="line" x1="172" y1="245" x2="196" y2="245" marker-end="url(#a)"/>
+
+  <!-- ids -->
+  <g class="mono" font-size="15" font-weight="700">
+    <rect class="accsoft" x="200" y="186" width="110" height="34" rx="8"/><text x="255" y="209" text-anchor="middle" class="accink">40</text>
+    <rect class="accsoft" x="200" y="228" width="110" height="34" rx="8"/><text x="255" y="251" text-anchor="middle" class="accink">1097</text>
+    <rect class="accsoft" x="200" y="270" width="110" height="34" rx="8"/><text x="255" y="293" text-anchor="middle" class="accink">6975</text>
+  </g>
+  <text x="255" y="330" text-anchor="middle" class="muted mono" font-size="13">[n]</text>
+  <line class="line" x1="312" y1="245" x2="346" y2="245" marker-end="url(#a)"/>
+
+  <!-- embeddings matrix n x d -->
+  <g>
+    <rect class="card" x="350" y="186" width="160" height="118" rx="10"/>
+    <g class="acc">
+      <rect x="362" y="198" width="20" height="26" rx="3" opacity=".9"/><rect x="386" y="198" width="20" height="26" rx="3" opacity=".35"/><rect x="410" y="198" width="20" height="26" rx="3" opacity=".6"/><rect x="434" y="198" width="20" height="26" rx="3" opacity=".2"/><rect x="458" y="198" width="20" height="26" rx="3" opacity=".75"/><rect x="482" y="198" width="16" height="26" rx="3" opacity=".45"/>
+      <rect x="362" y="232" width="20" height="26" rx="3" opacity=".3"/><rect x="386" y="232" width="20" height="26" rx="3" opacity=".8"/><rect x="410" y="232" width="20" height="26" rx="3" opacity=".25"/><rect x="434" y="232" width="20" height="26" rx="3" opacity=".7"/><rect x="458" y="232" width="20" height="26" rx="3" opacity=".4"/><rect x="482" y="232" width="16" height="26" rx="3" opacity=".9"/>
+      <rect x="362" y="266" width="20" height="26" rx="3" opacity=".65"/><rect x="386" y="266" width="20" height="26" rx="3" opacity=".2"/><rect x="410" y="266" width="20" height="26" rx="3" opacity=".85"/><rect x="434" y="266" width="20" height="26" rx="3" opacity=".5"/><rect x="458" y="266" width="20" height="26" rx="3" opacity=".3"/><rect x="482" y="266" width="16" height="26" rx="3" opacity=".6"/>
+    </g>
+  </g>
+  <text x="430" y="330" text-anchor="middle" class="muted mono" font-size="13">[n, d]</text>
+  <text x="430" y="350" text-anchor="middle" class="muted" font-size="12">lookup + position</text>
+  <line class="line" x1="512" y1="245" x2="541" y2="245" marker-end="url(#a)"/>
+
+  <!-- transformer stack -->
+  <rect class="card" x="557" y="160" width="180" height="170" rx="12"/>
+  <rect class="card" x="551" y="166" width="180" height="170" rx="12"/>
+  <rect class="card" x="545" y="172" width="180" height="170" rx="12"/>
+  <rect class="accsoft" x="561" y="188" width="148" height="56" rx="8"/>
+  <text x="635" y="212" text-anchor="middle" class="accink" font-size="15" font-weight="700">Attention</text>
+  <text x="635" y="232" text-anchor="middle" class="accink" font-size="12">tokens read each other</text>
+  <rect class="heat" x="561" y="254" width="148" height="56" rx="8"/>
+  <text x="635" y="278" text-anchor="middle" class="heatink" font-size="15" font-weight="700">MLP</text>
+  <text x="635" y="298" text-anchor="middle" class="heatink" font-size="12">each token on its own</text>
+  <text x="635" y="330" text-anchor="middle" class="ink" font-size="13" font-weight="700">× N blocks</text>
+  <text x="640" y="366" text-anchor="middle" class="muted mono" font-size="13">[n, d] → [n, d]</text>
+  <line class="line" x1="739" y1="245" x2="786" y2="245" marker-end="url(#a)"/>
+
+  <!-- logits -->
+  <rect class="card" x="790" y="186" width="140" height="118" rx="10"/>
+  <g class="mono" font-size="12">
+    <text x="806" y="212" class="muted">artificial</text><text x="916" y="212" text-anchor="end" class="ink" font-weight="700">7.6</text>
+    <text x="806" y="236" class="muted">to</text><text x="916" y="236" text-anchor="end" class="ink" font-weight="700">5.1</text>
+    <text x="806" y="260" class="muted">about</text><text x="916" y="260" text-anchor="end" class="ink" font-weight="700">4.4</text>
+    <text x="806" y="284" class="muted">… 128k more</text>
+  </g>
+  <text x="860" y="330" text-anchor="middle" class="muted mono" font-size="13">[n, V]</text>
+  <text x="860" y="350" text-anchor="middle" class="muted" font-size="12">only the last row is used</text>
+  <line class="line" x1="932" y1="245" x2="961" y2="245" marker-end="url(#a)"/>
+
+  <!-- probabilities -->
+  <rect class="card" x="965" y="172" width="195" height="146" rx="12"/>
+  <text x="981" y="196" class="muted" font-size="12">softmax → probabilities</text>
+  <g font-size="13">
+    <rect class="acc" x="981" y="208" width="110" height="22" rx="4"/><text x="987" y="224" class="onacc mono" font-weight="700">artificial</text><text x="1146" y="224" text-anchor="end" class="ink mono" font-weight="700">62%</text>
+    <rect class="accsoft" x="981" y="238" width="44" height="22" rx="4"/><text x="987" y="254" class="accink mono">to</text><text x="1146" y="254" text-anchor="end" class="muted mono">25%</text>
+    <rect class="accsoft" x="981" y="268" width="22" height="22" rx="4"/><text x="1009" y="284" class="accink mono">about</text><text x="1146" y="284" text-anchor="end" class="muted mono">13%</text>
+  </g>
+  <text x="981" y="308" class="muted" font-size="12">pick one → <tspan class="ink mono" font-weight="700">artificial</tspan></text>
+
+  <!-- loop -->
+  <path class="dash" d="M1062 320 V420 H105 V306" marker-end="url(#b)"/>
+  <rect class="bg" x="360" y="406" width="480" height="28"/>
+  <text x="600" y="425" text-anchor="middle" class="accink" font-size="15" font-weight="700">append the token and run the whole pass again</text>
+
+  <!-- shape key -->
+  <rect class="card" x="40" y="462" width="1120" height="70" rx="12"/>
+  <g font-size="14">
+    <text x="62" y="492" class="ink" font-weight="700">Shapes</text>
+    <text x="62" y="514" class="muted">Follow these to read the model</text>
+    <text x="300" y="492" class="ink mono" font-weight="700">n</text><text x="320" y="492" class="muted">tokens in the text</text>
+    <text x="300" y="514" class="ink mono" font-weight="700">d</text><text x="320" y="514" class="muted">numbers per token (≈ 4,096)</text>
+    <text x="580" y="492" class="ink mono" font-weight="700">V</text><text x="600" y="492" class="muted">vocabulary size (≈ 128,000)</text>
+    <text x="580" y="514" class="ink mono" font-weight="700">N</text><text x="600" y="514" class="muted">transformer blocks (≈ 32)</text>
+    <text x="860" y="492" class="ink mono" font-weight="700">B</text><text x="880" y="492" class="muted">texts per batch (adds a</text>
+    <text x="880" y="514" class="muted">leading dimension)</text>
+  </g>
+</svg>

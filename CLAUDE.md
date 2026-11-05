@@ -26,7 +26,8 @@ Before calling a task done:
   1. Add the component to `src/app/widgets/<topic>.widgets.ts`.
   2. Register it in `widgets/registry.ts`.
   3. Add its name to the widget `enum` in `src/content/schema/chapter.schema.json`.
-- **Images:** add a slide-level `figure` (`src`, optional `darkSrc`, `alt`, `width`, `height`, `caption`) with files in `public/images/`. Paths have no leading slash (the base href varies). Provide a light and a dark variant; `SlideFigure` swaps them using `Theme.dark()`, so they follow the site toggle. Prefer SVG and write a real `alt`.
+- **Highlights:** wrap the single key takeaway of a slide in `<mark>` (one per slide at most, a phrase or sentence, never a whole paragraph).
+- **Images:** draw the SVG in `src/content/figures/` using the shared class names and a `<!--theme-->` marker, run `npm run figures` to build the light/dark files in `public/images/`, then add a slide-level `figure` (`src`, optional `darkSrc`, `alt`, `width`, `height`, `caption`) with files in `public/images/`. Paths have no leading slash (the base href varies). Provide a light and a dark variant; `SlideFigure` swaps them using `Theme.dark()`, so they follow the site toggle. Prefer SVG and write a real `alt`.
 - **Cross-chapter links:** use `goto: { chapter: "<id>", slide: n }` and refer to the chapter by **name** in prose, never by number.
 - **New chapter:** add the JSON file with its `$schema` line, import it in `src/content/course.ts`, add it to a section, and update the chapter table in `README.md`.
 

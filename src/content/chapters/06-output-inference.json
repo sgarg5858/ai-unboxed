@@ -12,7 +12,7 @@
         "When generating, only the scores for the <b>last</b> token matter, because that's the one predicting what comes next. During training, every position's scores are used, each one predicting the token after it.",
         "The bars on the right are the top 8 logits after \"I am learning artificial\".",
         {
-          "note": "This list of 100,000+ scores is everything the model outputs. Picking a token from it is done by normal code outside the model, and you control how. That's the next two slides.",
+          "note": "<mark>This list of 100,000+ scores is everything the model outputs.</mark> Picking a token from it is done by normal code outside the model, and you control how. That's the next two slides.",
           "kind": "key"
         }
       ],
@@ -85,7 +85,7 @@
         "<b>Temperature</b> <code>T</code> is applied first: every score is divided by <code>T</code>, so <code>p = exp(z/T) / Σ exp(z/T)</code>. A small <code>T</code> makes the gaps between scores bigger; a large <code>T</code> makes them smaller.",
         {
           "ul": [
-            "<b>T near 0</b>: the top token gets almost all the probability. The output is predictable and the same each time, but can get repetitive. Good for code and factual answers.",
+            "<b>T near 0</b>: the top token gets almost all the probability. The output is predictable and the same each time, but can get repetitive. <mark>Good for code and factual answers.</mark>",
             "<b>T = 1</b>: exactly the probabilities the model learned.",
             "<b>T above 1</b>: flatter, so unlikely tokens get picked more often. More variety, but more mistakes. Useful in small amounts for brainstorming."
           ]
@@ -119,7 +119,7 @@
             "<b>Greedy</b>: always pick the single most likely token. The same as top-k = 1."
           ]
         },
-        "The remaining probabilities are rescaled to add up to 1 again, and one token is picked at random, with likelier tokens more likely to be chosen.",
+        "The remaining probabilities are rescaled to add up to 1 again, and <mark>one token is picked at random, with likelier tokens more likely to be chosen</mark>.",
         "Try top-k = 3, then press <i>Sample</i> a few times. Then try top-k = 1."
       ],
       "code": [
@@ -143,7 +143,7 @@
         "The <b>KV cache</b> saves every token's keys and values, in every layer, the first time they're worked out. After that, each step only computes Q, K and V for the one new token, and compares its query against the saved keys and values.",
         {
           "ul": [
-            "<b>Speed</b>: each step's work drops from <code>O(n²)</code> to <code>O(n)</code>. This is what makes long, streamed answers possible.",
+            "<b>Speed</b>: each step's work drops from <code>O(n²)</code> to <code>O(n)</code>. <mark>This is what makes long, streamed answers possible.</mark>",
             "<b>Memory</b>: the cache grows with every token, in every layer. For long texts it can be bigger than the model itself.",
             "<b>Fixes</b>: GQA (fewer key/value heads), storing the cache with fewer bits, and managing it in fixed-size pages, the way a computer manages RAM (PagedAttention, used by vLLM)."
           ]
@@ -181,7 +181,7 @@
           ]
         },
         {
-          "note": "The model has no memory of its own; the context is all it has. If something isn't in the context, the model doesn't know it, no matter how recently you mentioned it.",
+          "note": "The model has no memory of its own; the context is all it has. <mark>If something isn't in the context, the model doesn't know it</mark>, no matter how recently you mentioned it.",
           "kind": "key"
         },
         {
