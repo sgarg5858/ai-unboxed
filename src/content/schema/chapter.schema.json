@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "Inside an LLM chapter",
+  "title": "AI, Unboxed chapter",
   "description": "One chapter of the course. Register new files in src/content/course.ts.",
   "type": "object",
   "required": ["id", "name", "slides"],

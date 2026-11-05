@@ -2,13 +2,20 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>Inside an LLM</title>
+    <title>AI, Unboxed</title>
     <base href="/" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta
       name="description"
-      content="An interactive course on how large language models and AI assistants work, one tensor at a time."
+      content="An interactive guide to how modern AI works, starting with assistants like Claude, ChatGPT and Gemini and the LLMs inside them."
     />
+    <script>
+      // Apply a saved light/dark choice before first paint (same key as shared/theme/theme.ts).
+      try {
+        var t = localStorage.getItem('inside-an-llm:theme');
+        if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
+      } catch (e) {}
+    </script>
     <link rel="icon" type="image/x-icon" href="favicon.ico" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

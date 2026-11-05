@@ -1,6 +1,6 @@
-# Inside an LLM
+# AI, Unboxed
 
-An interactive course on how large language models work, from tokens and attention to the assistant system built around the model. Built with Angular. The content lives in JSON.
+An interactive guide to how modern AI works, one layer at a time. It starts with the whole assistant system (auth, guardrails, memory, tools, search, safety training), then opens the LLM inside it, from tokens and attention to training. Built with Angular. The content lives in JSON, so a new topic is just a new chapter file.
 
 | # | Chapter | Covers |
 |---|---------|--------|
