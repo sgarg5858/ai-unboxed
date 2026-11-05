@@ -3,6 +3,7 @@ import { ChangeDetectionStrategy, Component, computed, input, model } from '@ang
 /** Labelled range input. Two-way bind with [(value)]. */
 @Component({
   selector: 'app-slider',
+  styleUrl: './slider.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { style: 'display:block' },
   template: `

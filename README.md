@@ -51,10 +51,16 @@ src/
     widgets/                  named interactive widgets that need real logic
       registry.ts             widget name → component
     shared/                   slider, matrix table, code block, math and formatting helpers
-  styles.css                  design tokens (light/dark) and shared classes
+  styles.css                  design tokens (light/dark), reset, shared primitives (.panel, .btn, .stage …)
 ```
 
 The rule of thumb: **content and layout go in JSON, behaviour goes in code.** Most slides need only generic blocks. A widget is for an interaction that computes something, such as a temperature slider or the attention matrices.
+
+## Styling
+
+- **Global** (`src/styles.css`): tokens, reset, shared primitives used across many widgets, and rules for HTML that Angular can't scope, such as slide text injected with `[innerHTML]` (`<code>`, `.k`) and the syntax-highlighted code spans.
+- **Component** (a `.css` file next to the component): anything only that component uses, for example the page layout and navigation in `course-shell.css`. Scoped styles can't leak into other components or be hit by a same-named class elsewhere.
+- Rule of thumb: if two or more components need the same class, make it a global primitive. If one does, keep it in the component.
 
 ## Adding or editing content
 

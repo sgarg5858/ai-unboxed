@@ -4,6 +4,7 @@ import { Theme, ThemeChoice } from './theme';
 /** Segmented Auto / Light / Dark control. */
 @Component({
   selector: 'app-theme-switch',
+  styleUrl: './theme-switch.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="theme-switch" role="group" aria-label="Colour theme">

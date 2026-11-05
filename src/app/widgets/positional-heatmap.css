@@ -1,0 +1,8 @@
+.hm {
+  display: grid;
+  gap: 1px;
+}
+.hm div {
+  aspect-ratio: 1;
+  border-radius: 1px;
+}

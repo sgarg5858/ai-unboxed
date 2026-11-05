@@ -11,6 +11,7 @@ import { NoteKind, Prose } from '../content.model';
   imports: [BlockList, CodeBlock, ThemeSwitch],
   host: { '(document:keydown)': 'onKey($event)' },
   templateUrl: './course-shell.html',
+  styleUrl: './course-shell.css',
 })
 export class CourseShell {
   protected readonly nav = inject(CourseNav);

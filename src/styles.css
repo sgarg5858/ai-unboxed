@@ -1,3 +1,12 @@
+/*
+ * Global styles. Keep this file to three kinds of thing:
+ *   1. Design tokens (colours, fonts) for light and dark.
+ *   2. Reset and page-level rules.
+ *   3. Shared primitives used by many components (.panel, .btn, .stage, .chip, .cap, .stat …)
+ *      and rules for HTML that Angular can't scope, such as slide text injected with [innerHTML]
+ *      (<code>, .k) and the syntax-highlighted code spans.
+ * A style used by only one component belongs in that component's own stylesheet, so it can't leak.
+ */
 /* Global design system for the course. Components use these classes directly;
    keep tokens here so light/dark themes stay in one place. */
 :root {
@@ -123,146 +132,11 @@ body {
   font-size: 16px;
   line-height: 1.6;
 }
-.wrap {
-  max-width: 1180px;
-  margin: 0 auto;
-  padding-left: max(16px, env(safe-area-inset-left, 0px));
-  padding-right: max(16px, env(safe-area-inset-right, 0px));
-  padding-block: 28px 48px;
-}
-header.top {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 8px 24px;
-  margin-bottom: 18px;
-}
-h1 {
-  font-family: var(--f-display);
-  font-weight: 700;
-  font-size: clamp(28px, 4vw, 40px);
-  letter-spacing: -0.02em;
-  line-height: 1.05;
-  margin: 0;
-  text-wrap: balance;
-}
-h1 span {
-  color: var(--accent);
-}
-.sub {
-  font-family: var(--f-mono);
-  font-size: 12.5px;
-  color: var(--muted);
-  margin: 0;
-}
-nav.chapters {
-  display: flex;
-  gap: 6px;
-  overflow-x: auto;
-  padding-bottom: 6px;
-  margin-bottom: 18px;
-  scrollbar-width: thin;
-}
-nav.chapters button {
-  flex: 0 0 auto;
-  font: inherit;
-  font-size: 14px;
-  border: 1px solid var(--line);
-  background: var(--surface);
-  color: var(--muted);
-  border-radius: 999px;
-  padding: 6px 14px;
-  cursor: pointer;
-  white-space: nowrap;
-}
-nav.chapters button b {
-  font-family: var(--f-mono);
-  font-weight: 500;
-  font-size: 12px;
-  margin-right: 6px;
-  color: var(--muted);
-}
-nav.chapters button[aria-current='true'] {
-  background: var(--pill-bg);
-  color: var(--pill-fg);
-  border-color: var(--pill-bg);
-}
-nav.chapters button[aria-current='true'] b {
-  color: var(--pill-fg);
-  opacity: 1;
-}
 button:focus-visible,
 input:focus-visible,
 select:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
-}
-.progress {
-  display: flex;
-  gap: 4px;
-  margin-bottom: 16px;
-}
-.progress button {
-  flex: 1;
-  height: 6px;
-  border: 0;
-  border-radius: 3px;
-  background: var(--line);
-  cursor: pointer;
-  padding: 0;
-}
-.progress button.done {
-  background: var(--accent);
-}
-.slide {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 20px;
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  padding: 22px;
-  box-shadow: var(--shadow);
-}
-@media (min-width: 940px) {
-  .slide {
-    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
-    gap: 32px;
-    padding: 30px;
-  }
-}
-.eyebrow {
-  font-family: var(--f-mono);
-  font-size: 12px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--accent-ink);
-  margin: 0 0 6px;
-}
-.slide h2 {
-  font-family: var(--f-display);
-  font-weight: 700;
-  font-size: clamp(22px, 2.6vw, 28px);
-  letter-spacing: -0.01em;
-  line-height: 1.15;
-  margin: 0 0 12px;
-  text-wrap: balance;
-}
-.prose {
-  min-width: 0;
-}
-.prose p {
-  margin: 0 0 12px;
-  max-width: 62ch;
-}
-.prose ul {
-  margin: 0 0 12px;
-  padding-left: 20px;
-  max-width: 60ch;
-}
-.prose li {
-  margin: 0 0 6px;
 }
 .prose code,
 .k {
@@ -302,12 +176,6 @@ pre.code .c {
 pre.code .kw {
   color: var(--code-key);
 }
-.viz {
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
 .panel {
   background: var(--sunk);
   border-radius: 10px;
@@ -330,20 +198,6 @@ pre.code .kw {
   flex-wrap: wrap;
   gap: 8px;
   align-items: center;
-}
-.ctl {
-  display: grid;
-  grid-template-columns: 110px minmax(0, 1fr) 64px;
-  gap: 10px;
-  align-items: center;
-  font-size: 13px;
-  color: var(--muted);
-}
-.ctl output {
-  font-family: var(--f-mono);
-  color: var(--ink);
-  text-align: right;
-  font-variant-numeric: tabular-nums;
 }
 input[type='range'] {
   width: 100%;
@@ -480,29 +334,6 @@ input[type='range'] {
   box-shadow: inset 3px 0 0 var(--accent);
   border-radius: 0 8px 8px 0;
 }
-.foot {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  margin-top: 16px;
-}
-.foot .cnt {
-  font-family: var(--f-mono);
-  font-size: 12.5px;
-  color: var(--muted);
-}
-.foot .btn {
-  padding: 9px 16px;
-}
-.kbd {
-  font-family: var(--f-mono);
-  font-size: 11px;
-  border: 1px solid var(--line);
-  border-radius: 4px;
-  padding: 0 5px;
-  color: var(--muted);
-}
 svg text {
   font-family: var(--f-mono);
   font-size: 11px;
@@ -511,14 +342,6 @@ svg text {
 svg .lbl {
   fill: var(--ink);
   font-size: 12px;
-}
-.hm {
-  display: grid;
-  gap: 1px;
-}
-.hm div {
-  aspect-ratio: 1;
-  border-radius: 1px;
 }
 textarea,
 input[type='text'] {
@@ -575,7 +398,6 @@ input[type='text'] {
     animation: none !important;
   }
 }
-
 .stage[role='button'] {
   cursor: pointer;
 }
@@ -589,134 +411,10 @@ input[type='text'] {
 .contents {
   display: contents;
 }
-
-/* Reading aids: summary line, subheadings and callouts */
-.prose .lead {
-  font-size: 17px;
-  line-height: 1.5;
-  color: var(--ink);
-  opacity: 0.82;
-  margin: -4px 0 16px;
-  padding-bottom: 14px;
-  border-bottom: 1px solid var(--line);
-}
-.prose h3 {
-  font-family: var(--f-display);
-  font-weight: 700;
-  font-size: 16px;
-  letter-spacing: -0.005em;
-  margin: 18px 0 6px;
-}
-.note {
-  --c: var(--accent);
-  display: block;
-  max-width: 62ch;
-  margin: 4px 0 14px;
-  padding: 10px 14px;
-  background: var(--sunk);
-  border-left: 3px solid var(--c);
-  border-radius: 0 8px 8px 0;
-  font-size: 15px;
-  line-height: 1.55;
-}
-.note[data-kind='analogy'] {
-  --c: var(--pos-ink);
-}
-.note[data-kind='dev'] {
-  --c: var(--heat-ink);
-}
-.note[data-kind='warn'] {
-  --c: var(--neg-ink);
-}
-.note[data-kind='example'] {
-  --c: var(--muted);
-}
-.note-label {
-  display: block;
-  font-family: var(--f-mono);
-  font-size: 11px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--c);
-  margin-bottom: 2px;
-}
 .note code {
   font-family: var(--f-mono);
   font-size: 0.86em;
   background: var(--surface);
   padding: 1px 5px;
   border-radius: 4px;
-}
-
-/* Theme switch */
-.title-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px 24px;
-  flex: 1 1 100%;
-}
-.theme-switch {
-  display: inline-flex;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  background: var(--surface);
-  padding: 2px;
-  flex: 0 0 auto;
-}
-.theme-switch button {
-  font: inherit;
-  font-size: 13px;
-  border: 0;
-  background: transparent;
-  color: var(--muted);
-  border-radius: 999px;
-  padding: 4px 10px;
-  cursor: pointer;
-  display: inline-flex;
-  gap: 5px;
-  align-items: center;
-  line-height: 1.3;
-}
-.theme-switch button:hover {
-  color: var(--ink);
-}
-.theme-switch button[aria-pressed='true'] {
-  background: var(--pill-bg);
-  color: var(--pill-fg);
-}
-@media (max-width: 480px) {
-  .theme-switch .theme-label {
-    display: none;
-  }
-  .theme-switch button {
-    padding: 5px 10px;
-  }
-}
-
-/* Second-level chapter row, shown under the active section */
-nav.chapters.level2 {
-  margin: -6px 0 18px;
-  padding-left: 12px;
-  border-left: 2px solid var(--accent);
-}
-nav.chapters.level2 button {
-  font-size: 13px;
-  padding: 4px 12px;
-  background: transparent;
-}
-nav.chapters.level2 button b {
-  font-size: 11px;
-}
-nav.chapters.level2 button:hover {
-  border-color: var(--accent);
-  color: var(--ink);
-}
-nav.chapters.level2 button[aria-current='true'] {
-  background: var(--accent-soft);
-  color: var(--accent-ink);
-  border-color: var(--accent);
-}
-nav.chapters.level2 button[aria-current='true'] b {
-  color: var(--accent-ink);
 }

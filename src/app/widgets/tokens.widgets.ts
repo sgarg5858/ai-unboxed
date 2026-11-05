@@ -203,6 +203,7 @@ export class EmbeddingGeometryWidget {
 
 @Component({
   selector: 'w-positional-heatmap',
+  styleUrl: './positional-heatmap.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'contents' },
   template: `
