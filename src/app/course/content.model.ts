@@ -84,6 +84,19 @@ export type Block =
 
 export type BlockType = Block['type'];
 
+/** A wide image shown under the slide's two columns. Paths are relative to public/. */
+export interface Figure {
+  src: string;
+  /** Version for the dark theme. Defaults to src. */
+  darkSrc?: string;
+  /** Describes what the image shows, for screen readers. */
+  alt: string;
+  width: number;
+  height: number;
+  /** Inline HTML allowed. */
+  caption?: string;
+}
+
 export interface SlideContent {
   title: string;
   /** One-sentence takeaway shown under the title. */
@@ -92,6 +105,7 @@ export interface SlideContent {
   /** Code sample shown under the prose, one string per line. */
   code?: string[];
   viz?: Block[];
+  figure?: Figure;
 }
 
 /** A top-level group of chapters. The rail shows sections; a section with several chapters shows a second row. */

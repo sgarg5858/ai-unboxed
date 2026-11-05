@@ -1,5 +1,5 @@
 import { DOCUMENT } from '@angular/common';
-import { Injectable, effect, inject, signal } from '@angular/core';
+import { Injectable, computed, effect, inject, signal } from '@angular/core';
 
 export type ThemeChoice = 'auto' | 'light' | 'dark';
 
@@ -16,8 +16,15 @@ const isChoice = (v: unknown): v is ThemeChoice => v === 'auto' || v === 'light'
 export class Theme {
   private readonly doc = inject(DOCUMENT);
   readonly choice = signal<ThemeChoice>(this.read());
+  /** The OS setting, kept live. jsdom and old browsers have no matchMedia, so default to light. */
+  private readonly systemDark = signal(this.media()?.matches ?? false);
+  /** True when the dark palette is showing, whether chosen or inherited from the OS. */
+  readonly dark = computed(() =>
+    this.choice() === 'auto' ? this.systemDark() : this.choice() === 'dark',
+  );
 
   constructor() {
+    this.media()?.addEventListener('change', (e) => this.systemDark.set(e.matches));
     effect(() => {
       const c = this.choice();
       const root = this.doc.documentElement;
@@ -34,6 +41,10 @@ export class Theme {
 
   set(c: ThemeChoice) {
     this.choice.set(c);
+  }
+
+  private media(): MediaQueryList | undefined {
+    return this.doc.defaultView?.matchMedia?.('(prefers-color-scheme: dark)');
   }
 
   private read(): ThemeChoice {

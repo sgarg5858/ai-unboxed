@@ -128,4 +128,5 @@ Slides link to other chapters with `goto: { chapter: "<id>", slide: n }` and ref
 | Add a section (RAG, Agents, …) | Add `{ id, name, chapters }` to `SECTIONS` in `course.ts`. The rail picks it up automatically.                                                                                      |
 | Add a widget                   | Write the component in `widgets/<topic>.widgets.ts`, register it in `registry.ts`, and add its name to the widget `enum` in `chapter.schema.json`. Tests fail if you forget either. |
 | Add a generic block type       | Add it to the `Block` union in `content.model.ts`, add a renderer in `blocks/`, add a `@case` in `BlockList`, and add it to the schema.                                             |
+| Add a diagram or image         | Put light and dark files in `public/images/` and add `figure` to the slide. It renders full width under both columns (`shared/slide-figure`).                                       |
 | Add a colour                   | Add the token to both the light and dark blocks in `styles.css`. Add an `-ink` variant if it will colour text.                                                                      |

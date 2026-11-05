@@ -1,0 +1,144 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 730" role="img" aria-labelledby="t d" font-family="'Schibsted Grotesk', ui-sans-serif, system-ui, sans-serif">
+  <title id="t">Tokens, tokenizer and vocabulary</title>
+  <desc id="d">The sentence "I am learning tokenization" goes into a tokenizer. The tokenizer checks a fixed vocabulary of about 128,000 pieces and splits the text into five tokens: I, space-am, space-learning, space-token and ization. Each token is replaced by its row number in the vocabulary, giving the list 40, 1097, 6975, 4037, 2065, which is what the model reads.</desc>
+  <style>
+    .bg{fill:#f2f6f8}.card{fill:#fff;stroke:#d5e0e7}.ink{fill:#10212b}.muted{fill:#4a6070}
+    .acc{fill:#0a6ea6}.accink{fill:#075585}.accsoft{fill:#ddeef9}.heat{fill:#fbebcb;stroke:#cc8200}.heatink{fill:#8a5a00}
+    .line{stroke:#4a6070;fill:none;stroke-width:2}.dash{stroke:#0a6ea6;fill:none;stroke-width:2;stroke-dasharray:6 5}
+    .row{fill:#edf3f7}.hit{fill:#ddeef9;stroke:#0a6ea6}.mono{font-family:'JetBrains Mono',ui-monospace,Menlo,monospace}
+    .head{font-size:13px;font-weight:700;letter-spacing:.08em}.onacc{fill:#fff}
+      .bg{fill:#0f1413}.card{fill:#171e1c;stroke:#2c3835}.ink{fill:#e4ece9}.muted{fill:#9aa9a4}
+      .acc{fill:#4db3d1}.accink{fill:#8fd3e6}.accsoft{fill:#163742}.heat{fill:#3d2e14;stroke:#f0ac40}.heatink{fill:#f0ac40}
+      .line{stroke:#9aa9a4}.dash{stroke:#4db3d1}.row{fill:#1f2826}.hit{fill:#163742;stroke:#4db3d1}.onacc{fill:#0f1413}
+  </style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" class="muted"/>
+    </marker>
+    <marker id="arrowAcc" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" class="acc"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" width="1200" height="730" rx="18"/>
+
+  <!-- Title -->
+  <text x="40" y="52" class="ink" font-size="26" font-weight="700">From text to numbers</text>
+  <text x="40" y="78" class="muted" font-size="15">An LLM never sees letters. The tokenizer turns text into tokens, and each token into its ID number in the vocabulary.</text>
+
+  <!-- Column headers -->
+  <g class="muted head">
+    <text x="40" y="124">1 · TEXT</text>
+    <text x="320" y="124">2 · TOKENIZER</text>
+    <text x="620" y="124">3 · TOKENS</text>
+    <text x="820" y="124">4 · TOKEN IDs</text>
+  </g>
+
+  <!-- 1. Text -->
+  <rect class="card" x="40" y="200" width="230" height="96" rx="12"/>
+  <text x="155" y="243" text-anchor="middle" class="ink mono" font-size="16">I am learning</text>
+  <text x="155" y="267" text-anchor="middle" class="ink mono" font-size="16">tokenization</text>
+  <text x="155" y="322" text-anchor="middle" class="muted" font-size="13">what you type</text>
+  <line class="line" x1="272" y1="248" x2="316" y2="248" marker-end="url(#arrow)"/>
+
+  <!-- 2. Tokenizer -->
+  <rect class="acc" x="320" y="188" width="240" height="120" rx="14"/>
+  <text x="440" y="236" text-anchor="middle" class="onacc" font-size="22" font-weight="700">Tokenizer</text>
+  <text x="440" y="262" text-anchor="middle" class="onacc" font-size="14">splits text into the longest</text>
+  <text x="440" y="282" text-anchor="middle" class="onacc" font-size="14">pieces it knows</text>
+
+  <!-- tokenizer to tokens: fan out -->
+  <g class="line">
+    <path d="M562 248 C590 248 590 158 616 158" marker-end="url(#arrow)"/>
+    <path d="M562 248 C592 248 592 203 616 203" marker-end="url(#arrow)"/>
+    <path d="M562 248 L616 248" marker-end="url(#arrow)"/>
+    <path d="M562 248 C592 248 592 293 616 293" marker-end="url(#arrow)"/>
+    <path d="M562 248 C590 248 590 338 616 338" marker-end="url(#arrow)"/>
+  </g>
+
+  <!-- 3. Tokens and 4. IDs -->
+  <g font-size="16">
+    <rect class="card" x="620" y="141" width="150" height="34" rx="8"/>
+    <text x="636" y="164" class="ink mono">I</text>
+    <rect class="card" x="620" y="186" width="150" height="34" rx="8"/>
+    <text x="636" y="209" class="ink mono">␣am</text>
+    <rect class="card" x="620" y="231" width="150" height="34" rx="8"/>
+    <text x="636" y="254" class="ink mono">␣learning</text>
+    <rect class="heat" x="620" y="276" width="150" height="34" rx="8"/>
+    <text x="636" y="299" class="heatink mono">␣token</text>
+    <rect class="heat" x="620" y="321" width="150" height="34" rx="8"/>
+    <text x="636" y="344" class="heatink mono">ization</text>
+  </g>
+  <g class="line">
+    <line x1="772" y1="158" x2="816" y2="158" marker-end="url(#arrow)"/>
+    <line x1="772" y1="203" x2="816" y2="203" marker-end="url(#arrow)"/>
+    <line x1="772" y1="248" x2="816" y2="248" marker-end="url(#arrow)"/>
+    <line x1="772" y1="293" x2="816" y2="293" marker-end="url(#arrow)"/>
+    <line x1="772" y1="338" x2="816" y2="338" marker-end="url(#arrow)"/>
+  </g>
+  <g font-size="16" font-weight="700">
+    <rect class="accsoft" x="820" y="141" width="86" height="34" rx="8"/>
+    <text x="863" y="164" text-anchor="middle" class="accink mono">40</text>
+    <rect class="accsoft" x="820" y="186" width="86" height="34" rx="8"/>
+    <text x="863" y="209" text-anchor="middle" class="accink mono">1097</text>
+    <rect class="accsoft" x="820" y="231" width="86" height="34" rx="8"/>
+    <text x="863" y="254" text-anchor="middle" class="accink mono">6975</text>
+    <rect class="accsoft" x="820" y="276" width="86" height="34" rx="8"/>
+    <text x="863" y="299" text-anchor="middle" class="accink mono">4037</text>
+    <rect class="accsoft" x="820" y="321" width="86" height="34" rx="8"/>
+    <text x="863" y="344" text-anchor="middle" class="accink mono">2065</text>
+  </g>
+  <text x="695" y="380" text-anchor="middle" class="muted" font-size="13">amber = one word split in two</text>
+
+  <!-- bracket into model input -->
+  <path class="line" d="M914 158 H930 V338 H914 M930 248 H958" marker-end="url(#arrow)"/>
+  <rect class="card" x="962" y="196" width="198" height="104" rx="12"/>
+  <text x="1061" y="226" text-anchor="middle" class="muted head">THE MODEL READS</text>
+  <text x="1061" y="256" text-anchor="middle" class="ink mono" font-size="15" font-weight="700">[40, 1097, 6975,</text>
+  <text x="1061" y="278" text-anchor="middle" class="ink mono" font-size="15" font-weight="700">4037, 2065]</text>
+
+  <!-- Vocabulary -->
+  <path class="dash" d="M440 310 V392" marker-start="url(#arrowAcc)" marker-end="url(#arrowAcc)"/>
+  <text x="452" y="356" class="accink" font-size="13" font-weight="700">checks pieces</text>
+  <text x="452" y="373" class="accink" font-size="13" font-weight="700">against</text>
+  <path class="dash" d="M576 470 H863 V362" marker-end="url(#arrowAcc)"/>
+  <text x="690" y="462" class="accink" font-size="13" font-weight="700">ID = row number</text>
+
+  <rect class="card" x="300" y="396" width="276" height="196" rx="12"/>
+  <text x="318" y="422" class="ink" font-size="16" font-weight="700">Vocabulary</text>
+  <text x="560" y="422" text-anchor="end" class="muted" font-size="12">~128,000 rows, fixed</text>
+  <g class="mono" font-size="13">
+    <rect class="row" x="314" y="434" width="248" height="20" rx="4"/>
+    <text x="324" y="448" class="muted">0</text><text x="400" y="448" class="ink">!</text>
+    <rect class="hit" x="314" y="458" width="248" height="20" rx="4"/>
+    <text x="324" y="472" class="accink" font-weight="700">40</text><text x="400" y="472" class="ink">I</text>
+    <rect class="hit" x="314" y="482" width="248" height="20" rx="4"/>
+    <text x="324" y="496" class="accink" font-weight="700">1097</text><text x="400" y="496" class="ink">␣am</text>
+    <rect class="hit" x="314" y="506" width="248" height="20" rx="4"/>
+    <text x="324" y="520" class="accink" font-weight="700">2065</text><text x="400" y="520" class="ink">ization</text>
+    <rect class="hit" x="314" y="530" width="248" height="20" rx="4"/>
+    <text x="324" y="544" class="accink" font-weight="700">4037</text><text x="400" y="544" class="ink">␣token</text>
+    <rect class="hit" x="314" y="554" width="248" height="20" rx="4"/>
+    <text x="324" y="568" class="accink" font-weight="700">6975</text><text x="400" y="568" class="ink">␣learning</text>
+  </g>
+  <text x="318" y="586" class="muted" font-size="11">… plus every other piece, up to row 127,999</text>
+
+  <!-- Definitions -->
+  <g>
+    <rect class="card" x="40" y="620" width="360" height="82" rx="12"/>
+    <text x="60" y="650" class="ink" font-size="17" font-weight="700">Token</text>
+    <text x="60" y="674" class="muted" font-size="14">A piece of text: a word, part of a</text>
+    <text x="60" y="692" class="muted" font-size="14">word, or a symbol. ␣ marks a space.</text>
+
+    <rect class="card" x="420" y="620" width="360" height="82" rx="12"/>
+    <text x="440" y="650" class="ink" font-size="17" font-weight="700">Tokenizer</text>
+    <text x="440" y="674" class="muted" font-size="14">The program that splits text into</text>
+    <text x="440" y="692" class="muted" font-size="14">tokens. Same text → same tokens.</text>
+
+    <rect class="card" x="800" y="620" width="360" height="82" rx="12"/>
+    <text x="820" y="650" class="ink" font-size="17" font-weight="700">Vocabulary</text>
+    <text x="820" y="674" class="muted" font-size="14">The fixed list of every token the</text>
+    <text x="820" y="692" class="muted" font-size="14">model knows, each with an ID.</text>
+  </g>
+  <text x="1160" y="722" text-anchor="end" class="muted" font-size="11">Token IDs are made up for illustration.</text>
+</svg>

@@ -1,14 +1,16 @@
 import { ChangeDetectionStrategy, Component, ElementRef, inject, viewChild } from '@angular/core';
 import { BlockList } from '../../blocks/block-list';
 import { CodeBlock } from '../../shared/code-block/code-block';
+import { SlideFigure } from '../../shared/slide-figure/slide-figure';
 import { ThemeSwitch } from '../../shared/theme/theme-switch';
 import { CourseNav } from '../course-nav';
+import { SlideProgress } from '../slide-progress/slide-progress';
 import { NoteKind, Prose } from '../content.model';
 
 @Component({
   selector: 'app-course-shell',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [BlockList, CodeBlock, ThemeSwitch],
+  imports: [BlockList, CodeBlock, SlideFigure, SlideProgress, ThemeSwitch],
   host: { '(document:keydown)': 'onKey($event)' },
   templateUrl: './course-shell.html',
   styleUrl: './course-shell.css',

@@ -102,6 +102,36 @@
         "summary": {
           "type": "string",
           "description": "One-sentence takeaway shown under the title. Inline HTML allowed."
+        },
+        "figure": {
+          "type": "object",
+          "description": "A wide image shown under both columns. Paths are relative to public/, e.g. images/x.svg.",
+          "required": ["src", "alt", "width", "height"],
+          "additionalProperties": false,
+          "properties": {
+            "src": {
+              "type": "string",
+              "pattern": "^[^/].*"
+            },
+            "darkSrc": {
+              "type": "string",
+              "pattern": "^[^/].*"
+            },
+            "alt": {
+              "type": "string",
+              "minLength": 20
+            },
+            "width": {
+              "type": "integer"
+            },
+            "height": {
+              "type": "integer"
+            },
+            "caption": {
+              "type": "string",
+              "description": "Inline HTML allowed (b, i, code, span class)."
+            }
+          }
         }
       }
     },

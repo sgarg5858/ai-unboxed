@@ -53,7 +53,7 @@ src/
     blocks/                   generic, config-driven building blocks (stages, tabs, stepper…)
     widgets/                  named interactive widgets that need real logic
       registry.ts             widget name → component
-    shared/                   slider, matrix table, code block, math and formatting helpers
+    shared/                   slide figure, slider, matrix table, code block, math and formatting helpers
   styles.css                  design tokens (light/dark), reset, shared primitives (.panel, .btn, .stage …)
 ```
 

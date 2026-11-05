@@ -30,21 +30,7 @@
     </nav>
   }
 
-  <nav class="progress" aria-label="Slides in this chapter">
-    @for (s of nav.chapter().slides; track $index; let i = $index) {
-      <button
-        type="button"
-        [class.done]="i < nav.position().slide"
-        [class.current]="i === nav.position().slide"
-        [attr.aria-current]="i === nav.position().slide ? 'step' : null"
-        [attr.aria-label]="
-          'Slide ' + (i + 1) + ' of ' + nav.chapter().slides.length + ': ' + s.title
-        "
-        [title]="i + 1 + '. ' + s.title"
-        (click)="nav.gotoSlide(i)"
-      ></button>
-    }
-  </nav>
+  <app-slide-progress />
 
   @let slide = nav.slide();
   <article class="slide" #article aria-live="polite">
@@ -94,6 +80,9 @@
         }
       }
     </div>
+    @if (slide.figure; as f) {
+      <app-slide-figure class="wide" [figure]="f" />
+    }
   </article>
 
   <div class="foot">

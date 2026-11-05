@@ -49,7 +49,15 @@
           "type": "caption",
           "html": "Rule of thumb for English: 1 token ≈ 4 characters ≈ 0.75 words."
         }
-      ]
+      ],
+      "figure": {
+        "src": "images/tokens-tokenizer-vocabulary-light.svg",
+        "darkSrc": "images/tokens-tokenizer-vocabulary-dark.svg",
+        "alt": "The sentence \"I am learning tokenization\" goes into a tokenizer, which checks a fixed vocabulary of about 128,000 pieces. It splits the text into five tokens: I, am, learning, token and ization, with the last word split in two. Each token becomes its row number in the vocabulary, so the model reads the list 40, 1097, 6975, 4037, 2065.",
+        "width": 1200,
+        "height": 730,
+        "caption": "The whole journey in one picture: text goes in, the tokenizer splits it using the vocabulary, and the model only ever sees the ID numbers."
+      }
     },
     {
       "title": "How BPE builds the vocabulary",
