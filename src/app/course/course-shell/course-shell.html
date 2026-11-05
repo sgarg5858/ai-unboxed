@@ -1,0 +1,79 @@
+<div class="wrap">
+  <header class="top">
+    <h1>Inside an <span>LLM</span></h1>
+    <p class="sub">
+      how AI assistants work, from the whole system down to a single tensor ·
+      <span class="kbd">←</span> <span class="kbd">→</span> to move
+    </p>
+  </header>
+
+  <nav class="chapters" aria-label="Chapters">
+    @for (c of nav.chapters; track c.id; let i = $index) {
+      <button [attr.aria-current]="i === nav.position().chapter" (click)="openChapter(c.id)">
+        <b>{{ pad(i + 1) }}</b
+        >{{ c.name }}
+      </button>
+    }
+  </nav>
+
+  <div class="progress">
+    @for (s of nav.chapter().slides; track $index; let i = $index) {
+      <button
+        [class.done]="i <= nav.position().slide"
+        [attr.aria-label]="'Slide ' + (i + 1) + ': ' + s.title"
+        (click)="nav.gotoSlide(i)"
+      ></button>
+    }
+  </div>
+
+  @let slide = nav.slide();
+  <article class="slide" #article aria-live="polite">
+    <div class="prose">
+      <p class="eyebrow">Chapter {{ nav.position().chapter + 1 }} · {{ nav.chapter().name }}</p>
+      <h2>{{ slide.title }}</h2>
+      @if (slide.summary) {
+        <p class="lead" [innerHTML]="slide.summary"></p>
+      }
+      @for (p of slide.body; track $index) {
+        @switch (kindOf(p)) {
+          @case ('ul') {
+            <ul>
+              @for (li of $any(p).ul; track $index) {
+                <li [innerHTML]="li"></li>
+              }
+            </ul>
+          }
+          @case ('h') {
+            <h3>{{ $any(p).h }}</h3>
+          }
+          @case ('note') {
+            <aside class="note" [attr.data-kind]="$any(p).kind">
+              <span class="note-label">{{ noteLabelOf(p) }}</span>
+              <span [innerHTML]="$any(p).note"></span>
+            </aside>
+          }
+          @default {
+            <p [innerHTML]="p"></p>
+          }
+        }
+      }
+      @if (slide.code) {
+        <app-code-block [source]="slide.code.join('\n')" />
+      }
+    </div>
+    <div class="viz">
+      @if (slide.viz) {
+        <!-- track by slide identity so widget state resets when the slide changes -->
+        @for (v of [slide]; track v) {
+          <app-blocks [blocks]="v.viz!" />
+        }
+      }
+    </div>
+  </article>
+
+  <div class="foot">
+    <button class="btn" [disabled]="nav.isFirst()" (click)="move(-1)">← Back</button>
+    <span class="cnt">{{ nav.position().slide + 1 }} / {{ nav.chapter().slides.length }}</span>
+    <button class="btn" (click)="move(1)">{{ nav.nextLabel() }}</button>
+  </div>
+</div>

@@ -1,0 +1,234 @@
+{
+  "$schema": "../schema/chapter.schema.json",
+  "id": "training",
+  "name": "Training",
+  "slides": [
+    {
+      "title": "The objective: predict the next token",
+      "summary": "Pretraining teaches the model one thing, predicting the next token of real text, at enormous scale.",
+      "body": [
+        "Pretraining has a single, simple goal: take a chunk of real text and, at every position, predict the token that comes next.",
+        "No human labelling is needed, because the text is its own answer key. The input is the text, and the target is the same text shifted one token to the left. This is called <b>self-supervised</b> learning, and it's why training can use trillions of tokens of web pages, books and code.",
+        "Thanks to the causal mask, one pass over a 4,096-token sequence gives 4,096 predictions to learn from at once. On the right, one short sentence becomes four training examples.",
+        {
+          "note": "Predicting the next token sounds shallow, but doing it well takes a lot: grammar, facts, reasoning, a writer's style, how code behaves. The model picks all of that up as a side effect of getting better at this one task.",
+          "kind": "key"
+        }
+      ],
+      "code": [
+        "ids = tokenize(text)                    # [n+1]",
+        "inputs, targets = ids[:-1], ids[1:]     # shift by one",
+        "logits = model(inputs)                  # [n, V]"
+      ],
+      "viz": [
+        {
+          "type": "panel",
+          "blocks": [
+            {
+              "type": "table",
+              "rows": [
+                {
+                  "head": "input",
+                  "cells": [
+                    { "text": "I", "tone": "accent" },
+                    { "text": "␣am", "tone": "accent" },
+                    { "text": "␣learning", "tone": "accent" },
+                    { "text": "␣artificial", "tone": "accent" }
+                  ]
+                },
+                {
+                  "head": "target",
+                  "cells": [
+                    { "text": "␣am", "tone": "heat" },
+                    { "text": "␣learning", "tone": "heat" },
+                    { "text": "␣artificial", "tone": "heat" },
+                    { "text": "␣intelligence", "tone": "heat" }
+                  ]
+                }
+              ]
+            },
+            { "type": "caption", "html": "One sequence, four predictions, one pass." }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Cross-entropy loss",
+      "summary": "The loss measures how surprised the model was by the correct token. Training tries to shrink that surprise.",
+      "body": [
+        "To learn, the model needs a single number saying how wrong it was. At each position, take the probability it gave to the token that actually came next, and compute the negative log: <code>loss = −log p(correct)</code>. Then average over all positions. This is <b>cross-entropy loss</b>.",
+        {
+          "ul": [
+            "The correct token got 90%: loss 0.11. Small.",
+            "The correct token got 1%: loss 4.6. Big.",
+            "The correct token got 0.01%: loss 9.2. Huge. Being confidently wrong is punished hardest."
+          ]
+        },
+        "For scale: random guessing over 50,000 tokens scores ln(50,000) ≈ 10.8. Well-trained models reach around 2 or lower on typical web text.",
+        "<b>Perplexity</b> is <code>e^loss</code>. Read it as how many tokens the model is torn between, on average. A loss of 2 gives a perplexity of about 7.4, as if choosing among seven equally likely options.",
+        "Drag the slider to see how loss and perplexity respond."
+      ],
+      "code": ["loss = F.cross_entropy(logits.view(-1, V), targets.view(-1))"],
+      "viz": [{ "type": "widget", "name": "cross-entropy" }]
+    },
+    {
+      "title": "Backprop and gradient descent",
+      "summary": "Training repeatedly nudges every weight a tiny step in whichever direction reduces the loss.",
+      "body": [
+        "Once we have the loss, we need to know how to change each weight to reduce it. <b>Backpropagation</b> works that out. For every weight it computes the <b>gradient</b>: if this weight goes up a little, how much does the loss go up or down?",
+        "It's the chain rule from calculus, applied backwards through every operation in the model. You never write it yourself; frameworks like PyTorch do it automatically.",
+        "<b>Gradient descent</b> then moves every weight a small step downhill: <code>w ← w − lr · gradient</code>. That's repeated millions of times.",
+        "The step size, the <b>learning rate</b> (lr), is the most important setting:",
+        {
+          "ul": [
+            "<b>Too small</b>: training crawls. Try 0.1.",
+            "<b>About right</b>: it settles quickly at the bottom. Try 0.5.",
+            "<b>Too big</b>: each step overshoots, bouncing from side to side or flying off entirely. Try 0.9, then 1.05."
+          ]
+        },
+        {
+          "note": "Walking down a hill in thick fog, feeling the slope under your feet. You can't see the valley, but stepping downhill each time gets you there, as long as your steps aren't so big that you leap right over it.",
+          "kind": "analogy"
+        }
+      ],
+      "code": [
+        "loss.backward()                  # fills p.grad for every weight",
+        "with torch.no_grad():",
+        "    for p in model.parameters():",
+        "        p -= lr * p.grad         # real code: optimizer.step()",
+        "model.zero_grad()"
+      ],
+      "viz": [{ "type": "widget", "name": "gradient-descent" }]
+    },
+    {
+      "title": "The real training loop",
+      "summary": "Real training is the same loop, plus engineering that keeps it fast and stable across thousands of GPUs.",
+      "body": [
+        "The core loop doesn't change: forward pass, loss, backpropagation, update. At the scale of billions of parameters and trillions of tokens, it needs extra machinery:",
+        {
+          "ul": [
+            "<b>AdamW optimiser</b>: instead of one learning rate for everything, it adapts the step for each weight using a running average of its recent gradients (momentum). It also gently shrinks weights over time (weight decay), which helps the model generalise.",
+            "<b>Learning-rate schedule</b>: start with a tiny rate and ramp up (warm-up), then gradually lower it, often along a cosine curve, so training settles down.",
+            "<b>Mixed precision</b>: do most maths in 16-bit bf16 for speed, while keeping a 32-bit master copy of the weights for accuracy.",
+            "<b>Parallelism</b>: the model, its gradients and the optimiser state are far too big for one GPU. Work is split several ways at once: different data on different GPUs, each big matrix split across GPUs, different layers on different GPUs, and for MoE models different experts on different GPUs.",
+            "<b>Gradient clipping</b>: if a gradient is suddenly huge (a loss spike), scale it down so one bad batch can't wreck the model."
+          ]
+        },
+        "The curve on the right has the typical shape: a steep drop as the model learns the easy patterns, then a long, slow grind.",
+        {
+          "note": "<b>Scaling laws</b>: loss falls smoothly and predictably as you add parameters, data and compute. That predictability is why labs are willing to spend so much on a single training run.",
+          "kind": "key"
+        }
+      ],
+      "code": [
+        "opt = torch.optim.AdamW(model.parameters(), lr=3e-4, weight_decay=0.1)",
+        "for step, (x, y) in enumerate(loader):",
+        "    loss = F.cross_entropy(model(x).flatten(0, 1), y.flatten())",
+        "    loss.backward()",
+        "    torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)",
+        "    opt.step(); sched.step(); opt.zero_grad()"
+      ],
+      "viz": [{ "type": "widget", "name": "loss-curve" }]
+    },
+    {
+      "title": "From text predictor to assistant",
+      "summary": "A base model only continues text. Further training stages turn it into a helpful assistant.",
+      "body": [
+        "Pretraining produces a <b>base model</b>. It's an extraordinary text continuer, but not an assistant. Ask it a question and it might reply with three more questions, as if continuing a list of exam questions.",
+        "Three further stages, together called <b>post-training</b>, shape it into an assistant:",
+        {
+          "ul": [
+            "<b>Supervised fine-tuning (SFT)</b>: train on example conversations, written or curated to show good assistant behaviour, in the chat template. It's the same next-token loss, usually counted only on the assistant's replies. The model learns the format and its role.",
+            "<b>Preference tuning</b>: show pairs of responses where one was judged better, and push the model toward the preferred kind. <b>RLHF</b> uses human rankings to train a reward model, then improves the assistant with reinforcement learning. <b>RLAIF</b> uses AI-generated feedback instead, for example judging responses against a written set of principles, as in Anthropic's Constitutional AI. <b>DPO</b> skips the reward model and learns from the preference pairs directly.",
+            "<b>RL on verifiable tasks</b>: reward the model when it gets a checkable answer right, such as a maths result or code that passes its tests. This has driven much of the recent progress in reasoning models."
+          ]
+        },
+        {
+          "note": "Post-training uses a small fraction of pretraining's compute, but it changes behaviour dramatically. Pretraining supplies the knowledge; post-training shapes how it's used.",
+          "kind": "key"
+        },
+        "The first chapter, <i>Assistant architecture</i>, showed what happens next: how the trained model is wrapped in a complete assistant system."
+      ],
+      "viz": [
+        {
+          "type": "panel",
+          "blocks": [
+            {
+              "type": "stages",
+              "items": [
+                {
+                  "label": "<b>Pretraining</b>",
+                  "sub": "trillions of tokens of text",
+                  "value": "→ base model",
+                  "highlight": true
+                },
+                {
+                  "label": "<b>SFT</b>",
+                  "sub": "curated dialogues",
+                  "value": "→ follows instructions",
+                  "highlight": false
+                },
+                {
+                  "label": "<b>Preference tuning</b>",
+                  "sub": "ranked response pairs",
+                  "value": "→ helpful, safer style",
+                  "highlight": false
+                },
+                {
+                  "label": "<b>RL on tasks</b>",
+                  "sub": "checkable rewards",
+                  "value": "→ better reasoning",
+                  "highlight": false
+                }
+              ]
+            },
+            {
+              "type": "caption",
+              "html": "Pretraining is the vast majority of the compute. The later stages are small by comparison but change behaviour dramatically."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Where to go from here",
+      "summary": "You've seen the model and the system around it. Building both yourself is the best way to make it stick.",
+      "body": [
+        "You've now seen every component in a modern decoder-only LLM, and the system that turns it into an assistant. The best way to lock it in as an engineer is to build both.",
+        {
+          "ul": [
+            "<b>Andrej Karpathy, \"Let's build GPT\" and nanoGPT</b>: a GPT in a few hundred lines of PyTorch.",
+            "<b>\"Attention Is All You Need\"</b> (Vaswani et al., 2017): the original paper, readable after this course.",
+            "<b>Jay Alammar, \"The Illustrated Transformer\"</b>: more diagrams of the same ideas.",
+            "<b>Anthropic's constitution and system prompt release notes</b>, and <b>OpenAI's Model Spec</b>: how labs write down intended behaviour.",
+            "<b>\"The Instruction Hierarchy\"</b> (Wallace et al., 2024) and <b>\"Defeating Prompt Injections by Design\"</b> (CaMeL, 2025).",
+            "<b>The MCP specification</b> and <b>Simon Willison's writing on prompt injection</b>."
+          ]
+        },
+        "Two good exercises: implement the 4-token attention from the <i>Attention</i> chapter in plain Java or TypeScript and check your numbers match. Then write the 15-line tool loop from <i>Assistant architecture</i> against a real API, and add a permission check before each call."
+      ],
+      "viz": [
+        {
+          "type": "panel",
+          "blocks": [
+            {
+              "type": "code",
+              "title": "The whole forward pass, minus the boilerplate",
+              "source": [
+                "x = embed(ids)                          # [B, n, d]",
+                "for blk in blocks:",
+                "    h = rms_norm(x)",
+                "    q, k, v = rope(Wq(h)), rope(Wk(h)), Wv(h)",
+                "    a = softmax(mask(q @ k.T / sqrt(d_head))) @ v",
+                "    x = x + Wo(a)                       # residual",
+                "    x = x + mlp(rms_norm(x))            # residual",
+                "logits = rms_norm(x)[-1] @ W_unembed    # [V]",
+                "next_id = sample(logits / T, top_p=0.9)"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

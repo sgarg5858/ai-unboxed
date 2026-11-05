@@ -1,0 +1,449 @@
+{
+  "$schema": "../schema/chapter.schema.json",
+  "id": "input",
+  "name": "Tokens & embeddings",
+  "slides": [
+    {
+      "title": "Why subwords",
+      "summary": "Models read text as tokens. Common words are one token; rarer words are split into reusable pieces.",
+      "body": [
+        "A neural network can't read letters. It needs a fixed list of pieces, the <b>vocabulary</b>, where every piece has an integer ID. Splitting text into those pieces is <b>tokenization</b>. The design question is how big the pieces should be:",
+        {
+          "ul": [
+            "<b>Characters</b>: a tiny vocabulary, but every word becomes many tokens. Sequences get long, and attention's cost grows with the square of the length (see <i>Attention</i>).",
+            "<b>Whole words</b>: short sequences, but you'd need millions of entries, and every typo, name or newly coined word would be unknown.",
+            "<b>Subwords</b>: the compromise everyone uses. Frequent words like \"the\" get one token. Rare words are built from common pieces: \"unbelievable\" becomes \"un\" + \"believ\" + \"able\"."
+          ]
+        },
+        "Modern tokenizers work on raw <b>bytes</b>, not characters, so every possible string, including emoji, code and any language, can be encoded. Nothing is ever \"unknown\"; unusual text just costs more tokens.",
+        {
+          "note": "Tokens are the unit behind everything you pay for and every limit you hit. API prices, rate limits and context windows are all counted in tokens, not characters or words.",
+          "kind": "dev"
+        }
+      ],
+      "viz": [
+        {
+          "type": "stages",
+          "items": [
+            {
+              "label": "<b>Characters</b>",
+              "sub": "<span class=\"mono\">u n b e l i e v a b l e</span>",
+              "value": "12 tokens · vocab ≈ 256",
+              "highlight": false
+            },
+            {
+              "label": "<b>Words</b>",
+              "sub": "<span class=\"mono\">unbelievable</span>",
+              "value": "1 token · vocab in the millions",
+              "highlight": false
+            },
+            {
+              "label": "<b>Subwords (BPE)</b>",
+              "sub": "<span class=\"mono\">un · believ · able</span>",
+              "value": "3 tokens · vocab ≈ 50k–200k",
+              "highlight": true
+            }
+          ]
+        },
+        {
+          "type": "caption",
+          "html": "Rule of thumb for English: 1 token ≈ 4 characters ≈ 0.75 words."
+        }
+      ]
+    },
+    {
+      "title": "How BPE builds the vocabulary",
+      "summary": "BPE builds a vocabulary by repeatedly gluing together the most common pair of neighbouring pieces.",
+      "body": [
+        "<b>Byte pair encoding</b> (BPE) started life as a compression algorithm. Tokenizers use it because it finds the pieces that are common in real text automatically, with no grammar rules involved.",
+        { "h": "Training the tokenizer" },
+        {
+          "ul": [
+            "Start with every word split into single bytes (shown here as letters).",
+            "Count every pair of neighbouring pieces across the whole training text.",
+            "Merge the most frequent pair into a new piece, and record that merge as a rule.",
+            "Repeat until the vocabulary reaches its target size, usually 50,000 to 200,000 pieces."
+          ]
+        },
+        "Click <i>Apply next merge</i>. <code>e</code> and <code>s</code> sit next to each other most often, so they become <code>es</code>. Then <code>es</code> + <code>t</code> becomes <code>est</code>, and so on.",
+        { "h": "Using it" },
+        "To tokenize new text, split it into bytes and replay the recorded merges in the same order. The same text always gives the same tokens.",
+        {
+          "note": "The tokenizer is trained once, separately and before the model. Its vocabulary is then frozen, and the model learns one vector for each vocabulary entry.",
+          "kind": "key"
+        }
+      ],
+      "code": [
+        "def train_bpe(words, vocab_size):",
+        "    merges = []",
+        "    while len(vocab) < vocab_size:",
+        "        pair = most_frequent_pair(words)   # e.g. ('e','s')",
+        "        words = merge(words, pair)         # 'e','s' -> 'es'",
+        "        merges.append(pair)",
+        "    return merges"
+      ],
+      "viz": [
+        {
+          "type": "stepper",
+          "nextLabel": "Apply next merge",
+          "restartLabel": "Reset",
+          "steps": [
+            {
+              "blocks": [
+                { "type": "shape", "text": "rule 0: start: every word split into characters" },
+                { "type": "chips", "items": [{ "text": "l" }, { "text": "o" }, { "text": "w" }] },
+                {
+                  "type": "chips",
+                  "items": [
+                    { "text": "l" },
+                    { "text": "o" },
+                    { "text": "w" },
+                    { "text": "e" },
+                    { "text": "r" }
+                  ]
+                },
+                {
+                  "type": "chips",
+                  "items": [
+                    { "text": "n" },
+                    { "text": "e" },
+                    { "text": "w" },
+                    { "text": "e" },
+                    { "text": "s" },
+                    { "text": "t" }
+                  ]
+                },
+                {
+                  "type": "chips",
+                  "items": [
+                    { "text": "w" },
+                    { "text": "i" },
+                    { "text": "d" },
+                    { "text": "e" },
+                    { "text": "s" },
+                    { "text": "t" }
+                  ]
+                }
+              ],
+              "caption": "vocab: 11 tokens"
+            },
+            {
+              "blocks": [
+                { "type": "shape", "text": "rule 1: merge (e, s) → es · seen 2×" },
+                { "type": "chips", "items": [{ "text": "l" }, { "text": "o" }, { "text": "w" }] },
+                {
+                  "type": "chips",
+                  "items": [
+                    { "text": "l" },
+                    { "text": "o" },
+                    { "text": "w" },
+                    { "text": "e" },
+                    { "text": "r" }
+                  ]
+                },
+                {
+                  "type": "chips",
+                  "items": [
+                    { "text": "n" },
+                    { "text": "e" },
+                    { "text": "w" },
+                    { "text": "es", "hot": true },
+                    { "text": "t" }
+                  ]
+                },
+                {
+                  "type": "chips",
+                  "items": [
+                    { "text": "w" },
+                    { "text": "i" },
+                    { "text": "d" },
+                    { "text": "es", "hot": true },
+                    { "text": "t" }
+                  ]
+                }
+              ],
+              "caption": "vocab: 12 tokens"
+            },
+            {
+              "blocks": [
+                { "type": "shape", "text": "rule 2: merge (es, t) → est · seen 2×" },
+                { "type": "chips", "items": [{ "text": "l" }, { "text": "o" }, { "text": "w" }] },
+                {
+                  "type": "chips",
+                  "items": [
+                    { "text": "l" },
+                    { "text": "o" },
+                    { "text": "w" },
+                    { "text": "e" },
+                    { "text": "r" }
+                  ]
+                },
+                {
+                  "type": "chips",
+                  "items": [
+                    { "text": "n" },
+                    { "text": "e" },
+                    { "text": "w" },
+                    { "text": "est", "hot": true }
+                  ]
+                },
+                {
+                  "type": "chips",
+                  "items": [
+                    { "text": "w" },
+                    { "text": "i" },
+                    { "text": "d" },
+                    { "text": "est", "hot": true }
+                  ]
+                }
+              ],
+              "caption": "vocab: 13 tokens"
+            },
+            {
+              "blocks": [
+                { "type": "shape", "text": "rule 3: merge (l, o) → lo · seen 2×" },
+                { "type": "chips", "items": [{ "text": "lo", "hot": true }, { "text": "w" }] },
+                {
+                  "type": "chips",
+                  "items": [
+                    { "text": "lo", "hot": true },
+                    { "text": "w" },
+                    { "text": "e" },
+                    { "text": "r" }
+                  ]
+                },
+                {
+                  "type": "chips",
+                  "items": [{ "text": "n" }, { "text": "e" }, { "text": "w" }, { "text": "est" }]
+                },
+                {
+                  "type": "chips",
+                  "items": [{ "text": "w" }, { "text": "i" }, { "text": "d" }, { "text": "est" }]
+                }
+              ],
+              "caption": "vocab: 14 tokens"
+            },
+            {
+              "blocks": [
+                { "type": "shape", "text": "rule 4: merge (lo, w) → low · seen 2×" },
+                { "type": "chips", "items": [{ "text": "low", "hot": true }] },
+                {
+                  "type": "chips",
+                  "items": [{ "text": "low", "hot": true }, { "text": "e" }, { "text": "r" }]
+                },
+                {
+                  "type": "chips",
+                  "items": [{ "text": "n" }, { "text": "e" }, { "text": "w" }, { "text": "est" }]
+                },
+                {
+                  "type": "chips",
+                  "items": [{ "text": "w" }, { "text": "i" }, { "text": "d" }, { "text": "est" }]
+                }
+              ],
+              "caption": "vocab: 15 tokens"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Try a tokenizer",
+      "summary": "Play with a tokenizer to see why token counts don't match word counts.",
+      "body": [
+        "This is a toy tokenizer with about 100 vocabulary entries. At each position it takes the longest piece it knows, which is called greedy longest match. Real tokenizers such as OpenAI's tiktoken and Google's SentencePiece have 50k–200k entries and use learned merge rules, but you'll see the same behaviour.",
+        "Things to try:",
+        {
+          "ul": [
+            "<b>Misspell a word</b>, like <code>artifical</code>. \"artificial\" is one piece the tokenizer knows, but the typo shatters into several smaller pieces.",
+            "<b>Remove the space</b> before a word. The leading space is usually part of the token, so <code>␣learning</code> and <code>learning</code> have different IDs and different learned meanings.",
+            "<b>Type another language.</b> Pieces the vocabulary lacks fall back to single characters, so non-English text often needs more tokens for the same meaning, which also makes it cost more."
+          ]
+        },
+        {
+          "note": "Models don't see letters. That's why tasks that look simple, like counting the r's in \"strawberry\" or spelling a word backwards, have tripped models up: the word arrives as one or two opaque IDs, not a row of letters.",
+          "kind": "warn"
+        }
+      ],
+      "code": [
+        "import tiktoken",
+        "enc = tiktoken.get_encoding(\"cl100k_base\")",
+        "enc.encode(\"I am learning\")     # [40, 1097, 6975]",
+        "enc.decode([40, 1097, 6975])    # 'I am learning'"
+      ],
+      "viz": [
+        {
+          "type": "widget",
+          "name": "tokenizer",
+          "props": { "initial": "I am learning artificial intelligence." }
+        },
+        {
+          "type": "caption",
+          "html": "Small grey numbers are made-up token IDs. ␣ marks a leading space."
+        }
+      ]
+    },
+    {
+      "title": "Special tokens and chat templates",
+      "summary": "A chat is turned into one flat token sequence, with special tokens marking who is speaking.",
+      "body": [
+        "Some vocabulary entries never come from ordinary text. These <b>special tokens</b> are control signals the model learned during training: start of text, end of text, padding, and markers for each role in a conversation (system, user, assistant).",
+        "A chat API takes your list of messages and renders it with a <b>chat template</b>: every message in order, wrapped in role markers, as one long token sequence. The model then writes the assistant's reply straight after the final <span class=\"k\">&lt;|assistant|&gt;</span> marker.",
+        {
+          "ul": [
+            "The <b>system prompt</b> isn't a separate input channel. It's just the first tokens in the sequence.",
+            "Each model family has its own template. Use the wrong one and quality drops noticeably, because the model never saw that format in training.",
+            "Well-built serving code encodes a typed \"&lt;|user|&gt;\" as ordinary characters, not the special token, so a user can't fake another role."
+          ]
+        },
+        {
+          "note": "It's like an HTTP request being serialised to bytes on the wire. The API gives you structured messages; the model only ever sees the serialised form.",
+          "kind": "dev"
+        }
+      ],
+      "code": [
+        "messages = [{\"role\": \"system\", \"content\": \"You are helpful\"},",
+        "            {\"role\": \"user\",   \"content\": \"Hi\"}]",
+        "ids = tokenizer.apply_chat_template(messages,",
+        "        add_generation_prompt=True)"
+      ],
+      "viz": [
+        {
+          "type": "panel",
+          "blocks": [
+            {
+              "type": "chips",
+              "items": [
+                { "text": "<|begin|>", "hot": true },
+                { "text": "<|system|>", "hot": true },
+                { "text": "␣You" },
+                { "text": "␣are" },
+                { "text": "␣helpful" },
+                { "text": "<|end|>", "hot": true },
+                { "text": "<|user|>", "hot": true },
+                { "text": "Hi" },
+                { "text": "<|end|>", "hot": true },
+                { "text": "<|assistant|>", "hot": true }
+              ]
+            },
+            {
+              "type": "caption",
+              "html": "Amber = special tokens. The model's reply is generated right after <span class=\"k\">&lt;|assistant|&gt;</span>. Exact names differ per model family."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "The embedding table",
+      "summary": "Each token ID is turned into a vector by looking up one row of a big learned table.",
+      "body": [
+        "A token ID is just a label: the number 6975 says nothing about meaning. The model's first real step replaces each ID with a vector of <code>d</code> numbers (typically thousands) by looking it up in an <b>embedding table</b>.",
+        "The table is a matrix <code>E</code> with one row per vocabulary entry, so its shape is <code>[V, d]</code>. Token 6975 takes row 6975. In code that's an array index, so it costs almost nothing.",
+        "The numbers start out random. Training adjusts them, millions of times over, so that tokens used in similar ways end up with similar vectors. Unlike the fruit example in <i>The big picture</i>, no column means \"sweetness\": meaning is spread across all <code>d</code> dimensions in ways researchers have to work hard to decode.",
+        "Click a token on the right to see which row it selects.",
+        {
+          "note": "The embedding table is learned along with everything else. In small models it's one of the biggest single pieces: GPT-2 small spends 38.6M of its 124M parameters here.",
+          "kind": "key"
+        }
+      ],
+      "code": [
+        "E = torch.nn.Embedding(V, d)      # [V, d] learned",
+        "ids = torch.tensor([[40, 939, 6975]])",
+        "x = E(ids)                          # [1, 3, d]"
+      ],
+      "viz": [
+        { "type": "widget", "name": "embedding-table" },
+        {
+          "type": "caption",
+          "html": "GPT-2 small: 50,257 × 768 ≈ 38.6M parameters in this one table. Many models reuse it, transposed, as the output layer (weight tying)."
+        }
+      ]
+    },
+    {
+      "title": "What the geometry encodes",
+      "summary": "After training, similar words sit close together, and some relationships become consistent directions.",
+      "body": [
+        "If you could plot the trained embedding vectors, you'd see structure. Words with related meanings cluster together: fruits near fruits, programming languages near programming languages.",
+        "Some relationships even become consistent <b>directions</b>. The step from \"man\" to \"woman\" points roughly the same way as the step from \"king\" to \"queen\". That's why the famous arithmetic <code>king − man + woman ≈ queen</code> roughly works, a result first shown with word2vec in 2013.",
+        "Closeness is measured with cosine similarity, the same calculation as the fruit comparison in <i>The big picture</i>.",
+        {
+          "note": "This is exactly how semantic search and RAG work. Embed every document once, embed the user's query, and return the documents whose vectors are nearest to it. Vector databases exist to do that nearest-neighbour search quickly.",
+          "kind": "dev"
+        }
+      ],
+      "code": [
+        "def cosine(a, b):",
+        "    return (a @ b) / (a.norm() * b.norm())",
+        "cosine(E[king] - E[man] + E[woman], E[queen])  # high"
+      ],
+      "viz": [
+        { "type": "widget", "name": "embedding-geometry" },
+        {
+          "type": "caption",
+          "html": "A 2D sketch. Real embeddings have hundreds to thousands of dimensions, and these clean directions are approximate."
+        }
+      ]
+    },
+    {
+      "title": "Order matters: positional information",
+      "summary": "Attention ignores word order by itself, so position information has to be added in.",
+      "body": [
+        "Attention, the core operation of the next chapter, compares every token with every other token. On its own it treats the input like a bag of words: shuffle the tokens and each still gets the same result. It can't tell \"dog bites man\" from \"man bites dog\".",
+        "So position has to be injected. The original Transformer (2017) added a fixed pattern of sine and cosine waves to each token's embedding:",
+        {
+          "ul": [
+            "Each pair of dimensions oscillates at a different speed, from very fast to very slow.",
+            "Together they give every position a unique fingerprint.",
+            "Nearby positions get similar fingerprints, so the model can tell near from far."
+          ]
+        },
+        {
+          "note": "A clock with many hands. The second hand alone can't tell you the time, but seconds, minutes, hours and days together pin down every moment uniquely, and moments close in time look alike.",
+          "kind": "analogy"
+        },
+        "In the heatmap each row is a position and each column a dimension. The fast-changing columns are on the left, the slow ones on the right."
+      ],
+      "code": [
+        "# PE[pos, 2i]   = sin(pos / 10000**(2i/d))",
+        "# PE[pos, 2i+1] = cos(pos / 10000**(2i/d))",
+        "x = token_embedding + PE[:n]"
+      ],
+      "viz": [{ "type": "widget", "name": "positional-heatmap" }]
+    },
+    {
+      "title": "RoPE: what modern models use",
+      "summary": "Modern models encode position by rotating vectors, so attention directly sees how far apart two tokens are.",
+      "body": [
+        "Most current open models (Llama, Mistral, Qwen and others) use <b>rotary position embeddings</b> (RoPE) instead. Nothing is added to the embedding. Inside attention, the query and key vectors (next chapter) are <b>rotated</b> by an angle that grows with the token's position.",
+        "Why rotation? Attention scores a pair of tokens with a dot product, and the dot product of two vectors depends on the angle between them. Rotate one by position <code>m</code> and the other by position <code>n</code>, and the angle between them changes by an amount that depends only on <code>m − n</code>: how far apart they are.",
+        "Try it: move both sliders by the same amount. Both arrows turn, but the angle between them, and so the score, stays the same.",
+        {
+          "note": "RoPE gives the model <i>relative</i> position (\"three tokens back\") rather than <i>absolute</i> position (\"token 1,207\"). That suits language, where nearby words usually matter most, and it's one reason context windows can be stretched after training.",
+          "kind": "key"
+        }
+      ],
+      "code": [
+        "def rope(x, pos, theta=10000):",
+        "    # rotate each (x[2i], x[2i+1]) pair",
+        "    angle = pos / theta**(2*i/d)",
+        "    return rotate_pairs(x, angle)",
+        "q, k = rope(q, m), rope(k, n)   # then q·k as usual"
+      ],
+      "viz": [{ "type": "widget", "name": "rope" }]
+    },
+    {
+      "title": "The input is now a matrix",
+      "summary": "The input stage ends with one vector per token: the residual stream that every later layer reads and updates.",
+      "body": [
+        "Put the steps together: tokenize the text, look up each token's embedding, and add position information. The result is a matrix with one row per token and <code>d</code> columns: shape <code>[n, d]</code>, or <code>[B, n, d]</code> for a batch.",
+        "This matrix is called the <b>residual stream</b>, and it's the main character for the rest of the course. Every later layer reads from it and adds its own contribution back.",
+        {
+          "note": "The shape stays the same through the whole model until the very end. That's what lets you stack 32, 80 or 120 identical layers: each takes <code>[B, n, d]</code> in and gives <code>[B, n, d]</code> out.",
+          "kind": "key"
+        },
+        "Each coloured cell on the right stands for one number. Real rows have thousands."
+      ],
+      "viz": [{ "type": "widget", "name": "residual-matrix" }]
+    }
+  ]
+}

@@ -1,0 +1,381 @@
+{
+  "$schema": "../schema/chapter.schema.json",
+  "id": "map",
+  "name": "The big picture",
+  "slides": [
+    {
+      "title": "The whole machine on one screen",
+      "summary": "An LLM turns a list of numbers (tokens) into a score for every possible next token. Everything else in this course is detail about how.",
+      "body": [
+        "The first chapter treated the model as one box inside a larger system. From here on, we open that box.",
+        "Strip away the chat window and a large language model is one very large mathematical function. You give it a sequence of integers, one per piece of text, and it gives back a score for every token it knows, saying how likely each one is to come next.",
+        "That's all it does. Writing a whole answer is just calling this function again and again, adding one token each time. The next slide shows that loop.",
+        { "h": "How to read the shapes" },
+        "Each stage on the right turns one block of numbers into another. A block of numbers with several dimensions is called a <b>tensor</b>, and its <b>shape</b> lists the size of each dimension. Following the shapes is the quickest way to understand the architecture. Four letters appear everywhere:",
+        {
+          "ul": [
+            "<code>B</code>, batch size: how many separate texts are processed at once.",
+            "<code>n</code>, sequence length: how many tokens are in each text.",
+            "<code>d</code>, model width: how many numbers describe each token. Typically 4,096 or more.",
+            "<code>V</code>, vocabulary size: how many different tokens the model knows. Often 100,000 or more."
+          ]
+        },
+        {
+          "note": "Think of a tensor of shape <code>[B, n, d]</code> as <code>number[][][]</code> in TypeScript: B texts, each with n tokens, each token a list of d numbers. Libraries store it as one flat array for speed, but that's the mental model.",
+          "kind": "dev"
+        },
+        "Click a stage on the right to jump to its chapter."
+      ],
+      "code": [
+        "def forward(ids):                 # ids: [B, n]",
+        "    x = embed(ids) + pos(ids)     # [B, n, d]",
+        "    for block in blocks:          # N times",
+        "        x = block(x)              # attention + MLP",
+        "    logits = unembed(norm(x))     # [B, n, V]",
+        "    return logits"
+      ],
+      "viz": [
+        {
+          "type": "stages",
+          "items": [
+            { "label": "Text", "value": "string", "goto": { "chapter": "input" } },
+            { "label": "Tokenizer", "value": "[B, n] int ids", "goto": { "chapter": "input" } },
+            {
+              "label": "Embeddings + position",
+              "value": "[B, n, d]",
+              "goto": { "chapter": "input" }
+            },
+            {
+              "label": "Transformer block × N",
+              "value": "[B, n, d] → [B, n, d]",
+              "goto": { "chapter": "attention" }
+            },
+            {
+              "label": "  · attention",
+              "value": "mixes across tokens",
+              "goto": { "chapter": "attention" }
+            },
+            { "label": "  · MLP", "value": "thinks per token", "goto": { "chapter": "block" } },
+            {
+              "label": "Final norm + unembed",
+              "value": "[B, n, V] logits",
+              "goto": { "chapter": "output" }
+            },
+            {
+              "label": "Softmax + sampling",
+              "value": "1 next token id",
+              "goto": { "chapter": "output" }
+            }
+          ]
+        },
+        {
+          "type": "caption",
+          "html": "Typical sizes: d = 4,096, N = 32 layers, V = 128,000. Only the last row of logits matters when generating."
+        }
+      ]
+    },
+    {
+      "title": "Generation is a loop",
+      "summary": "The model only ever predicts one token. Long answers come from running it in a loop and feeding each prediction back in.",
+      "body": [
+        "The model can't write a sentence in one go. It predicts a single next token. The program appends that token to the input, and the model runs again on the longer sequence. This is <b>autoregressive decoding</b>: each output becomes part of the next input.",
+        "Press <i>Run one step</i> to watch it happen. Each step reads the whole sequence so far.",
+        { "h": "Two phases with very different costs" },
+        {
+          "ul": [
+            "<b>Prefill</b>: the prompt is processed first, all of its tokens in one parallel pass. GPUs are good at parallel arithmetic, so here the limit is raw calculation speed (<b>compute-bound</b>). It's the short pause before the first word appears.",
+            "<b>Decode</b>: after that, every new token needs its own pass through the whole model. Each pass does little arithmetic but has to read billions of weights from GPU memory, so the limit is memory speed (<b>memory-bound</b>). It's the steady word-by-word streaming you see. The KV cache (see <i>Output & inference</i>) exists to make this phase cheaper.",
+            "<b>Stopping</b>: the loop ends when the model produces a special end-of-sequence token, or when the application's maximum length is reached."
+          ]
+        },
+        {
+          "note": "Everything an LLM writes, including code, step-by-step reasoning and tool calls, comes out of this loop one token at a time.",
+          "kind": "key"
+        }
+      ],
+      "code": [
+        "ids = tokenizer.encode(prompt)",
+        "while len(ids) < max_len:",
+        "    logits = model(ids)[-1]        # only the last position",
+        "    next_id = sample(logits)",
+        "    ids.append(next_id)",
+        "    if next_id == EOS: break"
+      ],
+      "viz": [
+        {
+          "type": "stepper",
+          "steps": [
+            {
+              "blocks": [
+                {
+                  "type": "chips",
+                  "items": [
+                    { "text": "I" },
+                    { "text": "␣am" },
+                    { "text": "␣learning" },
+                    { "text": "?", "dim": true }
+                  ]
+                }
+              ],
+              "caption": "Prompt only. Step 1 is the prefill pass over all 3 tokens."
+            },
+            {
+              "blocks": [
+                {
+                  "type": "chips",
+                  "items": [
+                    { "text": "I" },
+                    { "text": "␣am" },
+                    { "text": "␣learning" },
+                    { "text": "␣artificial", "hot": true },
+                    { "text": "?", "dim": true }
+                  ]
+                }
+              ],
+              "caption": "Pass 2 done. Sequence length is now 4; the model re-reads it all (or reuses its cache)."
+            },
+            {
+              "blocks": [
+                {
+                  "type": "chips",
+                  "items": [
+                    { "text": "I" },
+                    { "text": "␣am" },
+                    { "text": "␣learning" },
+                    { "text": "␣artificial", "hot": false },
+                    { "text": "␣intelligence", "hot": true },
+                    { "text": "?", "dim": true }
+                  ]
+                }
+              ],
+              "caption": "Pass 3 done. Sequence length is now 5; the model re-reads it all (or reuses its cache)."
+            },
+            {
+              "blocks": [
+                {
+                  "type": "chips",
+                  "items": [
+                    { "text": "I" },
+                    { "text": "␣am" },
+                    { "text": "␣learning" },
+                    { "text": "␣artificial", "hot": false },
+                    { "text": "␣intelligence", "hot": false },
+                    { "text": "␣and", "hot": true },
+                    { "text": "?", "dim": true }
+                  ]
+                }
+              ],
+              "caption": "Pass 4 done. Sequence length is now 6; the model re-reads it all (or reuses its cache)."
+            },
+            {
+              "blocks": [
+                {
+                  "type": "chips",
+                  "items": [
+                    { "text": "I" },
+                    { "text": "␣am" },
+                    { "text": "␣learning" },
+                    { "text": "␣artificial", "hot": false },
+                    { "text": "␣intelligence", "hot": false },
+                    { "text": "␣and", "hot": false },
+                    { "text": "␣it", "hot": true },
+                    { "text": "?", "dim": true }
+                  ]
+                }
+              ],
+              "caption": "Pass 5 done. Sequence length is now 7; the model re-reads it all (or reuses its cache)."
+            },
+            {
+              "blocks": [
+                {
+                  "type": "chips",
+                  "items": [
+                    { "text": "I" },
+                    { "text": "␣am" },
+                    { "text": "␣learning" },
+                    { "text": "␣artificial", "hot": false },
+                    { "text": "␣intelligence", "hot": false },
+                    { "text": "␣and", "hot": false },
+                    { "text": "␣it", "hot": false },
+                    { "text": "␣is", "hot": true },
+                    { "text": "?", "dim": true }
+                  ]
+                }
+              ],
+              "caption": "Pass 6 done. Sequence length is now 8; the model re-reads it all (or reuses its cache)."
+            },
+            {
+              "blocks": [
+                {
+                  "type": "chips",
+                  "items": [
+                    { "text": "I" },
+                    { "text": "␣am" },
+                    { "text": "␣learning" },
+                    { "text": "␣artificial", "hot": false },
+                    { "text": "␣intelligence", "hot": false },
+                    { "text": "␣and", "hot": false },
+                    { "text": "␣it", "hot": false },
+                    { "text": "␣is", "hot": false },
+                    { "text": "␣fun", "hot": true },
+                    { "text": "?", "dim": true }
+                  ]
+                }
+              ],
+              "caption": "Pass 7 done. Sequence length is now 9; the model re-reads it all (or reuses its cache)."
+            },
+            {
+              "blocks": [
+                {
+                  "type": "chips",
+                  "items": [
+                    { "text": "I" },
+                    { "text": "␣am" },
+                    { "text": "␣learning" },
+                    { "text": "␣artificial", "hot": false },
+                    { "text": "␣intelligence", "hot": false },
+                    { "text": "␣and", "hot": false },
+                    { "text": "␣it", "hot": false },
+                    { "text": "␣is", "hot": false },
+                    { "text": "␣fun", "hot": false },
+                    { "text": ".", "hot": true },
+                    { "text": "?", "dim": true }
+                  ]
+                }
+              ],
+              "caption": "Pass 8 done. Sequence length is now 10; the model re-reads it all (or reuses its cache)."
+            },
+            {
+              "blocks": [
+                {
+                  "type": "chips",
+                  "items": [
+                    { "text": "I" },
+                    { "text": "␣am" },
+                    { "text": "␣learning" },
+                    { "text": "␣artificial", "hot": false },
+                    { "text": "␣intelligence", "hot": false },
+                    { "text": "␣and", "hot": false },
+                    { "text": "␣it", "hot": false },
+                    { "text": "␣is", "hot": false },
+                    { "text": "␣fun", "hot": false },
+                    { "text": ".", "hot": false },
+                    { "text": "␣<eos>", "hot": true }
+                  ]
+                }
+              ],
+              "caption": "Hit &lt;eos&gt;, so generation stops."
+            }
+          ],
+          "nextLabel": "Run one step",
+          "restartLabel": "Start over"
+        }
+      ]
+    },
+    {
+      "title": "Vectors and similarity: the maths you need",
+      "summary": "Almost everything inside an LLM is a list of numbers, a vector, and the key operation is measuring how similar two vectors are.",
+      "body": [
+        "You need very little maths for this course. These three ideas cover most of it.",
+        { "h": "1. A vector is a list of numbers" },
+        "Pick some features and you can describe anything with numbers. Describe fruit by <code>[sweetness, crunchiness, sourness]</code>, each from 0 to 1, and an apple might be <code>[0.7, 0.9, 0.3]</code>. That list is a <b>vector</b>, and each position is a <b>dimension</b>.",
+        { "h": "2. The dot product measures similarity" },
+        "The <b>dot product</b> of two vectors multiplies them position by position and adds up the results. It's large when both vectors are large in the same places, so it works as a similarity score.",
+        {
+          "note": "apple · pear = 0.7×0.8 + 0.9×0.6 + 0.3×0.2 = 0.56 + 0.54 + 0.06 = <b>1.16</b>",
+          "kind": "example"
+        },
+        "<b>Cosine similarity</b> divides the dot product by the length of each vector, so only direction counts, not size. It runs from −1 (opposite) through 0 (unrelated) to 1 (same direction). Try different pairs on the right.",
+        { "h": "3. A matrix multiply is many dot products at once" },
+        "A <b>matrix</b> is a grid of numbers. Multiplying a vector by a matrix takes one dot product per column of the matrix and produces a new vector. A neural network is mostly long chains of these multiplications, with the matrix values learned from data.",
+        {
+          "note": "An LLM describes every token with a vector of thousands of numbers. Nobody chooses what those dimensions mean, as we did for fruit; training finds them. But the core idea, similar meaning means similar vectors, runs through the whole course.",
+          "kind": "key"
+        }
+      ],
+      "code": [
+        "def dot(a, b):",
+        "    return sum(x * y for x, y in zip(a, b))",
+        "",
+        "def cosine(a, b):",
+        "    return dot(a, b) / (norm(a) * norm(b))   # norm = length"
+      ],
+      "viz": [{ "type": "widget", "name": "fruit-similarity" }]
+    },
+    {
+      "title": "A short glossary",
+      "summary": "The handful of words that show up on almost every slide.",
+      "body": [
+        "Each of these terms is explained properly when it first matters. This list is here to come back to if a word on a later slide feels unfamiliar.",
+        "Two ideas matter more than any single definition:",
+        {
+          "ul": [
+            "<b>Everything is numbers.</b> Text becomes integers, integers become vectors, and the model is arithmetic on those vectors.",
+            "<b>Behaviour comes from learned parameters.</b> Nobody programs an LLM's knowledge or style by hand. Billions of numbers are adjusted during training until the model predicts text well, and everything it can do emerges from those numbers."
+          ]
+        },
+        {
+          "note": "A useful split from software: <b>training</b> is like a very long, very expensive build step that produces an artifact (the weights). <b>Inference</b> is running that artifact. Most of this course describes inference; the <i>Training</i> chapter covers the build.",
+          "kind": "dev"
+        }
+      ],
+      "viz": [
+        {
+          "type": "stages",
+          "items": [
+            {
+              "label": "<b>Token</b>",
+              "sub": "A piece of text: a word, part of a word, or a symbol.",
+              "value": "\"␣learning\""
+            },
+            {
+              "label": "<b>Vocabulary</b>",
+              "sub": "The fixed list of every token the model knows, each with an integer ID.",
+              "value": "~100k tokens"
+            },
+            {
+              "label": "<b>Vector / tensor</b>",
+              "sub": "A list of numbers / a block of numbers with several dimensions.",
+              "value": "[B, n, d]"
+            },
+            {
+              "label": "<b>Embedding</b>",
+              "sub": "The vector that represents one token inside the model.",
+              "value": "d numbers"
+            },
+            {
+              "label": "<b>Parameter (weight)</b>",
+              "sub": "One learned number inside the model. Model sizes count these.",
+              "value": "7B, 70B…"
+            },
+            {
+              "label": "<b>Layer (block)</b>",
+              "sub": "One repeated unit of the model: attention, then an MLP.",
+              "value": "× N"
+            },
+            {
+              "label": "<b>Forward pass</b>",
+              "sub": "One run of the model, from token IDs in to scores out.",
+              "value": "1 per token"
+            },
+            {
+              "label": "<b>Logit</b>",
+              "sub": "The raw score the model gives each possible next token.",
+              "value": "7.6"
+            },
+            {
+              "label": "<b>Softmax</b>",
+              "sub": "Turns a list of scores into probabilities that add up to 1.",
+              "value": "→ 92%"
+            },
+            {
+              "label": "<b>Training / inference</b>",
+              "sub": "Learning the parameters / using them to generate text.",
+              "value": "build / run"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

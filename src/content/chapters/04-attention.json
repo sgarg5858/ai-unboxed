@@ -1,0 +1,158 @@
+{
+  "$schema": "../schema/chapter.schema.json",
+  "id": "attention",
+  "name": "Attention",
+  "slides": [
+    {
+      "title": "The one idea: tokens read from each other",
+      "summary": "Attention lets each token gather information from the other tokens it needs, so words take on meaning from their context.",
+      "body": [
+        "After embedding, each token's vector ignores its surroundings. \"Bank\" has the same vector in \"river bank\" and \"bank account\". To understand text, a token has to look at its neighbours.",
+        "<b>Attention</b> is how it does that. Each token builds a new, context-aware vector by pulling in information from the other tokens that matter to it.",
+        { "h": "Query, key and value" },
+        "Every token plays three roles at once:",
+        {
+          "ul": [
+            "<b>Query</b>: what this token is looking for. Something like \"I'm an adjective; which noun do I describe?\"",
+            "<b>Key</b>: what this token offers, used for matching. \"I'm a noun.\"",
+            "<b>Value</b>: the information this token hands over if it's chosen."
+          ]
+        },
+        "Each query is compared with every key. Good matches get large weights, and the token's new vector is a weighted blend of the matching values.",
+        {
+          "note": "A database lookup returns the one row whose key equals your query. Attention returns a blend of <i>every</i> row, weighted by how well each key matches. Because nothing is all-or-nothing, the whole thing can be learned by gradual adjustment.",
+          "kind": "analogy"
+        },
+        "The next four slides compute this step by step on \"I am learning artificial\", with real numbers."
+      ],
+      "viz": [{ "type": "widget", "name": "attention-arcs" }]
+    },
+    {
+      "title": "Step 1: project into Q, K, V",
+      "summary": "Three learned matrices turn each token's vector into a query, a key and a value.",
+      "body": [
+        "Each token's vector <code>x</code> is multiplied by three different learned weight matrices, giving three new vectors per token:",
+        {
+          "ul": [
+            "<code>Q = x·Wq</code>: the query. What am I looking for?",
+            "<code>K = x·Wk</code>: the key. What do I contain?",
+            "<code>V = x·Wv</code>: the value. What will I hand over if picked?"
+          ]
+        },
+        "These are ordinary matrix multiplications, the \"many dot products at once\" operation from <i>The big picture</i>. Nobody designs <code>Wq</code>, <code>Wk</code> and <code>Wv</code> by hand. Training adjusts them until the queries and keys pick out useful relationships.",
+        "To keep the numbers readable, each token here has 4 numbers (<code>d_model = 4</code>) and each Q, K or V vector has 3 (<code>d_head = 3</code>). Real models use thousands and 64–128 respectively.",
+        {
+          "note": "Each row of the Q table is one token's query vector. Green cells are positive numbers, red cells negative, and stronger colour means a larger magnitude.",
+          "kind": "example"
+        }
+      ],
+      "code": [
+        "Wq = nn.Linear(d_model, d_head, bias=False)",
+        "q, k, v = Wq(x), Wk(x), Wv(x)    # each [B, n, d_head]"
+      ],
+      "viz": [{ "type": "widget", "name": "qkv-matrices" }]
+    },
+    {
+      "title": "Step 2: score every pair",
+      "summary": "Every query is compared with every key using a dot product, giving a grid of relevance scores.",
+      "body": [
+        "Now compare every query with every key using a dot product. For 4 tokens that gives a 4 × 4 grid of scores, written <code>S = Q·Kᵀ</code>. (<code>Kᵀ</code> is K <b>transposed</b>, flipped on its side so the multiplication lines up.)",
+        "Read the grid one row at a time. Row <i>i</i> says how relevant each token is to token <i>i</i>. A high score means token <i>i</i>'s query matches that token's key well.",
+        { "h": "Why divide by √d_head?" },
+        "Dot products of long vectors produce big numbers. Big scores make the next step (softmax) put almost all the weight on a single token, and then training barely learns. Dividing by the square root of the vector length, here √3, keeps the scores in a comfortable range.",
+        {
+          "note": "The grid has one entry for every pair of tokens, so <code>n</code> tokens give <code>n²</code> entries. Double the text length and you get four times the work. That's where attention's famous <code>O(n²)</code> cost comes from.",
+          "kind": "key"
+        }
+      ],
+      "code": [
+        "scores = q @ k.transpose(-2, -1)       # [B, n, n]",
+        "scores = scores / math.sqrt(d_head)"
+      ],
+      "viz": [{ "type": "widget", "name": "score-matrix" }]
+    },
+    {
+      "title": "Step 3: the causal mask",
+      "summary": "A mask stops each token looking at later tokens. That's what makes next-token training work.",
+      "body": [
+        "GPT, Claude, Llama and other chat models are <b>decoder-only</b> models trained to predict the next token. If a position could see the token after it, predicting it would be trivial: the model would just copy the answer.",
+        "So every score above the diagonal, where a token would look at a later token, is set to <code>−∞</code> (minus infinity). In the next step those become exactly 0: no attention to the future.",
+        "There's a big bonus. Since no token can see ahead, one pass over a training sentence trains every position at once: position 1 predicts token 2, position 2 predicts token 3, and so on, all in parallel.",
+        "<b>Encoder</b> models like BERT, used for classification and search embeddings, skip the mask and look both ways. That's great for understanding a complete sentence, but they can't generate text one token at a time. Toggle the mask to compare."
+      ],
+      "code": [
+        "mask = torch.triu(torch.ones(n, n), diagonal=1).bool()",
+        "scores = scores.masked_fill(mask, float(\"-inf\"))"
+      ],
+      "viz": [{ "type": "widget", "name": "causal-mask" }]
+    },
+    {
+      "title": "Step 4: softmax, then blend the values",
+      "summary": "Softmax turns each row of scores into weights that add up to 1, and the output is the matching blend of values.",
+      "body": [
+        "Each row of scores becomes <b>attention weights</b> through <b>softmax</b>: raise <code>e</code> (≈ 2.718) to the power of each score, then divide each result by their total. The weights are all positive and add up to 1, like percentages.",
+        {
+          "note": "Scores [2, 1, 0] become e² ≈ 7.39, e¹ ≈ 2.72 and e⁰ = 1, which total 11.11. The weights are 0.67, 0.24 and 0.09. The biggest score gets the most weight, but the others still get some. A masked score of −∞ becomes e<sup>−∞</sup> = 0.",
+          "kind": "example"
+        },
+        "Each token's output is then the weighted sum of all value vectors: <code>out = softmax(S)·V</code>. If \"artificial\" puts 36% of its weight on \"learning\", then 36% of its new vector comes from the value of \"learning\".",
+        "Pick a query row on the right to see where that token looks and what it gets back.",
+        {
+          "note": "That's all of attention: <b>compare</b> (Q·K), <b>normalise</b> (softmax), <b>blend</b> (·V). The rest of this chapter is about doing it many times in parallel, and doing it fast.",
+          "kind": "key"
+        }
+      ],
+      "code": [
+        "weights = scores.softmax(dim=-1)   # rows sum to 1",
+        "out = weights @ v                  # [B, n, d_head]"
+      ],
+      "viz": [{ "type": "widget", "name": "attention-weights" }]
+    },
+    {
+      "title": "Multi-head attention",
+      "summary": "Models run many small attention operations side by side, so each can track a different kind of relationship.",
+      "body": [
+        "A single attention pattern has to choose where to look. But a token often needs several kinds of information at once: the previous word, the subject of the sentence, a matching bracket far back in some code.",
+        "So models run <code>h</code> attention <b>heads</b> in parallel, each with its own <code>Wq</code>, <code>Wk</code> and <code>Wv</code>. To keep the cost the same, each head works with smaller vectors: <code>d_head = d_model / h</code>. A model with <code>d_model = 4,096</code> and 32 heads gives each head 128 numbers.",
+        "Each head produces its own output. These are joined end to end (concatenated) and mixed together by one more learned matrix, <code>Wo</code>.",
+        {
+          "note": "A team reading the same document, each person told to look for something different, who then pool their notes.",
+          "kind": "analogy"
+        },
+        "Researchers who study model internals (<b>interpretability</b>) find heads that specialise. The four patterns on the right are simplified versions of common ones. The first-token pattern is real and has a name, an <b>attention sink</b>: a place where heads park their weight when nothing else is relevant."
+      ],
+      "code": [
+        "# d_model=4096, h=32  ->  d_head=128",
+        "q = q.view(B, n, h, d_head).transpose(1, 2)  # [B, h, n, d_head]",
+        "out = attention(q, k, v)                     # per head",
+        "out = out.transpose(1, 2).reshape(B, n, d_model)",
+        "out = Wo(out)"
+      ],
+      "viz": [{ "type": "widget", "name": "attention-heads" }]
+    },
+    {
+      "title": "The cost of attention, and the fixes",
+      "summary": "Attention's work grows with the square of the text length, and a few key tricks keep it manageable.",
+      "body": [
+        "The score grid has <code>n²</code> entries for every head in every layer. At 1,000 tokens that's a million scores per head. At a million tokens it's a trillion. Drag the slider to watch it explode.",
+        "Three widely used fixes:",
+        {
+          "ul": [
+            "<b>FlashAttention</b> computes exactly the same result, but in small tiles that fit in the GPU's fast on-chip memory, so the full grid is never written out. Same maths, far less slow memory traffic. It's now the default in major frameworks.",
+            "<b>Grouped-query attention (GQA)</b>: several query heads share one set of key and value heads. Quality stays close, and the KV cache (see <i>Output & inference</i>) shrinks several times over.",
+            "<b>Sliding-window and sparse attention</b>: some layers only look back a fixed distance, or at selected positions, instead of at everything."
+          ]
+        },
+        {
+          "note": "This is why long context is expensive. Even with these tricks, a 200,000-token prompt costs far more compute and memory than a 2,000-token one.",
+          "kind": "key"
+        }
+      ],
+      "code": [
+        "# PyTorch picks a fused kernel (e.g. FlashAttention) when it can",
+        "out = F.scaled_dot_product_attention(q, k, v, is_causal=True)"
+      ],
+      "viz": [{ "type": "widget", "name": "attention-cost" }]
+    }
+  ]
+}
