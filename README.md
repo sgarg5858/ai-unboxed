@@ -40,6 +40,8 @@ The first page is the assistant architecture diagram. When one slide mentions an
 
 ## How it's organised
 
+See [ARCHITECTURE.md](ARCHITECTURE.md) for the design and [CLAUDE.md](CLAUDE.md) for coding conventions.
+
 ```
 src/
   content/
