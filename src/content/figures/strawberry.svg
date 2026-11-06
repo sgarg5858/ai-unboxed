@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 560" role="img" aria-labelledby="t d" font-family="'Schibsted Grotesk', ui-sans-serif, system-ui, sans-serif">
+  <title id="t">What you see vs what the model sees</title>
+  <desc id="d">You see the ten letters s t r a w b e r r y, with three r's. The model sees three tokens instead: str, aw and berry, which reach it only as the numbers 496, 675 and 15717, so the letters are hidden. Answering straight away, it guesses 2, because berry has two r's. Spelling the word out first, one letter per token, lets it count the r's one by one and answer 3.</desc>
+  <!--theme-->
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arrowhead"/></marker>
+  </defs>
+  <rect class="bg" width="1200" height="560" rx="18"/>
+  <text x="40" y="52" class="ink" font-size="26" font-weight="700">What you see vs what the model sees</text>
+  <text x="40" y="78" class="muted" font-size="15">Why "How many r's in strawberry?" used to trip models up.</text>
+
+  <!-- row 1: letters -->
+  <text x="40" y="146" class="muted head">YOU SEE</text>
+  <text x="40" y="166" class="muted" font-size="13">10 letters</text>
+  <g class="mono" font-size="24" font-weight="700" text-anchor="middle">
+    <rect class="card" x="260" y="116" width="56" height="60" rx="10"/><text x="288" y="155" class="ink">s</text>
+    <rect class="card" x="324" y="116" width="56" height="60" rx="10"/><text x="352" y="155" class="ink">t</text>
+    <rect class="heat" x="388" y="116" width="56" height="60" rx="10" stroke-width="2"/><text x="416" y="155" class="heatink">r</text>
+    <rect class="card" x="452" y="116" width="56" height="60" rx="10"/><text x="480" y="155" class="ink">a</text>
+    <rect class="card" x="516" y="116" width="56" height="60" rx="10"/><text x="544" y="155" class="ink">w</text>
+    <rect class="card" x="580" y="116" width="56" height="60" rx="10"/><text x="608" y="155" class="ink">b</text>
+    <rect class="card" x="644" y="116" width="56" height="60" rx="10"/><text x="672" y="155" class="ink">e</text>
+    <rect class="heat" x="708" y="116" width="56" height="60" rx="10" stroke-width="2"/><text x="736" y="155" class="heatink">r</text>
+    <rect class="heat" x="772" y="116" width="56" height="60" rx="10" stroke-width="2"/><text x="800" y="155" class="heatink">r</text>
+    <rect class="card" x="836" y="116" width="56" height="60" rx="10"/><text x="864" y="155" class="ink">y</text>
+  </g>
+  <text x="930" y="144" class="heatink" font-size="20" font-weight="700">3 r's</text>
+  <text x="930" y="166" class="muted" font-size="13">easy to count</text>
+
+  <!-- brackets: which letters each token covers -->
+  <g class="line">
+    <path d="M262 190 V198 H442 V190"/>
+    <path d="M454 190 V198 H570 V190"/>
+    <path d="M582 190 V198 H890 V190"/>
+  </g>
+  <g class="line">
+    <line x1="352" y1="200" x2="352" y2="222" marker-end="url(#a)"/>
+    <line x1="512" y1="200" x2="512" y2="222" marker-end="url(#a)"/>
+    <line x1="736" y1="200" x2="736" y2="222" marker-end="url(#a)"/>
+  </g>
+
+  <!-- row 2: tokens -->
+  <text x="40" y="262" class="muted head">THE MODEL SEES</text>
+  <text x="40" y="282" class="muted" font-size="13">3 tokens, as numbers</text>
+  <g class="mono" text-anchor="middle">
+    <rect class="accsoft" x="260" y="228" width="184" height="78" rx="12"/>
+    <text x="352" y="260" class="accink" font-size="20" font-weight="700">str</text>
+    <text x="352" y="290" class="ink" font-size="17">496</text>
+    <rect class="accsoft" x="452" y="228" width="120" height="78" rx="12"/>
+    <text x="512" y="260" class="accink" font-size="20" font-weight="700">aw</text>
+    <text x="512" y="290" class="ink" font-size="17">675</text>
+    <rect class="accsoft" x="580" y="228" width="312" height="78" rx="12"/>
+    <text x="736" y="260" class="accink" font-size="20" font-weight="700">berry</text>
+    <text x="736" y="290" class="ink" font-size="17">15717</text>
+  </g>
+  <text x="930" y="258" class="ink" font-size="20" font-weight="700">? r's</text>
+  <text x="930" y="280" class="muted" font-size="13">the letters are hidden</text>
+  <text x="930" y="298" class="muted" font-size="13">inside the numbers</text>
+
+  <!-- row 3: outcomes -->
+  <rect class="negsoft" x="40" y="340" width="550" height="170" rx="14" stroke-width="2"/>
+  <text x="64" y="372" class="negink head">ANSWER STRAIGHT AWAY</text>
+  <text x="64" y="408" class="ink" font-size="16">It can't see the letters, so it guesses</text>
+  <text x="64" y="432" class="ink" font-size="16">something that sounds right: "berry" has two r's.</text>
+  <text x="64" y="482" class="negink" font-size="28" font-weight="700">"2" ✗</text>
+
+  <rect class="possoft" x="610" y="340" width="550" height="170" rx="14" stroke-width="2"/>
+  <text x="634" y="372" class="posink head">SPELL IT OUT FIRST (REASONING MODELS)</text>
+  <text x="634" y="408" class="ink" font-size="16">Writing one letter per token makes every r visible:</text>
+  <g class="mono" font-size="16">
+    <text x="634" y="438" class="ink">s t <tspan class="heatink" font-weight="700">r</tspan> a w b e <tspan class="heatink" font-weight="700">r r</tspan> y  →  count: 1, 2, 3</text>
+  </g>
+  <text x="634" y="482" class="posink" font-size="28" font-weight="700">"3" ✓</text>
+
+  <text x="1160" y="540" text-anchor="end" class="muted" font-size="11">Token split and IDs are illustrative; real tokenizers differ.</text>
+</svg>

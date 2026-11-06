@@ -603,6 +603,7 @@
                   "fruit-similarity",
                   "tokenizer",
                   "utf8-bytes",
+                  "token-cost",
                   "letter-count",
                   "context-fit",
                   "embedding-table",

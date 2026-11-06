@@ -735,3 +735,137 @@ export class Utf8BytesWidget {
     this.chars().reduce((n, c) => n + c.bytes.length, 0),
   );
 }
+
+/** Example list prices per million tokens (input, output), roughly typical of 2025. */
+const TIERS = [
+  { id: 'small', label: 'Small, fast model', input: 0.25, output: 1.25 },
+  { id: 'large', label: 'Large, smart model', input: 3, output: 15 },
+] as const;
+const PROMPT_SIZES = [200, 1_000, 2_000, 5_000, 10_000, 20_000, 50_000, 100_000];
+const REPLY_SIZES = [50, 200, 500, 1_000, 2_000, 4_000];
+const DAILY = [10, 100, 1_000, 10_000, 100_000];
+
+/** Amounts under a dollar in cents (e.g. 1.35¢), larger ones in dollars. */
+const money = (d: number): string => {
+  if (d === 0) return '$0';
+  if (d < 1) return (d * 100).toFixed(d < 0.001 ? 3 : 2) + '¢';
+  if (d < 100) return '$' + d.toFixed(2);
+  return '$' + Math.round(d).toLocaleString('en-GB');
+};
+/** A per-million price, always in dollars: $0.25, $3, $15. */
+const price = (d: number) => '$' + d;
+/** Rough English word count for a number of tokens (1 token ≈ 0.75 words). */
+const words = (tokens: number) => '~' + Math.round(tokens * 0.75).toLocaleString('en-GB');
+
+/** What a request costs: input and output tokens, priced per million. */
+@Component({
+  selector: 'w-token-cost',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [Slider],
+  host: { class: 'contents' },
+  template: `
+    <div class="panel">
+      <div class="row" role="radiogroup" aria-label="Model" style="margin-bottom:12px">
+        @for (t of tiers; track t.id) {
+          <button
+            class="btn"
+            role="radio"
+            [class.on]="tier().id === t.id"
+            [attr.aria-checked]="tier().id === t.id"
+            (click)="tierId.set(t.id)"
+          >
+            {{ t.label }}
+          </button>
+        }
+      </div>
+      <p class="cap" style="margin:0 0 10px">
+        Prices per million tokens: <b>{{ price(tier().input) }} in</b>,
+        <b>{{ price(tier().output) }} out</b>
+      </p>
+      <app-slider
+        label="What you send (tokens)"
+        [min]="0"
+        [max]="promptSizes.length - 1"
+        [(value)]="promptIdx"
+        [format]="fmtPrompt"
+      />
+      <app-slider
+        label="Reply length (tokens)"
+        [min]="0"
+        [max]="replySizes.length - 1"
+        [(value)]="replyIdx"
+        [format]="fmtReply"
+      />
+      <app-slider
+        label="Questions per day"
+        [min]="0"
+        [max]="daily.length - 1"
+        [(value)]="dailyIdx"
+        [format]="fmtDaily"
+      />
+      <p class="cap" style="margin:4px 0 0">{{ sizesInWords() }}</p>
+
+      <p class="cap" style="margin:14px 0 6px">Cost of one question</p>
+      <div
+        role="img"
+        [attr.aria-label]="'Input ' + money(inCost()) + ', output ' + money(outCost())"
+        style="display:flex;height:26px;border-radius:8px;overflow:hidden;border:1px solid var(--line)"
+      >
+        <span [style.width.%]="inShare()" style="background:var(--accent)"></span>
+        <span [style.width.%]="100 - inShare()" style="background:var(--heat)"></span>
+      </div>
+      <div class="row" style="justify-content:space-between;margin-top:6px;font-size:13px">
+        <span><b style="color:var(--accent-ink)">■</b> input {{ money(inCost()) }}</span>
+        <span><b style="color:var(--heat-ink)">■</b> output {{ money(outCost()) }}</span>
+      </div>
+
+      <div class="stat" style="margin-top:12px">
+        <div>
+          <b>{{ money(perQuestion()) }}</b
+          ><span>per question</span>
+        </div>
+        <div>
+          <b>{{ money(perMonth()) }}</b
+          ><span>per month at this volume</span>
+        </div>
+      </div>
+    </div>
+  `,
+})
+export class TokenCostWidget {
+  protected readonly tiers = TIERS;
+  protected readonly promptSizes = PROMPT_SIZES;
+  protected readonly replySizes = REPLY_SIZES;
+  protected readonly daily = DAILY;
+  protected readonly tierId = signal<string>('large');
+  protected readonly promptIdx = signal(2);
+  protected readonly replyIdx = signal(2);
+  protected readonly dailyIdx = signal(2);
+  protected readonly money = money;
+  protected readonly price = price;
+
+  protected readonly tier = computed(() => TIERS.find((t) => t.id === this.tierId()) ?? TIERS[1]);
+  private readonly inTokens = computed(() => PROMPT_SIZES[this.promptIdx()]);
+  private readonly outTokens = computed(() => REPLY_SIZES[this.replyIdx()]);
+  protected readonly inCost = computed(() => (this.inTokens() / 1e6) * this.tier().input);
+  protected readonly outCost = computed(() => (this.outTokens() / 1e6) * this.tier().output);
+  protected readonly perQuestion = computed(() => this.inCost() + this.outCost());
+  protected readonly perMonth = computed(() => this.perQuestion() * DAILY[this.dailyIdx()] * 30);
+  protected readonly inShare = computed(() =>
+    this.perQuestion() ? (this.inCost() / this.perQuestion()) * 100 : 50,
+  );
+
+  /** Short slider labels; the word equivalents are shown once, under the sliders. */
+  private readonly short = (n: number) => n >= 1000 ? n / 1000 + 'k' : String(n);
+  protected readonly fmtPrompt = (i: number) => this.short(PROMPT_SIZES[i]);
+  protected readonly fmtReply = (i: number) => this.short(REPLY_SIZES[i]);
+  protected readonly sizesInWords = computed(
+    () =>
+      'About ' +
+      words(this.inTokens()).slice(1) +
+      ' words sent, ' +
+      words(this.outTokens()).slice(1) +
+      ' words back.',
+  );
+  protected readonly fmtDaily = (i: number) => DAILY[i].toLocaleString('en-GB');
+}

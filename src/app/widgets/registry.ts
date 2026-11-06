@@ -11,6 +11,7 @@ export const WIDGETS: Record<string, () => Promise<Type<unknown>>> = {
   'fruit-similarity': () => import('./basics.widgets').then((m) => m.FruitSimilarityWidget),
   tokenizer: () => import('./tokens.widgets').then((m) => m.TokenizerWidget),
   'utf8-bytes': () => import('./tokens.widgets').then((m) => m.Utf8BytesWidget),
+  'token-cost': () => import('./tokens.widgets').then((m) => m.TokenCostWidget),
   'letter-count': () => import('./tokens.widgets').then((m) => m.LetterCountWidget),
   'context-fit': () => import('./tokens.widgets').then((m) => m.ContextFitWidget),
   'embedding-table': () => import('./tokens.widgets').then((m) => m.EmbeddingTableWidget),
