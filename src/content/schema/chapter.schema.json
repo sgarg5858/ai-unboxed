@@ -602,6 +602,7 @@
                 "enum": [
                   "fruit-similarity",
                   "tokenizer",
+                  "utf8-bytes",
                   "letter-count",
                   "context-fit",
                   "embedding-table",

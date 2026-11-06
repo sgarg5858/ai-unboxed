@@ -677,3 +677,61 @@ export class ContextFitWidget {
   protected readonly short = (n: number) =>
     n >= 1_000_000 ? `${n / 1_000_000}M` : n === 4_096 ? '4k' : `${n / 1_000}k`;
 }
+
+/** Split text into what people see as characters (so emoji and accents stay whole). */
+const graphemes = (text: string): string[] =>
+  typeof Intl !== 'undefined' && 'Segmenter' in Intl
+    ? [...new Intl.Segmenter(undefined, { granularity: 'grapheme' }).segment(text)].map(
+        (s) => s.segment,
+      )
+    : Array.from(text);
+
+/** Text → UTF-8 bytes: the numbers a byte-level tokenizer starts from. */
+@Component({
+  selector: 'w-utf8-bytes',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { class: 'contents' },
+  template: `
+    <div class="panel">
+      <label for="bytesin" class="cap" style="display:block;margin-bottom:6px">Your text</label>
+      <textarea
+        id="bytesin"
+        rows="2"
+        maxlength="120"
+        [value]="text()"
+        (input)="text.set($any($event.target).value)"
+      ></textarea>
+      <div class="row" style="margin-top:12px" aria-label="Characters and their bytes">
+        @for (c of chars(); track $index) {
+          <span class="chip" [class.hot]="c.bytes.length > 1"
+            >{{ c.show }}<small>{{ c.bytes.join(' ') }}</small></span
+          >
+        }
+      </div>
+      <div class="stat" style="margin-top:12px">
+        <div>
+          <b>{{ chars().length }}</b
+          ><span>characters you see</span>
+        </div>
+        <div>
+          <b>{{ byteCount() }}</b
+          ><span>bytes the tokenizer starts from</span>
+        </div>
+      </div>
+    </div>
+  `,
+})
+export class Utf8BytesWidget {
+  readonly props = input<{ initial?: string }>({});
+  protected readonly text = linkedSignal(() => this.props().initial ?? 'Hi café 😀 नमस्ते');
+  private readonly encoder = new TextEncoder();
+  protected readonly chars = computed(() =>
+    graphemes(this.text()).map((g) => ({
+      show: g === ' ' ? '␣' : g === '\n' ? '↵' : g,
+      bytes: [...this.encoder.encode(g)],
+    })),
+  );
+  protected readonly byteCount = computed(() =>
+    this.chars().reduce((n, c) => n + c.bytes.length, 0),
+  );
+}

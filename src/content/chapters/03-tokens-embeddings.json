@@ -15,7 +15,7 @@
             "<b>Parts of words</b>: the middle ground everyone uses. Common words like \"the\" get one token. Rare words are built from common pieces: \"unbelievable\" becomes \"un\" + \"believ\" + \"able\"."
           ]
         },
-        "Modern tokenizers work on raw <b>bytes</b>, not letters, so they can handle any text at all, including emoji, code and every language. <mark>Nothing is ever \"unknown\"; unusual text just uses more tokens.</mark>",
+        "Modern tokenizers work on raw <b>bytes</b>, not letters, so they can handle any text at all, including emoji, code and every language. <mark>Nothing is ever \"unknown\"; unusual text just uses more tokens (more on the next slide).</mark>",
         {
           "note": "Tokens are what you pay for and what limits are counted in. API prices, rate limits and context windows are all measured in tokens, not letters or words.",
           "kind": "dev"
@@ -58,6 +58,40 @@
         "height": 730,
         "caption": "The whole journey in one picture: text goes in, the tokenizer splits it using the vocabulary, and the model only ever sees the ID numbers."
       }
+    },
+    {
+      "title": "Raw bytes: how modern tokenizers start",
+      "summary": "Underneath every letter is a list of small numbers called bytes. Modern tokenizers start from those, so no text is ever unknown.",
+      "body": [
+        "Computers don't store letters. They store text as <b>bytes</b>: small numbers from 0 to 255. A standard called <b>UTF-8</b> says which bytes stand for which character:",
+        {
+          "ul": [
+            "Plain English letters take 1 byte each: <code>A</code> is 65.",
+            "Accented letters take 2: <code>é</code> is 195 169.",
+            "Many other scripts take 3: the Hindi letter <code>न</code> is 224 164 168.",
+            "Emoji take 4: <code>😀</code> is 240 159 152 128."
+          ]
+        },
+        "A <b>byte-level tokenizer</b> starts with all 256 possible byte values as its first 256 tokens. <mark>Because every possible text is made of bytes, nothing is ever \"unknown\": rare characters just use more tokens.</mark>",
+        "Training (BPE, on the next slide) then joins bytes that often appear together into bigger tokens. Common English words end up as a single token, while a rare emoji may stay as 4 separate byte tokens. GPT-2 popularised this approach in 2019; OpenAI's tiktoken works this way, and tokenizers built with SentencePiece fall back to bytes for anything they don't know.",
+        {
+          "note": "In code: <code>new TextEncoder().encode(\"é\")</code> gives <code>[195, 169]</code>. That list of numbers is what a byte-level tokenizer starts from.",
+          "kind": "dev"
+        }
+      ],
+      "viz": [
+        {
+          "type": "widget",
+          "name": "utf8-bytes",
+          "props": {
+            "initial": "Hi café 😀 नमस्ते"
+          }
+        },
+        {
+          "type": "caption",
+          "html": "Each box is one character, with its UTF-8 bytes underneath. Amber boxes need more than one byte. Try another language, or add emoji."
+        }
+      ]
     },
     {
       "title": "How BPE builds the vocabulary",
