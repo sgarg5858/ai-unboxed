@@ -24,12 +24,12 @@ Before calling a task done:
 - **Text or slides:** edit `src/content/chapters/*.json` only. Use generic blocks (stages, chips, bars, table, stat, panel, tabs, stepper, caption, code).
 - **Widgets:** write one only when the interaction computes something. To add one:
   1. Add the component to `src/app/widgets/<topic>.widgets.ts`.
-  2. Register it in `widgets/registry.ts`.
+  2. Register it in `widgets/registry.ts` as a lazy loader: `'name': () => import('./topic.widgets').then((m) => m.MyWidget)`.
   3. Add its name to the widget `enum` in `src/content/schema/chapter.schema.json`.
 - **Highlights:** wrap the single key takeaway of a slide in `<mark>` (one per slide at most, a phrase or sentence, never a whole paragraph).
 - **Images:** draw the SVG in `src/content/figures/` using the shared class names and a `<!--theme-->` marker, run `npm run figures` to build the light/dark files in `public/images/`, then add a slide-level `figure` (`src`, optional `darkSrc`, `alt`, `width`, `height`, `caption`) with files in `public/images/`. Paths have no leading slash (the base href varies). Provide a light and a dark variant; `SlideFigure` swaps them using `Theme.dark()`, so they follow the site toggle. Prefer SVG and write a real `alt`.
 - **Cross-chapter links:** use `goto: { chapter: "<id>", slide: n }` and refer to the chapter by **name** in prose, never by number.
-- **New chapter:** add the JSON file with its `$schema` line, import it in `src/content/course.ts`, add it to a section, and update the chapter table in `README.md`.
+- **New chapter:** add the JSON file with its `$schema` line, add an entry `{ id, name, load: () => json(import('./chapters/…json')) }` to a section in `src/content/course.ts` (id and name must match the JSON; a test checks), and update the chapter table in `README.md`. Never import chapter JSON statically in app code: it would pull every chapter back into the initial bundle.
 
 ## Angular 21 conventions (follow strictly)
 
@@ -72,7 +72,7 @@ Based on angular.dev's official best-practices guide (`/assets/context/best-prac
 ### Navigation
 
 - The **URL is the only source of truth** for the current slide. Navigate through `CourseNav` (`goto`, `gotoSlide`, `step`). Never store "current slide" in a component.
-- Routing uses hash URLs (`#/chapterId/slide`, 1-based slide number) with a single wildcard route. Keep it that way so GitHub Pages works without rewrites.
+- Routing uses hash URLs (`#/chapterId/slide`, 1-based slide number) so GitHub Pages works without rewrites. The `:chapter/:slide` route's `chapterResolver` loads that chapter's JSON and widget code (via `ChapterStore`) before the shell renders, so `CourseNav.chapter()` is always loaded inside the shell. Other chapters prefetch in the background after the first render.
 
 ### TypeScript
 
@@ -105,7 +105,7 @@ Based on angular.dev's official best-practices guide (`/assets/context/best-prac
 
 ## Gotchas
 
-- JSON imports are widened, so `course.ts` casts them through `chapter()`. The tests, not the compiler, catch content mistakes.
+- JSON imports are widened, so `course.ts` casts them through `json()`. The tests, not the compiler, catch content mistakes. Specs load every chapter with top-level `await` before defining per-slide tests.
 - Prettier may reformat files after edits. Re-read a file before making exact-match edits.
 - `dist/` is build output. Never edit it.
 - The deploy workflow sets `--base-href` from the repo name. Don't hard-code `/ai-unboxed/` anywhere in the source.

@@ -1,6 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
-import { COURSE } from '../../../content/course';
+import { CHAPTERS } from '../../../content/course';
+
+// The app loads chapters on demand; the tests load them all up front.
+const COURSE = await Promise.all(CHAPTERS.map((c) => c.load()));
 import { routes } from '../../app.routes';
 import { CourseShell } from './course-shell';
 

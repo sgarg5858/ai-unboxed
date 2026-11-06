@@ -46,14 +46,14 @@ See [ARCHITECTURE.md](ARCHITECTURE.md) for the design and [CLAUDE.md](CLAUDE.md)
 ```
 src/
   content/
-    course.ts                 chapter order: import a chapter JSON here to add it
+    course.ts                 chapter manifest: id, name and an on-demand loader per chapter
     chapters/*.json           all slide text, code samples and layout
     schema/chapter.schema.json  editor autocomplete and validation for the JSON
   app/
     course/                   content types, URL-driven navigation, page shell
     blocks/                   generic, config-driven building blocks (stages, tabs, stepper…)
     widgets/                  named interactive widgets that need real logic
-      registry.ts             widget name → component
+      registry.ts             widget name → lazy loader
     shared/                   slide figure, slider, matrix table, code block, math and formatting helpers
   styles.css                  design tokens (light/dark), reset, shared primitives (.panel, .btn, .stage …)
 ```
@@ -93,8 +93,8 @@ A slide looks like this:
 - **Callouts:** `kind` is `key` (Key idea), `analogy`, `dev` (For developers), `warn` (Watch out) or `example` (Worked example).
 - **Writing style:** open with the intuition, then the mechanism, then numbers and practice. Define every term in bold where it first appears, keep paragraphs to two or three sentences, and give every slide a `summary`.
 - **New slide:** add an object to a chapter's `slides` array.
-- **New chapter:** copy a chapter file, give it a new `id` and `name`, import it in `src/content/course.ts` and add it to a section there.
-- **New topic** (for example RAG or Agents): add a section in `src/content/course.ts` with its chapters. It appears as a new top-level pill. A section with a single chapter shows no second row.
+- **New chapter:** copy a chapter file, give it a new `id` and `name`, and add an entry with the same id, name and a loader to a section in `src/content/course.ts`. Chapters are loaded on demand, so the site stays fast as the course grows.
+- **New topic** (for example RAG or Agents): add a section in `src/content/course.ts` with its chapters. It appears as a new heading in the sidebar outline.
 - Inline `style="…"` attributes in HTML strings are stripped by Angular's sanitizer. Use classes such as `mono`, `cap` or `k` instead.
 
 ### Generic blocks for `viz`

@@ -1,8 +1,16 @@
-import { ChangeDetectionStrategy, Component, ElementRef, inject, viewChild } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  afterNextRender,
+  inject,
+  viewChild,
+} from '@angular/core';
 import { BlockList } from '../../blocks/block-list';
 import { CodeBlock } from '../../shared/code-block/code-block';
 import { SlideFigure } from '../../shared/slide-figure/slide-figure';
 import { ThemeSwitch } from '../../shared/theme/theme-switch';
+import { ChapterStore } from '../chapter-store';
 import { ContentsDrawer } from '../contents-drawer/contents-drawer';
 import { CourseNav } from '../course-nav';
 import { CourseOutline } from '../course-outline/course-outline';
@@ -29,6 +37,12 @@ import { NoteKind, Prose } from '../content.model';
 export class CourseShell {
   protected readonly nav = inject(CourseNav);
   protected readonly sidebar = inject(SidebarState);
+  private readonly store = inject(ChapterStore);
+
+  constructor() {
+    // Once the first slide is on screen, fetch the other chapters while the reader reads.
+    afterNextRender(() => setTimeout(() => this.store.preloadAll(), 1500));
+  }
   private readonly article = viewChild.required<ElementRef<HTMLElement>>('article');
 
   protected readonly kindOf = (p: Prose) =>

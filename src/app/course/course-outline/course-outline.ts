@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, output } from '@angular/core';
+import { ChapterStore } from '../chapter-store';
 import { CourseNav } from '../course-nav';
 import { chapterNumber } from '../course-position';
 
@@ -31,12 +32,12 @@ import { chapterNumber } from '../course-position';
                 <span class="num">{{ number(si, ci) }}</span>
                 <span class="name">{{ c.name }}</span>
                 <span class="count"
-                  >{{ current ? nav.position().slide + 1 + '/' : '' }}{{ c.slides.length }}</span
+                  >{{ current ? nav.position().slide + 1 + '/' : '' }}{{ count(c.id) }}</span
                 >
               </button>
               @if (current) {
                 <ol class="slides">
-                  @for (s of c.slides; track $index; let i = $index) {
+                  @for (s of nav.chapter().slides; track $index; let i = $index) {
                     <li>
                       <button
                         type="button"
@@ -59,6 +60,11 @@ import { chapterNumber } from '../course-position';
 })
 export class CourseOutline {
   protected readonly nav = inject(CourseNav);
+  private readonly store = inject(ChapterStore);
+  /** Slide count, once that chapter has loaded (they all load in the background). */
+  protected count(id: string) {
+    return this.store.loaded().get(id)?.slides.length;
+  }
   /** Fires after any jump, so a drawer can close itself. */
   readonly navigated = output<void>();
 

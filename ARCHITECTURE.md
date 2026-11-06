@@ -19,7 +19,7 @@ Blocks come in two kinds. **Generic blocks** (stages, chips, tabs, stepper, etc.
 flowchart TD
   URL["URL hash<br/>#/attention/3"] -->|Router NavigationEnd| NAV
   subgraph content ["src/content (data)"]
-    JSON["chapters/*.json"] --> COURSE["course.ts<br/>SECTIONS → COURSE"]
+    JSON["chapters/*.json"] -. "import() on demand" .-> COURSE["course.ts<br/>manifest: id, name, load()"]
     SCHEMA["schema/chapter.schema.json"] -. validates in tests .-> JSON
   end
   COURSE -->|COURSE_CONTENT token| NAV["CourseNav service<br/>position / chapter / slide signals"]
@@ -47,7 +47,7 @@ Dependencies point **downward only**: content → course → blocks → widgets 
 
 ### 1. Content is data, behaviour is code
 
-Every slide is JSON (`ChapterContent → SlideContent → Prose[] + Block[]`). Adding a chapter means adding a file plus one import in `course.ts`, with no Angular code. A new interaction becomes a widget only when a generic block can't express it.
+Every slide is JSON (`ChapterContent → SlideContent → Prose[] + Block[]`). Adding a chapter means adding a file plus one manifest entry (id, name, loader) in `course.ts`, with no Angular code. A new interaction becomes a widget only when a generic block can't express it.
 
 `chapter.schema.json` gives editors autocomplete. The same schema runs in `course.spec.ts` through ajv, so a malformed chapter fails CI before deploy.
 
@@ -60,11 +60,11 @@ Navigation only ever calls `router.navigate`, and no component stores "current s
 - Back/forward, deep links and reloads all work without extra code.
 - The position logic in `course-position.ts` is pure functions, unit-tested with no TestBed.
 
-**Hash routing** (`withHashLocation`) lets the build run on any static host (Pages, S3, Netlify) with no rewrite rules. A single wildcard route renders `CourseShell`.
+**Hash routing** (`withHashLocation`) lets the build run on any static host (Pages, S3, Netlify) with no rewrite rules. The route `:chapter/:slide` renders `CourseShell` after `chapterResolver` has loaded that chapter; `:chapter` alone redirects to slide 1 (old `#assistant` links), and anything unknown redirects to the first chapter.
 
 ### 3. A registry decouples JSON from components
 
-JSON refers to a widget by string name (`{ "type": "widget", "name": "temperature" }`). `WIDGETS` in `registry.ts` maps names to component classes, and `BlockList` renders them with `NgComponentOutlet`, passing `props` through `inputs`. Two tests keep this honest:
+JSON refers to a widget by string name (`{ "type": "widget", "name": "temperature" }`). `WIDGETS` in `registry.ts` maps names to lazy loaders (`() => import(...)`), so each widget file is its own chunk. `WidgetHost` renders the loaded component with `NgComponentOutlet`, passing `props` through `inputs`; the chapter resolver preloads a chapter's widgets so they appear without a placeholder. Two tests keep this honest:
 
 - every widget name used in content must be registered;
 - the schema's widget `enum` must match the registry keys.
@@ -111,9 +111,7 @@ Slides link to other chapters with `goto: { chapter: "<id>", slide: n }` and ref
 
 - **Build:** `@angular/build:application` (esbuild). Output goes to `dist/ai-unboxed/browser`.
 - **Budgets:** initial bundle warns at 500 kB and errors at 1 MB. Each component stylesheet warns at 4 kB and errors at 8 kB.
-- **Bundle loading:** all chapter JSON is bundled eagerly, because the course is small and only one route exists. If the initial bundle nears the budget, the next steps are:
-  - `@defer` heavy widgets;
-  - load chapter JSON with dynamic `import()` per section.
+- **Lazy loading:** the initial bundle holds only the app shell and the course manifest (about 290 kB raw, 80 kB transferred). Each chapter's JSON and each widget file is a separate chunk, fetched when its route is opened (`ChapterStore.load`). After the first render, the remaining chapters prefetch in the background, so moving between chapters stays instant and the outline can show every chapter's slide count.
 - **Tests:** Vitest through `@angular/build:unit-test`, with jsdom. There are three kinds:
   - pure-function tests (`course-position`, `highlight`, `theme`);
   - a content test that validates the schema, registry and section integrity (`course.spec.ts`);
@@ -122,11 +120,11 @@ Slides link to other chapters with `goto: { chapter: "<id>", slide: n }` and ref
 
 ## Extending
 
-| Want to…                       | Do this                                                                                                                                                                             |
-| ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Add a chapter                  | Copy a file in `src/content/chapters/`, keep the `$schema` line, import it in `course.ts` and add it to a section.                                                                  |
-| Add a section (RAG, Agents, …) | Add `{ id, name, chapters }` to `SECTIONS` in `course.ts`. The rail picks it up automatically.                                                                                      |
-| Add a widget                   | Write the component in `widgets/<topic>.widgets.ts`, register it in `registry.ts`, and add its name to the widget `enum` in `chapter.schema.json`. Tests fail if you forget either. |
-| Add a generic block type       | Add it to the `Block` union in `content.model.ts`, add a renderer in `blocks/`, add a `@case` in `BlockList`, and add it to the schema.                                             |
-| Add a diagram or image         | Put light and dark files in `public/images/` and add `figure` to the slide. It renders full width under both columns (`shared/slide-figure`).                                       |
-| Add a colour                   | Add the token to both the light and dark blocks in `styles.css`. Add an `-ink` variant if it will colour text.                                                                      |
+| Want to…                       | Do this                                                                                                                                                                                               |
+| ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Add a chapter                  | Copy a file in `src/content/chapters/`, keep the `$schema` line, and add `{ id, name, load }` for it to a section in `course.ts`.                                                                     |
+| Add a section (RAG, Agents, …) | Add `{ id, name, chapters }` to `SECTIONS` in `course.ts`. The rail picks it up automatically.                                                                                                        |
+| Add a widget                   | Write the component in `widgets/<topic>.widgets.ts`, register a lazy loader for it in `registry.ts`, and add its name to the widget `enum` in `chapter.schema.json`. Tests fail if you forget either. |
+| Add a generic block type       | Add it to the `Block` union in `content.model.ts`, add a renderer in `blocks/`, add a `@case` in `BlockList`, and add it to the schema.                                                               |
+| Add a diagram or image         | Put light and dark files in `public/images/` and add `figure` to the slide. It renders full width under both columns (`shared/slide-figure`).                                                         |
+| Add a colour                   | Add the token to both the light and dark blocks in `styles.css`. Add an `-ink` variant if it will colour text.                                                                                        |

@@ -1,9 +1,8 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { NgComponentOutlet } from '@angular/common';
 import { Block } from '../course/content.model';
 import { CodeBlock } from '../shared/code-block/code-block';
 import { EmbedBlock } from './embed';
-import { WIDGETS } from '../widgets/registry';
+import { WidgetHost } from './widget-host';
 import { Bars, Chips, Stat, TableBlock } from './simple-blocks';
 import { Stages } from './stages';
 import { Stepper } from './stepper';
@@ -18,9 +17,9 @@ import { Tabs } from './tabs';
   selector: 'app-blocks',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    NgComponentOutlet,
     CodeBlock,
     EmbedBlock,
+    WidgetHost,
     Stages,
     Chips,
     Bars,
@@ -49,11 +48,7 @@ import { Tabs } from './tabs';
           </div>
         }
         @case ('widget') {
-          @if (widget(b.name); as w) {
-            <ng-container *ngComponentOutlet="w; inputs: b.props ? { props: b.props } : {}" />
-          } @else {
-            <p class="cap" style="color:var(--neg-ink)">Unknown widget "{{ b.name }}"</p>
-          }
+          <app-widget-host [name]="b.name" [props]="b.props" />
         }
         @case ('panel') {
           <div class="panel"><app-blocks [blocks]="b.blocks" [nested]="true" /></div>
@@ -108,5 +103,4 @@ import { Tabs } from './tabs';
 export class BlockList {
   readonly blocks = input.required<Block[]>();
   readonly nested = input(false);
-  protected widget = (name: string) => WIDGETS[name];
 }

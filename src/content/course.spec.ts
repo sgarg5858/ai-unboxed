@@ -1,18 +1,11 @@
 import Ajv from 'ajv';
 import { WIDGETS } from '../app/widgets/registry';
-import type { Block } from '../app/course/content.model';
-import { COURSE, SECTIONS } from './course';
+import { allBlocks } from '../app/course/blocks-walk';
+import { CHAPTERS, SECTIONS } from './course';
 import schema from './schema/chapter.schema.json';
 
-/** Walk every block, including blocks nested in panels, tabs and steppers. */
-function* allBlocks(blocks: Block[] = []): Generator<Block> {
-  for (const b of blocks) {
-    yield b;
-    if (b.type === 'panel') yield* allBlocks(b.blocks);
-    if (b.type === 'tabs') for (const t of b.tabs) yield* allBlocks(t.blocks);
-    if (b.type === 'stepper') for (const s of b.steps) yield* allBlocks(s.blocks);
-  }
-}
+// The app loads chapters on demand; the tests load them all up front.
+const COURSE = await Promise.all(CHAPTERS.map((c) => c.load()));
 
 describe('course content', () => {
   const validate = new Ajv({ allErrors: true, strict: false }).compile(schema);
@@ -26,9 +19,13 @@ describe('course content', () => {
   }
 
   it('groups every chapter into exactly one section, in reading order', () => {
-    expect(SECTIONS.flatMap((x) => x.chapters.map((c) => c.id))).toEqual(COURSE.map((c) => c.id));
+    expect(SECTIONS.flatMap((x) => x.chapters.map((c) => c.id))).toEqual(CHAPTERS.map((c) => c.id));
     expect(SECTIONS.every((x) => x.chapters.length > 0)).toBe(true);
     expect(new Set(SECTIONS.map((x) => x.id)).size).toBe(SECTIONS.length);
+  });
+
+  it('lists every chapter in the manifest with the same id and name as its JSON', () => {
+    expect(CHAPTERS.map((c) => [c.id, c.name])).toEqual(COURSE.map((c) => [c.id, c.name]));
   });
 
   it('has unique chapter ids', () => {

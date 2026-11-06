@@ -110,11 +110,18 @@ export interface SlideContent {
   figure?: Figure;
 }
 
-/** A top-level group of chapters. The rail shows sections; a section with several chapters shows a second row. */
+/** A chapter in the course manifest: enough to build navigation, with its content loaded on demand. */
+export interface ChapterRef {
+  id: string;
+  name: string;
+  load: () => Promise<ChapterContent>;
+}
+
+/** A top-level group of chapters, shown as a heading in the outline. */
 export interface SectionContent {
   id: string;
   name: string;
-  chapters: ChapterContent[];
+  chapters: ChapterRef[];
 }
 
 export interface ChapterContent {

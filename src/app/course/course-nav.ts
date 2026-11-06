@@ -1,21 +1,21 @@
-import { computed, inject, Injectable, InjectionToken } from '@angular/core';
+import { computed, inject, Injectable } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router } from '@angular/router';
 import { filter, map } from 'rxjs';
-import { COURSE, SECTIONS } from '../../content/course';
+import { SECTIONS } from '../../content/course';
+import { COURSE_CHAPTERS, ChapterStore } from './chapter-store';
 import { ChapterContent, SectionContent } from './content.model';
 import { Position, chapterNumber, resolvePosition, step, toPath } from './course-position';
 
-export const COURSE_CONTENT = new InjectionToken<readonly ChapterContent[]>('COURSE_CONTENT', {
-  providedIn: 'root',
-  factory: () => COURSE,
-});
-
-/** The URL is the single source of truth for which slide is showing. */
+/**
+ * The URL is the single source of truth for which slide is showing. The route resolver has
+ * loaded the current chapter before NavigationEnd, so its content is always available here.
+ */
 @Injectable({ providedIn: 'root' })
 export class CourseNav {
   private readonly router = inject(Router);
-  readonly chapters = inject(COURSE_CONTENT);
+  private readonly store = inject(ChapterStore);
+  readonly chapters = inject(COURSE_CHAPTERS);
   readonly sections: readonly SectionContent[] = SECTIONS;
 
   private readonly url = toSignal(
@@ -26,12 +26,21 @@ export class CourseNav {
     { initialValue: this.router.url },
   );
 
-  readonly position = computed<Position>(() => resolvePosition(this.chapters, this.url()));
-  readonly chapter = computed(() => this.chapters[this.position().chapter]);
+  /** Slides in the chapter at this index, or 1 if it hasn't loaded yet. */
+  private readonly count = (i: number) =>
+    this.store.loaded().get(this.chapters[i].id)?.slides.length ?? 1;
+
+  readonly position = computed<Position>(() =>
+    resolvePosition(this.chapters, this.url(), this.count),
+  );
+  readonly chapterRef = computed(() => this.chapters[this.position().chapter]);
+  readonly chapter = computed(
+    () => this.store.loaded().get(this.chapterRef().id) as ChapterContent,
+  );
   readonly sectionIndex = computed(() =>
     Math.max(
       0,
-      this.sections.findIndex((s) => s.chapters.some((c) => c.id === this.chapter().id)),
+      this.sections.findIndex((s) => s.chapters.some((c) => c.id === this.chapterRef().id)),
     ),
   );
   readonly section = computed(() => this.sections[this.sectionIndex()]);
@@ -40,7 +49,7 @@ export class CourseNav {
     chapterNumber(
       this.sections,
       this.sectionIndex(),
-      this.section().chapters.findIndex((c) => c.id === this.chapter().id),
+      this.section().chapters.findIndex((c) => c.id === this.chapterRef().id),
     ),
   );
   readonly slide = computed(() => this.chapter().slides[this.position().slide]);
@@ -68,7 +77,12 @@ export class CourseNav {
     return this.router.navigate(toPath(this.chapters, { ...this.position(), slide: slideIndex }));
   }
 
-  step(dir: 1 | -1) {
-    return this.router.navigate(toPath(this.chapters, step(this.chapters, this.position(), dir)));
+  async step(dir: 1 | -1) {
+    const p = this.position();
+    // Going back from a chapter's first slide needs the previous chapter's length.
+    if (dir < 0 && p.slide === 0 && p.chapter > 0) {
+      await this.store.load(this.chapters[p.chapter - 1].id);
+    }
+    return this.router.navigate(toPath(this.chapters, step(this.chapters, p, dir, this.count)));
   }
 }
