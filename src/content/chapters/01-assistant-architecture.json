@@ -165,7 +165,7 @@
       "body": [
         "When you chat with Claude, ChatGPT or Gemini, you aren't talking to the model directly. Your message first goes through several layers of ordinary software, and the reply goes back through more of them.",
         "These layers do the jobs the model can't or shouldn't do itself: checking who you are, putting the prompt together, blocking harmful content, running tools, looking up fresh information and catching misuse.",
-        "AI companies call this <b>defense in depth</b>. <mark>No single safety check catches everything</mark>, so they use several different kinds together:",
+        "AI companies call this <b>defense in depth</b>. <mark>No single safety check catches everything, so they use several different kinds together:</mark>",
         {
           "ul": [
             "Values the model learned during training.",
@@ -749,7 +749,7 @@
       "title": "Values are built into the model",
       "summary": "The widest safeguard is the model's own training. It learns principles and the reasons behind them, not just a list of rules.",
       "body": [
-        "A filter only catches what its designers thought of. A model that understands <i>why</i> something is harmful <mark>can handle cases nobody wrote a rule for</mark>. So the first and broadest guardrail is training.",
+        "A filter only catches what its designers thought of. <mark>A model that understands <i>why</i> something is harmful can handle cases nobody wrote a rule for.</mark> So the first and broadest guardrail is training.",
         {
           "ul": [
             "<b>Anthropic</b> trains Claude on a published constitution (updated January 2026). Instead of listing rules, it explains its reasoning. It also sets an order for when goals clash: be safe, be ethical, follow Anthropic's guidelines, be genuinely helpful. Most requests involve no clash at all.",
@@ -994,15 +994,15 @@
       "title": "Tools: the model asks, the software acts",
       "summary": "The model never runs anything itself. It writes a request in a fixed format, and your code decides whether and how to carry it out.",
       "body": [
-        "A model can only write text. To use a tool, it writes a request in a fixed format (a tool name plus inputs) and stops. Your code, the <b>runtime</b>, decides whether to run it, runs it, and adds the result to the chat. The model reads the result, then answers or calls another tool.",
+        "A model can only write text. <mark>To use a tool, it writes a request in a fixed format (a tool name plus inputs) and stops.</mark> Your code, the <b>runtime</b>, decides whether to run it, runs it, and adds the result to the chat. The model reads the result, then answers or calls another tool.",
         {
           "h": "How does it decide to use a tool?"
         },
         {
           "ul": [
             "<b>It's told which tools exist.</b> Each request lists the tools in the prompt, for example \"<code>get_weather</code>: gets the forecast for a city.\"",
-            "<b>It was trained on examples.</b> Fine-tuning showed it many chats where calling a tool was the right move, and reinforcement learning with real tools rewarded calls that led to right answers.",
-            "<b>So it predicts a tool call like any other text.</b> For \"Will it rain in Leeds tomorrow?\", the likeliest next tokens are <code>get_weather({\"city\": \"Leeds\"})</code>, wrapped in special tokens the app watches for."
+            "<b>It was trained on examples.</b> <mark>Fine-tuning showed it many chats where calling a tool was the right move, and reinforcement learning with real tools rewarded calls that led to right answers.</mark>",
+            "<b>So it predicts a tool call like any other text.</b> <mark>For \"Will it rain in Leeds tomorrow?\", the likeliest next tokens are a tool call, <code>get_weather({\"city\": \"Leeds\"})</code>, wrapped in special tokens the app watches for.</mark>"
           ]
         },
         "<b>Clues it picks up on:</b> the question needs fresh information, an exact result or private data, or a tool's description matches the request. It can still guess instead, or pick the wrong tool. Clear descriptions help most, and <code>tool_choice</code> lets developers force a tool or switch tools off.",
@@ -1142,7 +1142,7 @@
       "title": "Web search: answers backed by sources",
       "summary": "Search adds fresh, sourced text to the prompt, so answers aren't limited to what the model memorised.",
       "body": [
-        "A model only knows what was in its training data, which stops at a date called the <b>training cutoff</b>. Ask about anything newer and it either says it doesn't know or, worse, makes up a believable answer. That's called a <b>hallucination</b>. <b>Grounding</b> fixes this by <mark>giving the model real source text and having it cite where each fact came from</mark>. Why models make things up in the first place is covered in <i>Why LLMs hallucinate</i>.",
+        "A model only knows what was in its training data, which stops at a date called the <b>training cutoff</b>. Ask about anything newer and it either says it doesn't know or, worse, makes up a believable answer. That's called a <b>hallucination</b>. <b>Grounding</b> <mark>fixes this by giving the model real source text and having it cite where each fact came from.</mark> Why models make things up in the first place is covered in <i>Why LLMs hallucinate</i>.",
         "How a search works:",
         {
           "ul": [

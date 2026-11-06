@@ -20,7 +20,7 @@
             "<b>Value</b>: the information this token hands over if it's chosen."
           ]
         },
-        "Each query is compared with every key. Good matches get big weights, and <mark>the token's new vector is a mix of the matching values</mark>.",
+        "Each query is compared with every key. <mark>Good matches get big weights, and the token's new vector is a mix of the matching values.</mark>",
         {
           "note": "A database lookup returns the one row whose key equals your query. Attention returns a mix of <i>every</i> row, weighted by how well each key matches. Because nothing is all-or-nothing, the model can learn it by making small adjustments.",
           "kind": "analogy"
@@ -102,7 +102,7 @@
       "title": "Step 3: no peeking ahead",
       "summary": "A mask stops each token from looking at later tokens. That's what makes next-token training work.",
       "body": [
-        "GPT, Claude, Llama and other chat models are <b>decoder-only</b> models, trained to predict the next token. If a token could see the one after it, predicting it would be too easy: <mark>the model would just copy the answer</mark>.",
+        "GPT, Claude, Llama and other chat models are <b>decoder-only</b> models, trained to predict the next token. If a token could see the one after it, predicting it would be too easy: <mark>the model would just copy the answer.</mark>",
         "So every score above the diagonal, where a token would look at a later token, is set to <code>−∞</code> (minus infinity). In the next step those become exactly 0: no attention to the future. This is called the <b>causal mask</b>.",
         "There's a big bonus. Since no token can see ahead, one pass over a training sentence trains every position at once: position 1 predicts token 2, position 2 predicts token 3, and so on, all at the same time.",
         "<b>Encoder</b> models like BERT, used for sorting text into categories and for search, skip the mask and look both ways. That's great for understanding a finished sentence, but they can't write text one token at a time. Switch the mask on and off to compare."
@@ -130,7 +130,7 @@
         "Each token's output is then a weighted sum of all the value vectors: <code>out = softmax(S)·V</code>. If \"artificial\" puts 36% of its weight on \"learning\", then 36% of its new vector comes from the value of \"learning\".",
         "Pick a query row on the right to see where that token looks and what it gets back.",
         {
-          "note": "<mark>That's all attention is</mark>: <b>compare</b> (Q·K), <b>turn into weights</b> (softmax), <b>mix</b> (·V). The rest of this chapter is about doing it many times side by side, and doing it fast.",
+          "note": "<mark>That's all attention is: <b>compare</b> (Q·K), <b>turn into weights</b> (softmax), <b>mix</b> (·V).</mark> The rest of this chapter is about doing it many times side by side, and doing it fast.",
           "kind": "key"
         }
       ],
@@ -149,7 +149,7 @@
       "title": "Multi-head attention",
       "summary": "Models run many small attention steps side by side, so each one can track a different kind of connection.",
       "body": [
-        "A single attention pattern has to choose where to look. But <mark>a token often needs several kinds of information at once</mark>: the previous word, the subject of the sentence, a matching bracket far back in some code.",
+        "A single attention pattern has to choose where to look. <mark>But a token often needs several kinds of information at once: the previous word, the subject of the sentence, a matching bracket far back in some code.</mark>",
         "So models run <code>h</code> attention <b>heads</b> side by side, each with its own <code>Wq</code>, <code>Wk</code> and <code>Wv</code>. To keep the cost the same, each head uses smaller vectors: <code>d_head = d_model / h</code>. A model with <code>d_model = 4,096</code> and 32 heads gives each head 128 numbers.",
         "Each head gives its own output. These are joined end to end and mixed by one more learned matrix, <code>Wo</code>.",
         {

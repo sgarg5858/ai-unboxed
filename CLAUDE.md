@@ -26,7 +26,7 @@ Before calling a task done:
   1. Add the component to `src/app/widgets/<topic>.widgets.ts`.
   2. Register it in `widgets/registry.ts` as a lazy loader: `'name': () => import('./topic.widgets').then((m) => m.MyWidget)`.
   3. Add its name to the widget `enum` in `src/content/schema/chapter.schema.json`.
-- **Highlights:** wrap the single key takeaway of a slide in `<mark>` (one per slide at most, a phrase or sentence, never a whole paragraph).
+- **Highlights:** wrap the points a reader must understand in `<mark>`. It renders as an outlined block, so always wrap a complete sentence (never part of one, never a bold bullet label). Use them only for what's critical, at most 3 or 4 per slide, so they keep their meaning.
 - **Images:** draw the SVG in `src/content/figures/` using the shared class names and a `<!--theme-->` marker, run `npm run figures` to build the light/dark files in `public/images/`, then add a slide-level `figure` (`src`, optional `darkSrc`, `alt`, `width`, `height`, `caption`) with files in `public/images/`. Paths have no leading slash (the base href varies). Provide a light and a dark variant; `SlideFigure` swaps them using `Theme.dark()`, so they follow the site toggle. Prefer SVG and write a real `alt`.
 - **Cross-chapter links:** use `goto: { chapter: "<id>", slide: n }` and refer to the chapter by **name** in prose, never by number.
 - **New chapter:** add the JSON file with its `$schema` line, add an entry `{ id, name, load: () => json(import('./chapters/…json')) }` to a section in `src/content/course.ts` (id and name must match the JSON; a test checks), and update the chapter table in `README.md`. Never import chapter JSON statically in app code: it would pull every chapter back into the initial bundle.

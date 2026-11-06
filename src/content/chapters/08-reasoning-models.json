@@ -8,7 +8,7 @@
       "summary": "A reasoning model is a normal LLM that has been trained to write out its thinking before it gives an answer.",
       "body": [
         "A standard model starts its answer straight away. A <b>reasoning model</b> first writes a <b>thinking</b> section, working through the problem step by step, and only then writes the answer you see.",
-        "Underneath, <mark>it's the same transformer, predicting one token at a time</mark>. What's different is how it was trained, and how many tokens it spends before answering.",
+        "<mark>Underneath, it's the same transformer, predicting one token at a time.</mark> What's different is how it was trained, and how many tokens it spends before answering.",
         {
           "ul": [
             "<b>OpenAI o1</b> (September 2024) was the first widely used reasoning model, followed by o3 and GPT-5's thinking mode.",
@@ -70,7 +70,7 @@
         {
           "ul": [
             "<b>More computing per question.</b> 2,000 thinking tokens means 2,000 extra runs spent on the problem. This is called <b>test-time compute</b>: spending more effort when answering, not only when training.",
-            "<b>A scratchpad.</b> <mark>Everything the model writes becomes text it can read on the next step</mark>, like the spelled-out letters in the strawberry example. It doesn't have to hold half-finished results \"in its head\".",
+            "<b>A scratchpad.</b> <mark>Everything the model writes becomes text it can read on the next step, like the spelled-out letters in the strawberry example.</mark> It doesn't have to hold half-finished results \"in its head\".",
             "<b>A chance to check.</b> It can try an approach, notice a mistake, and go back."
           ]
         },
@@ -121,7 +121,7 @@
             "<b>Repeat</b> across a huge number of problems."
           ]
         },
-        "Nobody writes the thinking for it. <mark>The model discovers that checking its work and trying again leads to more right answers</mark>, so those habits grow. DeepSeek reported that during this training its model's thinking got steadily longer, and it began stopping to re-check its own steps.",
+        "Nobody writes the thinking for it. <mark>The model discovers that checking its work and trying again leads to more right answers, so those habits grow.</mark> DeepSeek reported that during this training its model's thinking got steadily longer, and it began stopping to re-check its own steps.",
         {
           "note": "This is called <b>reinforcement learning with verifiable rewards</b>. It works best where answers can be checked, which is why reasoning models got good at maths and code first.",
           "kind": "key"

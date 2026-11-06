@@ -129,7 +129,7 @@
           ]
         },
         {
-          "note": "Everything an LLM writes, including code, step-by-step reasoning and tool calls, <mark>comes out of this loop one token at a time</mark>.",
+          "note": "<mark>Everything an LLM writes, including code, step-by-step reasoning and tool calls, comes out of this loop one token at a time.</mark>",
           "kind": "key"
         }
       ],
@@ -521,7 +521,7 @@
         },
         "A <b>matrix</b> is a grid of numbers. Multiplying a vector by a matrix does one dot product per column and gives a new vector. A neural network is mostly long chains of these multiplications, and the numbers in the matrices are learned from data.",
         {
-          "note": "An LLM describes every token with a vector of thousands of numbers. Nobody decides what those dimensions mean, like we did for fruit; training works them out. But <mark>the key idea, that similar meanings have similar vectors, runs through the whole course</mark>.",
+          "note": "An LLM describes every token with a vector of thousands of numbers. Nobody decides what those dimensions mean, like we did for fruit; training works them out. <mark>But the key idea, that similar meanings have similar vectors, runs through the whole course.</mark>",
           "kind": "key"
         }
       ],
@@ -548,7 +548,7 @@
         {
           "ul": [
             "<b>Everything is numbers.</b> Text becomes whole numbers, those become vectors, and the model just does maths on the vectors.",
-            "<b>Behaviour comes from learned numbers.</b> Nobody writes an LLM's knowledge or style by hand. <mark>Billions of numbers are adjusted during training until the model predicts text well</mark>, and everything it can do comes from those numbers."
+            "<b>Behaviour comes from learned numbers.</b> Nobody writes an LLM's knowledge or style by hand. <mark>Billions of numbers are adjusted during training until the model predicts text well, and everything it can do comes from those numbers.</mark>"
           ]
         },
         {

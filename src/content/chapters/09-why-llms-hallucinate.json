@@ -19,7 +19,7 @@
             "<b>Bad reasoning</b>: steps that sound fine but hide a wrong sum or a jump in logic."
           ]
         },
-        "What they have in common is that they read smoothly. Smooth text is what a language model is best at, so <mark>how confident or polished an answer sounds tells you nothing about whether it's true</mark>.",
+        "What they have in common is that they read smoothly. <mark>Smooth text is what a language model is best at, so how confident or polished an answer sounds tells you nothing about whether it's true.</mark>",
         {
           "note": "Right and wrong answers come out in the same tone. You can't tell accuracy from style.",
           "kind": "key"
@@ -207,7 +207,7 @@
           "h": "The seen-once rate"
         },
         "Count how many facts appear exactly once in the training data. Call that share the <b>singleton rate</b>. A 2025 OpenAI paper (Kalai et al., <i>Why Language Models Hallucinate</i>) argues that for random facts, a pretrained model will get at least about that share wrong. If 20% of birthdays appear only once, expect it to get at least about 20% of birthday questions wrong.",
-        "The idea: <mark>seeing something once isn't enough to tell a true fact from a believable alternative</mark>. Drag the slider to see how the minimum error changes.",
+        "The idea: <mark>seeing something once isn't enough to tell a true fact from a believable alternative.</mark> Drag the slider to see how the minimum error changes.",
         {
           "note": "This minimum applies to facts with no learnable pattern, in a model that has only been pretrained (the paper's setting). More data and bigger models lower the singleton rate, but real text always has a long tail of rare facts.",
           "kind": "warn"
@@ -229,7 +229,7 @@
       "summary": "Models are trained and tested on scores where a guess can earn points and \"I don't know\" earns nothing. So guessing becomes a habit.",
       "body": [
         "Pretraining explains why hallucinations start. But why do they survive the later training stages? The same OpenAI paper points to how models are <i>scored</i>.",
-        "Most benchmarks mark like an exam with no penalty for wrong answers: right scores 1, wrong scores 0, and \"I don't know\" also scores 0. With those rules, <mark>guessing is never worse than not answering</mark>, so a model trained to score well learns to always answer, however unsure it is. As the paper puts it, models are trained to be good at taking tests.",
+        "Most benchmarks mark like an exam with no penalty for wrong answers: right scores 1, wrong scores 0, and \"I don't know\" also scores 0. <mark>With those rules, guessing is never worse than not answering, so a model trained to score well learns to always answer, however unsure it is.</mark> As the paper puts it, models are trained to be good at taking tests.",
         {
           "h": "The maths"
         },
@@ -346,7 +346,7 @@
           "kind": "key"
         },
         {
-          "note": "This is one mechanism, in one model, for questions about people. Other hallucinations have other causes, and other models may work differently. What it shows is that <mark>recognising a topic and actually knowing the answer are two separate signals</mark>, and they can disagree.",
+          "note": "This is one mechanism, in one model, for questions about people. Other hallucinations have other causes, and other models may work differently. <mark>What it shows is that recognising a topic and actually knowing the answer are two separate signals, and they can disagree.</mark>",
           "kind": "warn"
         }
       ],
@@ -456,7 +456,7 @@
       "title": "Spotting hallucinations: ask more than once",
       "summary": "If a model really knows the answer, it gives the same answer every time. If it's guessing, the answers are all over the place.",
       "body": [
-        "It's hard to tell how sure a model is from one answer, because smooth writing hides it. But you can <mark>ask the same question several times and compare the answers</mark>.",
+        "It's hard to tell how sure a model is from one answer, because smooth writing hides it. <mark>But you can ask the same question several times and compare the answers.</mark>",
         "<b>Semantic entropy</b> (Farquhar et al., <i>Nature</i>, 2024) does exactly that. Get several answers, group the ones that mean the same thing, and measure how spread out the groups are. Answers that agree give a low score (the model probably knows). Answers that are all different give a high score (it's probably making it up).",
         "Grouping by <i>meaning</i> is important: \"Paris\" and \"It's Paris.\" are the same answer even though the words differ. In the paper, a second language model decides whether two answers mean the same thing.",
         "The method doesn't need any labelled examples of hallucinations, and in the paper's tests it did better than simpler methods. The downside is that it needs several answers per question plus the grouping step, so it's used where reliability is worth the extra cost.",

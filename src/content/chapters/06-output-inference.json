@@ -127,7 +127,7 @@
             "<b>Greedy</b>: always pick the single most likely token. The same as top-k = 1."
           ]
         },
-        "The remaining probabilities are rescaled to add up to 1 again, and <mark>one token is picked at random, with likelier tokens more likely to be chosen</mark>.",
+        "<mark>The remaining probabilities are rescaled to add up to 1 again, and one token is picked at random, with likelier tokens more likely to be chosen.</mark>",
         "Try top-k = 3, then press <i>Sample</i> a few times. Then try top-k = 1."
       ],
       "code": [
@@ -189,7 +189,7 @@
           ]
         },
         {
-          "note": "The model has no memory of its own; the context is all it has. <mark>If something isn't in the context, the model doesn't know it</mark>, no matter how recently you mentioned it.",
+          "note": "The model has no memory of its own; the context is all it has. <mark>If something isn't in the context, the model doesn't know it, no matter how recently you mentioned it.</mark>",
           "kind": "key"
         },
         {

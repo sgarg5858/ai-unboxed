@@ -8,7 +8,7 @@
       "summary": "Pretraining teaches the model one thing: predicting the next token of real text, on a huge scale.",
       "body": [
         "Pretraining has one simple goal: take a piece of real text and, at every point, guess the token that comes next.",
-        "No one needs to label anything, <mark>because the text contains its own answers</mark>. The input is the text, and the answer is the same text moved along by one token. This is called <b>self-supervised</b> learning, and it's why training can use trillions of tokens from web pages, books and code.",
+        "<mark>No one needs to label anything, because the text contains its own answers.</mark> The input is the text, and the answer is the same text moved along by one token. This is called <b>self-supervised</b> learning, and it's why training can use trillions of tokens from web pages, books and code.",
         "Thanks to the causal mask, one pass over a 4,096-token text gives 4,096 guesses to learn from at once. On the right, one short sentence becomes four training examples.",
         {
           "note": "Predicting the next token sounds simple, but doing it well takes a lot: grammar, facts, reasoning, a writer's style, how code works. The model learns all of that along the way, just by getting better at this one task.",
@@ -109,7 +109,7 @@
       "body": [
         "Once we have the loss, we need to know how to change each weight to lower it. <b>Backpropagation</b> works that out. For every weight, it finds the <b>gradient</b>: if this weight goes up a little, does the loss go up or down, and by how much?",
         "It uses the chain rule from calculus, working backwards through every step of the model. You never write it yourself; tools like PyTorch do it automatically.",
-        "<b>Gradient descent</b> then <mark>moves every weight a small step downhill</mark>: <code>w ← w − lr · gradient</code>. This is repeated millions of times.",
+        "<b>Gradient descent</b> <mark>then moves every weight a small step downhill: <code>w ← w − lr · gradient</code>.</mark> This is repeated millions of times.",
         "The size of each step, the <b>learning rate</b> (lr), is the most important setting:",
         {
           "ul": [
@@ -153,7 +153,7 @@
         },
         "The curve on the right has the usual shape: a steep drop as the model learns the easy patterns, then a long, slow climb towards better.",
         {
-          "note": "<b>Scaling laws</b>: <mark>loss goes down smoothly and predictably as you add more parameters, data and computing</mark>. Because it's so predictable, AI companies are willing to spend huge sums on a single training run.",
+          "note": "<b>Scaling laws</b>: <mark>loss goes down smoothly and predictably as you add more parameters, data and computing.</mark> Because it's so predictable, AI companies are willing to spend huge sums on a single training run.",
           "kind": "key"
         }
       ],
