@@ -697,6 +697,124 @@
       ]
     },
     {
+      "title": "The meaning problem: numbers aren't meaning",
+      "summary": "Token IDs are just labels. To understand text, a machine needs two things IDs can't give it: what a word means, and what it means here.",
+      "body": [
+        "After tokenizing, the model has a list of ID numbers. But an ID is only a label, like a locker number. Token 9246 could be \"cat\" and 9247 something completely unrelated. The numbers say nothing about meaning.",
+        {
+          "h": "Problem 1: meaning"
+        },
+        "Computers can only do maths on numbers, and maths on labels makes no sense: \"cat\" + 1 isn't \"kitten\". <mark>The model needs to turn each token into numbers where similar meanings end up close together.</mark>",
+        {
+          "h": "Problem 2: context"
+        },
+        "Even then, one word can mean different things: the <i>bank</i> of a river, or a <i>bank</i> that holds your money. Words like \"it\" and \"they\" point back to something said earlier. It's the same token ID every time, so the right meaning has to come from the surrounding words.",
+        {
+          "note": "Two problems, two solutions. <b>Embeddings</b> give every token a meaning as a list of numbers (the next slides). <b>Attention</b> then adjusts that meaning to fit the words around it (the <i>Attention</i> chapter).",
+          "kind": "key"
+        }
+      ],
+      "viz": [
+        {
+          "type": "tabs",
+          "tabs": [
+            {
+              "label": "IDs have no meaning",
+              "blocks": [
+                {
+                  "type": "chips",
+                  "items": [
+                    {
+                      "text": "cat",
+                      "sub": "9246",
+                      "hot": true
+                    },
+                    {
+                      "text": "carpet",
+                      "sub": "9247"
+                    },
+                    {
+                      "text": "kitten",
+                      "sub": "74103",
+                      "hot": true
+                    },
+                    {
+                      "text": "dog",
+                      "sub": "18964",
+                      "hot": true
+                    }
+                  ]
+                },
+                {
+                  "type": "caption",
+                  "html": "\"carpet\" sits right next to \"cat\" by number but means something unrelated, while \"kitten\" and \"dog\" are far away. The numbers carry no meaning. IDs are made up for illustration."
+                }
+              ]
+            },
+            {
+              "label": "Same word, different meaning",
+              "blocks": [
+                {
+                  "type": "stages",
+                  "items": [
+                    {
+                      "label": "I sat on the river <b>bank</b>.",
+                      "value": "bank = 6044"
+                    },
+                    {
+                      "label": "I paid the money into the <b>bank</b>.",
+                      "value": "bank = 6044"
+                    },
+                    {
+                      "label": "The cat sat on the mat because <b>it</b> was warm.",
+                      "value": "it = ? cat or mat",
+                      "tone": "heat"
+                    }
+                  ]
+                },
+                {
+                  "type": "caption",
+                  "html": "Same ID, different meaning. Only the surrounding words can tell them apart."
+                }
+              ]
+            },
+            {
+              "label": "What fixes it",
+              "blocks": [
+                {
+                  "type": "stages",
+                  "items": [
+                    {
+                      "label": "<b>Embeddings</b>: meaning as numbers",
+                      "sub": "each token becomes a list of numbers; similar meanings sit close together",
+                      "value": "next slide →",
+                      "goto": {
+                        "chapter": "input",
+                        "slide": 8
+                      },
+                      "highlight": true
+                    },
+                    {
+                      "label": "<b>Attention</b>: meaning in context",
+                      "sub": "each token updates its meaning using the words around it",
+                      "value": "Attention chapter →",
+                      "goto": {
+                        "chapter": "attention"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "caption",
+                  "html": "Click either one to jump there."
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
       "title": "The embedding table",
       "summary": "Each token ID is turned into a vector by looking up one row of a big learned table.",
       "body": [
