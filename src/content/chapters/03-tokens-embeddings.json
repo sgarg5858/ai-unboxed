@@ -671,7 +671,7 @@
       "title": "The context window: a limit counted in tokens",
       "summary": "A model can only look at a fixed number of tokens at once. That limit, the context window, is one big reason token counts matter.",
       "body": [
-        "Every model has a <b>context window</b>: the most tokens it can handle in one request. Everything has to fit inside it: the system prompt, the whole chat so far, any documents you attach, and the reply it's writing.",
+        "<mark>Every model has a <b>context window</b>: the most tokens it can handle in one request. Everything has to fit inside it: the system prompt, the whole chat so far, any documents you attach, and the reply it's writing.</mark>",
         {
           "ul": [
             "<b>Sizes have grown fast.</b> GPT-2 (2019) could handle 1,024 tokens. Many models today take 128,000, and some over 1,000,000.",
@@ -679,7 +679,7 @@
             "<b>The reply counts too.</b> The tokens the model writes come out of the same window, and there's usually a separate cap on how long one reply can be."
           ]
         },
-        "When a chat gets too long, something has to give: <mark>the app drops or summarises the oldest messages, or the request is rejected.</mark> Anything dropped is simply gone as far as the model is concerned.",
+        "<mark>When a chat gets too long, something has to give: the app drops or summarises the oldest messages, or the request is rejected. Anything dropped is simply gone as far as the model is concerned.</mark>",
         {
           "note": "This is where tokenization hits you in practice. Text that needs more tokens, like some languages or messy formatting, fills the window faster and costs more. How the model uses the window, and why long contexts are slow, comes in <i>Output & inference</i>.",
           "kind": "dev"
