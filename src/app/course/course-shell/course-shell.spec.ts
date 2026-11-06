@@ -1,11 +1,28 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
+import { RouterTestingHarness } from '@angular/router/testing';
 import { CHAPTERS } from '../../../content/course';
-
-// The app loads chapters on demand; the tests load them all up front.
-const COURSE = await Promise.all(CHAPTERS.map((c) => c.load()));
 import { routes } from '../../app.routes';
 import { CourseShell } from './course-shell';
+
+// The app loads chapters on demand; the tests load them all up front to know every slide.
+const COURSE = await Promise.all(CHAPTERS.map((c) => c.load()));
+
+/**
+ * Render the shell through the router, exactly as the app does: the route resolver loads the
+ * chapter first, then the shell appears. (Creating the shell directly would render it before any
+ * chapter has loaded, which can't happen in the real app.) Only one harness per test.
+ */
+async function open(url: string) {
+  const harness = await RouterTestingHarness.create();
+  await harness.navigateByUrl(url, CourseShell);
+  await harness.fixture.whenStable();
+  return {
+    el: harness.routeNativeElement as HTMLElement,
+    router: TestBed.inject(Router),
+    settle: () => harness.fixture.whenStable(),
+  };
+}
 
 describe('CourseShell', () => {
   beforeEach(() => {
@@ -16,10 +33,7 @@ describe('CourseShell', () => {
   for (const chapter of COURSE) {
     chapter.slides.forEach((slide, i) => {
       it(`renders ${chapter.id}/${i + 1}: ${slide.title}`, async () => {
-        const fixture = TestBed.createComponent(CourseShell);
-        await TestBed.inject(Router).navigateByUrl(`/${chapter.id}/${i + 1}`);
-        await fixture.whenStable();
-        const el = fixture.nativeElement as HTMLElement;
+        const { el } = await open(`/${chapter.id}/${i + 1}`);
         expect(el.querySelector('article h2')?.textContent).toBe(slide.title);
         expect(el.textContent).not.toContain('Unknown widget');
         if (slide.viz?.length) expect(el.querySelector('.viz')!.children.length).toBeGreaterThan(0);
@@ -28,44 +42,43 @@ describe('CourseShell', () => {
   }
 
   it('lists every chapter by name in the outline and marks the current one', async () => {
-    const fixture = TestBed.createComponent(CourseShell);
-    const router = TestBed.inject(Router);
-    const el = fixture.nativeElement as HTMLElement;
-    await router.navigateByUrl('/attention/2');
-    await fixture.whenStable();
+    const { el } = await open('/attention/2');
+    const attention = COURSE.find((c) => c.id === 'attention')!;
     const outline = el.querySelector('aside app-course-outline')!;
     const names = Array.from(outline.querySelectorAll('.ch .name')).map((n) => n.textContent);
     expect(names).toEqual(COURSE.map((c) => c.name));
     expect(outline.querySelector('.ch[aria-current="page"]')?.textContent).toContain('Attention');
-    const slides = outline.querySelectorAll('.slides button');
-    expect(slides.length).toBe(COURSE.find((c) => c.id === 'attention')!.slides.length);
+    expect(outline.querySelectorAll('.slides button').length).toBe(attention.slides.length);
     expect(outline.querySelector('.slides [aria-current="step"]')?.textContent?.trim()).toBe(
-      COURSE.find((c) => c.id === 'attention')!.slides[1].title,
+      attention.slides[1].title,
     );
     expect(el.querySelector('.chapter-bar .name')?.textContent).toBe('Attention');
   });
 
   it('jumps to a chapter or a slide from the outline', async () => {
-    const fixture = TestBed.createComponent(CourseShell);
-    const router = TestBed.inject(Router);
-    const el = fixture.nativeElement as HTMLElement;
-    await router.navigateByUrl('/assistant/1');
-    await fixture.whenStable();
+    const { el, router, settle } = await open('/assistant/1');
     (el.querySelectorAll('aside .ch')[1] as HTMLButtonElement).click();
-    await fixture.whenStable();
+    await settle();
     expect(router.url).toBe('/' + COURSE[1].id + '/1');
     (el.querySelectorAll('aside .slides button')[2] as HTMLButtonElement).click();
-    await fixture.whenStable();
+    await settle();
     expect(router.url).toBe('/' + COURSE[1].id + '/3');
   });
 
   it('moves to the next slide and across chapters', async () => {
-    const fixture = TestBed.createComponent(CourseShell);
-    const router = TestBed.inject(Router);
-    await router.navigateByUrl(`/${COURSE[0].id}/${COURSE[0].slides.length}`);
-    await fixture.whenStable();
-    (fixture.nativeElement.querySelector('.foot .btn:last-child') as HTMLButtonElement).click();
-    await fixture.whenStable();
+    const { el, router, settle } = await open(`/${COURSE[0].id}/${COURSE[0].slides.length}`);
+    (el.querySelector('.foot .btn:last-child') as HTMLButtonElement).click();
+    await settle();
+    expect(router.url).toBe(`/${COURSE[1].id}/1`);
+  });
+
+  it('sends unknown chapters to the start', async () => {
+    const { router } = await open('/nope/3');
+    expect(router.url).toBe(`/${COURSE[0].id}/1`);
+  });
+
+  it('opens old single-segment links like #assistant at slide 1', async () => {
+    const { router } = await open(`/${COURSE[1].id}`);
     expect(router.url).toBe(`/${COURSE[1].id}/1`);
   });
 });
