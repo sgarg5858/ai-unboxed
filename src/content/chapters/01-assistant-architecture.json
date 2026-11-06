@@ -13,7 +13,7 @@
             "<b>Security & auth</b> checks who is sending the message and what they're allowed to do.",
             "The <b>conversation manager</b> gathers everything the model needs to see: its instructions, the chat so far, saved memories and any looked-up documents.",
             "<b>Input guardrails</b> check all of that for harmful content and jailbreak attempts, not just your latest message.",
-            "The <b>LLM</b> writes the reply. If it needs a tool (web search, files, other apps), it asks the <b>tool runtime</b>. The runtime checks the model is allowed to use that tool, runs it, and checks the result for hidden instructions before handing it back.",
+            "The <b>LLM</b> writes the reply. If it needs a tool (web search, files, other apps), it asks the <b>tool runtime</b>. The model decides this itself: the tool descriptions are in its prompt, training taught it when a tool helps, and a tool call is just the next text it predicts (more on the <i>Tools</i> slide). The runtime checks the model is allowed to use that tool, runs it, and checks the result for hidden instructions before handing it back.",
             "<b>Output guardrails</b> check the reply while it's being sent to you."
           ]
         },
@@ -72,7 +72,7 @@
               },
               "llm": {
                 "title": "LLM",
-                "detail": "Runs the forward pass over the assembled prompt and streams tokens back, one at a time. Its values come from safety training, and it follows a chain of command: provider rules, then operator, then user. Text that arrives in tool results is treated as data, not as instructions.",
+                "detail": "Runs the forward pass over the assembled prompt and streams tokens back, one at a time. Its values come from safety training, and it follows a chain of command: provider rules, then operator, then user. Text that arrives in tool results is treated as data, not as instructions. It also decides when to use a tool: the tool descriptions are part of its prompt, and calling one is just the next tokens it predicts.",
                 "link": {
                   "chapter": "assistant",
                   "slide": 5
@@ -1004,6 +1004,31 @@
           ]
         },
         {
+          "h": "How does it decide to use a tool?"
+        },
+        {
+          "ul": [
+            "<b>It's told which tools exist.</b> Each request includes tool descriptions in the prompt, for example \"<code>get_weather</code>: gets the forecast for a city. Inputs: city, date.\"",
+            "<b>It was trained on examples.</b> During fine-tuning it saw many conversations where answering well meant calling a tool: weather questions, maths, looking things up. It learned the pattern of when a tool helps.",
+            "<b>So it predicts a tool call like any other text.</b> For \"Will it rain in Leeds tomorrow?\", the most likely next tokens aren't an answer but a tool request in a special format: <code>get_weather({\"city\": \"Leeds\"})</code>. Then it stops."
+          ]
+        },
+        "<b>The clues it picks up on:</b>",
+        {
+          "ul": [
+            "the question needs fresh information (weather, news, prices);",
+            "it needs an exact result (maths, running code);",
+            "it needs private data (your files, your database);",
+            "a tool's description matches what's being asked."
+          ]
+        },
+        "<b>It can get it wrong.</b> It might skip a tool and guess, or call one it doesn't need. Clear tool descriptions help a lot.",
+        "<b>Developers can steer it.</b> APIs let you force a tool call, allow any tool, or switch tools off (often a setting called <code>tool_choice</code>).",
+        {
+          "note": "<b>In short:</b> the tool descriptions sit in the prompt, training taught it when they help, and calling a tool is just the next tokens it predicts.",
+          "kind": "key"
+        },
+        {
           "note": "Put permission rules in your code, not the prompt. For example: allow safe reads automatically, ask the user before making changes, and block everything else. <mark>The model can ask for anything. Your code decides.</mark>",
           "kind": "key"
         },
@@ -1022,6 +1047,40 @@
         "    msgs.append({\"role\": \"user\", \"content\": results})"
       ],
       "viz": [
+        {
+          "type": "panel",
+          "blocks": [
+            {
+              "type": "caption",
+              "html": "<b>What the model is choosing between</b> after reading <i>\"Will it rain in Leeds tomorrow?\"</i>, with a <code>get_weather</code> tool listed in the prompt:"
+            },
+            {
+              "type": "bars",
+              "layout": "stacked",
+              "items": [
+                {
+                  "label": "Call the tool: get_weather(\"Leeds\")",
+                  "value": 0.86,
+                  "display": "86%"
+                },
+                {
+                  "label": "Guess: \"It will probably rain…\"",
+                  "value": 0.08,
+                  "display": "8%"
+                },
+                {
+                  "label": "Refuse: \"I can't check the weather.\"",
+                  "value": 0.06,
+                  "display": "6%"
+                }
+              ]
+            },
+            {
+              "type": "caption",
+              "html": "Illustrative numbers. Without the tool in the prompt, the guess or the refusal would win. The model really chooses token by token, but the idea is the same."
+            }
+          ]
+        },
         {
           "type": "stepper",
           "accumulate": true,
