@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 570" role="img" aria-labelledby="t d" font-family="'Schibsted Grotesk', ui-sans-serif, system-ui, sans-serif">
+  <title id="t">How a tool call works</title>
+  <desc id="d">The prompt lists the available tools, such as get_weather and add_todo, and the user asks whether it will rain in Leeds tomorrow. The model predicts that the next text should be a tool call, get_weather with city Leeds, and stops. The app's code, the runtime, checks permission: read-only calls are allowed, changes need the user's approval, anything else is blocked. The tool runs and returns rain 80 percent. The result is added to the chat, the model runs again, and answers that there is an 80 percent chance of rain. Tools can be your own code, built-in tools run by the AI company, or MCP servers that work in any app supporting MCP.</desc>
+  <style>
+    .bg{fill:#0f1413}.card{fill:#171e1c;stroke:#2c3835}.sunk{fill:#1f2826}
+    .ink{fill:#e4ece9}.muted{fill:#9aa9a4}.onacc{fill:#0f1413}
+    .acc{fill:#4db3d1}.accink{fill:#8fd3e6}.accsoft{fill:#163742}
+    .pos{fill:#3fc4a3}.posink{fill:#3fc4a3}.possoft{fill:#123a30;stroke:#3fc4a3}
+    .neg{fill:#f07d60}.negink{fill:#f07d60}.negsoft{fill:#42221a;stroke:#f07d60}
+    .heat{fill:#3d2e14;stroke:#f0ac40}.heatink{fill:#f0ac40}.heatfill{fill:#f0ac40}
+    .line{stroke:#9aa9a4;fill:none;stroke-width:2}.thin{stroke:#2c3835;fill:none;stroke-width:1.5}
+    .dash{stroke:#4db3d1;fill:none;stroke-width:2;stroke-dasharray:6 5}
+    .stream{stroke:#4db3d1;fill:none;stroke-width:14;stroke-linecap:round;opacity:.35}
+    .row{fill:#1f2826}.hit{fill:#163742;stroke:#4db3d1}
+    .mono{font-family:'JetBrains Mono',ui-monospace,Menlo,monospace}
+    .head{font-size:13px;font-weight:700;letter-spacing:.08em}
+    .arrowhead{fill:#9aa9a4}.arrowacc{fill:#4db3d1}
+  </style>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arrowhead"/></marker>
+    <marker id="b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arrowacc"/></marker>
+  </defs>
+  <rect class="bg" width="1200" height="570" rx="18"/>
+  <text x="40" y="52" class="ink" font-size="26" font-weight="700">How a tool call works</text>
+  <text x="40" y="78" class="muted" font-size="15">The model only writes text. Your code decides whether to act, and does the work.</text>
+
+  <!-- 1 prompt -->
+  <rect class="card" x="40" y="104" width="250" height="196" rx="14"/>
+  <text x="60" y="132" class="muted head">1 · PROMPT</text>
+  <text x="60" y="156" class="muted" font-size="12.5">tools listed in the prompt:</text>
+  <g class="mono" font-size="12">
+    <rect class="accsoft" x="60" y="166" width="200" height="26" rx="6"/><text x="70" y="184" class="accink">get_weather(city, date)</text>
+    <rect class="accsoft" x="60" y="198" width="200" height="26" rx="6"/><text x="70" y="216" class="accink">add_todo(text)</text>
+  </g>
+  <text x="60" y="248" class="muted" font-size="12.5">user asks:</text>
+  <text x="60" y="270" class="ink" font-size="14" font-weight="700">"Will it rain in Leeds</text>
+  <text x="60" y="288" class="ink" font-size="14" font-weight="700">tomorrow?"</text>
+  <line class="line" x1="292" y1="202" x2="326" y2="202" marker-end="url(#a)"/>
+
+  <!-- 2 model -->
+  <rect class="card" x="330" y="104" width="250" height="196" rx="14"/>
+  <text x="350" y="132" class="muted head">2 · MODEL</text>
+  <text x="350" y="156" class="muted" font-size="12.5">the likeliest next text is a call:</text>
+  <rect class="acc" x="350" y="168" width="210" height="62" rx="10"/>
+  <text x="362" y="194" class="onacc mono" font-size="13" font-weight="700">get_weather(</text>
+  <text x="362" y="216" class="onacc mono" font-size="13" font-weight="700">  {"city": "Leeds"})</text>
+  <text x="350" y="256" class="ink" font-size="13.5" font-weight="700">…then it stops and waits.</text>
+  <text x="350" y="278" class="muted" font-size="12.5">It hasn't run anything.</text>
+  <line class="line" x1="582" y1="202" x2="616" y2="202" marker-end="url(#a)"/>
+
+  <!-- 3 runtime -->
+  <rect class="heat" x="620" y="104" width="250" height="196" rx="14"/>
+  <text x="640" y="132" class="heatink head">3 · YOUR CODE (RUNTIME)</text>
+  <text x="640" y="156" class="heatink" font-size="12.5">checks permission first:</text>
+  <g font-size="13.5">
+    <text x="640" y="186" class="ink"><tspan class="posink" font-weight="700">✓</tspan>  read-only → allow</text>
+    <text x="640" y="212" class="ink"><tspan class="heatink" font-weight="700">?</tspan>  makes changes → ask user</text>
+    <text x="640" y="238" class="ink"><tspan class="negink" font-weight="700">✕</tspan>  anything else → block</text>
+  </g>
+  <text x="640" y="276" class="heatink" font-size="12.5" font-weight="700">allowed, so it runs the tool</text>
+  <line class="line" x1="872" y1="202" x2="906" y2="202" marker-end="url(#a)"/>
+
+  <!-- 4 tool -->
+  <rect class="card" x="910" y="104" width="250" height="196" rx="14"/>
+  <text x="930" y="132" class="muted head">4 · TOOL</text>
+  <text x="930" y="156" class="muted" font-size="12.5">get_weather runs and returns:</text>
+  <rect class="possoft" x="930" y="170" width="210" height="44" rx="10"/>
+  <text x="1035" y="198" text-anchor="middle" class="posink mono" font-size="15" font-weight="700">{ "rain": "80%" }</text>
+  <text x="930" y="250" class="muted" font-size="12.5">Results are untrusted text, so</text>
+  <text x="930" y="268" class="muted" font-size="12.5">they can be scanned for hidden</text>
+  <text x="930" y="286" class="muted" font-size="12.5">instructions.</text>
+
+  <!-- loop back -->
+  <path class="dash" d="M1035 302 V340 H165 V306" marker-end="url(#b)"/>
+  <rect class="bg" x="300" y="326" width="600" height="28"/>
+  <text x="600" y="345" text-anchor="middle" class="accink" font-size="14.5" font-weight="700">result added to the chat → model runs again → "Yes, 80% chance of rain."</text>
+
+  <!-- where tools run -->
+  <text x="40" y="396" class="muted head">WHERE TOOLS RUN</text>
+  <g font-size="14">
+    <rect class="card" x="40" y="410" width="360" height="130" rx="12"/>
+    <text x="60" y="440" class="ink" font-size="16" font-weight="700">Your own tools</text>
+    <text x="60" y="460" class="muted mono" font-size="12">client tools</text>
+    <text x="60" y="488" class="ink">Your code runs them.</text>
+    <text x="60" y="510" class="muted">e.g. check an order in your database</text>
+
+    <rect class="card" x="420" y="410" width="360" height="130" rx="12"/>
+    <text x="440" y="440" class="ink" font-size="16" font-weight="700">Built-in tools</text>
+    <text x="440" y="460" class="muted mono" font-size="12">server tools</text>
+    <text x="440" y="488" class="ink">The AI company runs them.</text>
+    <text x="440" y="510" class="muted">e.g. web search, running code</text>
+
+    <rect class="hit" x="800" y="410" width="360" height="130" rx="12"/>
+    <text x="820" y="440" class="accink" font-size="16" font-weight="700">MCP servers</text>
+    <text x="820" y="460" class="accink mono" font-size="12">Model Context Protocol</text>
+    <text x="820" y="488" class="ink">One standard plug, like USB.</text>
+    <text x="820" y="510" class="muted">Build once (say, for GitHub), use in any</text>
+    <text x="820" y="528" class="muted">app that supports MCP.</text>
+  </g>
+</svg>

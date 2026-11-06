@@ -13,7 +13,7 @@
             "<b>Security & auth</b> checks who is sending the message and what they're allowed to do.",
             "The <b>conversation manager</b> gathers everything the model needs to see: its instructions, the chat so far, saved memories and any looked-up documents.",
             "<b>Input guardrails</b> check all of that for harmful content and jailbreak attempts, not just your latest message.",
-            "The <b>LLM</b> writes the reply. If it needs a tool (web search, files, other apps), it asks the <b>tool runtime</b>. The model decides this itself: the tool descriptions are in its prompt, training taught it when a tool helps, and a tool call is just the next text it predicts (more on the <i>Tools</i> slide). The runtime checks the model is allowed to use that tool, runs it, and checks the result for hidden instructions before handing it back.",
+            "The <b>LLM</b> writes the reply. If it needs a tool (web search, files, other apps), it asks the <b>tool runtime</b>. The runtime checks the model is allowed to use that tool, runs it, and checks the result for hidden instructions before handing it back. How the model decides it needs a tool is explained on the <i>Tools</i> slide.",
             "<b>Output guardrails</b> check the reply while it's being sent to you."
           ]
         },
@@ -72,7 +72,7 @@
               },
               "llm": {
                 "title": "LLM",
-                "detail": "Runs the forward pass over the assembled prompt and streams tokens back, one at a time. Its values come from safety training, and it follows a chain of command: provider rules, then operator, then user. Text that arrives in tool results is treated as data, not as instructions. It also decides when to use a tool: the tool descriptions are part of its prompt, and calling one is just the next tokens it predicts.",
+                "detail": "Runs the forward pass over the assembled prompt and streams tokens back, one at a time. Its values come from safety training, and it follows a chain of command: provider rules, then operator, then user. Text that arrives in tool results is treated as data, not as instructions.",
                 "link": {
                   "chapter": "assistant",
                   "slide": 5
@@ -994,45 +994,32 @@
       "title": "Tools: the model asks, the software acts",
       "summary": "The model never runs anything itself. It writes a request in a fixed format, and your code decides whether and how to carry it out.",
       "body": [
-        "A model can only write text. So how does it check the weather or look something up in a database? <b>Tool use</b> is a format the model is trained to write: a request with a tool name and inputs (in JSON). Then it stops and waits.",
-        "The <b>runtime</b> (your code, or the provider's servers) decides whether to allow it, runs it, and adds the result to the chat as a new message. The model reads the result and continues: it either calls another tool or writes the answer.",
-        {
-          "ul": [
-            "<b>Client tools</b> run in your own code, like your database or your APIs.",
-            "<b>Server tools</b> run on the provider's computers, like web search, running code safely, or fetching web pages.",
-            "<b>MCP</b> (Model Context Protocol) is an open standard for plugging tools into assistants, a bit like USB for tools. Build an MCP server once and any assistant that supports MCP can use it. Remote servers sign users in with OAuth 2.1."
-          ]
-        },
+        "A model can only write text. To use a tool, it writes a request in a fixed format (a tool name plus inputs) and stops. Your code, the <b>runtime</b>, decides whether to run it, runs it, and adds the result to the chat. The model reads the result, then answers or calls another tool.",
         {
           "h": "How does it decide to use a tool?"
         },
         {
           "ul": [
-            "<b>It's told which tools exist.</b> Each request includes tool descriptions in the prompt, for example \"<code>get_weather</code>: gets the forecast for a city. Inputs: city, date.\"",
-            "<b>It was trained on examples.</b> During fine-tuning it saw many conversations where answering well meant calling a tool: weather questions, maths, looking things up. It learned the pattern of when a tool helps.",
-            "<b>So it predicts a tool call like any other text.</b> For \"Will it rain in Leeds tomorrow?\", the most likely next tokens aren't an answer but a tool request in a special format: <code>get_weather({\"city\": \"Leeds\"})</code>. Then it stops."
+            "<b>It's told which tools exist.</b> Each request lists the tools in the prompt, for example \"<code>get_weather</code>: gets the forecast for a city.\"",
+            "<b>It was trained on examples.</b> Fine-tuning showed it many chats where calling a tool was the right move, and reinforcement learning with real tools rewarded calls that led to right answers.",
+            "<b>So it predicts a tool call like any other text.</b> For \"Will it rain in Leeds tomorrow?\", the likeliest next tokens are <code>get_weather({\"city\": \"Leeds\"})</code>, wrapped in special tokens the app watches for."
           ]
         },
-        "<b>The clues it picks up on:</b>",
+        "<b>Clues it picks up on:</b> the question needs fresh information, an exact result or private data, or a tool's description matches the request. It can still guess instead, or pick the wrong tool. Clear descriptions help most, and <code>tool_choice</code> lets developers force a tool or switch tools off.",
+        {
+          "h": "Where tools run"
+        },
         {
           "ul": [
-            "the question needs fresh information (weather, news, prices);",
-            "it needs an exact result (maths, running code);",
-            "it needs private data (your files, your database);",
-            "a tool's description matches what's being asked."
+            "<b>Your own tools</b> (client tools): your code runs them, like looking up an order in your database.",
+            "<b>Built-in tools</b> (server tools): the AI company runs them, like web search.",
+            "<b>MCP</b> (Model Context Protocol): a standard plug, like USB. One MCP server (say, for GitHub) works in any app that supports MCP."
           ]
         },
-        "<b>It can get it wrong.</b> It might skip a tool and guess, or call one it doesn't need. Clear tool descriptions help a lot.",
-        "<b>Developers can steer it.</b> APIs let you force a tool call, allow any tool, or switch tools off (often a setting called <code>tool_choice</code>).",
         {
-          "note": "<b>In short:</b> the tool descriptions sit in the prompt, training taught it when they help, and calling a tool is just the next tokens it predicts.",
+          "note": "Permissions belong in your code, not the prompt: allow safe reads, ask before changes, block the rest. <mark>The model can ask for anything. Your code decides.</mark>",
           "kind": "key"
-        },
-        {
-          "note": "Put permission rules in your code, not the prompt. For example: allow safe reads automatically, ask the user before making changes, and block everything else. <mark>The model can ask for anything. Your code decides.</mark>",
-          "kind": "key"
-        },
-        "Step through a request that uses two tools on the right."
+        }
       ],
       "code": [
         "while True:",
@@ -1141,7 +1128,15 @@
             }
           ]
         }
-      ]
+      ],
+      "figure": {
+        "src": "images/tool-calling-light.svg",
+        "darkSrc": "images/tool-calling-dark.svg",
+        "alt": "The prompt lists the available tools, and the user asks whether it will rain in Leeds tomorrow. The model predicts a tool call, get_weather with city Leeds, and stops. The app's code checks permission (read-only allowed, changes need the user's approval, anything else blocked), then runs the tool, which returns an 80 percent chance of rain. The result is added to the chat and the model answers. Tools can be your own code, built-in tools run by the AI company, or MCP servers that work in any app supporting MCP.",
+        "width": 1200,
+        "height": 570,
+        "caption": "One tool call from start to finish. The model only asks; your code checks and acts."
+      }
     },
     {
       "title": "Web search: answers backed by sources",
