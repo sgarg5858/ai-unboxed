@@ -545,6 +545,10 @@
       "viz": [
         {
           "type": "widget",
+          "name": "utf8-byte-table"
+        },
+        {
+          "type": "widget",
           "name": "utf8-bytes",
           "props": {
             "initial": "Hi café 😀 नमस्ते"
@@ -553,10 +557,6 @@
         {
           "type": "caption",
           "html": "Each box is one character, with its UTF-8 bytes underneath. Amber boxes need more than one byte. Try another language, or add emoji."
-        },
-        {
-          "type": "widget",
-          "name": "utf8-byte-table"
         }
       ],
       "figure": [
