@@ -10,6 +10,9 @@ const start = `/${CHAPTERS[0].id}/1`;
  * before the shell renders it; CourseNav reads the position from the URL.
  */
 export const routes: Routes = [
+  // "Tokens & embeddings" (id: input) was split into Tokens and Embeddings; keep old links working.
+  { path: 'input', redirectTo: '/tokens/1' },
+  { path: 'input/:slide', redirectTo: '/tokens/1' },
   { path: ':chapter/:slide', component: CourseShell, resolve: { chapter: chapterResolver } },
   // Older links such as #assistant open the chapter's first slide.
   { path: ':chapter', redirectTo: ({ params }) => `/${params['chapter']}/1` },

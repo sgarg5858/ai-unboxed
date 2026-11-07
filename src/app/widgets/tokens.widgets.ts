@@ -856,7 +856,7 @@ export class TokenCostWidget {
   );
 
   /** Short slider labels; the word equivalents are shown once, under the sliders. */
-  private readonly short = (n: number) => n >= 1000 ? n / 1000 + 'k' : String(n);
+  private readonly short = (n: number) => (n >= 1000 ? n / 1000 + 'k' : String(n));
   protected readonly fmtPrompt = (i: number) => this.short(PROMPT_SIZES[i]);
   protected readonly fmtReply = (i: number) => this.short(REPLY_SIZES[i]);
   protected readonly sizesInWords = computed(

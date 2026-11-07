@@ -44,21 +44,21 @@
               "label": "Text",
               "value": "string",
               "goto": {
-                "chapter": "input"
+                "chapter": "tokens"
               }
             },
             {
               "label": "Tokenizer",
               "value": "[B, n] int ids",
               "goto": {
-                "chapter": "input"
+                "chapter": "tokens"
               }
             },
             {
               "label": "Embeddings + position",
               "value": "[B, n, d]",
               "goto": {
-                "chapter": "input"
+                "chapter": "embeddings"
               }
             },
             {

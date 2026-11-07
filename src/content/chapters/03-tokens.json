@@ -1,25 +1,88 @@
 {
   "$schema": "../schema/chapter.schema.json",
-  "id": "input",
-  "name": "Tokens & embeddings",
+  "id": "tokens",
+  "name": "Tokens",
   "slides": [
     {
-      "title": "Why words get split into pieces",
-      "summary": "Models read text as tokens. Common words are one token. Rarer words are split into reusable pieces.",
+      "title": "Why we need tokens",
+      "summary": "Machines can't read text, only numbers. A tokenizer turns your text into numbers so the model can work with it.",
       "body": [
-        "A neural network can't read letters. It needs a fixed list of text pieces, called the <b>vocabulary</b>, where every piece has a number as its ID. Splitting text into those pieces is called <b>tokenization</b>. The big question is how big the pieces should be:",
+        "<b>Machines can't read text.</b> They only understand numbers. So before anything else, your text has to be turned into numbers. The tool that does this is called a <b>tokenizer</b>.",
+        {
+          "h": "The vocabulary"
+        },
+        "Every tokenizer has its own <b>vocabulary</b>: a fixed list of pieces of text, where each piece has a number. The pieces are called <b>tokens</b>, and their numbers are <b>token IDs</b>. For example, \"learning\" might be token 6975.",
+        {
+          "h": "How the tokenizer works"
+        },
+        "The tokenizer is a simple algorithm. It reads your text from left to right, finds the longest piece it knows from its vocabulary, and swaps that piece for its token ID. Then it does the same with the rest of the text.",
+        "<mark>Text goes in, and a list of token IDs comes out.</mark>",
         {
           "ul": [
-            "<b>Single letters</b>: a tiny vocabulary, but every word turns into many tokens. Texts get long, and attention gets much slower as texts get longer (see <i>Attention</i>).",
-            "<b>Whole words</b>: short texts, but you'd need millions of entries, and every typo, name or new word would be unknown.",
+            "<b>It's trained once, on its own,</b> before the model. Then its vocabulary is locked, and the model learns one vector for each entry.",
+            "<b>It doesn't care about meaning.</b> It only splits text into pieces it has seen often. Working out what those pieces mean is the model's job, later."
+          ]
+        }
+      ],
+      "viz": [
+        {
+          "type": "panel",
+          "blocks": [
+            {
+              "type": "stages",
+              "items": [
+                {
+                  "label": "<b>Your text</b>",
+                  "sub": "\"I am learning\"",
+                  "value": "letters"
+                },
+                {
+                  "label": "<b>Tokenizer</b>",
+                  "sub": "finds the longest pieces it knows in its vocabulary",
+                  "value": "splits",
+                  "highlight": true
+                },
+                {
+                  "label": "<b>Tokens</b>",
+                  "sub": "\"I\" · \"␣am\" · \"␣learning\"",
+                  "value": "pieces"
+                },
+                {
+                  "label": "<b>Token IDs</b>",
+                  "sub": "what the model actually receives",
+                  "value": "[40, 1097, 6975]"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "caption",
+          "html": "The whole job of a tokenizer, from top to bottom. ␣ marks a space. IDs are made up for illustration."
+        }
+      ],
+      "figure": {
+        "src": "images/tokens-tokenizer-vocabulary-light.svg",
+        "darkSrc": "images/tokens-tokenizer-vocabulary-dark.svg",
+        "alt": "The sentence \"I am learning tokenization\" goes into a tokenizer, which checks a fixed vocabulary of about 128,000 pieces. It splits the text into five tokens: I, am, learning, token and ization, with the last word split in two. Each token becomes its row number in the vocabulary, so the model reads the list 40, 1097, 6975, 4037, 2065.",
+        "width": 1200,
+        "height": 730,
+        "caption": "The whole journey in one picture: text goes in, the tokenizer splits it using the vocabulary, and the model only ever sees the ID numbers."
+      }
+    },
+    {
+      "title": "How big should a token be?",
+      "summary": "Tokens could be single letters, whole words or parts of words. Every modern model uses parts of words.",
+      "body": [
+        "A tokenizer could split text into pieces of any size. There are three choices:",
+        {
+          "ul": [
+            "<b>Single letters</b>: a tiny vocabulary, but every word turns into many tokens. Texts get long, and long texts make the model much slower (see <i>Attention</i>).",
+            "<b>Whole words</b>: short texts, but you'd need millions of entries, and any typo, name or new word would be unknown.",
             "<b>Parts of words</b>: the middle ground everyone uses. Common words like \"the\" get one token. Rare words are built from common pieces: \"unbelievable\" becomes \"un\" + \"believ\" + \"able\"."
           ]
         },
-        "Modern tokenizers work on raw <b>bytes</b>, not letters, so they can handle any text at all, including emoji, code and every language. <mark>Nothing is ever \"unknown\"; unusual text just uses more tokens (more on the next slide).</mark>",
-        {
-          "note": "Tokens are what you pay for and what limits are counted in. API prices, rate limits and context windows are all measured in tokens, not letters or words.",
-          "kind": "dev"
-        }
+        "<mark>Parts of words keep the vocabulary a manageable size while still being able to build any word.</mark>"
       ],
       "viz": [
         {
@@ -49,15 +112,7 @@
           "type": "caption",
           "html": "Rule of thumb for English: 1 token ≈ 4 characters ≈ 0.75 words."
         }
-      ],
-      "figure": {
-        "src": "images/tokens-tokenizer-vocabulary-light.svg",
-        "darkSrc": "images/tokens-tokenizer-vocabulary-dark.svg",
-        "alt": "The sentence \"I am learning tokenization\" goes into a tokenizer, which checks a fixed vocabulary of about 128,000 pieces. It splits the text into five tokens: I, am, learning, token and ization, with the last word split in two. Each token becomes its row number in the vocabulary, so the model reads the list 40, 1097, 6975, 4037, 2065.",
-        "width": 1200,
-        "height": 730,
-        "caption": "The whole journey in one picture: text goes in, the tokenizer splits it using the vocabulary, and the model only ever sees the ID numbers."
-      }
+      ]
     },
     {
       "title": "Raw bytes: how modern tokenizers start",
@@ -771,257 +826,6 @@
         {
           "type": "caption",
           "html": "Example prices, roughly in line with typical 2025 list prices. Real prices vary by provider and change often."
-        }
-      ]
-    },
-    {
-      "title": "The meaning problem: numbers aren't meaning",
-      "summary": "Token IDs are just labels. To understand text, a machine needs two things IDs can't give it: what a word means, and what it means here.",
-      "body": [
-        "After tokenizing, the model has a list of ID numbers. But an ID is only a label, like a locker number. Token 9246 could be \"cat\" and 9247 something completely unrelated. The numbers say nothing about meaning.",
-        {
-          "h": "Problem 1: meaning"
-        },
-        "Computers can only do maths on numbers, and maths on labels makes no sense: \"cat\" + 1 isn't \"kitten\". <mark>The model needs to turn each token into numbers where similar meanings end up close together.</mark>",
-        {
-          "h": "Problem 2: context"
-        },
-        "Even then, one word can mean different things: the <i>bank</i> of a river, or a <i>bank</i> that holds your money. Words like \"it\" and \"they\" point back to something said earlier. It's the same token ID every time, so the right meaning has to come from the surrounding words.",
-        {
-          "note": "Two problems, two solutions. <b>Embeddings</b> give every token a meaning as a list of numbers (the next slides). <b>Attention</b> then adjusts that meaning to fit the words around it (the <i>Attention</i> chapter).",
-          "kind": "key"
-        }
-      ],
-      "viz": [
-        {
-          "type": "tabs",
-          "tabs": [
-            {
-              "label": "IDs have no meaning",
-              "blocks": [
-                {
-                  "type": "chips",
-                  "items": [
-                    {
-                      "text": "cat",
-                      "sub": "9246",
-                      "hot": true
-                    },
-                    {
-                      "text": "carpet",
-                      "sub": "9247"
-                    },
-                    {
-                      "text": "kitten",
-                      "sub": "74103",
-                      "hot": true
-                    },
-                    {
-                      "text": "dog",
-                      "sub": "18964",
-                      "hot": true
-                    }
-                  ]
-                },
-                {
-                  "type": "caption",
-                  "html": "\"carpet\" sits right next to \"cat\" by number but means something unrelated, while \"kitten\" and \"dog\" are far away. The numbers carry no meaning. IDs are made up for illustration."
-                }
-              ]
-            },
-            {
-              "label": "Same word, different meaning",
-              "blocks": [
-                {
-                  "type": "stages",
-                  "items": [
-                    {
-                      "label": "I sat on the river <b>bank</b>.",
-                      "value": "bank = 6044"
-                    },
-                    {
-                      "label": "I paid the money into the <b>bank</b>.",
-                      "value": "bank = 6044"
-                    },
-                    {
-                      "label": "The cat sat on the mat because <b>it</b> was warm.",
-                      "value": "it = ? cat or mat",
-                      "tone": "heat"
-                    }
-                  ]
-                },
-                {
-                  "type": "caption",
-                  "html": "Same ID, different meaning. Only the surrounding words can tell them apart."
-                }
-              ]
-            },
-            {
-              "label": "What fixes it",
-              "blocks": [
-                {
-                  "type": "stages",
-                  "items": [
-                    {
-                      "label": "<b>Embeddings</b>: meaning as numbers",
-                      "sub": "each token becomes a list of numbers; similar meanings sit close together",
-                      "value": "next slide →",
-                      "goto": {
-                        "chapter": "input",
-                        "slide": 10
-                      },
-                      "highlight": true
-                    },
-                    {
-                      "label": "<b>Attention</b>: meaning in context",
-                      "sub": "each token updates its meaning using the words around it",
-                      "value": "Attention chapter →",
-                      "goto": {
-                        "chapter": "attention"
-                      }
-                    }
-                  ]
-                },
-                {
-                  "type": "caption",
-                  "html": "Click either one to jump there."
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "title": "The embedding table",
-      "summary": "Each token ID is turned into a vector by looking up one row of a big learned table.",
-      "body": [
-        "A token ID is just a label: the number 6975 says nothing about meaning. So the model's first real step swaps each ID for a list of <code>d</code> numbers (usually thousands) by looking it up in an <b>embedding table</b>.",
-        "The table is a matrix <code>E</code> with one row for each vocabulary entry, so its shape is <code>[V, d]</code>. Token 6975 picks row 6975. In code that's just an array lookup, so it costs almost nothing.",
-        "The numbers start out random. <mark>Training nudges them millions of times, until tokens used in similar ways have similar vectors.</mark> Unlike the fruit example in <i>The big picture</i>, no column means \"sweetness\". Meaning is spread across all <code>d</code> numbers, in ways researchers have to work hard to figure out.",
-        "Click a token on the right to see which row it selects.",
-        {
-          "note": "The embedding table is learned along with everything else. In small models it's one of the biggest parts: GPT-2 small uses 38.6M of its 124M parameters here.",
-          "kind": "key"
-        }
-      ],
-      "code": [
-        "E = torch.nn.Embedding(V, d)      # [V, d] learned",
-        "ids = torch.tensor([[40, 939, 6975]])",
-        "x = E(ids)                          # [1, 3, d]"
-      ],
-      "viz": [
-        {
-          "type": "widget",
-          "name": "embedding-table"
-        },
-        {
-          "type": "caption",
-          "html": "GPT-2 small: 50,257 × 768 ≈ 38.6M parameters in this one table. Many models reuse it, flipped, as the output layer (called weight tying)."
-        }
-      ]
-    },
-    {
-      "title": "What the positions of vectors mean",
-      "summary": "After training, similar words sit close together, and some relationships point in a consistent direction.",
-      "body": [
-        "If you could plot the trained vectors, you'd see a pattern. <mark>Words with related meanings group together: fruits near fruits, programming languages near programming languages.</mark>",
-        "Some relationships even become consistent <b>directions</b>. Going from \"man\" to \"woman\" points roughly the same way as going from \"king\" to \"queen\". That's why the famous sum <code>king − man + woman ≈ queen</code> roughly works, first shown with word2vec in 2013.",
-        "Closeness is measured with cosine similarity, the same calculation as the fruit comparison in <i>The big picture</i>.",
-        {
-          "note": "This is exactly how semantic search and RAG work. Turn every document into a vector once, turn the user's question into a vector, and return the documents whose vectors are closest. Vector databases exist to do this search quickly.",
-          "kind": "dev"
-        }
-      ],
-      "code": [
-        "def cosine(a, b):",
-        "    return (a @ b) / (a.norm() * b.norm())",
-        "cosine(E[king] - E[man] + E[woman], E[queen])  # high"
-      ],
-      "viz": [
-        {
-          "type": "widget",
-          "name": "embedding-geometry"
-        },
-        {
-          "type": "caption",
-          "html": "A 2D sketch. Real embeddings have hundreds to thousands of dimensions, and these neat directions are only roughly true."
-        }
-      ]
-    },
-    {
-      "title": "Word order matters: adding position",
-      "summary": "Attention doesn't notice word order by itself, so position information has to be added.",
-      "body": [
-        "Attention, the core step in the next chapter, compares every token with every other token. On its own it treats the input like a bag of words: shuffle the tokens and each one gets the same result. <mark>It can't tell \"dog bites man\" from \"man bites dog\".</mark>",
-        "So position has to be added in. The original Transformer (2017) added a fixed pattern of waves to each token's vector:",
-        {
-          "ul": [
-            "Each pair of numbers goes up and down at a different speed, from very fast to very slow.",
-            "Together they give every position its own unique fingerprint.",
-            "Nearby positions get similar fingerprints, so the model can tell near from far."
-          ]
-        },
-        {
-          "note": "Think of a clock with many hands. The second hand alone can't tell you the time. But seconds, minutes, hours and days together mark every moment uniquely, and moments close together look alike.",
-          "kind": "analogy"
-        },
-        "In the heatmap, each row is a position and each column is one number. The fast-changing columns are on the left and the slow ones on the right."
-      ],
-      "code": [
-        "# PE[pos, 2i]   = sin(pos / 10000**(2i/d))",
-        "# PE[pos, 2i+1] = cos(pos / 10000**(2i/d))",
-        "x = token_embedding + PE[:n]"
-      ],
-      "viz": [
-        {
-          "type": "widget",
-          "name": "positional-heatmap"
-        }
-      ]
-    },
-    {
-      "title": "RoPE: what modern models use",
-      "summary": "Modern models mark position by rotating vectors, so attention can directly see how far apart two tokens are.",
-      "body": [
-        "Most current open models (Llama, Mistral, Qwen and others) use <b>rotary position embeddings</b> (RoPE) instead. Nothing is added to the token's vector. Instead, inside attention, the query and key vectors (next chapter) are <b>rotated</b> by an angle that grows with the token's position.",
-        "Why rotate? Attention scores two tokens with a dot product, and the dot product depends on the angle between the two vectors. <mark>Rotate one by position <code>m</code> and the other by position <code>n</code>, and the angle between them only depends on <code>m − n</code>: how far apart they are.</mark>",
-        "Try it: move both sliders by the same amount. Both arrows turn, but the angle between them, and so the score, doesn't change.",
-        {
-          "note": "RoPE tells the model <i>relative</i> position (\"three tokens back\"), not <i>absolute</i> position (\"token 1,207\"). That suits language, where nearby words usually matter most. It's also one reason context windows can be made longer after training.",
-          "kind": "key"
-        }
-      ],
-      "code": [
-        "def rope(x, pos, theta=10000):",
-        "    # rotate each (x[2i], x[2i+1]) pair",
-        "    angle = pos / theta**(2*i/d)",
-        "    return rotate_pairs(x, angle)",
-        "q, k = rope(q, m), rope(k, n)   # then q·k as usual"
-      ],
-      "viz": [
-        {
-          "type": "widget",
-          "name": "rope"
-        }
-      ]
-    },
-    {
-      "title": "The input is now a matrix",
-      "summary": "The input stage ends with one vector per token. This is the residual stream that every later layer reads and updates.",
-      "body": [
-        "Put the steps together: split the text into tokens, look up each token's vector, and add position. The result is a matrix with one row per token and <code>d</code> columns: shape <code>[n, d]</code>, or <code>[B, n, d]</code> for a batch.",
-        "This matrix is called the <b>residual stream</b>, and it's the star of the rest of the course. <mark>Every later layer reads from it and adds its own bit back.</mark>",
-        {
-          "note": "The shape stays the same all the way through the model until the very end. That's why you can stack 32, 80 or 120 identical layers: each takes <code>[B, n, d]</code> in and gives <code>[B, n, d]</code> out.",
-          "kind": "key"
-        },
-        "Each coloured square on the right is one number. Real rows have thousands."
-      ],
-      "viz": [
-        {
-          "type": "widget",
-          "name": "residual-matrix"
         }
       ]
     }
