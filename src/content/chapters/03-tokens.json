@@ -16,6 +16,15 @@
           "h": "How the tokenizer works"
         },
         "The tokenizer is a simple algorithm. It reads your text from left to right, finds the longest piece it knows from its vocabulary, and swaps that piece for its token ID. Then it does the same with the rest of the text.",
+        {
+          "h": "Encode, decode, and where it's used"
+        },
+        {
+          "ul": [
+            "<b>It works in both directions.</b> Turning text into token IDs is called <b>encoding</b>. Turning token IDs back into text is called <b>decoding</b>. That's how the model's reply, which comes out as token IDs, becomes words you can read.",
+            "<b>It's used in training and when you chat.</b> The same tokenizer turns all the training text into tokens, and later turns your messages into tokens too. It has to stay exactly the same, or the model would get different numbers from the ones it learned."
+          ]
+        },
         "<mark>Text goes in, and a list of token IDs comes out.<br><br>• <b>It's trained once, on its own,</b> before the model. Then its vocabulary is locked, and the model learns one vector for each entry.<br><br>• <b>It doesn't care about meaning.</b> It only splits text into pieces it has seen often. Working out what those pieces mean is the model's job, later.</mark>"
       ],
       "figure": {
@@ -25,7 +34,11 @@
         "width": 1200,
         "height": 730,
         "caption": "The whole journey in one picture: text goes in, the tokenizer splits it using the vocabulary, and the model only ever sees the ID numbers."
-      }
+      },
+      "code": [
+        "ids = tokenizer.encode(\"I am learning\")   # → [40, 1097, 6975]",
+        "text = tokenizer.decode(ids)             # → \"I am learning\""
+      ]
     },
     {
       "title": "How big should a token be?",
