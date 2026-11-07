@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 640" role="img" aria-labelledby="t d" font-family="'Schibsted Grotesk', ui-sans-serif, system-ui, sans-serif">
+  <title id="t">Tokens in one picture</title>
+  <desc id="d">Text such as "I love learning" becomes UTF-8 bytes, which work for any language. The tokenizer's BPE vocabulary joins common byte runs into tokens: I, space love, space learning, which are the IDs 40, 3021 and 6975. The model sees only those numbers, and its reply comes back as IDs that are decoded into text. Six consequences: tokens are parts of words; some languages need more tokens; everything must fit in the context window; you pay per token; special tokens mark who is speaking; and the model can't see the letters inside a token, which is why counting the r's in strawberry is hard.</desc>
+  <style>
+    .bg{fill:#0f1413}.card{fill:#171e1c;stroke:#2c3835}.sunk{fill:#1f2826}
+    .ink{fill:#e4ece9}.muted{fill:#9aa9a4}.onacc{fill:#0f1413}
+    .acc{fill:#4db3d1}.accink{fill:#8fd3e6}.accsoft{fill:#163742}
+    .pos{fill:#3fc4a3}.posink{fill:#3fc4a3}.possoft{fill:#123a30;stroke:#3fc4a3}
+    .neg{fill:#f07d60}.negink{fill:#f07d60}.negsoft{fill:#42221a;stroke:#f07d60}
+    .heat{fill:#3d2e14;stroke:#f0ac40}.heatink{fill:#f0ac40}.heatfill{fill:#f0ac40}
+    .line{stroke:#9aa9a4;fill:none;stroke-width:2}.thin{stroke:#2c3835;fill:none;stroke-width:1.5}
+    .dash{stroke:#4db3d1;fill:none;stroke-width:2;stroke-dasharray:6 5}
+    .stream{stroke:#4db3d1;fill:none;stroke-width:14;stroke-linecap:round;opacity:.35}
+    .row{fill:#1f2826}.hit{fill:#163742;stroke:#4db3d1}
+    .mono{font-family:'JetBrains Mono',ui-monospace,Menlo,monospace}
+    .head{font-size:13px;font-weight:700;letter-spacing:.08em}
+    .arrowhead{fill:#9aa9a4}.arrowacc{fill:#4db3d1}
+  </style>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arrowhead"/></marker>
+  </defs>
+  <rect class="bg" width="1200" height="640" rx="18"/>
+  <text x="40" y="52" class="ink" font-size="26" font-weight="700">Tokens in one picture</text>
+  <text x="40" y="78" class="muted" font-size="15">How text reaches the model, and what that means for you. GPT-4's real token IDs.</text>
+
+  <!-- pipeline -->
+  <g text-anchor="middle">
+    <rect class="card" x="40" y="108" width="192" height="126" rx="12"/>
+    <text x="136" y="136" class="muted head">1 · TEXT</text>
+    <text x="136" y="180" class="ink" font-size="19" font-weight="700">I love learning</text>
+    <text x="136" y="214" class="muted" font-size="13">what you type</text>
+
+    <rect class="card" x="272" y="108" width="192" height="126" rx="12"/>
+    <text x="368" y="136" class="muted head">2 · BYTES</text>
+    <text x="368" y="180" class="ink mono" font-size="16">73 32 108 111 …</text>
+    <text x="368" y="214" class="muted" font-size="13">UTF-8 covers every language</text>
+
+    <rect class="accsoft" x="504" y="108" width="192" height="126" rx="12" stroke-width="2"/>
+    <text x="600" y="136" class="accink head">3 · TOKENIZER</text>
+    <text x="600" y="172" class="ink" font-size="17" font-weight="700">BPE vocabulary</text>
+    <text x="600" y="196" class="ink" font-size="13">joins common byte runs</text>
+    <text x="600" y="214" class="muted" font-size="13">trained once, then fixed</text>
+
+    <rect class="card" x="736" y="108" width="192" height="126" rx="12"/>
+    <text x="832" y="136" class="muted head">4 · TOKEN IDS</text>
+    <text x="832" y="170" class="accink mono" font-size="14">I·␣love·␣learning</text>
+    <text x="832" y="198" class="ink mono" font-size="18" font-weight="700">40 3021 6975</text>
+    <text x="832" y="220" class="muted" font-size="13">3 tokens</text>
+
+    <rect class="card" x="968" y="108" width="192" height="126" rx="12"/>
+    <text x="1064" y="136" class="muted head">5 · MODEL</text>
+    <text x="1064" y="180" class="ink" font-size="17" font-weight="700">sees only numbers</text>
+    <text x="1064" y="214" class="muted" font-size="13">never the letters</text>
+  </g>
+  <g class="line">
+    <line x1="236" y1="171" x2="266" y2="171" marker-end="url(#a)"/>
+    <line x1="468" y1="171" x2="498" y2="171" marker-end="url(#a)"/>
+    <line x1="700" y1="171" x2="730" y2="171" marker-end="url(#a)"/>
+    <line x1="932" y1="171" x2="962" y2="171" marker-end="url(#a)"/>
+    <path d="M1064 238 V264 H136 V240" fill="none" marker-end="url(#a)"/>
+  </g>
+  <text x="600" y="288" text-anchor="middle" class="muted" font-size="14">The reply comes out as token IDs too, and the tokenizer <tspan class="ink" font-weight="700">decodes</tspan> them back into text.</text>
+
+  <!-- consequences -->
+  <text x="40" y="336" class="muted head">WHAT THIS MEANS</text>
+  <g font-size="14">
+    <rect class="card" x="40" y="352" width="357" height="116" rx="12"/>
+    <text x="62" y="382" class="ink" font-size="16" font-weight="700">Parts of words</text>
+    <text x="62" y="408" class="muted">Letters make text too long; whole words</text>
+    <text x="62" y="428" class="muted">need too many entries. "unbelievable"</text>
+    <text x="62" y="448" class="muted">= un + believ + able.</text>
+
+    <rect class="card" x="421" y="352" width="358" height="116" rx="12"/>
+    <text x="443" y="382" class="ink" font-size="16" font-weight="700">Some languages cost more</text>
+    <text x="443" y="408" class="muted">BPE learned mostly from English, so other</text>
+    <text x="443" y="428" class="muted">languages split into more tokens. Newer</text>
+    <text x="443" y="448" class="muted">tokenizers shrink the gap.</text>
+
+    <rect class="card" x="803" y="352" width="357" height="116" rx="12"/>
+    <text x="825" y="382" class="ink" font-size="16" font-weight="700">The context window</text>
+    <text x="825" y="408" class="muted">A fixed token limit. System prompt, chat,</text>
+    <text x="825" y="428" class="muted">documents and the reply all have to fit.</text>
+    <text x="825" y="448" class="muted">Overflow gets dropped or rejected.</text>
+
+    <rect class="card" x="40" y="492" width="357" height="116" rx="12"/>
+    <text x="62" y="522" class="ink" font-size="16" font-weight="700">You pay per token</text>
+    <text x="62" y="548" class="muted">Input and output, with output costing</text>
+    <text x="62" y="568" class="muted">more. The whole chat is re-sent each</text>
+    <text x="62" y="588" class="muted">turn, so long chats add up.</text>
+
+    <rect class="card" x="421" y="492" width="358" height="116" rx="12"/>
+    <text x="443" y="522" class="ink" font-size="16" font-weight="700">Special tokens</text>
+    <text x="443" y="548" class="muted">Markers like <tspan class="accink mono">&lt;|user|&gt;</tspan> and</text>
+    <text x="443" y="568" class="muted"><tspan class="accink mono">&lt;|assistant|&gt;</tspan> turn a chat into one</text>
+    <text x="443" y="588" class="muted">long line of tokens.</text>
+
+    <rect class="heat" x="803" y="492" width="357" height="116" rx="12" stroke-width="2"/>
+    <text x="825" y="522" class="heatink" font-size="16" font-weight="700">Letters are hidden</text>
+    <text x="825" y="548" class="ink">"strawberry" is str·aw·berry, just</text>
+    <text x="825" y="568" class="ink">numbers. Counting its r's is hard</text>
+    <text x="825" y="588" class="ink">unless the model spells it out.</text>
+  </g>
+</svg>

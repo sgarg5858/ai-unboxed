@@ -957,6 +957,22 @@
         "height": 560,
         "caption": "The whole problem in one picture: the letters are there for you, but hidden from the model unless it spells them out."
       }
+    },
+    {
+      "title": "Recap: tokens in one picture",
+      "summary": "Your text becomes bytes, then token IDs. The model only ever sees those numbers.",
+      "body": [
+        "<mark>The model never sees your text, only token IDs. That one fact explains the language gap, the context limit, the bill and the strawberry problem.</mark>",
+        "Next, in <i>Embeddings</i>: a token ID is just a label. The model turns each one into a list of numbers that carries meaning."
+      ],
+      "figure": {
+        "src": "images/tokens-recap-light.svg",
+        "darkSrc": "images/tokens-recap-dark.svg",
+        "alt": "Text such as \"I love learning\" becomes UTF-8 bytes, which work for any language. The tokenizer's BPE vocabulary joins common byte runs into tokens: I, space love, space learning, which are the IDs 40, 3021 and 6975. The model sees only those numbers, and its reply comes back as IDs that are decoded into text. Six consequences: tokens are parts of words; some languages need more tokens; everything must fit in the context window; you pay per token; special tokens mark who is speaking; and the model can't see the letters inside a token, which is why counting the r's in strawberry is hard.",
+        "width": 1200,
+        "height": 640,
+        "caption": "The top row is the path every message takes. The cards below are what follows from it, one per slide in this chapter."
+      }
     }
   ]
 }
