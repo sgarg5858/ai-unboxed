@@ -42,7 +42,7 @@
       <app-slide-progress />
 
       @let slide = nav.slide();
-      <article class="slide" #article aria-live="polite">
+      <article class="slide" [class.solo]="!slide.viz?.length" #article aria-live="polite">
         <div class="prose">
           <h2>{{ slide.title }}</h2>
           @if (slide.summary) {
@@ -75,14 +75,14 @@
             <app-code-block [source]="slide.code.join('\n')" />
           }
         </div>
-        <div class="viz">
-          @if (slide.viz) {
+        @if (slide.viz?.length) {
+          <div class="viz">
             <!-- track by slide identity so widget state resets when the slide changes -->
             @for (v of [slide]; track v) {
               <app-blocks [blocks]="v.viz!" />
             }
-          }
-        </div>
+          </div>
+        }
         @if (slide.figure; as f) {
           <app-slide-figure class="wide" [figure]="f" />
         }

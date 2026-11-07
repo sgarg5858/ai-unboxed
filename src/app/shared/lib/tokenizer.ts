@@ -102,6 +102,8 @@ const VOCAB: string[] = [
   'ize',
   ' re',
   'pre',
+  // Added later; kept at the end so every earlier made-up ID stays the same.
+  'ization',
 ];
 
 /** Returns [piece, made-up token id] pairs. Unknown characters fall back to their char code. */

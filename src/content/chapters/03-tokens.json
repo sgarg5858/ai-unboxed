@@ -11,55 +11,12 @@
         {
           "h": "The vocabulary"
         },
-        "Every tokenizer has its own <b>vocabulary</b>: a fixed list of pieces of text, where each piece has a number. The pieces are called <b>tokens</b>, and their numbers are <b>token IDs</b>. For example, \"learning\" might be token 6975.",
+        "Every tokenizer has its own <b>vocabulary</b>: a fixed list of pieces of text, where each piece has a number. The pieces are called <b>tokens</b>, and their numbers are <b>token IDs</b>. For example, \"␣learning\" (with its leading space) might be token 6975, as in the diagram below.",
         {
           "h": "How the tokenizer works"
         },
         "The tokenizer is a simple algorithm. It reads your text from left to right, finds the longest piece it knows from its vocabulary, and swaps that piece for its token ID. Then it does the same with the rest of the text.",
-        "<mark>Text goes in, and a list of token IDs comes out.</mark>",
-        {
-          "ul": [
-            "<b>It's trained once, on its own,</b> before the model. Then its vocabulary is locked, and the model learns one vector for each entry.",
-            "<b>It doesn't care about meaning.</b> It only splits text into pieces it has seen often. Working out what those pieces mean is the model's job, later."
-          ]
-        }
-      ],
-      "viz": [
-        {
-          "type": "panel",
-          "blocks": [
-            {
-              "type": "stages",
-              "items": [
-                {
-                  "label": "<b>Your text</b>",
-                  "sub": "\"I am learning\"",
-                  "value": "letters"
-                },
-                {
-                  "label": "<b>Tokenizer</b>",
-                  "sub": "finds the longest pieces it knows in its vocabulary",
-                  "value": "splits",
-                  "highlight": true
-                },
-                {
-                  "label": "<b>Tokens</b>",
-                  "sub": "\"I\" · \"␣am\" · \"␣learning\"",
-                  "value": "pieces"
-                },
-                {
-                  "label": "<b>Token IDs</b>",
-                  "sub": "what the model actually receives",
-                  "value": "[40, 1097, 6975]"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "type": "caption",
-          "html": "The whole job of a tokenizer, from top to bottom. ␣ marks a space. IDs are made up for illustration."
-        }
+        "<mark>Text goes in, and a list of token IDs comes out.<br><br>• <b>It's trained once, on its own,</b> before the model. Then its vocabulary is locked, and the model learns one vector for each entry.<br><br>• <b>It doesn't care about meaning.</b> It only splits text into pieces it has seen often. Working out what those pieces mean is the model's job, later.</mark>"
       ],
       "figure": {
         "src": "images/tokens-tokenizer-vocabulary-light.svg",

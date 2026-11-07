@@ -110,6 +110,10 @@ h1 span {
     gap: 32px;
     padding: 30px;
   }
+  /* No interactive on the right: let the text use the width (at a readable line length). */
+  .slide.solo {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 .slide h2 {
   font-family: var(--f-display);
