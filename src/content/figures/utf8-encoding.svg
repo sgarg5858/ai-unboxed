@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 608" role="img" aria-labelledby="t d" font-family="'Schibsted Grotesk', ui-sans-serif, system-ui, sans-serif">
+  <title id="t">UTF-8: how characters become bytes</title>
+  <desc id="d">UTF-8 stores each character as 1 to 4 bytes. English letters, digits and punctuation take 1 byte: A is 65. Accented letters, Greek, Arabic and Hebrew take 2: é is 195 169. Hindi, Chinese, Japanese and most other scripts take 3: the Hindi letter ह is 224 164 185 and the Chinese character 日 is 230 151 165. Emoji take 4: the smiling face is 240 159 152 128. The first byte tells how long the character is: 0 to 127 means 1 byte, 194 to 223 means 2, 224 to 239 means 3, 240 to 244 means 4; 192, 193 and 245 to 255 are never used. The bytes that follow are always between 128 and 191.</desc>
+  <!--theme-->
+  <rect class="bg" width="1200" height="608" rx="18"/>
+  <text x="40" y="52" class="ink" font-size="26" font-weight="700">UTF-8: how characters become bytes</text>
+  <text x="40" y="78" class="muted" font-size="15">One standard for every language. Simple characters get 1 byte, others 2 to 4. The first byte says how long the character is.</text>
+  <text x="400" y="108" class="muted head">CHARACTER → ITS BYTES</text>
+  <rect class="card" x="40" y="120" width="1120" height="70" rx="12"/>
+  <text x="60" y="152" class="ink head">1 BYTE</text>
+  <text x="60" y="172" class="muted" font-size="12.5">English letters, digits, punctuation</text>
+  <text x="400" y="164" class="ink" font-size="26" font-weight="700" font-family="'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji','Kohinoor Devanagari','Noto Sans Devanagari','Nirmala UI','Hiragino Sans','Noto Sans CJK JP',sans-serif">A</text>
+  <text x="444" y="162" class="muted" font-size="18">→</text>
+  <rect class="acc" x="474" y="138" width="50" height="34" rx="7"/>
+  <text x="499.0" y="161" text-anchor="middle" class="onacc mono" font-size="15" font-weight="700">65</text>
+  <rect class="card" x="40" y="202" width="1120" height="70" rx="12"/>
+  <text x="60" y="234" class="ink head">2 BYTES</text>
+  <text x="60" y="254" class="muted" font-size="12.5">accented letters, Greek, Arabic, Hebrew</text>
+  <text x="400" y="246" class="ink" font-size="26" font-weight="700" font-family="'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji','Kohinoor Devanagari','Noto Sans Devanagari','Nirmala UI','Hiragino Sans','Noto Sans CJK JP',sans-serif">é</text>
+  <text x="444" y="244" class="muted" font-size="18">→</text>
+  <rect class="acc" x="474" y="220" width="50" height="34" rx="7"/>
+  <text x="499.0" y="243" text-anchor="middle" class="onacc mono" font-size="15" font-weight="700">195</text>
+  <rect class="heat" x="530" y="220" width="50" height="34" rx="7"/>
+  <text x="555.0" y="243" text-anchor="middle" class="heatink mono" font-size="15" font-weight="700">169</text>
+  <rect class="card" x="40" y="284" width="1120" height="70" rx="12"/>
+  <text x="60" y="316" class="ink head">3 BYTES</text>
+  <text x="60" y="336" class="muted" font-size="12.5">Hindi, Chinese, Japanese, most other scripts</text>
+  <text x="400" y="328" class="ink" font-size="26" font-weight="700" font-family="'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji','Kohinoor Devanagari','Noto Sans Devanagari','Nirmala UI','Hiragino Sans','Noto Sans CJK JP',sans-serif">ह</text>
+  <text x="444" y="326" class="muted" font-size="18">→</text>
+  <rect class="acc" x="474" y="302" width="50" height="34" rx="7"/>
+  <text x="499.0" y="325" text-anchor="middle" class="onacc mono" font-size="15" font-weight="700">224</text>
+  <rect class="heat" x="530" y="302" width="50" height="34" rx="7"/>
+  <text x="555.0" y="325" text-anchor="middle" class="heatink mono" font-size="15" font-weight="700">164</text>
+  <rect class="heat" x="586" y="302" width="50" height="34" rx="7"/>
+  <text x="611.0" y="325" text-anchor="middle" class="heatink mono" font-size="15" font-weight="700">185</text>
+  <text x="682" y="328" class="ink" font-size="26" font-weight="700" font-family="'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji','Kohinoor Devanagari','Noto Sans Devanagari','Nirmala UI','Hiragino Sans','Noto Sans CJK JP',sans-serif">日</text>
+  <text x="726" y="326" class="muted" font-size="18">→</text>
+  <rect class="acc" x="756" y="302" width="50" height="34" rx="7"/>
+  <text x="781.0" y="325" text-anchor="middle" class="onacc mono" font-size="15" font-weight="700">230</text>
+  <rect class="heat" x="812" y="302" width="50" height="34" rx="7"/>
+  <text x="837.0" y="325" text-anchor="middle" class="heatink mono" font-size="15" font-weight="700">151</text>
+  <rect class="heat" x="868" y="302" width="50" height="34" rx="7"/>
+  <text x="893.0" y="325" text-anchor="middle" class="heatink mono" font-size="15" font-weight="700">165</text>
+  <rect class="card" x="40" y="366" width="1120" height="70" rx="12"/>
+  <text x="60" y="398" class="ink head">4 BYTES</text>
+  <text x="60" y="418" class="muted" font-size="12.5">emoji and rare symbols</text>
+  <text x="400" y="410" class="ink" font-size="26" font-weight="700" font-family="'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji','Kohinoor Devanagari','Noto Sans Devanagari','Nirmala UI','Hiragino Sans','Noto Sans CJK JP',sans-serif">😀</text>
+  <text x="444" y="408" class="muted" font-size="18">→</text>
+  <rect class="acc" x="474" y="384" width="50" height="34" rx="7"/>
+  <text x="499.0" y="407" text-anchor="middle" class="onacc mono" font-size="15" font-weight="700">240</text>
+  <rect class="heat" x="530" y="384" width="50" height="34" rx="7"/>
+  <text x="555.0" y="407" text-anchor="middle" class="heatink mono" font-size="15" font-weight="700">159</text>
+  <rect class="heat" x="586" y="384" width="50" height="34" rx="7"/>
+  <text x="611.0" y="407" text-anchor="middle" class="heatink mono" font-size="15" font-weight="700">152</text>
+  <rect class="heat" x="642" y="384" width="50" height="34" rx="7"/>
+  <text x="667.0" y="407" text-anchor="middle" class="heatink mono" font-size="15" font-weight="700">128</text>
+  <rect class="card" x="40" y="458" width="1120" height="120" rx="12"/>
+  <rect class="acc" x="64" y="480" width="22" height="22" rx="5"/>
+  <text x="98" y="497" class="ink" font-size="15"><tspan font-weight="700">First byte</tspan><tspan class="muted"> says how many bytes the character uses (192, 193 and 245–255 are never used):</tspan></text>
+  <g class="mono" font-size="13.5">
+    <text x="98" y="522" class="ink">0–127 → 1 byte</text>
+    <text x="290" y="522" class="ink">194–223 → 2 bytes</text>
+    <text x="510" y="522" class="ink">224–239 → 3 bytes</text>
+    <text x="730" y="522" class="ink">240–244 → 4 bytes</text>
+  </g>
+  <rect class="heat" x="64" y="538" width="22" height="22" rx="5"/>
+  <text x="98" y="555" class="ink" font-size="15"><tspan font-weight="700">Follow-on bytes</tspan><tspan class="muted"> are always 128–191, so they can never be mistaken for the start of a new character.</tspan></text>
+</svg>

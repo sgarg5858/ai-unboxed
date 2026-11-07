@@ -107,7 +107,8 @@ export interface SlideContent {
   /** Code sample shown under the prose, one string per line. */
   code?: string[];
   viz?: Block[];
-  figure?: Figure;
+  /** One wide image, or several shown one after another, under both columns. */
+  figure?: Figure | Figure[];
 }
 
 /** A chapter in the course manifest: enough to build navigation, with its content loaded on demand. */

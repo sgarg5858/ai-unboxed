@@ -83,7 +83,7 @@
             }
           </div>
         }
-        @if (slide.figure; as f) {
+        @for (f of figures(slide); track f.src) {
           <app-slide-figure class="wide" [figure]="f" />
         }
       </article>

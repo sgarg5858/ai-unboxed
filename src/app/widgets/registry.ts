@@ -12,6 +12,7 @@ export const WIDGETS: Record<string, () => Promise<Type<unknown>>> = {
   tokenizer: () => import('./tokens.widgets').then((m) => m.TokenizerWidget),
   'utf8-bytes': () => import('./tokens.widgets').then((m) => m.Utf8BytesWidget),
   'token-cost': () => import('./tokens.widgets').then((m) => m.TokenCostWidget),
+  'utf8-byte-table': () => import('./tokens.widgets').then((m) => m.Utf8ByteTableWidget),
   'letter-count': () => import('./tokens.widgets').then((m) => m.LetterCountWidget),
   'context-fit': () => import('./tokens.widgets').then((m) => m.ContextFitWidget),
   'embedding-table': () => import('./tokens.widgets').then((m) => m.EmbeddingTableWidget),

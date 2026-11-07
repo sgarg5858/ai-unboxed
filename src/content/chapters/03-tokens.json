@@ -85,40 +85,6 @@
       ]
     },
     {
-      "title": "Raw bytes: how modern tokenizers start",
-      "summary": "Underneath every letter is a list of small numbers called bytes. Modern tokenizers start from those, so no text is ever unknown.",
-      "body": [
-        "Computers don't store letters. They store text as <b>bytes</b>: small numbers from 0 to 255. A standard called <b>UTF-8</b> says which bytes stand for which character:",
-        {
-          "ul": [
-            "Plain English letters take 1 byte each: <code>A</code> is 65.",
-            "Accented letters take 2: <code>é</code> is 195 169.",
-            "Many other scripts take 3: the Hindi letter <code>न</code> is 224 164 168.",
-            "Emoji take 4: <code>😀</code> is 240 159 152 128."
-          ]
-        },
-        "A <b>byte-level tokenizer</b> starts with all 256 possible byte values as its first 256 tokens. <mark>Because every possible text is made of bytes, nothing is ever \"unknown\": rare characters just use more tokens.</mark>",
-        "Training (BPE, on the next slide) then joins bytes that often appear together into bigger tokens. Common English words end up as a single token, while a rare emoji may stay as 4 separate byte tokens. GPT-2 popularised this approach in 2019; OpenAI's tiktoken works this way, and tokenizers built with SentencePiece fall back to bytes for anything they don't know.",
-        {
-          "note": "In code: <code>new TextEncoder().encode(\"é\")</code> gives <code>[195, 169]</code>. That list of numbers is what a byte-level tokenizer starts from.",
-          "kind": "dev"
-        }
-      ],
-      "viz": [
-        {
-          "type": "widget",
-          "name": "utf8-bytes",
-          "props": {
-            "initial": "Hi café 😀 नमस्ते"
-          }
-        },
-        {
-          "type": "caption",
-          "html": "Each box is one character, with its UTF-8 bytes underneath. Amber boxes need more than one byte. Try another language, or add emoji."
-        }
-      ]
-    },
-    {
       "title": "How BPE builds the vocabulary",
       "summary": "BPE builds a vocabulary by repeatedly joining the most common pair of neighbouring pieces.",
       "body": [
@@ -553,6 +519,184 @@
               "caption": "vocab: 15 tokens"
             }
           ]
+        }
+      ]
+    },
+    {
+      "title": "Raw bytes: how modern tokenizers start",
+      "summary": "Underneath every letter is a list of small numbers called bytes. Modern tokenizers start from those, so no text is ever unknown.",
+      "body": [
+        "Computers don't store letters. They store text as <b>bytes</b>: small numbers from 0 to 255. A standard called <b>UTF-8</b> says which bytes stand for which character:",
+        {
+          "ul": [
+            "Plain English letters take 1 byte each: <code>A</code> is 65.",
+            "Accented letters take 2: <code>é</code> is 195 169.",
+            "Many other scripts take 3: the Hindi letter <code>न</code> is 224 164 168.",
+            "Emoji take 4: <code>😀</code> is 240 159 152 128."
+          ]
+        },
+        "A <b>byte-level tokenizer</b> starts with all 256 possible byte values as its first 256 tokens. <mark>Because every possible text is made of bytes, nothing is ever \"unknown\": rare characters just use more tokens.</mark>",
+        "Training (BPE, on the previous slide) joins bytes that often appear together into bigger tokens. Common English words end up as a single token, while a rare emoji may stay as 4 separate byte tokens. GPT-2 popularised this approach in 2019; OpenAI's tiktoken works this way, and tokenizers built with SentencePiece fall back to bytes for anything they don't know.",
+        {
+          "note": "In code: <code>new TextEncoder().encode(\"é\")</code> gives <code>[195, 169]</code>. That list of numbers is what a byte-level tokenizer starts from.",
+          "kind": "dev"
+        }
+      ],
+      "viz": [
+        {
+          "type": "widget",
+          "name": "utf8-bytes",
+          "props": {
+            "initial": "Hi café 😀 नमस्ते"
+          }
+        },
+        {
+          "type": "caption",
+          "html": "Each box is one character, with its UTF-8 bytes underneath. Amber boxes need more than one byte. Try another language, or add emoji."
+        },
+        {
+          "type": "widget",
+          "name": "utf8-byte-table"
+        }
+      ],
+      "figure": [
+        {
+          "src": "images/utf8-encoding-light.svg",
+          "darkSrc": "images/utf8-encoding-dark.svg",
+          "alt": "UTF-8 stores each character as 1 to 4 bytes. English letters, digits and punctuation take 1 byte: A is 65. Accented letters, Greek, Arabic and Hebrew take 2: é is 195 169. Hindi, Chinese, Japanese and most other scripts take 3: the Hindi letter ह is 224 164 185 and the Chinese character 日 is 230 151 165. Emoji take 4: the smiling face is 240 159 152 128. The first byte tells how long the character is: 0 to 127 means 1 byte, 194 to 223 means 2, 224 to 239 means 3, 240 to 244 means 4; 192, 193 and 245 to 255 are never used. The bytes that follow are always between 128 and 191.",
+          "width": 1200,
+          "height": 608,
+          "caption": "How any character becomes bytes. This is the step a byte-level tokenizer starts from."
+        },
+        {
+          "src": "images/byte-vocabulary-light.svg",
+          "darkSrc": "images/byte-vocabulary-dark.svg",
+          "alt": "Every vocabulary entry is an ID plus a run of bytes. IDs 0 to 255 are single bytes: 32 is a space, 65 is A, and 195 is only half of é, not a letter on its own. From ID 256 come learned merges, each joining two earlier entries: 256 is the bytes 32 116, read as space-t; 258 is 104 101, read as he; 262 is 32 116 104 101, which is entry 256 and entry 258 joined, read as space-the; 1530 is 105 110 103, read as ing; 6975 is 9 bytes read as space-learning. A common emoji, the smiling face, is one entry of 4 bytes: 240 159 152 128. The common Hindi word है, meaning \"is\", is one entry of 6 bytes, 3 for each of its two characters. Special tokens such as end of text, ID 50256, have no bytes: they are reserved IDs. The text column is only for people; the tokenizer matches bytes, and the model only sees the ID.",
+          "width": 1200,
+          "height": 944,
+          "caption": "Each row is an ID and the bytes it stands for. The first 256 entries are single bytes; the merges BPE learned (previous slide) come after. The text column is only there for us."
+        }
+      ]
+    },
+    {
+      "title": "One tokenizer, every language",
+      "summary": "Bytes let one tokenizer read every language. But BPE learns from its training text, so languages it saw less of cost more tokens.",
+      "body": [
+        "Put the last two slides together and you get a tokenizer that works for every language, with no special rules:",
+        {
+          "ul": [
+            "<b>Bytes cover everything.</b> Every character in every language is made of bytes, so no text is ever unknown.",
+            "<b>BPE learns from real text.</b> It merges the byte runs that appear most often in whatever text the tokenizer was trained on."
+          ]
+        },
+        {
+          "h": "Why some languages cost more"
+        },
+        {
+          "ul": [
+            "<b>Less training text means fewer merges.</b> Training text is mostly English, so English words often become a single token. Words in languages that appear less stay split into smaller pieces, sometimes right down to single bytes.",
+            "<b>More bytes per character.</b> Hindi, Tamil, Japanese and Chinese need 3 bytes per character in UTF-8, against 1 for English. So the same sentence starts out as more bytes."
+          ]
+        },
+        "<mark>The same sentence can need several times more tokens in some languages, which means higher cost, slower replies and less room in the context window.</mark>",
+        {
+          "h": "Newer tokenizers close the gap"
+        },
+        "Bigger vocabularies trained on more languages give other languages their own merges. Switching from GPT-4's tokenizer (about 100,000 entries) to GPT-4o's (about 200,000) cut the Tamil greeting on the right from 60 tokens to 12, and the Hindi one from 24 to 10. English stayed at 7.",
+        {
+          "note": "Building for users in other languages? Count tokens with your provider's own tokenizer for those languages before estimating costs or context limits. Rules of thumb like \"4 characters per token\" only hold for English.",
+          "kind": "dev"
+        }
+      ],
+      "viz": [
+        {
+          "type": "tabs",
+          "tabs": [
+            {
+              "label": "GPT-4's tokenizer",
+              "blocks": [
+                {
+                  "type": "bars",
+                  "layout": "stacked",
+                  "items": [
+                    {
+                      "label": "English · Hello, how are you today?",
+                      "value": 0.117,
+                      "display": "7 tokens"
+                    },
+                    {
+                      "label": "Spanish · Hola, ¿cómo estás hoy?",
+                      "value": 0.15,
+                      "display": "9 tokens"
+                    },
+                    {
+                      "label": "Japanese · こんにちは、今日はお元気ですか？",
+                      "value": 0.183,
+                      "display": "11 tokens"
+                    },
+                    {
+                      "label": "Hindi · नमस्ते, आज आप कैसे हैं?",
+                      "value": 0.4,
+                      "display": "24 tokens"
+                    },
+                    {
+                      "label": "Tamil · வணக்கம், இன்று நீங்கள் எப்படி இருக்கிறீர்கள்?",
+                      "value": 1.0,
+                      "display": "60 tokens"
+                    }
+                  ]
+                },
+                {
+                  "type": "caption",
+                  "html": "About 100,000 entries, mostly learned from English. Tamil needs <b>8.6×</b> the tokens of English for the same greeting."
+                }
+              ]
+            },
+            {
+              "label": "GPT-4o's tokenizer",
+              "blocks": [
+                {
+                  "type": "bars",
+                  "layout": "stacked",
+                  "items": [
+                    {
+                      "label": "English · Hello, how are you today?",
+                      "value": 0.117,
+                      "display": "7 tokens"
+                    },
+                    {
+                      "label": "Spanish · Hola, ¿cómo estás hoy?",
+                      "value": 0.117,
+                      "display": "7 tokens"
+                    },
+                    {
+                      "label": "Japanese · こんにちは、今日はお元気ですか？",
+                      "value": 0.15,
+                      "display": "9 tokens"
+                    },
+                    {
+                      "label": "Hindi · नमस्ते, आज आप कैसे हैं?",
+                      "value": 0.167,
+                      "display": "10 tokens"
+                    },
+                    {
+                      "label": "Tamil · வணக்கம், இன்று நீங்கள் எப்படி இருக்கிறீர்கள்?",
+                      "value": 0.2,
+                      "display": "12 tokens"
+                    }
+                  ]
+                },
+                {
+                  "type": "caption",
+                  "html": "About 200,000 entries, trained on more languages. The gap shrinks to under 2×."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "caption",
+          "html": "The same greeting in five languages. Counts measured with OpenAI's real tokenizers (<code>cl100k_base</code> and <code>o200k_base</code>)."
         }
       ]
     },

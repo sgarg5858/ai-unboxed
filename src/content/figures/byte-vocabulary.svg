@@ -1,0 +1,130 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 944" role="img" aria-labelledby="t d" font-family="'Schibsted Grotesk', ui-sans-serif, system-ui, sans-serif">
+  <title id="t">What a byte-level vocabulary stores</title>
+  <desc id="d">Every vocabulary entry is an ID plus a run of bytes. IDs 0 to 255 are single bytes: 32 is a space, 65 is A, and 195 is only half of é, not a letter on its own. From ID 256 come learned merges, each joining two earlier entries: 256 is the bytes 32 116, read as space-t; 258 is 104 101, read as he; 262 is 32 116 104 101, which is entry 256 and entry 258 joined, read as space-the; 1530 is 105 110 103, read as ing; 6975 is 9 bytes read as space-learning. In GPT-4o's vocabulary the smiling-face emoji is one entry of 4 bytes, 240 159 152 128, and the Hindi letter ह is one entry of 3 bytes, 224 164 185. Special tokens such as end of text, ID 50256, have no bytes: they are reserved IDs. The text column is only for people; the tokenizer matches bytes, and the model only sees the ID.</desc>
+  <!--theme-->
+  <rect class="bg" width="1200" height="944" rx="18"/>
+  <text x="40" y="52" class="ink" font-size="26" font-weight="700">What a byte-level vocabulary stores</text>
+  <text x="40" y="78" class="muted" font-size="15">Not letters or words: every entry is an ID plus a run of bytes. The text on the right is just how those bytes read to us.</text>
+  <text x="52" y="112" class="muted head">ID</text>
+  <text x="150" y="112" class="accink head">WHAT'S STORED: A RUN OF BYTES</text>
+  <text x="830" y="112" class="muted head">READS AS (ONLY FOR US)</text>
+  <rect class="accsoft" x="40" y="126" width="1120" height="32" rx="8"/>
+  <text x="54" y="147" class="accink head">1 · THE 256 SINGLE BYTES</text>
+  <text x="1146" y="147" text-anchor="end" class="accink" font-size="13">IDs 0–255: one byte each, so nothing is ever unknown</text>
+  <rect class="row" x="40" y="166" width="1120" height="40" rx="6"/>
+  <text x="52" y="192" class="ink mono" font-size="15" font-weight="700">32</text>
+  <rect class="hit" x="150" y="172" width="46" height="28" rx="5"/>
+  <text x="173.0" y="191" text-anchor="middle" class="ink mono" font-size="13.5" font-weight="700">32</text>
+  <text x="830" y="192" class="ink mono" font-size="16" font-weight="700" opacity="0.75">␣</text>
+  <text x="1148" y="192" text-anchor="end" class="muted" font-size="12">a space</text>
+  <rect class="row" x="40" y="212" width="1120" height="40" rx="6"/>
+  <text x="52" y="238" class="ink mono" font-size="15" font-weight="700">65</text>
+  <rect class="hit" x="150" y="218" width="46" height="28" rx="5"/>
+  <text x="173.0" y="237" text-anchor="middle" class="ink mono" font-size="13.5" font-weight="700">65</text>
+  <text x="830" y="238" class="ink mono" font-size="16" font-weight="700" opacity="0.75">A</text>
+  <rect class="row" x="40" y="258" width="1120" height="40" rx="6"/>
+  <text x="52" y="284" class="ink mono" font-size="15" font-weight="700">195</text>
+  <rect class="hit" x="150" y="264" width="46" height="28" rx="5"/>
+  <text x="173.0" y="283" text-anchor="middle" class="ink mono" font-size="13.5" font-weight="700">195</text>
+  <text x="830" y="284" class="muted mono" font-size="13" opacity="0.9">(half of é)</text>
+  <text x="1148" y="284" text-anchor="end" class="muted" font-size="12">not a letter on its own</text>
+  <text x="54" y="318" class="muted mono" font-size="14">⋮</text>
+  <text x="150" y="318" class="muted" font-size="12.5">… every one of the 256 possible byte values</text>
+  <rect class="heat" x="40" y="340" width="1120" height="32" rx="8"/>
+  <text x="54" y="361" class="heatink head">2 · LEARNED MERGES</text>
+  <text x="1146" y="361" text-anchor="end" class="heatink" font-size="13">IDs 256 and up: two earlier entries joined, so the run gets longer</text>
+  <rect class="row" x="40" y="380" width="1120" height="40" rx="6"/>
+  <text x="52" y="406" class="ink mono" font-size="15" font-weight="700">256</text>
+  <rect class="hit" x="150" y="386" width="46" height="28" rx="5"/>
+  <text x="173.0" y="405" text-anchor="middle" class="ink mono" font-size="13.5" font-weight="700">32</text>
+  <rect class="hit" x="202" y="386" width="46" height="28" rx="5"/>
+  <text x="225.0" y="405" text-anchor="middle" class="ink mono" font-size="13.5" font-weight="700">116</text>
+  <text x="830" y="406" class="ink mono" font-size="16" font-weight="700" opacity="0.75">␣t</text>
+  <text x="1148" y="406" text-anchor="end" class="muted" font-size="12">first merge: most common pair</text>
+  <rect class="row" x="40" y="426" width="1120" height="40" rx="6"/>
+  <text x="52" y="452" class="ink mono" font-size="15" font-weight="700">258</text>
+  <rect class="hit" x="150" y="432" width="46" height="28" rx="5"/>
+  <text x="173.0" y="451" text-anchor="middle" class="ink mono" font-size="13.5" font-weight="700">104</text>
+  <rect class="hit" x="202" y="432" width="46" height="28" rx="5"/>
+  <text x="225.0" y="451" text-anchor="middle" class="ink mono" font-size="13.5" font-weight="700">101</text>
+  <text x="830" y="452" class="ink mono" font-size="16" font-weight="700" opacity="0.75">he</text>
+  <rect class="row" x="40" y="472" width="1120" height="40" rx="6"/>
+  <text x="52" y="498" class="ink mono" font-size="15" font-weight="700">262</text>
+  <rect class="possoft" x="150" y="478" width="46" height="28" rx="5"/>
+  <text x="173.0" y="497" text-anchor="middle" class="ink mono" font-size="13.5" font-weight="700">32</text>
+  <rect class="possoft" x="202" y="478" width="46" height="28" rx="5"/>
+  <text x="225.0" y="497" text-anchor="middle" class="ink mono" font-size="13.5" font-weight="700">116</text>
+  <text x="199.0" y="522" text-anchor="middle" class="muted" font-size="12" font-family="'Kohinoor Devanagari','Noto Sans Devanagari','Nirmala UI',sans-serif">= 256</text>
+  <rect class="heat" x="264" y="478" width="46" height="28" rx="5"/>
+  <text x="287.0" y="497" text-anchor="middle" class="ink mono" font-size="13.5" font-weight="700">104</text>
+  <rect class="heat" x="316" y="478" width="46" height="28" rx="5"/>
+  <text x="339.0" y="497" text-anchor="middle" class="ink mono" font-size="13.5" font-weight="700">101</text>
+  <text x="313.0" y="522" text-anchor="middle" class="muted" font-size="12" font-family="'Kohinoor Devanagari','Noto Sans Devanagari','Nirmala UI',sans-serif">= 258</text>
+  <text x="830" y="498" class="ink mono" font-size="16" font-weight="700" opacity="0.75">␣the</text>
+  <text x="1148" y="498" text-anchor="end" class="muted" font-size="12">256 + 258 joined</text>
+  <rect class="row" x="40" y="530" width="1120" height="40" rx="6"/>
+  <text x="52" y="556" class="ink mono" font-size="15" font-weight="700">1530</text>
+  <rect class="hit" x="150" y="536" width="46" height="28" rx="5"/>
+  <text x="173.0" y="555" text-anchor="middle" class="ink mono" font-size="13.5" font-weight="700">105</text>
+  <rect class="hit" x="202" y="536" width="46" height="28" rx="5"/>
+  <text x="225.0" y="555" text-anchor="middle" class="ink mono" font-size="13.5" font-weight="700">110</text>
+  <rect class="hit" x="254" y="536" width="46" height="28" rx="5"/>
+  <text x="277.0" y="555" text-anchor="middle" class="ink mono" font-size="13.5" font-weight="700">103</text>
+  <text x="830" y="556" class="ink mono" font-size="16" font-weight="700" opacity="0.75">ing</text>
+  <rect class="row" x="40" y="576" width="1120" height="40" rx="6"/>
+  <text x="52" y="602" class="ink mono" font-size="15" font-weight="700">6975</text>
+  <rect class="hit" x="150" y="582" width="46" height="28" rx="5"/>
+  <text x="173.0" y="601" text-anchor="middle" class="ink mono" font-size="13.5" font-weight="700">32</text>
+  <rect class="hit" x="202" y="582" width="46" height="28" rx="5"/>
+  <text x="225.0" y="601" text-anchor="middle" class="ink mono" font-size="13.5" font-weight="700">108</text>
+  <rect class="hit" x="254" y="582" width="46" height="28" rx="5"/>
+  <text x="277.0" y="601" text-anchor="middle" class="ink mono" font-size="13.5" font-weight="700">101</text>
+  <rect class="hit" x="306" y="582" width="46" height="28" rx="5"/>
+  <text x="329.0" y="601" text-anchor="middle" class="ink mono" font-size="13.5" font-weight="700">97</text>
+  <rect class="hit" x="358" y="582" width="46" height="28" rx="5"/>
+  <text x="381.0" y="601" text-anchor="middle" class="ink mono" font-size="13.5" font-weight="700">114</text>
+  <rect class="hit" x="410" y="582" width="46" height="28" rx="5"/>
+  <text x="433.0" y="601" text-anchor="middle" class="ink mono" font-size="13.5" font-weight="700">110</text>
+  <rect class="hit" x="462" y="582" width="46" height="28" rx="5"/>
+  <text x="485.0" y="601" text-anchor="middle" class="ink mono" font-size="13.5" font-weight="700">105</text>
+  <rect class="hit" x="514" y="582" width="46" height="28" rx="5"/>
+  <text x="537.0" y="601" text-anchor="middle" class="ink mono" font-size="13.5" font-weight="700">110</text>
+  <rect class="hit" x="566" y="582" width="46" height="28" rx="5"/>
+  <text x="589.0" y="601" text-anchor="middle" class="ink mono" font-size="13.5" font-weight="700">103</text>
+  <text x="830" y="602" class="ink mono" font-size="16" font-weight="700" opacity="0.75">␣learning</text>
+  <text x="1148" y="602" text-anchor="end" class="muted" font-size="12">9 bytes, one token</text>
+  <rect class="row" x="40" y="622" width="1120" height="40" rx="6"/>
+  <text x="52" y="648" class="ink mono" font-size="15" font-weight="700">84083</text>
+  <rect class="hit" x="150" y="628" width="46" height="28" rx="5"/>
+  <text x="173.0" y="647" text-anchor="middle" class="ink mono" font-size="13.5" font-weight="700">240</text>
+  <rect class="hit" x="202" y="628" width="46" height="28" rx="5"/>
+  <text x="225.0" y="647" text-anchor="middle" class="ink mono" font-size="13.5" font-weight="700">159</text>
+  <rect class="hit" x="254" y="628" width="46" height="28" rx="5"/>
+  <text x="277.0" y="647" text-anchor="middle" class="ink mono" font-size="13.5" font-weight="700">152</text>
+  <rect class="hit" x="306" y="628" width="46" height="28" rx="5"/>
+  <text x="329.0" y="647" text-anchor="middle" class="ink mono" font-size="13.5" font-weight="700">128</text>
+  <text x="830" y="648" class="ink mono" font-family="'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji','Kohinoor Devanagari','Noto Sans Devanagari','Nirmala UI',sans-serif" font-size="16" font-weight="700" opacity="0.75">😀</text>
+  <text x="1148" y="648" text-anchor="end" class="muted" font-size="12">one entry in GPT-4o (two in GPT-4)</text>
+  <rect class="row" x="40" y="668" width="1120" height="40" rx="6"/>
+  <text x="52" y="694" class="ink mono" font-size="15" font-weight="700">1554</text>
+  <rect class="hit" x="150" y="674" width="46" height="28" rx="5"/>
+  <text x="173.0" y="693" text-anchor="middle" class="ink mono" font-size="13.5" font-weight="700">224</text>
+  <rect class="hit" x="202" y="674" width="46" height="28" rx="5"/>
+  <text x="225.0" y="693" text-anchor="middle" class="ink mono" font-size="13.5" font-weight="700">164</text>
+  <rect class="hit" x="254" y="674" width="46" height="28" rx="5"/>
+  <text x="277.0" y="693" text-anchor="middle" class="ink mono" font-size="13.5" font-weight="700">185</text>
+  <text x="830" y="694" class="ink mono" font-family="'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji','Kohinoor Devanagari','Noto Sans Devanagari','Nirmala UI',sans-serif" font-size="16" font-weight="700" opacity="0.75">ह</text>
+  <text x="1148" y="694" text-anchor="end" class="muted" font-size="12">one Hindi letter: 3 bytes, one entry</text>
+  <text x="54" y="740" class="muted mono" font-size="14">⋮</text>
+  <text x="150" y="740" class="muted" font-size="12.5">… tens of thousands more</text>
+  <rect class="possoft" x="40" y="762" width="1120" height="32" rx="8"/>
+  <text x="54" y="783" class="posink head">3 · SPECIAL TOKENS</text>
+  <text x="1146" y="783" text-anchor="end" class="posink" font-size="13">at the end: control signals, never made from normal text</text>
+  <rect class="row" x="40" y="802" width="1120" height="40" rx="6"/>
+  <text x="52" y="828" class="ink mono" font-size="15" font-weight="700">50256</text>
+  <text x="150" y="828" class="muted" font-size="13.5" font-style="italic">no bytes: a reserved ID the tokenizer adds itself</text>
+  <text x="830" y="828" class="ink mono" font-size="15" font-weight="700" opacity="0.75">&lt;|endoftext|&gt;</text>
+  <rect class="card" x="40" y="858" width="1120" height="62" rx="12"/>
+  <text x="64" y="884" class="ink" font-size="15" font-weight="700">The tokenizer matches bytes. The model only ever sees the ID.</text>
+  <text x="64" y="906" class="muted" font-size="13.5">GPT-2's vocabulary: 50,257 entries (256 bytes + 50,000 merges + 1 special token). Newer models: about 100,000 to 200,000. IDs are illustrative.</text>
+</svg>

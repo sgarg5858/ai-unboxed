@@ -869,3 +869,206 @@ export class TokenCostWidget {
   );
   protected readonly fmtDaily = (i: number) => DAILY[i].toLocaleString('en-GB');
 }
+
+/** What a single byte value means in UTF-8. */
+type ByteKind = 'control' | 'ascii' | 'follow' | 'lead2' | 'lead3' | 'lead4' | 'unused';
+
+const byteKind = (b: number): ByteKind =>
+  b < 32 || b === 127
+    ? 'control'
+    : b < 127
+      ? 'ascii'
+      : b < 192
+        ? 'follow'
+        : b < 194
+          ? 'unused'
+          : b < 224
+            ? 'lead2'
+            : b < 240
+              ? 'lead3'
+              : b < 245
+                ? 'lead4'
+                : 'unused';
+
+const KIND_INFO: Record<ByteKind, { label: string; range: string; bg: string; fg: string }> = {
+  control: {
+    label: 'Control code (invisible: tab, new line…)',
+    range: '0–31, 127',
+    bg: 'var(--sunk)',
+    fg: 'var(--muted)',
+  },
+  ascii: {
+    label: 'A printable English character, 1 byte',
+    range: '32–126',
+    bg: 'var(--surface)',
+    fg: 'var(--ink)',
+  },
+  follow: {
+    label: 'Follow-on byte, part of a longer character',
+    range: '128–191',
+    bg: 'var(--heat-soft)',
+    fg: 'var(--heat-ink)',
+  },
+  lead2: {
+    label: 'Starts a 2-byte character',
+    range: '194–223',
+    bg: 'color-mix(in srgb, var(--accent) 30%, var(--surface))',
+    fg: 'var(--ink)',
+  },
+  lead3: {
+    label: 'Starts a 3-byte character',
+    range: '224–239',
+    bg: 'color-mix(in srgb, var(--accent) 55%, var(--surface))',
+    fg: 'var(--ink)',
+  },
+  lead4: {
+    label: 'Starts a 4-byte character',
+    range: '240–244',
+    bg: 'var(--accent)',
+    fg: 'var(--surface)',
+  },
+  unused: {
+    label: 'Never used in valid UTF-8',
+    range: '192, 193, 245–255',
+    bg: 'color-mix(in srgb, var(--neg) 16%, var(--surface))',
+    fg: 'var(--neg-ink)',
+  },
+};
+
+/** Named control codes worth showing. */
+const CONTROL_NAMES: Record<number, string> = {
+  0: 'null',
+  9: 'tab',
+  10: 'new line',
+  13: 'carriage return',
+  27: 'escape',
+  127: 'delete',
+};
+/** One real example per lead/follow kind, so a cell's meaning is concrete. */
+const EXAMPLES: Partial<Record<ByteKind, string>> = {
+  follow: 'e.g. the 169 in é = 195 169',
+  lead2: 'e.g. é = 195 169',
+  lead3: 'e.g. ह = 224 164 185, 日 = 230 151 165',
+  lead4: 'e.g. 😀 = 240 159 152 128',
+};
+
+/** All 256 byte values in a 16 × 16 grid, coloured by their job in UTF-8. Collapsed by default. */
+@Component({
+  selector: 'w-utf8-byte-table',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { class: 'contents' },
+  styles: `
+    summary {
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(16, minmax(0, 1fr));
+      gap: 2px;
+      margin-top: 12px;
+    }
+    .cell {
+      aspect-ratio: 1;
+      display: grid;
+      place-items: center;
+      font: 600 11px var(--f-mono);
+      border-radius: 3px;
+      border: 1px solid var(--line);
+      cursor: default;
+      padding: 0;
+      min-width: 0;
+    }
+    .cell.on {
+      outline: 2px solid var(--ink);
+      outline-offset: 1px;
+    }
+    .legend {
+      display: grid;
+      gap: 4px;
+      margin-top: 12px;
+      font-size: 12.5px;
+    }
+    .legend span.sw {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+      border: 1px solid var(--line);
+      vertical-align: -2px;
+      margin-right: 6px;
+    }
+  `,
+  template: `
+    <details class="panel">
+      <summary>Show all 256 byte values</summary>
+      <p class="cap" style="margin:8px 0 0">
+        Every possible byte, 0 to 255, coloured by what it does in UTF-8. Hover or tap one.
+      </p>
+      <div class="grid" role="list" aria-label="The 256 byte values">
+        @for (c of cells; track c.value) {
+          <button
+            type="button"
+            role="listitem"
+            class="cell"
+            [class.on]="selected() === c.value"
+            [style.background]="info[c.kind].bg"
+            [style.color]="info[c.kind].fg"
+            [attr.aria-label]="describe(c.value)"
+            [title]="describe(c.value)"
+            (mouseenter)="selected.set(c.value)"
+            (focus)="selected.set(c.value)"
+            (click)="selected.set(c.value)"
+          >
+            {{ c.show }}
+          </button>
+        }
+      </div>
+      <p class="cap" aria-live="polite" style="margin:10px 0 0;min-height:1.4em;color:var(--ink)">
+        {{
+          selected() === null
+            ? 'Hover or tap a cell to see what that byte means.'
+            : describe(selected()!)
+        }}
+      </p>
+      <div class="legend">
+        @for (k of kinds; track k) {
+          <div>
+            <span class="sw" [style.background]="info[k].bg"></span><b>{{ info[k].range }}</b> ·
+            {{ info[k].label }}
+          </div>
+        }
+      </div>
+      <p class="cap" style="margin:10px 0 0">
+        Cells 32–126 show their character (␣ is the space). Full details:
+        <a
+          href="https://en.wikipedia.org/wiki/UTF-8#Byte_map"
+          target="_blank"
+          rel="noopener noreferrer"
+          >UTF-8 byte map on Wikipedia ↗</a
+        >
+      </p>
+    </details>
+  `,
+})
+export class Utf8ByteTableWidget {
+  protected readonly info = KIND_INFO;
+  protected readonly kinds = Object.keys(KIND_INFO) as ByteKind[];
+  protected readonly selected = signal<number | null>(null);
+  protected readonly cells = Array.from({ length: 256 }, (_, value) => {
+    const kind = byteKind(value);
+    const show =
+      kind === 'ascii' ? (value === 32 ? '␣' : String.fromCharCode(value)) : String(value);
+    return { value, kind, show };
+  });
+
+  protected describe(b: number): string {
+    const kind = byteKind(b);
+    if (kind === 'ascii')
+      return `${b}: the character "${b === 32 ? 'space' : String.fromCharCode(b)}", 1 byte`;
+    if (kind === 'control')
+      return `${b}: control code${CONTROL_NAMES[b] ? ` (${CONTROL_NAMES[b]})` : ''}, invisible`;
+    const ex = EXAMPLES[kind];
+    return `${b}: ${KIND_INFO[kind].label[0].toLowerCase() + KIND_INFO[kind].label.slice(1)}${ex ? `, ${ex}` : ''}`;
+  }
+}
