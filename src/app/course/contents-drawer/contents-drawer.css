@@ -5,7 +5,9 @@ dialog {
   max-height: 100dvh;
   padding: 0;
   border: 0;
-  background: var(--surface);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-fx);
+  -webkit-backdrop-filter: var(--glass-fx);
   color: var(--ink);
 }
 dialog::backdrop {

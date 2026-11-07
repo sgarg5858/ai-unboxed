@@ -32,6 +32,15 @@ describe('Theme', () => {
     expect(root.getAttribute('data-theme')).toBe('light');
   });
 
+  it('forces and persists glass, which uses the dark figures', () => {
+    const t = create();
+    t.set('glass');
+    TestBed.tick();
+    expect(root.getAttribute('data-theme')).toBe('glass');
+    expect(localStorage.getItem(THEME_KEY)).toBe('glass');
+    expect(t.dark()).toBe(true);
+  });
+
   it('returns to the system setting and forgets the saved choice', () => {
     const t = create();
     t.set('dark');

@@ -10,10 +10,10 @@
       content="An interactive guide to how modern AI works, starting with assistants like Claude, ChatGPT and Gemini and the LLMs inside them."
     />
     <script>
-      // Apply a saved light/dark choice before first paint (same key as shared/theme/theme.ts).
+      // Apply a saved theme choice before first paint (same key as shared/theme/theme.ts).
       try {
         var t = localStorage.getItem('ai-unboxed:theme');
-        if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
+        if (t === 'light' || t === 'dark' || t === 'glass') document.documentElement.setAttribute('data-theme', t);
       } catch (e) {}
     </script>
     <link rel="icon" type="image/x-icon" href="favicon.ico" />

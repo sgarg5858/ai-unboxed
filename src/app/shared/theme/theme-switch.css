@@ -2,7 +2,9 @@
   display: inline-flex;
   border: 1px solid var(--line);
   border-radius: 999px;
-  background: var(--surface);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-fx);
+  -webkit-backdrop-filter: var(--glass-fx);
   padding: 2px;
   flex: 0 0 auto;
 }
@@ -27,7 +29,7 @@
   background: var(--pill-bg);
   color: var(--pill-fg);
 }
-@media (max-width: 480px) {
+@media (max-width: 800px) {
   .theme-switch .theme-label {
     display: none;
   }

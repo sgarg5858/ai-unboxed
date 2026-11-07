@@ -47,7 +47,13 @@
     top: 16px;
     max-height: calc(100dvh - 32px);
     overflow-y: auto;
-    padding-right: 4px;
+    padding: var(--rail-pad) calc(var(--rail-pad) + 4px) var(--rail-pad) var(--rail-pad);
+    background: var(--rail-bg);
+    backdrop-filter: var(--glass-fx);
+    -webkit-backdrop-filter: var(--glass-fx);
+    border: var(--rail-border);
+    border-radius: var(--glass-radius);
+    box-shadow: var(--rail-shadow);
   }
   /* The open sidebar already shows the chapter and slide, so don't repeat them above the slide. */
   .wrap:not(.nav-hidden) .chapter-bar {
@@ -94,13 +100,21 @@ h1 span {
   color: var(--muted);
   margin: 0;
 }
+/* Phones: the tagline and arrow-key hint just take space (there's no keyboard). */
+@media (max-width: 600px) {
+  .sub {
+    display: none;
+  }
+}
 .slide {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: 20px;
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 14px;
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-fx);
+  -webkit-backdrop-filter: var(--glass-fx);
+  border: 1px solid var(--glass-edge);
+  border-radius: var(--glass-radius);
   padding: 22px;
   box-shadow: var(--shadow);
 }

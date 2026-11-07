@@ -1,14 +1,15 @@
 import { DOCUMENT } from '@angular/common';
 import { Injectable, computed, effect, inject, signal } from '@angular/core';
 
-export type ThemeChoice = 'auto' | 'light' | 'dark';
+export type ThemeChoice = 'auto' | 'light' | 'dark' | 'glass';
 
 export const THEME_KEY = 'ai-unboxed:theme';
 
-const isChoice = (v: unknown): v is ThemeChoice => v === 'auto' || v === 'light' || v === 'dark';
+const isChoice = (v: unknown): v is ThemeChoice =>
+  v === 'auto' || v === 'light' || v === 'dark' || v === 'glass';
 
 /**
- * Light/dark preference. "auto" follows the OS setting (no attribute); the other two force a
+ * Theme preference ("glass" is the dark palette with frosted, see-through surfaces). "auto" follows the OS setting (no attribute); the other two force a
  * palette via data-theme on <html>, which styles.css already understands.
  * The same logic runs once in index.html before first paint so there is no flash.
  */
@@ -20,7 +21,7 @@ export class Theme {
   private readonly systemDark = signal(this.media()?.matches ?? false);
   /** True when the dark palette is showing, whether chosen or inherited from the OS. */
   readonly dark = computed(() =>
-    this.choice() === 'auto' ? this.systemDark() : this.choice() === 'dark',
+    this.choice() === 'auto' ? this.systemDark() : this.choice() !== 'light',
   );
 
   constructor() {

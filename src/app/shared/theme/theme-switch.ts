@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Theme, ThemeChoice } from './theme';
 
-/** Segmented Auto / Light / Dark control. */
+/** Segmented Auto / Light / Dark / Glass control. */
 @Component({
   selector: 'app-theme-switch',
   styleUrl: './theme-switch.css',
@@ -13,6 +13,7 @@ import { Theme, ThemeChoice } from './theme';
           type="button"
           [attr.aria-pressed]="theme.choice() === o.value"
           [attr.title]="o.title"
+          [attr.aria-label]="o.label"
           (click)="theme.set(o.value)"
         >
           <span aria-hidden="true">{{ o.icon }}</span>
@@ -29,5 +30,11 @@ export class ThemeSwitch {
       { value: 'auto', label: 'Auto', icon: '◐', title: 'Follow your system setting' },
       { value: 'light', label: 'Light', icon: '☀', title: 'Light theme' },
       { value: 'dark', label: 'Dark', icon: '☾', title: 'Dark theme' },
+      {
+        value: 'glass',
+        label: 'Glass',
+        icon: '◇',
+        title: 'Glass theme: frosted, see-through panels',
+      },
     ];
 }
