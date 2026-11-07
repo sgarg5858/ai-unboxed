@@ -168,6 +168,11 @@ mark {
   color: var(--ink);
   font-weight: 500;
 }
+/* Light blue variant for helpful context (<mark class="info">); amber stays for key points. */
+mark.info {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 9%, transparent);
+}
 .prose code,
 .k {
   font-family: var(--f-mono);
