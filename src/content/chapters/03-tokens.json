@@ -776,26 +776,9 @@
             "Each model family has its own template. Use the wrong one and the quality drops a lot, because the model never saw that format in training.",
             "<mark>Good serving code turns a typed \"&lt;|user|&gt;\" into ordinary letters, not the special token, so a user can't pretend to be someone else.</mark>"
           ]
-        },
-        {
-          "note": "It's like an HTTP request being turned into bytes to send over the network. The API gives you neat, structured messages; the model only ever sees the flattened version.",
-          "kind": "dev"
         }
       ],
-      "code": [
-        "messages = [{\"role\": \"system\", \"content\": \"You are helpful\"},",
-        "            {\"role\": \"user\",   \"content\": \"Hi\"}]",
-        "ids = tokenizer.apply_chat_template(messages,",
-        "        add_generation_prompt=True)"
-      ],
       "viz": [
-        {
-          "type": "embed",
-          "src": "https://tiktokenizer.vercel.app/",
-          "title": "Try it live: Tiktokenizer",
-          "description": "Type a chat with a system and a user message, pick a model, and see the real special tokens and token IDs it receives.",
-          "height": 640
-        },
         {
           "type": "panel",
           "blocks": [
@@ -845,6 +828,74 @@
               "html": "Amber = special tokens. The model writes its reply right after <span class=\"k\">&lt;|assistant|&gt;</span>. The exact names differ between model families."
             }
           ]
+        },
+        {
+          "type": "embed",
+          "src": "https://tiktokenizer.vercel.app/",
+          "title": "Try it live: Tiktokenizer",
+          "description": "Type a chat with a system and a user message, pick a model, and see the real special tokens and token IDs it receives.",
+          "height": 640
+        },
+        {
+          "type": "widget",
+          "name": "prompt-assembly",
+          "props": {
+            "layers": [
+              {
+                "id": "platform",
+                "label": "Platform prompt",
+                "tokens": 2800,
+                "stable": true,
+                "text": "<|system|>\nThe current date is 2026-11-05. You are a helpful assistant\nmade by …  Formatting: use Markdown sparingly …"
+              },
+              {
+                "id": "operator",
+                "label": "Operator rules",
+                "tokens": 450,
+                "stable": true,
+                "text": "You are Acme's support agent. Only discuss Acme orders.\nNever promise refunds over $100."
+              },
+              {
+                "id": "tools",
+                "label": "Tool definitions",
+                "tokens": 1200,
+                "stable": true,
+                "text": "# tools: web_search(query) · get_order(id) · create_ticket(text)"
+              },
+              {
+                "id": "memory",
+                "label": "Memory",
+                "tokens": 300,
+                "stable": false,
+                "text": "<|memory|> User prefers short answers. Lives in Leeds."
+              },
+              {
+                "id": "docs",
+                "label": "Retrieved docs",
+                "tokens": 4000,
+                "stable": false,
+                "text": "<|document source=\"kb/shipping.md\"|> Orders ship in 2–3 days …"
+              },
+              {
+                "id": "history",
+                "label": "History",
+                "tokens": 1600,
+                "stable": false,
+                "text": "<|user|> Hi, I ordered a kettle last week.\n<|assistant|> Thanks! Could you share the order number?"
+              },
+              {
+                "id": "user",
+                "label": "New message",
+                "tokens": 30,
+                "stable": false,
+                "text": "<|user|> It's order 4411. Where is it?"
+              }
+            ]
+          }
+        },
+        {
+          "type": "caption",
+          "html": "A real request, assembled. The app turns every layer into one long token sequence wrapped in special tokens, then the model starts writing after the final <span class=\"k\">&lt;assistant&gt;</span>. Click a layer to turn it off and see the token count drop."
         }
       ]
     },
