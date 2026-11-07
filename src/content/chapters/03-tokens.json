@@ -732,10 +732,10 @@
           "ul": [
             "<b>Input tokens</b> are what you send: the system prompt, the chat so far, any documents. They're cheaper, because the model reads them all at once.",
             "<b>Output tokens</b> are what it writes. They usually cost 4 to 5 times more, because each one needs its own run through the whole model.",
-            "<b>The whole chat is sent every time.</b> The model has no memory, so each new question re-sends all the earlier messages. A long chat gets more expensive with every turn.",
             "<b>Thinking counts too.</b> Reasoning models are billed for their hidden thinking, as output tokens."
           ]
         },
+        "<mark class=\"info\"><b>The model is stateless, so the whole chat is sent every time.</b> It has no memory, so each new question re-sends all the earlier messages. A long chat gets more expensive with every turn.</mark>",
         "<mark>You pay for every token in and every token out, so long prompts, long chats and long answers all add up.</mark>",
         {
           "h": "Ways to spend less"
@@ -881,8 +881,16 @@
           "props": {
             "word": "strawberry",
             "letter": "r",
-            "pieces": ["str", "aw", "berry"],
-            "ids": [496, 675, 15717]
+            "pieces": [
+              "str",
+              "aw",
+              "berry"
+            ],
+            "ids": [
+              496,
+              675,
+              15717
+            ]
           }
         },
         {
