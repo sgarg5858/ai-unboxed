@@ -8,51 +8,7 @@ import {
 } from '@angular/core';
 import { f2, heatCell, signCell, vis } from '../shared/lib/format';
 import { TOK } from '../shared/lib/toy-model';
-import { tokenize } from '../shared/lib/tokenizer';
 import { Slider } from '../shared/slider/slider';
-
-@Component({
-  selector: 'w-tokenizer',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'contents' },
-  template: `
-    <div class="panel">
-      <label for="tokin" class="cap" style="display:block;margin-bottom:6px">Your text</label>
-      <textarea
-        id="tokin"
-        rows="2"
-        [value]="text()"
-        (input)="text.set($any($event.target).value)"
-      ></textarea>
-      <div class="row" style="margin-top:12px">
-        @for (t of tokens(); track $index) {
-          <span class="chip"
-            >{{ vis(t[0]) }}<small>{{ t[1] }}</small></span
-          >
-        }
-      </div>
-      <div class="stat" style="margin-top:12px">
-        <div>
-          <b>{{ tokens().length }}</b
-          ><span>tokens</span>
-        </div>
-        <div>
-          <b>{{ ratio() }}</b
-          ><span>characters per token</span>
-        </div>
-      </div>
-    </div>
-  `,
-})
-export class TokenizerWidget {
-  readonly props = input<{ initial?: string }>({});
-  protected readonly text = linkedSignal(() => this.props().initial ?? '');
-  protected readonly tokens = computed(() => tokenize(this.text()));
-  protected readonly ratio = computed(() =>
-    this.tokens().length ? (this.text().length / this.tokens().length).toFixed(1) : '0',
-  );
-  protected readonly vis = vis;
-}
 
 @Component({
   selector: 'w-embedding-table',

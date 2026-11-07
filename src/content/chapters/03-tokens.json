@@ -695,93 +695,74 @@
       ]
     },
     {
-      "title": "Try a tokenizer",
-      "summary": "Play with a tokenizer to see why the number of tokens doesn't match the number of words.",
+      "title": "The context window: a limit counted in tokens",
+      "summary": "A model can only look at a fixed number of tokens at once. That limit, the context window, is one big reason token counts matter.",
       "body": [
-        "This is a toy tokenizer that knows about 100 pieces. At each point in the text, it grabs the longest piece it knows. Real tokenizers like OpenAI's tiktoken and Google's SentencePiece know 50,000–200,000 pieces and use learned rules, but they behave in the same way.",
-        "Things to try:",
+        "<mark>Every model has a <b>context window</b>: the most tokens it can handle in one request. Everything has to fit inside it: the system prompt, the whole chat so far, any documents you attach, and the reply it's writing.</mark>",
         {
           "ul": [
-            "<b>Misspell a word</b>, like <code>artifical</code>. The tokenizer knows \"artificial\" as one piece, but the typo breaks into several smaller ones.",
-            "<b>Remove the space</b> before a word. The space in front is usually part of the token, so <code>␣learning</code> and <code>learning</code> have different IDs and mean slightly different things to the model.",
-            "<b>Type in another language.</b> Pieces the vocabulary doesn't have fall back to single letters. So non-English text often needs more tokens to say the same thing, which also makes it cost more."
+            "<b>Sizes have grown fast.</b> GPT-2 (2019) could handle 1,024 tokens. Many models today take 128,000, and some over 1,000,000.",
+            "<b>Roughly:</b> 1,000 tokens is about 750 English words, so 128,000 tokens is about a 300-page book.",
+            "<b>The reply counts too.</b> The tokens the model writes come out of the same window, and there's usually a separate cap on how long one reply can be."
           ]
         },
+        "<mark>When a chat gets too long, something has to give: the app drops or summarises the oldest messages, or the request is rejected. Anything dropped is simply gone as far as the model is concerned.</mark>",
         {
-          "note": "Because the model sees chunks, not letters, some easy-looking tasks trip it up. The next slide shows the most famous one.",
-          "kind": "warn"
-        }
-      ],
-      "code": [
-        "import tiktoken",
-        "enc = tiktoken.get_encoding(\"cl100k_base\")",
-        "enc.encode(\"I am learning\")     # [40, 1097, 6975]",
-        "enc.decode([40, 1097, 6975])    # 'I am learning'"
-      ],
-      "viz": [
-        {
-          "type": "widget",
-          "name": "tokenizer",
-          "props": {
-            "initial": "I am learning artificial intelligence."
-          }
-        },
-        {
-          "type": "caption",
-          "html": "Small grey numbers are made-up token IDs. ␣ marks a leading space."
-        }
-      ]
-    },
-    {
-      "title": "The strawberry problem: why counting letters is hard",
-      "summary": "Ask \"How many r's in strawberry?\" and many models used to say 2. The reason is tokens: the model never sees the letters.",
-      "body": [
-        {
-          "ul": [
-            "<b>The model doesn't see letters.</b> It sees \"strawberry\" as two or three chunks, like <code>str</code> · <code>aw</code> · <code>berry</code>.",
-            "<b>Each chunk is just a number to it.</b> The r's are hidden inside those numbers.",
-            "<b>Answering straight away, it has to guess.</b> \"2\" sounds right, because \"berry\" has two r's."
-          ]
-        },
-        {
-          "h": "How modern models get it right"
-        },
-        {
-          "ul": [
-            "<b>Spell it out first.</b> Reasoning models write s-t-r-a-w-b-e-r-r-y before answering. Each letter becomes its own token, so now every r is visible and can be counted.",
-            "<b>Or use a tool.</b> Running <code>\"strawberry\".count(\"r\")</code> in code gives exactly 3."
-          ]
-        },
-        "<mark>Spelling a word out turns letters the model can't see into tokens it can read.</mark>",
-        {
-          "note": "The same blind spot affects any task that needs the letters inside a token: spelling a word backwards, counting characters, or finding words that start with a given letter.",
+          "note": "This is where tokenization hits you in practice. Text that needs more tokens, like some languages or messy formatting, fills the window faster and costs more. How the model uses the window, and why long contexts are slow, comes in <i>Output & inference</i>.",
           "kind": "dev"
         }
       ],
       "viz": [
         {
           "type": "widget",
-          "name": "letter-count",
-          "props": {
-            "word": "strawberry",
-            "letter": "r",
-            "pieces": ["str", "aw", "berry"],
-            "ids": [496, 675, 15717]
-          }
+          "name": "context-fit"
         },
         {
           "type": "caption",
-          "html": "Switch between the three views, then step through how a reasoning model counts. The split and IDs are illustrative; real tokenizers differ."
+          "html": "Token counts are rough. Real apps also reserve room for tool results and the model's thinking."
+        }
+      ]
+    },
+    {
+      "title": "Why tokens cost money",
+      "summary": "AI companies charge by the token, because every token takes computing power. More tokens means a bigger bill and a slower answer.",
+      "body": [
+        "Every token the model reads or writes runs through billions of numbers on expensive GPUs. So providers charge by the token, usually as a price per <b>million tokens</b>.",
+        {
+          "ul": [
+            "<b>Input tokens</b> are what you send: the system prompt, the chat so far, any documents. They're cheaper, because the model reads them all at once.",
+            "<b>Output tokens</b> are what it writes. They usually cost 4 to 5 times more, because each one needs its own run through the whole model.",
+            "<b>The whole chat is sent every time.</b> The model has no memory, so each new question re-sends all the earlier messages. A long chat gets more expensive with every turn.",
+            "<b>Thinking counts too.</b> Reasoning models are billed for their hidden thinking, as output tokens."
+          ]
+        },
+        "<mark>You pay for every token in and every token out, so long prompts, long chats and long answers all add up.</mark>",
+        {
+          "h": "Ways to spend less"
+        },
+        {
+          "ul": [
+            "<b>Reuse the same opening.</b> With prompt caching, a long system prompt that stays the same is billed at a big discount after the first time.",
+            "<b>Send only what's needed.</b> Trim old messages and include just the relevant parts of documents.",
+            "<b>Match the model to the job.</b> A small model is often 10 times cheaper and fine for simple tasks.",
+            "<b>Cap the reply length</b> when you only need a short answer."
+          ]
+        },
+        {
+          "note": "English averages about 0.75 words per token. Many other languages need more tokens to say the same thing, so the same message can cost more.",
+          "kind": "dev"
         }
       ],
-      "figure": {
-        "src": "images/strawberry-light.svg",
-        "darkSrc": "images/strawberry-dark.svg",
-        "alt": "You see the ten letters s t r a w b e r r y, with three r's. The model sees three tokens instead, str, aw and berry, which reach it only as the numbers 496, 675 and 15717, so the letters are hidden. Answering straight away, it guesses 2, because berry has two r's. Spelling the word out first, one letter per token, lets it count the r's one by one and answer 3.",
-        "width": 1200,
-        "height": 560,
-        "caption": "The whole problem in one picture: the letters are there for you, but hidden from the model unless it spells them out."
-      }
+      "viz": [
+        {
+          "type": "widget",
+          "name": "token-cost"
+        },
+        {
+          "type": "caption",
+          "html": "Example prices, roughly in line with typical 2025 list prices. Real prices vary by provider and change often."
+        }
+      ]
     },
     {
       "title": "Special tokens and chat templates",
@@ -868,74 +849,55 @@
       ]
     },
     {
-      "title": "The context window: a limit counted in tokens",
-      "summary": "A model can only look at a fixed number of tokens at once. That limit, the context window, is one big reason token counts matter.",
+      "title": "The strawberry problem: why counting letters is hard",
+      "summary": "Ask \"How many r's in strawberry?\" and many models used to say 2. The reason is tokens: the model never sees the letters.",
       "body": [
-        "<mark>Every model has a <b>context window</b>: the most tokens it can handle in one request. Everything has to fit inside it: the system prompt, the whole chat so far, any documents you attach, and the reply it's writing.</mark>",
         {
           "ul": [
-            "<b>Sizes have grown fast.</b> GPT-2 (2019) could handle 1,024 tokens. Many models today take 128,000, and some over 1,000,000.",
-            "<b>Roughly:</b> 1,000 tokens is about 750 English words, so 128,000 tokens is about a 300-page book.",
-            "<b>The reply counts too.</b> The tokens the model writes come out of the same window, and there's usually a separate cap on how long one reply can be."
+            "<b>The model doesn't see letters.</b> It sees \"strawberry\" as two or three chunks, like <code>str</code> · <code>aw</code> · <code>berry</code>.",
+            "<b>Each chunk is just a number to it.</b> The r's are hidden inside those numbers.",
+            "<b>Answering straight away, it has to guess.</b> \"2\" sounds right, because \"berry\" has two r's."
           ]
         },
-        "<mark>When a chat gets too long, something has to give: the app drops or summarises the oldest messages, or the request is rejected. Anything dropped is simply gone as far as the model is concerned.</mark>",
         {
-          "note": "This is where tokenization hits you in practice. Text that needs more tokens, like some languages or messy formatting, fills the window faster and costs more. How the model uses the window, and why long contexts are slow, comes in <i>Output & inference</i>.",
+          "h": "How modern models get it right"
+        },
+        {
+          "ul": [
+            "<b>Spell it out first.</b> Reasoning models write s-t-r-a-w-b-e-r-r-y before answering. Each letter becomes its own token, so now every r is visible and can be counted.",
+            "<b>Or use a tool.</b> Running <code>\"strawberry\".count(\"r\")</code> in code gives exactly 3."
+          ]
+        },
+        "<mark>Spelling a word out turns letters the model can't see into tokens it can read.</mark>",
+        {
+          "note": "The same blind spot affects any task that needs the letters inside a token: spelling a word backwards, counting characters, or finding words that start with a given letter.",
           "kind": "dev"
         }
       ],
       "viz": [
         {
           "type": "widget",
-          "name": "context-fit"
+          "name": "letter-count",
+          "props": {
+            "word": "strawberry",
+            "letter": "r",
+            "pieces": ["str", "aw", "berry"],
+            "ids": [496, 675, 15717]
+          }
         },
         {
           "type": "caption",
-          "html": "Token counts are rough. Real apps also reserve room for tool results and the model's thinking."
-        }
-      ]
-    },
-    {
-      "title": "Why tokens cost money",
-      "summary": "AI companies charge by the token, because every token takes computing power. More tokens means a bigger bill and a slower answer.",
-      "body": [
-        "Every token the model reads or writes runs through billions of numbers on expensive GPUs. So providers charge by the token, usually as a price per <b>million tokens</b>.",
-        {
-          "ul": [
-            "<b>Input tokens</b> are what you send: the system prompt, the chat so far, any documents. They're cheaper, because the model reads them all at once.",
-            "<b>Output tokens</b> are what it writes. They usually cost 4 to 5 times more, because each one needs its own run through the whole model.",
-            "<b>The whole chat is sent every time.</b> The model has no memory, so each new question re-sends all the earlier messages. A long chat gets more expensive with every turn.",
-            "<b>Thinking counts too.</b> Reasoning models are billed for their hidden thinking, as output tokens."
-          ]
-        },
-        "<mark>You pay for every token in and every token out, so long prompts, long chats and long answers all add up.</mark>",
-        {
-          "h": "Ways to spend less"
-        },
-        {
-          "ul": [
-            "<b>Reuse the same opening.</b> With prompt caching, a long system prompt that stays the same is billed at a big discount after the first time.",
-            "<b>Send only what's needed.</b> Trim old messages and include just the relevant parts of documents.",
-            "<b>Match the model to the job.</b> A small model is often 10 times cheaper and fine for simple tasks.",
-            "<b>Cap the reply length</b> when you only need a short answer."
-          ]
-        },
-        {
-          "note": "English averages about 0.75 words per token. Many other languages need more tokens to say the same thing, so the same message can cost more.",
-          "kind": "dev"
+          "html": "Switch between the three views, then step through how a reasoning model counts. The split and IDs are illustrative; real tokenizers differ."
         }
       ],
-      "viz": [
-        {
-          "type": "widget",
-          "name": "token-cost"
-        },
-        {
-          "type": "caption",
-          "html": "Example prices, roughly in line with typical 2025 list prices. Real prices vary by provider and change often."
-        }
-      ]
+      "figure": {
+        "src": "images/strawberry-light.svg",
+        "darkSrc": "images/strawberry-dark.svg",
+        "alt": "You see the ten letters s t r a w b e r r y, with three r's. The model sees three tokens instead, str, aw and berry, which reach it only as the numbers 496, 675 and 15717, so the letters are hidden. Answering straight away, it guesses 2, because berry has two r's. Spelling the word out first, one letter per token, lets it count the r's one by one and answer 3.",
+        "width": 1200,
+        "height": 560,
+        "caption": "The whole problem in one picture: the letters are there for you, but hidden from the model unless it spells them out."
+      }
     }
   ]
 }

@@ -586,7 +586,6 @@
               "name": {
                 "enum": [
                   "fruit-similarity",
-                  "tokenizer",
                   "token-cost",
                   "utf8-bytes",
                   "utf8-byte-table",
