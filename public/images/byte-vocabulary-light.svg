@@ -2,19 +2,19 @@
   <title id="t">What a byte-level vocabulary stores</title>
   <desc id="d">Every vocabulary entry is an ID plus a run of bytes. IDs 0 to 255 are single bytes: 32 is a space, 65 is A, and 195 is only half of é, not a letter on its own. From ID 256 come learned merges, each joining two earlier entries: 256 is the bytes 32 116, read as space-t; 258 is 104 101, read as he; 262 is 32 116 104 101, which is entry 256 and entry 258 joined, read as space-the; 1530 is 105 110 103, read as ing; 6975 is 9 bytes read as space-learning. In GPT-4o's vocabulary the smiling-face emoji is one entry of 4 bytes, 240 159 152 128, and the Hindi letter ह is one entry of 3 bytes, 224 164 185. Special tokens such as end of text, ID 50256, have no bytes: they are reserved IDs. The text column is only for people; the tokenizer matches bytes, and the model only sees the ID.</desc>
   <style>
-    .bg{fill:#f2f6f8}.card{fill:#ffffff;stroke:#d5e0e7}.sunk{fill:#edf3f7}
-    .ink{fill:#10212b}.muted{fill:#4a6070}.onacc{fill:#ffffff}
-    .acc{fill:#0a6ea6}.accink{fill:#075585}.accsoft{fill:#ddeef9}
-    .pos{fill:#17906f}.posink{fill:#0b6b52}.possoft{fill:#d8f1e8;stroke:#17906f}
-    .neg{fill:#d9532f}.negink{fill:#b3341a}.negsoft{fill:#fbe1d8;stroke:#d9532f}
-    .heat{fill:#fbebcb;stroke:#cc8200}.heatink{fill:#8a5a00}.heatfill{fill:#cc8200}
-    .line{stroke:#4a6070;fill:none;stroke-width:2}.thin{stroke:#d5e0e7;fill:none;stroke-width:1.5}
-    .dash{stroke:#0a6ea6;fill:none;stroke-width:2;stroke-dasharray:6 5}
-    .stream{stroke:#0a6ea6;fill:none;stroke-width:14;stroke-linecap:round;opacity:.35}
-    .row{fill:#edf3f7}.hit{fill:#ddeef9;stroke:#0a6ea6}
+    .bg{fill:#f6f4ef}.card{fill:#fffdf9;stroke:#e5e0d5}.sunk{fill:#f3f0e9}
+    .ink{fill:#1c1b22}.muted{fill:#5b5866}.onacc{fill:#ffffff}
+    .acc{fill:#2b5fd9}.accink{fill:#1d47ad}.accsoft{fill:#e6edfc}
+    .pos{fill:#168a64}.posink{fill:#0d6a4b}.possoft{fill:#dcf2e8;stroke:#168a64}
+    .neg{fill:#d24a2b}.negink{fill:#ad3417}.negsoft{fill:#fbe3da;stroke:#d24a2b}
+    .heat{fill:#fcefd2;stroke:#d08a0c}.heatink{fill:#875700}.heatfill{fill:#d08a0c}
+    .line{stroke:#5b5866;fill:none;stroke-width:2}.thin{stroke:#e5e0d5;fill:none;stroke-width:1.5}
+    .dash{stroke:#2b5fd9;fill:none;stroke-width:2;stroke-dasharray:6 5}
+    .stream{stroke:#2b5fd9;fill:none;stroke-width:14;stroke-linecap:round;opacity:.35}
+    .row{fill:#f3f0e9}.hit{fill:#e6edfc;stroke:#2b5fd9}
     .mono{font-family:'JetBrains Mono',ui-monospace,Menlo,monospace}
     .head{font-size:13px;font-weight:700;letter-spacing:.08em}
-    .arrowhead{fill:#4a6070}.arrowacc{fill:#0a6ea6}
+    .arrowhead{fill:#5b5866}.arrowacc{fill:#2b5fd9}
   </style>
   <rect class="bg" width="1200" height="944" rx="18"/>
   <text x="40" y="52" class="ink" font-size="26" font-weight="700">What a byte-level vocabulary stores</text>

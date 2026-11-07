@@ -29,34 +29,35 @@ img {
 }
 /* Layout: chapter rail on top, each chapter a slide stepper; text column left, live instrument right; shapes printed like a debugger trace */
 :root {
-  --bg: #f2f6f8;
-  --surface: #ffffff;
-  --sunk: #edf3f7;
-  --ink: #10212b;
-  --muted: #4a6070;
-  --line: #d5e0e7;
-  --accent: #0a6ea6;
-  --accent-ink: #075585;
-  --accent-soft: #ddeef9;
-  --pos: #17906f;
-  --neg: #d9532f;
-  --heat: #cc8200;
-  --heat-soft: #fbebcb;
+  /* Light: warm paper, warm near-black ink, a cobalt accent and amber highlights. */
+  --bg: #f6f4ef;
+  --surface: #fffdf9;
+  --sunk: #f3f0e9;
+  --ink: #1c1b22;
+  --muted: #5b5866;
+  --line: #e5e0d5;
+  --accent: #2b5fd9;
+  --accent-ink: #1d47ad;
+  --accent-soft: #e6edfc;
+  --pos: #168a64;
+  --neg: #d24a2b;
+  --heat: #d08a0c;
+  --heat-soft: #fcefd2;
   /* Text-safe versions of pos/neg/heat (>= 4.5:1 on white and on panels). The plain tokens stay
      bright for fills, bars and strokes. */
-  --pos-ink: #0b6b52;
-  --neg-ink: #b3341a;
-  --heat-ink: #8a5a00;
+  --pos-ink: #0d6a4b;
+  --neg-ink: #ad3417;
+  --heat-ink: #875700;
   /* Active pill, page glow, card depth, panel outline */
-  --pill-bg: #0a6ea6;
-  --pill-fg: #ffffff;
-  --bg-top: #e3f0f8;
-  --shadow: 0 1px 2px rgba(16, 33, 43, 0.05), 0 10px 28px -14px rgba(16, 33, 43, 0.18);
+  --pill-bg: #1c1b22;
+  --pill-fg: #fffdf9;
+  --bg-top: #fbf9f4;
+  --shadow: 0 1px 2px rgb(60 45 20 / 0.05), 0 12px 32px -16px rgb(60 45 20 / 0.18);
   --panel-border: var(--line);
-  --code-bg: #13232d;
-  --code-ink: #dde6e2;
-  --code-dim: #8fa39c;
-  --code-key: #7fc8dd;
+  --code-bg: #1f1e27;
+  --code-ink: #e8e6ef;
+  --code-dim: #9a97a8;
+  --code-key: #a9c1ff;
   /* Glass surfaces: solid in light and dark, frosted in the glass theme. */
   --glass-bg: var(--surface);
   --glass-fx: none;

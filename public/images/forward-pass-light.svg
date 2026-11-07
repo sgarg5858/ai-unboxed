@@ -2,19 +2,19 @@
   <title id="t">One forward pass, and the generation loop</title>
   <desc id="d">Text is split into token IDs, each ID becomes a vector of d numbers, the vectors flow through N transformer blocks, and the final layer gives a score for every vocabulary token. Softmax turns the last position's scores into probabilities, one token is picked, appended to the text, and the whole pass runs again.</desc>
   <style>
-    .bg{fill:#f2f6f8}.card{fill:#ffffff;stroke:#d5e0e7}.sunk{fill:#edf3f7}
-    .ink{fill:#10212b}.muted{fill:#4a6070}.onacc{fill:#ffffff}
-    .acc{fill:#0a6ea6}.accink{fill:#075585}.accsoft{fill:#ddeef9}
-    .pos{fill:#17906f}.posink{fill:#0b6b52}.possoft{fill:#d8f1e8;stroke:#17906f}
-    .neg{fill:#d9532f}.negink{fill:#b3341a}.negsoft{fill:#fbe1d8;stroke:#d9532f}
-    .heat{fill:#fbebcb;stroke:#cc8200}.heatink{fill:#8a5a00}.heatfill{fill:#cc8200}
-    .line{stroke:#4a6070;fill:none;stroke-width:2}.thin{stroke:#d5e0e7;fill:none;stroke-width:1.5}
-    .dash{stroke:#0a6ea6;fill:none;stroke-width:2;stroke-dasharray:6 5}
-    .stream{stroke:#0a6ea6;fill:none;stroke-width:14;stroke-linecap:round;opacity:.35}
-    .row{fill:#edf3f7}.hit{fill:#ddeef9;stroke:#0a6ea6}
+    .bg{fill:#f6f4ef}.card{fill:#fffdf9;stroke:#e5e0d5}.sunk{fill:#f3f0e9}
+    .ink{fill:#1c1b22}.muted{fill:#5b5866}.onacc{fill:#ffffff}
+    .acc{fill:#2b5fd9}.accink{fill:#1d47ad}.accsoft{fill:#e6edfc}
+    .pos{fill:#168a64}.posink{fill:#0d6a4b}.possoft{fill:#dcf2e8;stroke:#168a64}
+    .neg{fill:#d24a2b}.negink{fill:#ad3417}.negsoft{fill:#fbe3da;stroke:#d24a2b}
+    .heat{fill:#fcefd2;stroke:#d08a0c}.heatink{fill:#875700}.heatfill{fill:#d08a0c}
+    .line{stroke:#5b5866;fill:none;stroke-width:2}.thin{stroke:#e5e0d5;fill:none;stroke-width:1.5}
+    .dash{stroke:#2b5fd9;fill:none;stroke-width:2;stroke-dasharray:6 5}
+    .stream{stroke:#2b5fd9;fill:none;stroke-width:14;stroke-linecap:round;opacity:.35}
+    .row{fill:#f3f0e9}.hit{fill:#e6edfc;stroke:#2b5fd9}
     .mono{font-family:'JetBrains Mono',ui-monospace,Menlo,monospace}
     .head{font-size:13px;font-weight:700;letter-spacing:.08em}
-    .arrowhead{fill:#4a6070}.arrowacc{fill:#0a6ea6}
+    .arrowhead{fill:#5b5866}.arrowacc{fill:#2b5fd9}
   </style>
   <defs>
     <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arrowhead"/></marker>

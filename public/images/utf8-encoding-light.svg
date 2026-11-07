@@ -2,19 +2,19 @@
   <title id="t">UTF-8: how characters become bytes</title>
   <desc id="d">UTF-8 stores each character as 1 to 4 bytes. English letters, digits and punctuation take 1 byte: A is 65. Accented letters, Greek, Arabic and Hebrew take 2: é is 195 169. Hindi, Chinese, Japanese and most other scripts take 3: the Hindi letter ह is 224 164 185 and the Chinese character 日 is 230 151 165. Emoji take 4: the smiling face is 240 159 152 128. The first byte tells how long the character is: 0 to 127 means 1 byte, 194 to 223 means 2, 224 to 239 means 3, 240 to 244 means 4; 192, 193 and 245 to 255 are never used. The bytes that follow are always between 128 and 191.</desc>
   <style>
-    .bg{fill:#f2f6f8}.card{fill:#ffffff;stroke:#d5e0e7}.sunk{fill:#edf3f7}
-    .ink{fill:#10212b}.muted{fill:#4a6070}.onacc{fill:#ffffff}
-    .acc{fill:#0a6ea6}.accink{fill:#075585}.accsoft{fill:#ddeef9}
-    .pos{fill:#17906f}.posink{fill:#0b6b52}.possoft{fill:#d8f1e8;stroke:#17906f}
-    .neg{fill:#d9532f}.negink{fill:#b3341a}.negsoft{fill:#fbe1d8;stroke:#d9532f}
-    .heat{fill:#fbebcb;stroke:#cc8200}.heatink{fill:#8a5a00}.heatfill{fill:#cc8200}
-    .line{stroke:#4a6070;fill:none;stroke-width:2}.thin{stroke:#d5e0e7;fill:none;stroke-width:1.5}
-    .dash{stroke:#0a6ea6;fill:none;stroke-width:2;stroke-dasharray:6 5}
-    .stream{stroke:#0a6ea6;fill:none;stroke-width:14;stroke-linecap:round;opacity:.35}
-    .row{fill:#edf3f7}.hit{fill:#ddeef9;stroke:#0a6ea6}
+    .bg{fill:#f6f4ef}.card{fill:#fffdf9;stroke:#e5e0d5}.sunk{fill:#f3f0e9}
+    .ink{fill:#1c1b22}.muted{fill:#5b5866}.onacc{fill:#ffffff}
+    .acc{fill:#2b5fd9}.accink{fill:#1d47ad}.accsoft{fill:#e6edfc}
+    .pos{fill:#168a64}.posink{fill:#0d6a4b}.possoft{fill:#dcf2e8;stroke:#168a64}
+    .neg{fill:#d24a2b}.negink{fill:#ad3417}.negsoft{fill:#fbe3da;stroke:#d24a2b}
+    .heat{fill:#fcefd2;stroke:#d08a0c}.heatink{fill:#875700}.heatfill{fill:#d08a0c}
+    .line{stroke:#5b5866;fill:none;stroke-width:2}.thin{stroke:#e5e0d5;fill:none;stroke-width:1.5}
+    .dash{stroke:#2b5fd9;fill:none;stroke-width:2;stroke-dasharray:6 5}
+    .stream{stroke:#2b5fd9;fill:none;stroke-width:14;stroke-linecap:round;opacity:.35}
+    .row{fill:#f3f0e9}.hit{fill:#e6edfc;stroke:#2b5fd9}
     .mono{font-family:'JetBrains Mono',ui-monospace,Menlo,monospace}
     .head{font-size:13px;font-weight:700;letter-spacing:.08em}
-    .arrowhead{fill:#4a6070}.arrowacc{fill:#0a6ea6}
+    .arrowhead{fill:#5b5866}.arrowacc{fill:#2b5fd9}
   </style>
   <rect class="bg" width="1200" height="608" rx="18"/>
   <text x="40" y="52" class="ink" font-size="26" font-weight="700">UTF-8: how characters become bytes</text>
