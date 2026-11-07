@@ -339,19 +339,7 @@ type LetterCountProps = {
         </div>
         <p class="cap" style="margin:12px 0 0">
           The model receives only the numbers: <b class="mono">[{{ ids().join(', ') }}]</b>. The
-          letters inside each chunk are hidden from it.
-        </p>
-      } @else if (view() === 'spelled') {
-        <div class="row" [attr.aria-label]="'Letters: ' + letters().join(' ')">
-          @for (ch of letters(); track $index) {
-            <span class="chip" [class.hot]="ch === target()" [class.dim]="ch !== target()">{{
-              ch
-            }}</span>
-          }
-        </div>
-        <p class="cap" style="margin:12px 0 0">
-          Now each letter is its own token, so every <b>{{ target() }}</b> is visible and can be
-          counted.
+          letters inside each token are hidden from it.
         </p>
       } @else {
         <p class="cap" style="margin:0 0 8px">
@@ -452,10 +440,9 @@ export class LetterCountWidget {
   readonly props = input<LetterCountProps>({});
   protected readonly views = [
     { id: 'model', label: 'What the model sees' },
-    { id: 'spelled', label: 'Spelled out' },
     { id: 'modern', label: 'How modern models do it' },
   ] as const;
-  protected readonly view = signal<'model' | 'spelled' | 'modern'>('model');
+  protected readonly view = signal<'model' | 'modern'>('model');
   protected readonly word = computed(() => this.props().word ?? 'strawberry');
   protected readonly target = computed(() => this.props().letter ?? 'r');
   protected readonly pieces = computed(() => this.props().pieces ?? ['str', 'aw', 'berry']);

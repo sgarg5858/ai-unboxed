@@ -850,13 +850,13 @@
     },
     {
       "title": "The strawberry problem: why counting letters is hard",
-      "summary": "Ask \"How many r's in strawberry?\" and many models used to say 2. The reason is tokens: the model never sees the letters.",
+      "summary": "Ask \"How many r's in strawberry?\" and many models used to say 2. They never saw the letters, only token numbers.",
       "body": [
         {
           "ul": [
-            "<b>The model doesn't see letters.</b> It sees \"strawberry\" as two or three chunks, like <code>str</code> · <code>aw</code> · <code>berry</code>.",
-            "<b>Each chunk is just a number to it.</b> The r's are hidden inside those numbers.",
-            "<b>Answering straight away, it has to guess.</b> \"2\" sounds right, because \"berry\" has two r's."
+            "<b>The model doesn't see letters.</b> GPT-4's tokenizer turns \"strawberry\" into three tokens: <code>str</code> · <code>aw</code> · <code>berry</code>. Inside a sentence, \"␣strawberry\" (with its space) is just <b>one</b> token.",
+            "<b>Each token is just a number to it</b>, like 496, 675 and 15717. The r's are hidden inside those numbers.",
+            "<b>So, answering straight away, it guesses.</b> \"2\" sounds right, because \"berry\" has two r's."
           ]
         },
         {
@@ -864,7 +864,7 @@
         },
         {
           "ul": [
-            "<b>Spell it out first.</b> Reasoning models write s-t-r-a-w-b-e-r-r-y before answering. Each letter becomes its own token, so now every r is visible and can be counted.",
+            "<b>Spell it out first.</b> Reasoning models write s-t-r-a-w-b-e-r-r-y before answering. That makes 10 tokens, one per letter, so every r is now visible and can be counted.",
             "<b>Or use a tool.</b> Running <code>\"strawberry\".count(\"r\")</code> in code gives exactly 3."
           ]
         },
@@ -887,7 +887,7 @@
         },
         {
           "type": "caption",
-          "html": "Switch between the three views, then step through how a reasoning model counts. The split and IDs are illustrative; real tokenizers differ."
+          "html": "Start with what the model sees, then step through how a reasoning model counts. These are GPT-4's real tokens and IDs."
         }
       ],
       "figure": {
