@@ -10,6 +10,7 @@
     .heat{fill:#3d2e14;stroke:#f0ac40}.heatink{fill:#f0ac40}.heatfill{fill:#f0ac40}
     .line{stroke:#9aa9a4;fill:none;stroke-width:2}.thin{stroke:#2c3835;fill:none;stroke-width:1.5}
     .dash{stroke:#4db3d1;fill:none;stroke-width:2;stroke-dasharray:6 5}
+    .edge{stroke:#4db3d1;fill:none;stroke-width:1;opacity:.45}
     .stream{stroke:#4db3d1;fill:none;stroke-width:14;stroke-linecap:round;opacity:.35}
     .row{fill:#1f2826}.hit{fill:#163742;stroke:#4db3d1}
     .mono{font-family:'JetBrains Mono',ui-monospace,Menlo,monospace}

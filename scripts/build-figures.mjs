@@ -60,6 +60,7 @@ const css = (c) => `<style>
     .heat{fill:${c.heatSoft};stroke:${c.heat}}.heatink{fill:${c.heatInk}}.heatfill{fill:${c.heat}}
     .line{stroke:${c.muted};fill:none;stroke-width:2}.thin{stroke:${c.line};fill:none;stroke-width:1.5}
     .dash{stroke:${c.accent};fill:none;stroke-width:2;stroke-dasharray:6 5}
+    .edge{stroke:${c.accent};fill:none;stroke-width:1;opacity:.45}
     .stream{stroke:${c.accent};fill:none;stroke-width:14;stroke-linecap:round;opacity:.35}
     .row{fill:${c.sunk}}.hit{fill:${c.accentSoft};stroke:${c.accent}}
     .mono{font-family:'JetBrains Mono',ui-monospace,Menlo,monospace}
