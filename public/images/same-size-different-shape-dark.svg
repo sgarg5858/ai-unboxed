@@ -1,0 +1,137 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 640" role="img" aria-labelledby="t d" font-family="'Schibsted Grotesk', ui-sans-serif, system-ui, sans-serif">
+  <title id="t">Same size, different shape</title>
+  <desc id="d">Two models with the same number of parameters but different shapes. Model A is wide and shallow: 24 layers, each 1,856 numbers wide. Model B is narrow and deep: 48 layers, each 1,312 numbers wide. Each comes to about 0.99 billion parameters, using 12 times d squared per layer. After training on the same data, both reach almost the same quality. In scaling-law studies (Kaplan et al., 2020), models of the same size with very different shapes ended up within a few percent of each other. Only extreme shapes hurt: for example 2 layers with d = 6,450 is also about 1 billion parameters, but has too few layers to build up meaning. Quality bars are illustrative.</desc>
+  <style>
+    .bg{fill:#0f1413}.card{fill:#171e1c;stroke:#2c3835}.sunk{fill:#1f2826}
+    .ink{fill:#e4ece9}.muted{fill:#9aa9a4}.onacc{fill:#0f1413}
+    .acc{fill:#4db3d1}.accink{fill:#8fd3e6}.accsoft{fill:#163742}
+    .pos{fill:#3fc4a3}.posink{fill:#3fc4a3}.possoft{fill:#123a30;stroke:#3fc4a3}
+    .neg{fill:#f07d60}.negink{fill:#f07d60}.negsoft{fill:#42221a;stroke:#f07d60}
+    .heat{fill:#3d2e14;stroke:#f0ac40}.heatink{fill:#f0ac40}.heatfill{fill:#f0ac40}
+    .line{stroke:#9aa9a4;fill:none;stroke-width:2}.thin{stroke:#2c3835;fill:none;stroke-width:1.5}
+    .dash{stroke:#4db3d1;fill:none;stroke-width:2;stroke-dasharray:6 5}
+    .stream{stroke:#4db3d1;fill:none;stroke-width:14;stroke-linecap:round;opacity:.35}
+    .row{fill:#1f2826}.hit{fill:#163742;stroke:#4db3d1}
+    .mono{font-family:'JetBrains Mono',ui-monospace,Menlo,monospace}
+    .head{font-size:13px;font-weight:700;letter-spacing:.08em}
+    .arrowhead{fill:#9aa9a4}.arrowacc{fill:#4db3d1}
+  </style>
+  <rect class="bg" width="1200" height="640" rx="18"/>
+  <text x="40" y="52" class="ink" font-size="26" font-weight="700">Same size, different shape</text>
+  <text x="40" y="78" class="muted" font-size="15">Two ways to spend about 1 billion parameters on layers. Each bar is one layer; its width is d.</text>
+
+  <rect class="card" x="40" y="104" width="340" height="486" rx="14"/>
+  <text x="60" y="134" class="muted head">A · WIDE AND SHALLOW</text>
+  <g class="thin" stroke-width="1.5"><path d="M60 166 v12 M360 166 v12 M60 172 H360"/></g>
+  <text x="210" y="160" text-anchor="middle" class="accink mono" font-size="14" font-weight="700">d = 1,856</text>
+    <rect class="acc" x="60" y="184.0" width="300" height="11.0" rx="2" opacity="0.55"/>
+    <rect class="acc" x="60" y="198.0" width="300" height="11.0" rx="2" opacity="0.55"/>
+    <rect class="acc" x="60" y="212.0" width="300" height="11.0" rx="2" opacity="0.55"/>
+    <rect class="acc" x="60" y="226.0" width="300" height="11.0" rx="2" opacity="0.55"/>
+    <rect class="acc" x="60" y="240.0" width="300" height="11.0" rx="2" opacity="0.55"/>
+    <rect class="acc" x="60" y="254.0" width="300" height="11.0" rx="2" opacity="0.55"/>
+    <rect class="acc" x="60" y="268.0" width="300" height="11.0" rx="2" opacity="0.55"/>
+    <rect class="acc" x="60" y="282.0" width="300" height="11.0" rx="2" opacity="0.55"/>
+    <rect class="acc" x="60" y="296.0" width="300" height="11.0" rx="2" opacity="0.55"/>
+    <rect class="acc" x="60" y="310.0" width="300" height="11.0" rx="2" opacity="0.55"/>
+    <rect class="acc" x="60" y="324.0" width="300" height="11.0" rx="2" opacity="0.55"/>
+    <rect class="acc" x="60" y="338.0" width="300" height="11.0" rx="2" opacity="0.55"/>
+    <rect class="acc" x="60" y="352.0" width="300" height="11.0" rx="2" opacity="0.55"/>
+    <rect class="acc" x="60" y="366.0" width="300" height="11.0" rx="2" opacity="0.55"/>
+    <rect class="acc" x="60" y="380.0" width="300" height="11.0" rx="2" opacity="0.55"/>
+    <rect class="acc" x="60" y="394.0" width="300" height="11.0" rx="2" opacity="0.55"/>
+    <rect class="acc" x="60" y="408.0" width="300" height="11.0" rx="2" opacity="0.55"/>
+    <rect class="acc" x="60" y="422.0" width="300" height="11.0" rx="2" opacity="0.55"/>
+    <rect class="acc" x="60" y="436.0" width="300" height="11.0" rx="2" opacity="0.55"/>
+    <rect class="acc" x="60" y="450.0" width="300" height="11.0" rx="2" opacity="0.55"/>
+    <rect class="acc" x="60" y="464.0" width="300" height="11.0" rx="2" opacity="0.55"/>
+    <rect class="acc" x="60" y="478.0" width="300" height="11.0" rx="2" opacity="0.55"/>
+    <rect class="acc" x="60" y="492.0" width="300" height="11.0" rx="2" opacity="0.55"/>
+    <rect class="acc" x="60" y="506.0" width="300" height="11.0" rx="2" opacity="0.55"/>
+  <text x="210" y="550" text-anchor="middle" class="ink" font-size="15">24 layers × 12 × 1,856²</text>
+  <text x="210" y="574" text-anchor="middle" class="accink" font-size="16" font-weight="700">≈ 0.99 billion parameters</text>
+
+  <rect class="card" x="400" y="104" width="340" height="486" rx="14"/>
+  <text x="420" y="134" class="muted head">B · NARROW AND DEEP</text>
+  <g class="thin" stroke-width="1.5"><path d="M464 166 v12 M676 166 v12 M464 172 H676"/></g>
+  <text x="570" y="160" text-anchor="middle" class="accink mono" font-size="14" font-weight="700">d = 1,312</text>
+    <rect class="acc" x="464" y="184.0" width="212" height="5.0" rx="2" opacity="0.55"/>
+    <rect class="acc" x="464" y="191.0" width="212" height="5.0" rx="2" opacity="0.55"/>
+    <rect class="acc" x="464" y="198.0" width="212" height="5.0" rx="2" opacity="0.55"/>
+    <rect class="acc" x="464" y="205.0" width="212" height="5.0" rx="2" opacity="0.55"/>
+    <rect class="acc" x="464" y="212.0" width="212" height="5.0" rx="2" opacity="0.55"/>
+    <rect class="acc" x="464" y="219.0" width="212" height="5.0" rx="2" opacity="0.55"/>
+    <rect class="acc" x="464" y="226.0" width="212" height="5.0" rx="2" opacity="0.55"/>
+    <rect class="acc" x="464" y="233.0" width="212" height="5.0" rx="2" opacity="0.55"/>
+    <rect class="acc" x="464" y="240.0" width="212" height="5.0" rx="2" opacity="0.55"/>
+    <rect class="acc" x="464" y="247.0" width="212" height="5.0" rx="2" opacity="0.55"/>
+    <rect class="acc" x="464" y="254.0" width="212" height="5.0" rx="2" opacity="0.55"/>
+    <rect class="acc" x="464" y="261.0" width="212" height="5.0" rx="2" opacity="0.55"/>
+    <rect class="acc" x="464" y="268.0" width="212" height="5.0" rx="2" opacity="0.55"/>
+    <rect class="acc" x="464" y="275.0" width="212" height="5.0" rx="2" opacity="0.55"/>
+    <rect class="acc" x="464" y="282.0" width="212" height="5.0" rx="2" opacity="0.55"/>
+    <rect class="acc" x="464" y="289.0" width="212" height="5.0" rx="2" opacity="0.55"/>
+    <rect class="acc" x="464" y="296.0" width="212" height="5.0" rx="2" opacity="0.55"/>
+    <rect class="acc" x="464" y="303.0" width="212" height="5.0" rx="2" opacity="0.55"/>
+    <rect class="acc" x="464" y="310.0" width="212" height="5.0" rx="2" opacity="0.55"/>
+    <rect class="acc" x="464" y="317.0" width="212" height="5.0" rx="2" opacity="0.55"/>
+    <rect class="acc" x="464" y="324.0" width="212" height="5.0" rx="2" opacity="0.55"/>
+    <rect class="acc" x="464" y="331.0" width="212" height="5.0" rx="2" opacity="0.55"/>
+    <rect class="acc" x="464" y="338.0" width="212" height="5.0" rx="2" opacity="0.55"/>
+    <rect class="acc" x="464" y="345.0" width="212" height="5.0" rx="2" opacity="0.55"/>
+    <rect class="acc" x="464" y="352.0" width="212" height="5.0" rx="2" opacity="0.55"/>
+    <rect class="acc" x="464" y="359.0" width="212" height="5.0" rx="2" opacity="0.55"/>
+    <rect class="acc" x="464" y="366.0" width="212" height="5.0" rx="2" opacity="0.55"/>
+    <rect class="acc" x="464" y="373.0" width="212" height="5.0" rx="2" opacity="0.55"/>
+    <rect class="acc" x="464" y="380.0" width="212" height="5.0" rx="2" opacity="0.55"/>
+    <rect class="acc" x="464" y="387.0" width="212" height="5.0" rx="2" opacity="0.55"/>
+    <rect class="acc" x="464" y="394.0" width="212" height="5.0" rx="2" opacity="0.55"/>
+    <rect class="acc" x="464" y="401.0" width="212" height="5.0" rx="2" opacity="0.55"/>
+    <rect class="acc" x="464" y="408.0" width="212" height="5.0" rx="2" opacity="0.55"/>
+    <rect class="acc" x="464" y="415.0" width="212" height="5.0" rx="2" opacity="0.55"/>
+    <rect class="acc" x="464" y="422.0" width="212" height="5.0" rx="2" opacity="0.55"/>
+    <rect class="acc" x="464" y="429.0" width="212" height="5.0" rx="2" opacity="0.55"/>
+    <rect class="acc" x="464" y="436.0" width="212" height="5.0" rx="2" opacity="0.55"/>
+    <rect class="acc" x="464" y="443.0" width="212" height="5.0" rx="2" opacity="0.55"/>
+    <rect class="acc" x="464" y="450.0" width="212" height="5.0" rx="2" opacity="0.55"/>
+    <rect class="acc" x="464" y="457.0" width="212" height="5.0" rx="2" opacity="0.55"/>
+    <rect class="acc" x="464" y="464.0" width="212" height="5.0" rx="2" opacity="0.55"/>
+    <rect class="acc" x="464" y="471.0" width="212" height="5.0" rx="2" opacity="0.55"/>
+    <rect class="acc" x="464" y="478.0" width="212" height="5.0" rx="2" opacity="0.55"/>
+    <rect class="acc" x="464" y="485.0" width="212" height="5.0" rx="2" opacity="0.55"/>
+    <rect class="acc" x="464" y="492.0" width="212" height="5.0" rx="2" opacity="0.55"/>
+    <rect class="acc" x="464" y="499.0" width="212" height="5.0" rx="2" opacity="0.55"/>
+    <rect class="acc" x="464" y="506.0" width="212" height="5.0" rx="2" opacity="0.55"/>
+    <rect class="acc" x="464" y="513.0" width="212" height="5.0" rx="2" opacity="0.55"/>
+  <text x="570" y="550" text-anchor="middle" class="ink" font-size="15">48 layers × 12 × 1,312²</text>
+  <text x="570" y="574" text-anchor="middle" class="accink" font-size="16" font-weight="700">≈ 0.99 billion parameters</text>
+
+  <rect class="card" x="780" y="104" width="380" height="486" rx="14"/>
+  <text x="800" y="134" class="muted head">AFTER TRAINING ON THE SAME DATA</text>
+  <text x="800" y="174" class="ink" font-size="15" font-weight="600">A · wide</text>
+  <rect class="sunk" x="900" y="160" width="236" height="20" rx="6"/>
+  <rect class="pos" x="900" y="160" width="196" height="20" rx="6"/>
+  <text x="800" y="210" class="ink" font-size="15" font-weight="600">B · deep</text>
+  <rect class="sunk" x="900" y="196" width="236" height="20" rx="6"/>
+  <rect class="pos" x="900" y="196" width="199" height="20" rx="6"/>
+  <text x="800" y="252" class="posink" font-size="22" font-weight="700">Almost the same quality</text>
+  <g class="muted" font-size="14.5">
+    <text x="800" y="282">In scaling-law studies (Kaplan et al., 2020),</text>
+    <text x="800" y="302">models of the same size with very different</text>
+    <text x="800" y="322">shapes ended up within a few percent of</text>
+    <text x="800" y="342">each other. Total size and data matter most.</text>
+  </g>
+  <line x1="800" y1="372" x2="1140" y2="372" class="thin"/>
+  <text x="800" y="402" class="negink head">ONLY EXTREMES HURT</text>
+  <rect class="negsoft" x="800" y="420" width="340" height="12" rx="2" stroke-width="1.5"/>
+  <rect class="negsoft" x="800" y="436" width="340" height="12" rx="2" stroke-width="1.5"/>
+  <text x="970" y="472" text-anchor="middle" class="ink mono" font-size="13">2 layers, d = 6,450 → also ≈ 1B</text>
+  <g class="muted" font-size="14.5">
+    <text x="800" y="504">Same size again, but too few layers to build</text>
+    <text x="800" y="524">up meaning. The opposite extreme, tiny</text>
+    <text x="800" y="544">vectors and hundreds of layers, squeezes</text>
+    <text x="800" y="564">too much into each token's vector.</text>
+  </g>
+
+  <text x="40" y="620" class="muted" font-size="11.5">Counts use 12 × d² per layer and leave out the embedding table. Quality bars are illustrative.</text>
+</svg>

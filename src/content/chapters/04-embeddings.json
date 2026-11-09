@@ -196,6 +196,14 @@
           "kind": "dev"
         }
       ],
+      "figure": {
+        "src": "images/same-size-different-shape-light.svg",
+        "darkSrc": "images/same-size-different-shape-dark.svg",
+        "alt": "Two models with the same number of parameters but different shapes. Model A is wide and shallow: 24 layers, each 1,856 numbers wide. Model B is narrow and deep: 48 layers, each 1,312 numbers wide. Each comes to about 0.99 billion parameters, using 12 times d squared per layer. After training on the same data, both reach almost the same quality. In scaling-law studies (Kaplan et al., 2020), models of the same size with very different shapes ended up within a few percent of each other. Only extreme shapes hurt: for example 2 layers with d = 6,450 is also about 1 billion parameters, but has too few layers to build up meaning. Quality bars are illustrative.",
+        "width": 1200,
+        "height": 640,
+        "caption": "Same budget, two shapes: 24 wide layers or 48 narrow ones. Trained on the same data, they end up almost equally good. Only extreme shapes fall behind."
+      },
       "code": [
         "# GPT-3 175B",
         "d, layers, V = 12288, 96, 50257",
