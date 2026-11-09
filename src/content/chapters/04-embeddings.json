@@ -123,15 +123,24 @@
     },
     {
       "title": "The embedding table",
-      "summary": "Each token ID is turned into a vector by looking up one row of a big learned table.",
+      "summary": "Each token ID picks one row of a big learned table. That row, a list of numbers, is the token's embedding.",
       "body": [
-        "A token ID is just a label: the number 6975 says nothing about meaning. So the model's first real step swaps each ID for a list of <code>d</code> numbers (usually thousands) by looking it up in an <b>embedding table</b>.",
-        "The table is a matrix <code>E</code> with one row for each vocabulary entry, so its shape is <code>[V, d]</code>. Token 6975 picks row 6975. In code that's just an array lookup, so it costs almost nothing.",
-        "The numbers start out random. <mark>Training nudges them millions of times, until tokens used in similar ways have similar vectors.</mark> Unlike the fruit example in <i>The big picture</i>, no column means \"sweetness\". Meaning is spread across all <code>d</code> numbers, in ways researchers have to work hard to figure out.",
-        "Click a token on the right to see which row it selects.",
+        "A token ID is just a label: the number 8415 says nothing about meaning. So the model's first real step swaps each ID for a list of numbers, called a <b>vector</b>, by looking it up in an <b>embedding table</b>.",
         {
-          "note": "The embedding table is learned along with everything else. In small models it's one of the biggest parts: GPT-2 small uses 38.6M of its 124M parameters here.",
-          "kind": "key"
+          "ul": [
+            "<b>One row per token.</b> The table has a row for every entry in the vocabulary. Token 8415 (\"␣cat\") picks row 8415, and that row is its vector.",
+            "<b>Thousands of numbers per row.</b> Each row holds <i>d</i> numbers: 768 in GPT-2 small, 12,288 in GPT-3.",
+            "<b>Almost free to run.</b> It's a plain array lookup, with no maths at all."
+          ]
+        },
+        {
+          "h": "Where the numbers come from"
+        },
+        "The numbers start out random. Training nudges them millions of times, and words used in similar sentences end up with similar rows. Unlike the fruit example in <i>The big picture</i>, no single number means \"sweetness\". Meaning is spread across all of them.",
+        "<mark>An embedding is a token's row in this table: a list of learned numbers, where similar meanings get similar numbers.</mark>",
+        {
+          "note": "The table is learned along with the rest of the model, and in small models it's one of the biggest parts: GPT-2 small uses 38.6M of its 124M parameters here.",
+          "kind": "dev"
         }
       ],
       "code": [
@@ -146,9 +155,17 @@
         },
         {
           "type": "caption",
-          "html": "GPT-2 small: 50,257 × 768 ≈ 38.6M parameters in this one table. Many models reuse it, flipped, as the output layer (called weight tying)."
+          "html": "Click a token to see which row it selects. GPT-2 small: 50,257 rows × 768 numbers ≈ 38.6M parameters in this one table."
         }
-      ]
+      ],
+      "figure": {
+        "src": "images/embedding-lookup-light.svg",
+        "darkSrc": "images/embedding-lookup-dark.svg",
+        "alt": "The token space-cat has ID 8415. The ID picks row 8415 of the embedding table, which has one row per vocabulary entry. That row is a list of numbers, the token's vector: 768 numbers in GPT-2 small, 12,288 in GPT-3. After training, similar words have similar rows: cat and kitten have nearly the same pattern of numbers, while carpet looks completely different. The numbers shown are illustrative.",
+        "width": 1200,
+        "height": 640,
+        "caption": "The ID picks a row; the row is the vector. After training, \"cat\" and \"kitten\" have nearly the same row, while \"carpet\" looks nothing like them."
+      }
     },
     {
       "title": "What the positions of vectors mean",
@@ -156,9 +173,11 @@
       "body": [
         "If you could plot the trained vectors, you'd see a pattern. <mark>Words with related meanings group together: fruits near fruits, programming languages near programming languages.</mark>",
         "Some relationships even become consistent <b>directions</b>. Going from \"man\" to \"woman\" points roughly the same way as going from \"king\" to \"queen\". That's why the famous sum <code>king − man + woman ≈ queen</code> roughly works, first shown with word2vec in 2013.",
+        "<b>Why does this happen?</b> Words that appear in similar sentences get nudged in similar ways during training. \"Cat\" and \"kitten\" both show up near \"purr\" and \"pet\", so their vectors drift together.",
         "Closeness is measured with cosine similarity, the same calculation as the fruit comparison in <i>The big picture</i>.",
+        "<mark class=\"info\">The table gives each token one fixed vector. \"Bank\" gets the same vector by a river and in the high street. Attention, in the next chapter, adjusts it to fit the sentence.</mark>",
         {
-          "note": "This is exactly how semantic search and RAG work. Turn every document into a vector once, turn the user's question into a vector, and return the documents whose vectors are closest. Vector databases exist to do this search quickly.",
+          "note": "This is exactly how semantic search and RAG work. Turn every document into a vector once, turn the user's question into a vector, and return the documents whose vectors are closest. Vector databases exist to do this search quickly. Search tools use separate <i>embedding models</i> that turn a whole sentence or document into one vector, but the idea is the same: close vectors, similar meaning.",
           "kind": "dev"
         }
       ],
@@ -240,7 +259,8 @@
       "summary": "The input stage ends with one vector per token. This is the residual stream that every later layer reads and updates.",
       "body": [
         "Put the steps together: split the text into tokens, look up each token's vector, and add position. The result is a matrix with one row per token and <code>d</code> columns: shape <code>[n, d]</code>, or <code>[B, n, d]</code> for a batch.",
-        "This matrix is called the <b>residual stream</b>, and it's the star of the rest of the course. <mark>Every later layer reads from it and adds its own bit back.</mark>",
+        "This matrix is called the <b>residual stream</b>, and it's the star of the rest of the course.",
+        "<mark>Every token is now a row of numbers that carries its meaning and its position. Every later layer reads from this matrix and adds its own bit back.</mark>",
         {
           "note": "The shape stays the same all the way through the model until the very end. That's why you can stack 32, 80 or 120 identical layers: each takes <code>[B, n, d]</code> in and gives <code>[B, n, d]</code> out.",
           "kind": "key"
@@ -252,7 +272,15 @@
           "type": "widget",
           "name": "residual-matrix"
         }
-      ]
+      ],
+      "figure": {
+        "src": "images/input-stage-light.svg",
+        "darkSrc": "images/input-stage-dark.svg",
+        "alt": "The text \"The cat sat\" is split into three tokens with IDs 791, 8415 and 7731. Each ID looks up its row in the embedding table, giving one vector per token. A position signal is added to each vector (or, in models using RoPE, applied later inside attention). The result is a matrix with one row per token and d columns, shape n by d. This is the residual stream that every later layer reads and updates. Vector values are illustrative.",
+        "width": 1200,
+        "height": 560,
+        "caption": "Everything in this chapter in one picture: token IDs become vectors, position is added, and the result is the [n, d] matrix the rest of the model works on."
+      }
     }
   ]
 }

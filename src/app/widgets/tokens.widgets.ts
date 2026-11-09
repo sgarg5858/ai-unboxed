@@ -140,7 +140,7 @@ export class EmbeddingTableWidget {
           </text>
         }
         <text x="120" y="120">royalty</text>
-        <text x="110" y="190">same "gender" direction</text>
+        <text x="128" y="222" text-anchor="middle">same "gender" direction</text>
       </svg>
     </div>
   `,
