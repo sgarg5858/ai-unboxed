@@ -181,10 +181,14 @@
         },
         {
           "ul": [
-            "<b>Budget first.</b> Teams start from how much computing they can afford and pick a total parameter count. Studies of scaling laws found that total size and training data matter far more than the exact shape.",
-            "<b>Then split width and depth.</b> Each layer adds roughly <code>12 × d²</code> parameters. Bigger models turn up both <code>d</code> and the number of layers together.",
+            "<b>Pick a size.</b> Teams decide how big the model will be from how much computing they can pay for. <mark>Research shows that size and training data matter much more than the model's exact shape.</mark>",
+            "<b>Share it between width and depth.</b> That size is spent on wider vectors (a bigger <code>d</code>) or more layers. Bigger models usually get more of both.",
             "<b>Round for the hardware.</b> Widths are multiples of 64 or 128 so the maths fits GPU chips neatly. That's why you see 768, 4,096 and 12,288, but never 1,000."
           ]
+        },
+        {
+          "more": "What does a model's “shape” mean?",
+          "text": "Shape is how the parameters are arranged: how wide each vector is (<code>d</code>), how many layers there are, and how many attention heads each layer has. Two models of the same size but different shapes usually perform about the same, as long as neither is extremely wide or extremely deep. For example, 24 layers with vectors 1,856 numbers wide and 48 layers with vectors 1,312 numbers wide both come to about 1 billion parameters, and they end up almost equally good."
         },
         "<mark>Wider vectors give the model more room to store meaning, but each layer's cost grows with <code>d²</code>: doubling the width makes every layer about four times bigger.</mark>",
         {

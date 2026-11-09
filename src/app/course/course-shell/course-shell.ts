@@ -46,7 +46,7 @@ export class CourseShell {
   private readonly article = viewChild.required<ElementRef<HTMLElement>>('article');
 
   protected readonly kindOf = (p: Prose) =>
-    typeof p === 'string' ? 'p' : 'ul' in p ? 'ul' : 'h' in p ? 'h' : 'note';
+    typeof p === 'string' ? 'p' : 'ul' in p ? 'ul' : 'h' in p ? 'h' : 'more' in p ? 'more' : 'note';
   protected readonly noteLabel: Record<NoteKind, string> = {
     key: 'Key idea',
     analogy: 'Analogy',

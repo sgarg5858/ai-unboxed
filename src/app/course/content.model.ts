@@ -12,8 +12,14 @@ export type NoteKind = 'key' | 'analogy' | 'dev' | 'warn' | 'example';
  * - { ul } is a bullet list
  * - { h } is a small subheading
  * - { note, kind } is a callout box (Key idea, Analogy, For developers, Watch out, Worked example)
+ * - { more, text } is a collapsed accordion: `more` is the label, `text` shows when expanded
  */
-export type Prose = string | { ul: string[] } | { h: string } | { note: string; kind: NoteKind };
+export type Prose =
+  | string
+  | { ul: string[] }
+  | { h: string }
+  | { note: string; kind: NoteKind }
+  | { more: string; text: string };
 
 export type Tone = 'pos' | 'neg' | 'muted' | 'accent' | 'heat';
 

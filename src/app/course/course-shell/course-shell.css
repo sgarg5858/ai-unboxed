@@ -236,4 +236,22 @@ h1 span {
   color: var(--c);
   margin-bottom: 2px;
 }
+/* Accordion: { more, text } prose items */
+.more {
+  max-width: 62ch;
+  margin: 2px 0 14px;
+  background: var(--sunk);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+.more summary {
+  cursor: pointer;
+  padding: 8px 12px;
+  font-weight: 600;
+  color: var(--accent-ink);
+}
+.more p {
+  margin: 0;
+  padding: 0 12px 10px;
+}
 /* Theme switch */

@@ -60,6 +60,12 @@
               @case ('h') {
                 <h3>{{ $any(p).h }}</h3>
               }
+              @case ('more') {
+                <details class="more">
+                  <summary [innerHTML]="$any(p).more"></summary>
+                  <p [innerHTML]="$any(p).text"></p>
+                </details>
+              }
               @case ('note') {
                 <aside class="note" [attr.data-kind]="$any(p).kind">
                   <span class="note-label">{{ noteLabelOf(p) }}</span>

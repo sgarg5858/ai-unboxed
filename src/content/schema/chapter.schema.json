@@ -37,7 +37,7 @@
         },
         "body": {
           "type": "array",
-          "description": "Paragraph strings, {\"ul\": [...]} lists, {\"h\": \"...\"} subheadings or {\"note\": \"...\", \"kind\": \"key|analogy|dev|warn|example\"} callouts",
+          "description": "Paragraph strings, {\"ul\": [...]} lists, {\"h\": \"...\"} subheadings, {\"note\": \"...\", \"kind\": \"key|analogy|dev|warn|example\"} callouts or {\"more\": \"label\", \"text\": \"...\"} accordions (collapsed until clicked)",
           "items": {
             "oneOf": [
               {
@@ -79,6 +79,21 @@
                   },
                   "kind": {
                     "enum": ["key", "analogy", "dev", "warn", "example"]
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "required": ["more", "text"],
+                "additionalProperties": false,
+                "properties": {
+                  "more": {
+                    "type": "string",
+                    "description": "Accordion label, always visible. Inline HTML allowed."
+                  },
+                  "text": {
+                    "type": "string",
+                    "description": "Shown when the accordion is expanded. Inline HTML allowed (b, i, code, span class, and <mark> around the few points that are critical to understand)."
                   }
                 }
               }
