@@ -168,6 +168,160 @@
       }
     },
     {
+      "title": "Who picks the size of a vector?",
+      "summary": "The number of dimensions is a design choice made before training. It sets the width of the whole model, and its cost grows with the square of the width.",
+      "body": [
+        "Training learns the <i>numbers</i> in the embedding table, but not its <i>shape</i>. <mark>The people building the model choose <code>d</code> (also called <code>d_model</code> or hidden size) before training starts, and it never changes.</mark> The dimensions don't get assigned meanings either. Training decides what each one ends up encoding.",
+        {
+          "h": "It's the width of the whole model"
+        },
+        "<code>d</code> isn't only the embedding size. Every token's vector keeps that size through every layer, so every attention and MLP layer is built to read and write <code>d</code> numbers. Choosing <code>d</code> means choosing how wide the entire model is.",
+        {
+          "h": "How builders choose it"
+        },
+        {
+          "ul": [
+            "<b>Budget first.</b> Teams start from how much computing they can afford and pick a total parameter count. Studies of scaling laws found that total size and training data matter far more than the exact shape.",
+            "<b>Then split width and depth.</b> Each layer adds roughly <code>12 × d²</code> parameters. Bigger models turn up both <code>d</code> and the number of layers together.",
+            "<b>Round for the hardware.</b> Widths are multiples of 64 or 128 so the maths fits GPU chips neatly. That's why you see 768, 4,096 and 12,288, but never 1,000."
+          ]
+        },
+        "<mark>Wider vectors give the model more room to store meaning, but each layer's cost grows with <code>d²</code>: doubling the width makes every layer about four times bigger.</mark>",
+        {
+          "note": "The width also sets the size of the KV cache, the memory a model keeps for every token in the conversation (see <i>Output &amp; inference</i>). Wider and deeper models need more memory per user, which is a big part of what they cost to serve.",
+          "kind": "dev"
+        }
+      ],
+      "code": [
+        "# GPT-3 175B",
+        "d, layers, V = 12288, 96, 50257",
+        "per_layer = 12 * d**2          # ≈ 1.8B",
+        "body  = layers * per_layer     # ≈ 174B",
+        "table = V * d                  # ≈ 0.6B"
+      ],
+      "viz": [
+        {
+          "type": "tabs",
+          "tabs": [
+            {
+              "label": "Real models",
+              "blocks": [
+                {
+                  "type": "table",
+                  "rows": [
+                    {
+                      "head": "Model",
+                      "cells": [{ "text": "d" }, { "text": "layers" }, { "text": "heads × size" }]
+                    },
+                    {
+                      "head": "GPT-2 small",
+                      "cells": [
+                        { "text": "768", "tone": "accent" },
+                        { "text": "12" },
+                        { "text": "12 × 64" }
+                      ]
+                    },
+                    {
+                      "head": "GPT-2 XL",
+                      "cells": [
+                        { "text": "1,600", "tone": "accent" },
+                        { "text": "48" },
+                        { "text": "25 × 64" }
+                      ]
+                    },
+                    {
+                      "head": "Llama 3 8B",
+                      "cells": [
+                        { "text": "4,096", "tone": "accent" },
+                        { "text": "32" },
+                        { "text": "32 × 128" }
+                      ]
+                    },
+                    {
+                      "head": "GPT-3 175B",
+                      "cells": [
+                        { "text": "12,288", "tone": "accent" },
+                        { "text": "96" },
+                        { "text": "96 × 128" }
+                      ]
+                    },
+                    {
+                      "head": "Llama 3 405B",
+                      "cells": [
+                        { "text": "16,384", "tone": "accent" },
+                        { "text": "126" },
+                        { "text": "128 × 128" }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "caption",
+                  "html": "Width and depth grow together. The width always splits evenly into attention heads (<i>Attention</i> chapter): <code>d = heads × head size</code>."
+                }
+              ]
+            },
+            {
+              "label": "Trade-offs",
+              "blocks": [
+                {
+                  "type": "stages",
+                  "items": [
+                    {
+                      "label": "<b>Wider</b>: more room for meaning",
+                      "sub": "more concepts fit without crowding, and there's room for more attention heads",
+                      "value": "more capable",
+                      "tone": "pos"
+                    },
+                    {
+                      "label": "<b>Wider</b>: cost grows with d²",
+                      "sub": "2× the width ≈ 4× the parameters and computing per layer, plus a bigger embedding table and KV cache",
+                      "value": "slower, pricier",
+                      "tone": "neg"
+                    },
+                    {
+                      "label": "<b>Too narrow</b>: a bottleneck",
+                      "sub": "everything the model knows about a token has to squeeze into one vector, and extra layers can't fix that",
+                      "value": "less capable",
+                      "tone": "neg"
+                    },
+                    {
+                      "label": "<b>Deeper instead</b>: more steps",
+                      "sub": "more layers can build on each other, but they run one after another, which adds delay",
+                      "value": "a balance",
+                      "tone": "muted"
+                    }
+                  ]
+                },
+                {
+                  "type": "caption",
+                  "html": "No single best width exists. Labs pick a total size for their budget, then choose a sensible shape."
+                }
+              ]
+            },
+            {
+              "label": "Where the parameters go",
+              "blocks": [
+                {
+                  "type": "bars",
+                  "items": [
+                    { "label": "GPT-2 small: embedding table", "value": 0.31, "display": "31%" },
+                    { "label": "GPT-2 small: layers", "value": 0.69, "display": "69%" },
+                    { "label": "GPT-3: embedding table", "value": 0.004, "display": "0.4%" },
+                    { "label": "GPT-3: layers", "value": 0.996, "display": "99.6%" }
+                  ]
+                },
+                {
+                  "type": "caption",
+                  "html": "The table grows with <code>d</code> but the layers grow with <code>d²</code>, so in big models the embedding table becomes a tiny share of the total."
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
       "title": "What the positions of vectors mean",
       "summary": "After training, similar words sit close together, and some relationships point in a consistent direction.",
       "body": [
