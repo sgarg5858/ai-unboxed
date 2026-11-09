@@ -12,14 +12,15 @@ export type NoteKind = 'key' | 'analogy' | 'dev' | 'warn' | 'example';
  * - { ul } is a bullet list
  * - { h } is a small subheading
  * - { note, kind } is a callout box (Key idea, Analogy, For developers, Watch out, Worked example)
- * - { more, text } is a collapsed accordion: `more` is the label, `text` shows when expanded
+ * - { more, text, goto?, link? } is a collapsed accordion: `more` is the label, `text` shows when
+ *   expanded, and an optional `goto` adds a `link` button to a slide that covers it in full
  */
 export type Prose =
   | string
   | { ul: string[] }
   | { h: string }
   | { note: string; kind: NoteKind }
-  | { more: string; text: string };
+  | { more: string; text: string; goto?: Goto; link?: string };
 
 export type Tone = 'pos' | 'neg' | 'muted' | 'accent' | 'heat';
 

@@ -16,7 +16,7 @@ import { CourseNav } from '../course-nav';
 import { CourseOutline } from '../course-outline/course-outline';
 import { SidebarState } from '../sidebar-state';
 import { SlideProgress } from '../slide-progress/slide-progress';
-import { Figure, NoteKind, Prose, SlideContent } from '../content.model';
+import { Figure, Goto, NoteKind, Prose, SlideContent } from '../content.model';
 
 @Component({
   selector: 'app-course-shell',
@@ -57,6 +57,7 @@ export class CourseShell {
   /** A slide's figure field holds one figure or a list; always render a list. */
   protected readonly figures = (s: SlideContent): Figure[] =>
     s.figure ? ([] as Figure[]).concat(s.figure) : [];
+  protected readonly go = (g: Goto) => this.nav.goto(g.chapter, (g.slide ?? 1) - 1);
   protected readonly noteLabelOf = (p: Prose) => this.noteLabel[(p as { kind: NoteKind }).kind];
 
   protected move(dir: 1 | -1) {

@@ -61,6 +61,14 @@ describe('course content', () => {
               if (!target || (it.goto.slide ?? 1) > target.slides.length)
                 broken.push(`${c.id}: ${it.label} → ${JSON.stringify(it.goto)}`);
             }
+    for (const c of COURSE)
+      for (const s of c.slides)
+        for (const p of s.body) {
+          if (typeof p === 'string' || !('more' in p) || !p.goto) continue;
+          const target = COURSE.find((x) => x.id === p.goto!.chapter);
+          if (!target || (p.goto.slide ?? 1) > target.slides.length)
+            broken.push(`${c.id}: ${p.more} → ${JSON.stringify(p.goto)}`);
+        }
     expect(broken).toEqual([]);
   });
 });

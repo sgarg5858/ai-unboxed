@@ -192,6 +192,12 @@
         },
         "<mark>Wider vectors give the model more room to store meaning, but each layer's cost grows with <code>d²</code>: doubling the width makes every layer about four times bigger.</mark>",
         {
+          "more": "Why does cost grow with <code>d²</code>?",
+          "text": "Every number going into a layer connects to every number coming out, and each connection is one weight. With <code>d</code> numbers in and <code>d</code> out, that's <code>d × d</code> weights. In the figure below, 8 neurons connect to the next 8 with 64 lines. Double them to 16 and you get 256 lines: <b>4× the weights for 2× the width</b>. Each weight is used once for every token, so the computing grows with <code>d²</code> too. A transformer layer holds several of these grids, which adds up to about <code>12 × d²</code> per layer.",
+          "goto": { "chapter": "block", "slide": 4 },
+          "link": "Count them up in The transformer block"
+        },
+        {
           "note": "The width also sets the size of the KV cache, the memory a model keeps for every token in the conversation (see <i>Output &amp; inference</i>). Wider and deeper models need more memory per user, which is a big part of what they cost to serve.",
           "kind": "dev"
         }

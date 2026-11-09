@@ -244,6 +244,16 @@ h1 span {
   border: 1px solid var(--line);
   border-radius: 8px;
 }
+.more-link {
+  margin: 0 12px 10px;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-weight: 600;
+  color: var(--accent-ink);
+  cursor: pointer;
+}
 .more summary {
   cursor: pointer;
   padding: 8px 12px;

@@ -64,6 +64,11 @@
                 <details class="more">
                   <summary [innerHTML]="$any(p).more"></summary>
                   <p [innerHTML]="$any(p).text"></p>
+                  @if ($any(p).goto; as g) {
+                    <button type="button" class="more-link" (click)="go(g)">
+                      {{ $any(p).link ?? 'Read more' }} →
+                    </button>
+                  }
                 </details>
               }
               @case ('note') {

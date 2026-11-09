@@ -94,6 +94,14 @@
                   "text": {
                     "type": "string",
                     "description": "Shown when the accordion is expanded. Inline HTML allowed (b, i, code, span class, and <mark> around the few points that are critical to understand)."
+                  },
+                  "goto": {
+                    "$ref": "#/definitions/goto",
+                    "description": "Optional link to the slide that covers this in full."
+                  },
+                  "link": {
+                    "type": "string",
+                    "description": "Text for the goto button, e.g. \"Full count in The transformer block\"."
                   }
                 }
               }
