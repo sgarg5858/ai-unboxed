@@ -493,6 +493,18 @@
               "type": {
                 "const": "panel"
               },
+              "tone": {
+                "enum": ["neg"],
+                "description": "neg draws the panel as a red warning box, for limits and caveats."
+              },
+              "title": {
+                "type": "string",
+                "description": "Makes the panel collapsible, with this as the always-visible heading. Inline HTML allowed."
+              },
+              "open": {
+                "type": "boolean",
+                "description": "Start expanded. Only applies with a title. Defaults to false."
+              },
               "blocks": {
                 "type": "array",
                 "items": {

@@ -51,7 +51,16 @@ import { Tabs } from './tabs';
           <app-widget-host [name]="b.name" [props]="b.props" />
         }
         @case ('panel') {
-          <div class="panel"><app-blocks [blocks]="b.blocks" [nested]="true" /></div>
+          @if (b.title) {
+            <details class="panel" [class.warn]="b.tone === 'neg'" [open]="b.open ?? false">
+              <summary [innerHTML]="b.title"></summary>
+              <app-blocks [blocks]="b.blocks" [nested]="true" />
+            </details>
+          } @else {
+            <div class="panel" [class.warn]="b.tone === 'neg'">
+              <app-blocks [blocks]="b.blocks" [nested]="true" />
+            </div>
+          }
         }
         @default {
           <div [class.panel]="!nested()">

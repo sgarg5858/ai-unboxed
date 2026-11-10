@@ -553,19 +553,7 @@
         "\"How do I reset my password?\" and \"I'm locked out of my account. What should I do?\" share few words and differ in length, yet ask the same thing. A good embedding model gives them vectors that <b>point the same way</b>.",
         "<b>Cosine similarity</b> measures the angle between two vectors and ignores their length: <b>1</b> means same direction, <b>0</b> unrelated, and <b>−1</b> opposite (rare with real text).",
         "<mark>Cosine similarity compares direction, not length, so texts with the same intent score high even when their wording and length differ.</mark>",
-        {
-          "h": "What a high score doesn't tell you"
-        },
-        {
-          "ul": [
-            "<b>Truth.</b> \"The Eiffel Tower is in Paris\" and \"…is in Rome\" score high. A vector captures what a text is <i>about</i>, not whether it matches the world, so a false claim sits right next to the true one.",
-            "<b>Agreement.</b> \"JavaScript is the best language\" and \"…the worst language\" are both opinions about JavaScript. The topic dominates the vector, and the opinion is a small part of it, so opposite views land close together.",
-            "<b>Negation.</b> \"This drug is safe\" and \"This drug is not safe\" differ by one word. The vector is mostly built from content words like <i>drug</i> and <i>safe</i>, and few training pairs hinge on a single \"not\", so it barely moves.",
-            "<b>Safety and quality.</b> Harmful instructions sit next to harmless questions on the same topic, and a sloppy, wrong answer next to a careful one. Search returns them all; judging which is safe or good takes a separate step.",
-            "<b>Relevance.</b> Questions tend to look like other questions. \"What causes rain?\" can score higher against \"What causes snow?\" than against a paragraph that actually answers it. Search-tuned embedding models are trained on question-and-answer pairs to reduce this."
-          ]
-        },
-        "<mark>Embeddings capture relationships between texts. They don't check facts, intent, quality or safety.</mark>",
+        "<mark>Embeddings capture relationships. They don't independently verify facts, intent, quality or safety.</mark>",
         {
           "more": "How is it calculated?",
           "text": [
@@ -681,6 +669,38 @@
                   "html": "Each pair shares a topic, so it scores high, yet differs in the way that matters. Scores are illustrative."
                 }
               ]
+            }
+          ]
+        },
+        {
+          "type": "panel",
+          "tone": "neg",
+          "title": "What a high score doesn't tell you",
+          "blocks": [
+            {
+              "type": "stages",
+              "items": [
+                {
+                  "label": "<b>It doesn't understand truth</b>",
+                  "sub": "\"The Eiffel Tower is in Paris\" and \"…is in Rome\" score high."
+                },
+                {
+                  "label": "<b>Two false statements can match</b>",
+                  "sub": "Being wrong in the same way still looks similar."
+                },
+                {
+                  "label": "<b>Two harmful instructions can match</b>",
+                  "sub": "Similarity finds them; it doesn't judge them."
+                },
+                {
+                  "label": "<b>Same topic, opposite views</b>",
+                  "sub": "\"JavaScript is the best language\" and \"JavaScript is the worst language\" are both opinions about JavaScript, so they land close."
+                }
+              ]
+            },
+            {
+              "type": "caption",
+              "html": "Embeddings capture relationships. They don't independently verify facts, intent, quality or safety."
             }
           ]
         }

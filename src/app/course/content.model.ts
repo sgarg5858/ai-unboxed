@@ -77,7 +77,9 @@ export type Block =
   | { type: 'stat'; items: { value: string; label: string }[] }
   | { type: 'code'; source: string[]; title?: string }
   | { type: 'shape'; text: string }
-  | { type: 'panel'; blocks: Block[] }
+  /** tone 'neg' draws the panel as a red warning box. */
+  /** A `title` makes the panel collapsible (closed until clicked, unless `open`). */
+  | { type: 'panel'; blocks: Block[]; tone?: 'neg'; title?: string; open?: boolean }
   | { type: 'tabs'; tabs: { label: string; blocks: Block[] }[]; selected?: number }
   | {
       type: 'stepper';

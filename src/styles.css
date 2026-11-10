@@ -284,6 +284,26 @@ pre.code .kw {
   min-width: 0;
   border: 1px solid var(--panel-border);
 }
+/* Warning panel ({ "type": "panel", "tone": "neg" }): limits, caveats, things that go wrong. */
+.panel.warn {
+  border: 1.5px solid var(--neg);
+  background: color-mix(in srgb, var(--neg) 7%, var(--sunk));
+}
+.panel.warn .stage {
+  background: var(--surface);
+}
+/* Collapsible panel ({ "type": "panel", "title": "…" }): the title is the click target. */
+details.panel > summary {
+  cursor: pointer;
+  font-weight: 700;
+  color: var(--accent-ink);
+}
+details.panel[open] > summary {
+  margin-bottom: 12px;
+}
+.panel.warn > summary {
+  color: var(--neg-ink);
+}
 .cap {
   font-size: 13px;
   color: var(--muted);
