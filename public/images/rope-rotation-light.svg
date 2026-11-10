@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 620" role="img" aria-labelledby="t d" font-family="'Schibsted Grotesk', ui-sans-serif, system-ui, sans-serif">
+  <title id="t">RoPE: position as rotation</title>
+  <desc id="d">How rotary position embeddings, RoPE, mark position. First, the same vector is drawn at positions 0 to 4: at each position it is rotated by one more step, theta. Second, a query at position 5 is rotated 5 steps and a key at position 2 is rotated 2 steps, leaving an angle of 3 steps between them. Third, a query at position 9 and a key at position 6 are both rotated further, but the angle between them is again 3 steps. Because the dot product depends on that angle, the same distance between two tokens gives the same attention score, wherever they are in the text.</desc>
+  <style>
+    .bg{fill:#f6f4ef}.card{fill:#fffdf9;stroke:#e5e0d5}.sunk{fill:#f3f0e9}
+    .ink{fill:#1c1b22}.muted{fill:#5b5866}.onacc{fill:#ffffff}
+    .acc{fill:#2b5fd9}.accink{fill:#1d47ad}.accsoft{fill:#e6edfc}
+    .pos{fill:#168a64}.posink{fill:#0d6a4b}.possoft{fill:#dcf2e8;stroke:#168a64}
+    .neg{fill:#d24a2b}.negink{fill:#ad3417}.negsoft{fill:#fbe3da;stroke:#d24a2b}
+    .heat{fill:#fcefd2;stroke:#d08a0c}.heatink{fill:#875700}.heatfill{fill:#d08a0c}
+    .line{stroke:#5b5866;fill:none;stroke-width:2}.thin{stroke:#e5e0d5;fill:none;stroke-width:1.5}
+    .dash{stroke:#2b5fd9;fill:none;stroke-width:2;stroke-dasharray:6 5}
+    .sacc{stroke:#2b5fd9;fill:none;stroke-width:2.5}.sheat{stroke:#d08a0c;fill:none;stroke-width:2.5}
+    .spos{stroke:#168a64;fill:none;stroke-width:2.5}.sneg{stroke:#d24a2b;fill:none;stroke-width:2.5}
+    .edge{stroke:#2b5fd9;fill:none;stroke-width:1;opacity:.45}
+    .stream{stroke:#2b5fd9;fill:none;stroke-width:14;stroke-linecap:round;opacity:.35}
+    .row{fill:#f3f0e9}.hit{fill:#e6edfc;stroke:#2b5fd9}
+    .mono{font-family:'JetBrains Mono',ui-monospace,Menlo,monospace}
+    .head{font-size:13px;font-weight:700;letter-spacing:.08em}
+    .arrowhead{fill:#5b5866}.arrowacc{fill:#2b5fd9}
+  </style>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arrowhead"/></marker>
+    <marker id="aa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arrowacc"/></marker>
+    <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="heatfill"/></marker>
+    <marker id="ap" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="pos"/></marker>
+    <marker id="an" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="neg"/></marker>
+  </defs>
+  <rect class="bg" width="1200" height="620" rx="18"/>
+  <text x="40" y="52" class="ink" font-size="26" font-weight="700">RoPE: position as rotation</text>
+  <text x="40" y="78" class="muted" font-size="15">Instead of adding a position vector, RoPE turns each query and key by an angle that grows with its position.</text>
+  <rect class="card" x="40" y="104" width="360" height="410" rx="14"/>
+  <text x="60" y="134" class="muted head">1 · ROTATE BY POSITION</text>
+  <circle class="thin" cx="220" cy="330" r="120"/>
+  <line class="sacc" x1="220" y1="330" x2="340.0" y2="330.0" marker-end="url(#aa)" opacity="0.35"/>
+  <text x="366.0" y="335.0" text-anchor="middle" class="accink mono" font-size="13" font-weight="700">0</text>
+  <line class="sacc" x1="220" y1="330" x2="332.8" y2="289.0" marker-end="url(#aa)" opacity="0.51"/>
+  <text x="357.2" y="285.1" text-anchor="middle" class="accink mono" font-size="13" font-weight="700">1</text>
+  <line class="sacc" x1="220" y1="330" x2="311.9" y2="252.9" marker-end="url(#aa)" opacity="0.68"/>
+  <text x="331.8" y="241.2" text-anchor="middle" class="accink mono" font-size="13" font-weight="700">2</text>
+  <line class="sacc" x1="220" y1="330" x2="280.0" y2="226.1" marker-end="url(#aa)" opacity="0.84"/>
+  <text x="293.0" y="208.6" text-anchor="middle" class="accink mono" font-size="13" font-weight="700">3</text>
+  <line class="sacc" x1="220" y1="330" x2="240.8" y2="211.8" marker-end="url(#aa)" opacity="1.00"/>
+  <text x="245.4" y="191.2" text-anchor="middle" class="accink mono" font-size="13" font-weight="700">4</text>
+  <path class="sheat" d="M270.0 330.0 A50 50 0 0 0 267.0 312.9"/>
+  <text x="285.0" y="323.9" class="heatink mono" font-size="13" font-weight="700">θ</text>
+  <circle class="ink" cx="220" cy="330" r="4"/>
+  <text x="220" y="478" text-anchor="middle" class="muted" font-size="13.5">The same vector at positions 0 to 4: it turns</text>
+  <text x="220" y="496" text-anchor="middle" class="muted" font-size="13.5">by one more step θ at each position.</text>
+  <rect class="card" x="420" y="104" width="360" height="410" rx="14"/>
+  <text x="440" y="134" class="muted head">2 · QUERY AT 5, KEY AT 2</text>
+  <circle class="thin" cx="600" cy="330" r="120"/>
+  <path class="spos" d="M642.9 294.0 A56 56 0 0 0 590.3 274.9"/>
+  <text x="626.0" y="263.6" text-anchor="middle" class="posink mono" font-size="14" font-weight="700">3θ</text>
+  <line class="sacc" x1="600" y1="330" x2="579.2" y2="211.8" marker-end="url(#aa)"/>
+  <text x="574.0" y="187.3" text-anchor="middle" class="accink mono" font-size="14" font-weight="700">q@5</text>
+  <line class="sheat" x1="600" y1="330" x2="691.9" y2="252.9" marker-end="url(#ah)"/>
+  <text x="714.9" y="238.6" text-anchor="middle" class="heatink mono" font-size="14" font-weight="700">k@2</text>
+  <circle class="ink" cx="600" cy="330" r="4"/>
+  <text x="600" y="478" text-anchor="middle" class="ink" font-size="14">query turned 5θ, key turned 2θ</text>
+  <text x="600" y="498" text-anchor="middle" class="posink" font-size="14" font-weight="700">gap = 5 − 2 = 3 steps</text>
+  <rect class="card" x="800" y="104" width="360" height="410" rx="14"/>
+  <text x="820" y="134" class="muted head">3 · QUERY AT 9, KEY AT 6</text>
+  <circle class="thin" cx="980" cy="330" r="120"/>
+  <path class="spos" d="M952.0 281.5 A56 56 0 0 0 924.0 330.0"/>
+  <text x="914.2" y="297.0" text-anchor="middle" class="posink mono" font-size="14" font-weight="700">3θ</text>
+  <line class="sacc" x1="980" y1="330" x2="860.0" y2="330.0" marker-end="url(#aa)"/>
+  <text x="830.0" y="335.0" text-anchor="middle" class="accink mono" font-size="14" font-weight="700">q@9</text>
+  <line class="sheat" x1="980" y1="330" x2="920.0" y2="226.1" marker-end="url(#ah)"/>
+  <text x="905.0" y="205.1" text-anchor="middle" class="heatink mono" font-size="14" font-weight="700">k@6</text>
+  <circle class="ink" cx="980" cy="330" r="4"/>
+  <text x="980" y="478" text-anchor="middle" class="ink" font-size="14">query turned 9θ, key turned 6θ</text>
+  <text x="980" y="498" text-anchor="middle" class="posink" font-size="14" font-weight="700">gap = 9 − 6 = 3 steps</text>
+  <rect class="possoft" x="300" y="532" width="600" height="44" rx="10" stroke-width="1.5"/>
+  <text x="600" y="560" text-anchor="middle" class="posink" font-size="16" font-weight="700">Same gap → same angle → same attention score</text>
+  <text x="40" y="600" class="muted" font-size="11.5">Shown for one pair of numbers. Real vectors rotate many pairs, each at its own speed, like the position waves on the previous slide.</text>
+</svg>

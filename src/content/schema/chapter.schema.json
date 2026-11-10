@@ -92,8 +92,11 @@
                     "description": "Accordion label, always visible. Inline HTML allowed."
                   },
                   "text": {
-                    "type": "string",
-                    "description": "Shown when the accordion is expanded. Inline HTML allowed (b, i, code, span class, and <mark> around the few points that are critical to understand)."
+                    "oneOf": [
+                      { "type": "string" },
+                      { "type": "array", "minItems": 1, "items": { "type": "string" } }
+                    ],
+                    "description": "Shown when the accordion is expanded: one paragraph, or a list of paragraphs. Inline HTML allowed (b, i, code, span class, and <mark> around the few points that are critical to understand)."
                   },
                   "goto": {
                     "$ref": "#/definitions/goto",

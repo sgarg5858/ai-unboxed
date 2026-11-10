@@ -137,6 +137,19 @@
           "h": "Where the numbers come from"
         },
         "The numbers start out random. Training nudges them millions of times, and words used in similar sentences end up with similar rows. Unlike the fruit example in <i>The big picture</i>, no single number means \"sweetness\". Meaning is spread across all of them.",
+        {
+          "more": "When are embeddings learned?",
+          "text": [
+            "<b>During training, together with everything else</b>, not in a separate step first.",
+            "<b>1. Before training:</b> only the tokenizer is built. It fixes the vocabulary, and so how many rows the table has.",
+            "<b>2. When training starts:</b> every row is filled with small random numbers, so \"cat\" is no closer to \"kitten\" than to \"carpet\".",
+            "<b>3. On every batch:</b> the model predicts the next tokens and measures its mistakes, and backprop nudges all the weights, including the rows of the tokens in that batch. Common tokens get nudged constantly, rare ones less often.",
+            "<b>4. After training:</b> the table is frozen with the rest of the model.",
+            "Older NLP systems often did it the other way round: they trained word vectors first with tools like word2vec, then plugged them into a model. Modern LLMs learn them on the job."
+          ],
+          "goto": { "chapter": "training", "slide": 3 },
+          "link": "How the nudging works, in Training"
+        },
         "<mark>An embedding is a token's row in this table: a list of learned numbers, where similar meanings get similar numbers.</mark>",
         {
           "note": "The table is learned along with the rest of the model, and in small models it's one of the biggest parts: GPT-2 small uses 38.6M of its 124M parameters here.",
@@ -358,6 +371,14 @@
         "    return (a @ b) / (a.norm() * b.norm())",
         "cosine(E[king] - E[man] + E[woman], E[queen])  # high"
       ],
+      "figure": {
+        "src": "images/embedding-geometry-light.svg",
+        "darkSrc": "images/embedding-geometry-dark.svg",
+        "alt": "Three views of what trained embedding vectors look like, drawn in two dimensions. First, words with related meanings cluster: apple, mango, banana and cherry sit together; cat, kitten, dog and puppy sit together; Python, Rust, Java and Go sit together. Second, relationships become consistent directions: the arrow from man to woman points the same way as the arrow from king to queen, and the arrow from man to king matches woman to queen, so king minus man plus woman lands near queen. Third, closeness is measured by angle: cat and kitten point in almost the same direction, with cosine similarity about 0.97, while cat and carpet are far apart, about 0.11. Positions and numbers are illustrative.",
+        "width": 1200,
+        "height": 600,
+        "caption": "Three patterns in trained embeddings: related words cluster, relationships like male → female point the same way, and closeness is measured by the angle between vectors."
+      },
       "viz": [
         {
           "type": "widget",
@@ -393,6 +414,14 @@
         "# PE[pos, 2i+1] = cos(pos / 10000**(2i/d))",
         "x = token_embedding + PE[:n]"
       ],
+      "figure": {
+        "src": "images/positional-encoding-light.svg",
+        "darkSrc": "images/positional-encoding-dark.svg",
+        "alt": "Why models need position, and how the original Transformer added it. First, without position, \"dog bites man\" and \"man bites dog\" contain the same three tokens, so attention alone gives the same result for both. Second, with position, every token is stamped with its place in the sentence, 0, 1 or 2, so \"dog at position 0\" and \"dog at position 2\" become different inputs: the input is the token vector plus a position vector. Third, the position vector comes from waves at different speeds. Four waves are drawn across positions 0 to 16, from the fastest to the slowest. Reading all four waves at position 5 gives that position its own stamp: about −0.96, +0.60, +0.89 and +0.43. Nearby positions get similar stamps.",
+        "width": 1200,
+        "height": 680,
+        "caption": "Without position, \"dog bites man\" and \"man bites dog\" look the same to attention. A position vector, read off waves at different speeds, stamps each token with where it sits."
+      },
       "viz": [
         {
           "type": "widget",
@@ -419,6 +448,14 @@
         "    return rotate_pairs(x, angle)",
         "q, k = rope(q, m), rope(k, n)   # then q·k as usual"
       ],
+      "figure": {
+        "src": "images/rope-rotation-light.svg",
+        "darkSrc": "images/rope-rotation-dark.svg",
+        "alt": "How rotary position embeddings, RoPE, mark position. First, the same vector is drawn at positions 0 to 4: at each position it is rotated by one more step, theta. Second, a query at position 5 is rotated 5 steps and a key at position 2 is rotated 2 steps, leaving an angle of 3 steps between them. Third, a query at position 9 and a key at position 6 are both rotated further, but the angle between them is again 3 steps. Because the dot product depends on that angle, the same distance between two tokens gives the same attention score, wherever they are in the text.",
+        "width": 1200,
+        "height": 620,
+        "caption": "RoPE turns queries and keys by their position. Two tokens 3 apart always end up 3 steps apart in angle, so they get the same score wherever they are."
+      },
       "viz": [
         {
           "type": "widget",

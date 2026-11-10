@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600" role="img" aria-labelledby="t d" font-family="'Schibsted Grotesk', ui-sans-serif, system-ui, sans-serif">
+  <title id="t">Meaning as positions</title>
+  <desc id="d">Three views of what trained embedding vectors look like, drawn in two dimensions. First, words with related meanings cluster: apple, mango, banana and cherry sit together; cat, kitten, dog and puppy sit together; Python, Rust, Java and Go sit together. Second, relationships become consistent directions: the arrow from man to woman points the same way as the arrow from king to queen, and the arrow from man to king matches woman to queen, so king minus man plus woman lands near queen. Third, closeness is measured by angle: cat and kitten point in almost the same direction, with cosine similarity about 0.97, while cat and carpet are far apart, about 0.11. Positions and numbers are illustrative.</desc>
+  <style>
+    .bg{fill:#0f1413}.card{fill:#171e1c;stroke:#2c3835}.sunk{fill:#1f2826}
+    .ink{fill:#e4ece9}.muted{fill:#9aa9a4}.onacc{fill:#0f1413}
+    .acc{fill:#4db3d1}.accink{fill:#8fd3e6}.accsoft{fill:#163742}
+    .pos{fill:#3fc4a3}.posink{fill:#3fc4a3}.possoft{fill:#123a30;stroke:#3fc4a3}
+    .neg{fill:#f07d60}.negink{fill:#f07d60}.negsoft{fill:#42221a;stroke:#f07d60}
+    .heat{fill:#3d2e14;stroke:#f0ac40}.heatink{fill:#f0ac40}.heatfill{fill:#f0ac40}
+    .line{stroke:#9aa9a4;fill:none;stroke-width:2}.thin{stroke:#2c3835;fill:none;stroke-width:1.5}
+    .dash{stroke:#4db3d1;fill:none;stroke-width:2;stroke-dasharray:6 5}
+    .sacc{stroke:#4db3d1;fill:none;stroke-width:2.5}.sheat{stroke:#f0ac40;fill:none;stroke-width:2.5}
+    .spos{stroke:#3fc4a3;fill:none;stroke-width:2.5}.sneg{stroke:#f07d60;fill:none;stroke-width:2.5}
+    .edge{stroke:#4db3d1;fill:none;stroke-width:1;opacity:.45}
+    .stream{stroke:#4db3d1;fill:none;stroke-width:14;stroke-linecap:round;opacity:.35}
+    .row{fill:#1f2826}.hit{fill:#163742;stroke:#4db3d1}
+    .mono{font-family:'JetBrains Mono',ui-monospace,Menlo,monospace}
+    .head{font-size:13px;font-weight:700;letter-spacing:.08em}
+    .arrowhead{fill:#9aa9a4}.arrowacc{fill:#4db3d1}
+  </style>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arrowhead"/></marker>
+    <marker id="aa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arrowacc"/></marker>
+    <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="heatfill"/></marker>
+    <marker id="ap" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="pos"/></marker>
+    <marker id="an" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="neg"/></marker>
+  </defs>
+  <rect class="bg" width="1200" height="600" rx="18"/>
+  <text x="40" y="52" class="ink" font-size="26" font-weight="700">Meaning as positions</text>
+  <text x="40" y="78" class="muted" font-size="15">After training, where a vector points says what the token means. Three patterns show up.</text>
+  <rect class="card" x="40" y="104" width="360" height="430" rx="14"/>
+  <text x="60" y="134" class="muted head">1 · SIMILAR MEANINGS CLUSTER</text>
+  <ellipse class="heat" cx="130" cy="230" rx="70" ry="50" stroke-width="1.5" opacity="0.9"/>
+  <circle class="heatfill" cx="105" cy="215" r="4"/>
+  <text x="113" y="219" class="heatink" font-size="13" font-weight="600">apple</text>
+  <circle class="heatfill" cx="160" cy="205" r="4"/>
+  <text x="168" y="209" class="heatink" font-size="13" font-weight="600">mango</text>
+  <circle class="heatfill" cx="120" cy="255" r="4"/>
+  <text x="128" y="259" class="heatink" font-size="13" font-weight="600">banana</text>
+  <circle class="heatfill" cx="170" cy="245" r="4"/>
+  <text x="178" y="249" class="heatink" font-size="13" font-weight="600">cherry</text>
+  <ellipse class="hit" cx="300" cy="300" rx="72" ry="52" stroke-width="1.5" opacity="0.9"/>
+  <circle class="acc" cx="275" cy="285" r="4"/>
+  <text x="283" y="289" class="accink" font-size="13" font-weight="600">cat</text>
+  <circle class="acc" cx="320" cy="280" r="4"/>
+  <text x="328" y="284" class="accink" font-size="13" font-weight="600">kitten</text>
+  <circle class="acc" cx="280" cy="325" r="4"/>
+  <text x="288" y="329" class="accink" font-size="13" font-weight="600">dog</text>
+  <circle class="acc" cx="330" cy="320" r="4"/>
+  <text x="338" y="324" class="accink" font-size="13" font-weight="600">puppy</text>
+  <ellipse class="possoft" cx="150" cy="420" rx="78" ry="48" stroke-width="1.5" opacity="0.9"/>
+  <circle class="pos" cx="120" cy="405" r="4"/>
+  <text x="128" y="409" class="posink" font-size="13" font-weight="600">Python</text>
+  <circle class="pos" cx="185" cy="400" r="4"/>
+  <text x="193" y="404" class="posink" font-size="13" font-weight="600">Rust</text>
+  <circle class="pos" cx="125" cy="445" r="4"/>
+  <text x="133" y="449" class="posink" font-size="13" font-weight="600">Java</text>
+  <circle class="pos" cx="190" cy="440" r="4"/>
+  <text x="198" y="444" class="posink" font-size="13" font-weight="600">Go</text>
+  <text x="220" y="512" text-anchor="middle" class="muted" font-size="13.5">fruit, animals and programming languages</text>
+  <text x="220" y="528" text-anchor="middle" class="muted" font-size="13.5">each end up in their own region</text>
+  <rect class="card" x="420" y="104" width="360" height="430" rx="14"/>
+  <text x="440" y="134" class="muted head">2 · RELATIONSHIPS ARE DIRECTIONS</text>
+  <line class="sheat" x1="483.3" y1="411.6" x2="535.9" y2="280.2" marker-end="url(#ah)"/>
+  <line class="sheat" x1="653.3" y1="391.6" x2="705.9" y2="260.2" marker-end="url(#ah)"/>
+  <line class="sacc" x1="488.9" y1="418.9" x2="639.1" y2="401.3" marker-end="url(#aa)"/>
+  <line class="sacc" x1="548.9" y1="268.9" x2="699.1" y2="251.3" marker-end="url(#aa)"/>
+  <circle class="ink" cx="480" cy="420" r="5"/>
+  <text x="480" y="444" text-anchor="middle" class="ink" font-size="15" font-weight="700">man</text>
+  <circle class="ink" cx="540" cy="270" r="5"/>
+  <text x="540" y="256" text-anchor="middle" class="ink" font-size="15" font-weight="700">woman</text>
+  <circle class="ink" cx="650" cy="400" r="5"/>
+  <text x="650" y="424" text-anchor="middle" class="ink" font-size="15" font-weight="700">king</text>
+  <circle class="ink" cx="710" cy="250" r="5"/>
+  <text x="710" y="236" text-anchor="middle" class="ink" font-size="15" font-weight="700">queen</text>
+  <text x="478" y="340" text-anchor="end" class="heatink" font-size="13" font-weight="600">female</text>
+  <text x="694" y="330" class="heatink" font-size="13" font-weight="600">female</text>
+  <text x="565" y="432" text-anchor="middle" class="accink" font-size="13" font-weight="600">royal</text>
+  <text x="625" y="248" text-anchor="middle" class="accink" font-size="13" font-weight="600">royal</text>
+  <text x="600" y="174" text-anchor="middle" class="muted" font-size="13.5">same arrow, different starting words</text>
+  <rect class="sunk" x="450" y="472" width="300" height="40" rx="8"/>
+  <text x="600" y="498" text-anchor="middle" class="ink mono" font-size="15" font-weight="700">king − man + woman ≈ queen</text>
+  <rect class="card" x="800" y="104" width="360" height="430" rx="14"/>
+  <text x="820" y="134" class="muted head">3 · CLOSE = SMALL ANGLE</text>
+  <circle class="ink" cx="900" cy="440" r="4"/>
+  <path class="spos" d="M955.2 396.9 A70 70 0 0 0 943.1 384.8"/>
+  <path class="sneg" d="M986.7 372.3 A110 110 0 0 0 858.8 338.0"/>
+  <line class="sacc" x1="900" y1="440" x2="1065.5" y2="310.7" marker-end="url(#aa)"/>
+  <text x="1082.8" y="302.2" text-anchor="middle" class="accink mono" font-size="14" font-weight="700">cat</text>
+  <line class="sacc" x1="900" y1="440" x2="1029.3" y2="274.5" marker-end="url(#aa)"/>
+  <text x="1045.3" y="259.0" text-anchor="middle" class="accink mono" font-size="14" font-weight="700">kitten</text>
+  <line class="line" x1="900" y1="440" x2="828.8" y2="263.8" marker-end="url(#a)"/>
+  <text x="820.6" y="248.4" text-anchor="middle" class="ink mono" font-size="14" font-weight="700">carpet</text>
+  <text x="978.2" y="406.6" class="posink" font-size="12.5" font-weight="700">small</text>
+  <text x="926.8" y="317.8" class="negink" font-size="12.5" font-weight="700">wide</text>
+  <text x="1140" y="470" text-anchor="end" class="posink mono" font-size="13" font-weight="700">cat · kitten ≈ 0.97</text>
+  <text x="1140" y="492" text-anchor="end" class="negink mono" font-size="13" font-weight="700">cat · carpet ≈ 0.11</text>
+  <text x="1140" y="514" text-anchor="end" class="muted" font-size="12.5">cosine similarity: 1 = same direction</text>
+  <text x="40" y="580" class="muted" font-size="11.5">A 2D sketch: real embeddings have thousands of dimensions, and these patterns only hold roughly. Positions and similarity values are illustrative.</text>
+</svg>

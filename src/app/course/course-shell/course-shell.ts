@@ -57,6 +57,9 @@ export class CourseShell {
   /** A slide's figure field holds one figure or a list; always render a list. */
   protected readonly figures = (s: SlideContent): Figure[] =>
     s.figure ? ([] as Figure[]).concat(s.figure) : [];
+  /** An accordion's text is one paragraph or a list of them; always render a list. */
+  protected readonly paragraphsOf = (p: Prose): string[] =>
+    ([] as string[]).concat((p as { text: string | string[] }).text);
   protected readonly go = (g: Goto) => this.nav.goto(g.chapter, (g.slide ?? 1) - 1);
   protected readonly noteLabelOf = (p: Prose) => this.noteLabel[(p as { kind: NoteKind }).kind];
 
