@@ -134,6 +134,22 @@
           ]
         },
         {
+          "note": "<code>\"I love Apple\"</code> → token IDs <code>[40, 3021, 8325]</code> → one row each:<br><code>40 → [0.12, 0.25, …]</code><br><code>3021 → [0.65, 0.10, …]</code><br><code>8325 → [−0.10, 0.90, …]</code><br>The IDs are GPT-4's real ones; the numbers are illustrative.",
+          "kind": "example"
+        },
+        { "h": "A starting point, not the final meaning" },
+        "<mark>The looked-up vector is only the token's starting point: the table row stays fixed, while a copy of it flows through the model and gets updated with context.</mark>",
+        "Take <i>Apple</i>. It starts with the same vector in \"I love Apple. I ate one this afternoon.\" and \"I love Apple. They're launching new Macs this fall.\" As the model reads on, attention mixes in the surrounding words, and the context settles whether it's the fruit or the company.",
+        {
+          "more": "Wait: the clue comes after \"Apple\". Can it still help?",
+          "text": [
+            "In a chat LLM, each token can only read the words <i>before</i> it, so the vector for \"Apple\" never sees \"ate one\" or \"Macs\". Instead, the later tokens read both \"Apple\" and the clue, and the meaning is settled there. Embedding models, which read in both directions, do update \"Apple\" itself.",
+            "Capitalisation also helps a little: <code>\" apple\"</code> (token 24149) and <code>\" Apple\"</code> (token 8325) are different tokens with different rows."
+          ],
+          "goto": { "chapter": "attention", "slide": 1 },
+          "link": "How tokens read each other, in Attention"
+        },
+        {
           "h": "Where the numbers come from"
         },
         "The numbers start out random. Training nudges them millions of times, and words used in similar sentences end up with similar rows. Unlike the fruit example in <i>The big picture</i>, no single number means \"sweetness\". Meaning is spread across all of them.",
@@ -158,7 +174,7 @@
       ],
       "code": [
         "E = torch.nn.Embedding(V, d)      # [V, d] learned",
-        "ids = torch.tensor([[40, 939, 6975]])",
+        "ids = torch.tensor([[40, 3021, 8325]])  # I love Apple",
         "x = E(ids)                          # [1, 3, d]"
       ],
       "viz": [
@@ -402,7 +418,7 @@
           "ul": [
             "<b>A lookup.</b> Each token ID picks its row from the embedding table on the previous slides.",
             "<b>No context.</b> \"Bank\" gets the same vector by a river and in the high street. Context comes later, from attention.",
-            "<b>Internal.</b> They're the LLM's starting point. You rarely use them directly."
+            "<b>Internal.</b> They're the LLM's starting point. You rarely use them directly. To see what such vectors look like, try the Embedding Projector on the right."
           ]
         },
         {
@@ -520,6 +536,153 @@
         {
           "type": "caption",
           "html": "Both are lists of numbers where close means similar. The difference is <i>what</i> gets a vector, and whether context is included."
+        },
+        {
+          "type": "embed",
+          "src": "https://projector.tensorflow.org/",
+          "title": "See it in 3D: Embedding Projector",
+          "description": "Explore 10,000 word vectors squashed down to 3D. Search for a word such as \"cat\" to highlight its nearest neighbours. These are word2vec vectors, an older kind of word embedding rather than an LLM's own table, but they show the same idea: related words sit close together. It works best in a new tab, where its search box has room.",
+          "height": 640
+        }
+      ]
+    },
+    {
+      "title": "Cosine similarity: comparing meaning",
+      "summary": "Cosine similarity scores how closely two vectors point the same way. It finds texts about the same thing, but can't tell whether they're true, safe or in agreement.",
+      "body": [
+        "\"How do I reset my password?\" and \"I'm locked out of my account. What should I do?\" share few words and differ in length, yet ask the same thing. A good embedding model gives them vectors that <b>point the same way</b>.",
+        "<b>Cosine similarity</b> measures the angle between two vectors and ignores their length: <b>1</b> means same direction, <b>0</b> unrelated, and <b>−1</b> opposite (rare with real text).",
+        "<mark>Cosine similarity compares direction, not length, so texts with the same intent score high even when their wording and length differ.</mark>",
+        {
+          "h": "What a high score doesn't tell you"
+        },
+        {
+          "ul": [
+            "<b>Truth.</b> \"The Eiffel Tower is in Paris\" and \"…is in Rome\" score high. A vector captures what a text is <i>about</i>, not whether it matches the world, so a false claim sits right next to the true one.",
+            "<b>Agreement.</b> \"JavaScript is the best language\" and \"…the worst language\" are both opinions about JavaScript. The topic dominates the vector, and the opinion is a small part of it, so opposite views land close together.",
+            "<b>Negation.</b> \"This drug is safe\" and \"This drug is not safe\" differ by one word. The vector is mostly built from content words like <i>drug</i> and <i>safe</i>, and few training pairs hinge on a single \"not\", so it barely moves.",
+            "<b>Safety and quality.</b> Harmful instructions sit next to harmless questions on the same topic, and a sloppy, wrong answer next to a careful one. Search returns them all; judging which is safe or good takes a separate step.",
+            "<b>Relevance.</b> Questions tend to look like other questions. \"What causes rain?\" can score higher against \"What causes snow?\" than against a paragraph that actually answers it. Search-tuned embedding models are trained on question-and-answer pairs to reduce this."
+          ]
+        },
+        "<mark>Embeddings capture relationships between texts. They don't check facts, intent, quality or safety.</mark>",
+        {
+          "more": "How is it calculated?",
+          "text": [
+            "Take the <b>dot product</b>, then divide by both vectors' lengths: <code>cos = a · b / (|a| × |b|)</code>.",
+            "Dividing by the lengths removes size from the picture. <code>[3, 4]</code> and <code>[6, 8]</code> have lengths 5 and 10 but point the same way, so their cosine is exactly 1."
+          ],
+          "goto": {
+            "chapter": "map",
+            "slide": 3
+          },
+          "link": "The basics with fruit vectors, in The big picture"
+        },
+        {
+          "more": "More gotchas in real search",
+          "text": [
+            "<b>Exact details blur.</b> \"Error 404\" and \"Error 500\", or two product codes, look almost identical as vectors.",
+            "<b>Long texts dilute.</b> One vector for a 50-page document mixes many topics, so documents are split into chunks first.",
+            "<b>Scores belong to one model.</b> A 0.8 from one model isn't a 0.8 from another, and vectors from different models can't be compared at all.",
+            "<b>Bias comes along.</b> Embeddings learn from human text, stereotypes included. A 2016 study found word vectors linking \"man\" to \"programmer\" and \"woman\" to \"homemaker\"."
+          ]
+        },
+        {
+          "note": "Many embedding APIs, including OpenAI's, return vectors of length 1, so cosine similarity is just the dot product. Real RAG systems treat similarity as a fast first pass: <b>hybrid search</b> adds keyword matching, a <b>reranker</b> rescores the top hits, and the LLM plus safety checks judge what the text actually says.",
+          "kind": "dev"
+        }
+      ],
+      "code": [
+        "def cosine(a, b):",
+        "    return (a @ b) / (a.norm() * b.norm())",
+        "",
+        "q = embed(\"How do I reset my password?\")",
+        "cosine(q, embed(\"I'm locked out...\"))  # high",
+        "cosine(q, embed(\"Weather tomorrow?\"))   # near 0"
+      ],
+      "figure": {
+        "src": "images/cosine-similarity-light.svg",
+        "darkSrc": "images/cosine-similarity-dark.svg",
+        "alt": "Cosine similarity compares the angle between two vectors, not their length. First, two vectors pointing the same way but with different lengths, a short question and a long, detailed version of it, have a cosine of 1. Second, two vectors at right angles have a cosine of 0: unrelated, nothing in common. Third, two vectors pointing in opposite directions have a cosine of minus 1, which is rare with real text. Fourth, the calculation: the dot product divided by both lengths. For a = [3, 4] with length 5 and b = [6, 8] with length 10, the dot product is 50, and 50 divided by 5 times 10 is 1: same direction despite different lengths. Below, a scale from minus 1 to 1 shows where real text pairs land: \"How do I reset my password?\" against \"I forgot my password and I'm locked out of my account. What should I do?\" scores 0.86, while \"How do I reset my password?\" against \"What's the weather tomorrow?\" scores 0.08. Scores are illustrative.",
+        "width": 1200,
+        "height": 620,
+        "caption": "Same direction scores 1, at right angles 0 and opposite −1, whatever the lengths. That's why a short question and a long, detailed one can still match."
+      },
+      "viz": [
+        {
+          "type": "tabs",
+          "tabs": [
+            {
+              "label": "Scores",
+              "blocks": [
+                {
+                  "type": "stages",
+                  "items": [
+                    {
+                      "label": "\"How do I reset my password?\"",
+                      "sub": "vs \"I'm locked out of my account. What should I do?\"",
+                      "value": "0.86",
+                      "tone": "pos"
+                    },
+                    {
+                      "label": "\"Cheap flights to Paris\"",
+                      "sub": "vs \"Where can I find low-cost airfare to France's capital?\"",
+                      "value": "0.81",
+                      "tone": "pos"
+                    },
+                    {
+                      "label": "\"How do I reset my password?\"",
+                      "sub": "vs \"What's the weather tomorrow?\"",
+                      "value": "0.08",
+                      "tone": "muted"
+                    }
+                  ]
+                },
+                {
+                  "type": "caption",
+                  "html": "Same intent scores high even with different words; unrelated texts land near 0. Scores are illustrative."
+                }
+              ]
+            },
+            {
+              "label": "High score, but…",
+              "blocks": [
+                {
+                  "type": "stages",
+                  "items": [
+                    {
+                      "label": "\"The Eiffel Tower is in Paris\"",
+                      "sub": "vs \"…is in Rome\" · <b>one is false</b>",
+                      "value": "0.93",
+                      "tone": "heat"
+                    },
+                    {
+                      "label": "\"JavaScript is the best language\"",
+                      "sub": "vs \"…the worst language\" · <b>they disagree</b>",
+                      "value": "0.85",
+                      "tone": "heat"
+                    },
+                    {
+                      "label": "\"This drug is safe for children\"",
+                      "sub": "vs \"…is not safe…\" · <b>opposite meaning</b>",
+                      "value": "0.90",
+                      "tone": "heat"
+                    },
+                    {
+                      "label": "\"Error 404 on the login page\"",
+                      "sub": "vs \"Error 500…\" · <b>different problem</b>",
+                      "value": "0.95",
+                      "tone": "heat"
+                    }
+                  ]
+                },
+                {
+                  "type": "caption",
+                  "html": "Each pair shares a topic, so it scores high, yet differs in the way that matters. Scores are illustrative."
+                }
+              ]
+            }
+          ]
         }
       ]
     },
