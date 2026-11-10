@@ -1,0 +1,121 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600" role="img" aria-labelledby="t d" font-family="'Schibsted Grotesk', ui-sans-serif, system-ui, sans-serif">
+  <title id="t">Token embeddings vs a sentence embedding</title>
+  <desc id="d">Two kinds of embedding compared. First, token embeddings: the tokens The, cat and sat each look up their own row in the embedding table, giving three vectors, one per token. They carry no context, so the token cat gets exactly the same vector in every sentence. They are the LLM's input. Second, a sentence embedding: the whole text "The cat sat on the mat" goes through an embedding model, a transformer whose attention mixes context into every token. That gives six context-aware vectors, which are averaged into one vector for the whole text. That vector is compared with other texts by cosine similarity: "A cat was sitting on a rug" scores 0.91 and "Where did the cat sit?" 0.78, while "Stock prices fell today" scores 0.06. Sentence embeddings are used for search, RAG, clustering and recommendations. Vector values and scores are illustrative.</desc>
+  <!--theme-->
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arrowhead"/></marker>
+  </defs>
+  <rect class="bg" width="1200" height="600" rx="18"/>
+  <text x="40" y="52" class="ink" font-size="26" font-weight="700">Token embeddings vs a sentence embedding</text>
+  <text x="40" y="78" class="muted" font-size="15">Same word, two different things: one vector per token from a table, or one vector per text from a whole model.</text>
+  <rect class="card" x="40" y="104" width="470" height="440" rx="14"/>
+  <text x="60" y="134" class="muted head">1 · TOKEN EMBEDDINGS: A LOOKUP</text>
+  <rect class="hit" x="90.0" y="156" width="100" height="34" rx="8" stroke-width="1.5"/>
+  <text x="140" y="178" text-anchor="middle" class="accink mono" font-size="15" font-weight="700">The</text>
+  <g class="line"><line x1="140" y1="194" x2="140" y2="222" marker-end="url(#a)"/></g>
+  <rect class="hit" x="225.0" y="156" width="100" height="34" rx="8" stroke-width="1.5"/>
+  <text x="275" y="178" text-anchor="middle" class="accink mono" font-size="15" font-weight="700">␣cat</text>
+  <g class="line"><line x1="275" y1="194" x2="275" y2="222" marker-end="url(#a)"/></g>
+  <rect class="hit" x="360.0" y="156" width="100" height="34" rx="8" stroke-width="1.5"/>
+  <text x="410" y="178" text-anchor="middle" class="accink mono" font-size="15" font-weight="700">␣sat</text>
+  <g class="line"><line x1="410" y1="194" x2="410" y2="222" marker-end="url(#a)"/></g>
+  <rect class="sunk" x="70" y="228" width="410" height="44" rx="10"/>
+  <text x="275" y="255" text-anchor="middle" class="ink" font-size="14.5" font-weight="600">embedding table: each ID picks its row</text>
+  <g class="line"><line x1="140" y1="276" x2="140" y2="302" marker-end="url(#a)"/></g>
+  <rect class="heatfill" x="120" y="308" width="40" height="15" rx="3" opacity="0.43"/>
+  <rect class="heatfill" x="120" y="326" width="40" height="15" rx="3" opacity="0.64"/>
+  <rect class="acc" x="120" y="344" width="40" height="15" rx="3" opacity="0.40"/>
+  <rect class="heatfill" x="120" y="362" width="40" height="15" rx="3" opacity="0.73"/>
+  <rect class="acc" x="120" y="380" width="40" height="15" rx="3" opacity="0.26"/>
+  <rect class="heatfill" x="120" y="398" width="40" height="15" rx="3" opacity="0.38"/>
+  <g class="line"><line x1="275" y1="276" x2="275" y2="302" marker-end="url(#a)"/></g>
+  <rect class="heatfill" x="255" y="308" width="40" height="15" rx="3" opacity="0.75"/>
+  <rect class="acc" x="255" y="326" width="40" height="15" rx="3" opacity="0.23"/>
+  <rect class="heatfill" x="255" y="344" width="40" height="15" rx="3" opacity="0.78"/>
+  <rect class="heatfill" x="255" y="362" width="40" height="15" rx="3" opacity="0.30"/>
+  <rect class="heatfill" x="255" y="380" width="40" height="15" rx="3" opacity="0.74"/>
+  <rect class="heatfill" x="255" y="398" width="40" height="15" rx="3" opacity="0.71"/>
+  <g class="line"><line x1="410" y1="276" x2="410" y2="302" marker-end="url(#a)"/></g>
+  <rect class="heatfill" x="390" y="308" width="40" height="15" rx="3" opacity="0.31"/>
+  <rect class="acc" x="390" y="326" width="40" height="15" rx="3" opacity="0.61"/>
+  <rect class="heatfill" x="390" y="344" width="40" height="15" rx="3" opacity="0.67"/>
+  <rect class="heatfill" x="390" y="362" width="40" height="15" rx="3" opacity="0.55"/>
+  <rect class="acc" x="390" y="380" width="40" height="15" rx="3" opacity="0.37"/>
+  <rect class="acc" x="390" y="398" width="40" height="15" rx="3" opacity="0.76"/>
+  <text x="275" y="452" text-anchor="middle" class="ink" font-size="15" font-weight="700">3 tokens → 3 vectors</text>
+  <text x="275" y="476" text-anchor="middle" class="muted" font-size="13.5">No context yet: “cat” gets this exact vector</text>
+  <text x="275" y="494" text-anchor="middle" class="muted" font-size="13.5">in every sentence it appears in.</text>
+  <text x="275" y="524" text-anchor="middle" class="accink" font-size="13.5" font-weight="700">Used as: the LLM's input</text>
+  <rect class="card" x="530" y="104" width="630" height="440" rx="14"/>
+  <text x="550" y="134" class="muted head">2 · SENTENCE EMBEDDING: A WHOLE MODEL</text>
+  <rect class="hit" x="560" y="156" width="290" height="34" rx="8" stroke-width="1.5"/>
+  <text x="705" y="178" text-anchor="middle" class="accink mono" font-size="14.5" font-weight="700">The cat sat on the mat</text>
+  <g class="line"><line x1="705" y1="194" x2="705" y2="222" marker-end="url(#a)"/></g>
+  <rect class="accsoft" x="560" y="228" width="290" height="44" rx="10"/>
+  <text x="705" y="248" text-anchor="middle" class="accink" font-size="14" font-weight="700">embedding model (a transformer)</text>
+  <text x="705" y="264" text-anchor="middle" class="ink" font-size="12.5">attention mixes context into every token</text>
+  <g class="line"><line x1="705" y1="276" x2="705" y2="296" marker-end="url(#a)"/></g>
+  <rect class="acc" x="590" y="302" width="24" height="10" rx="3" opacity="0.31"/>
+  <rect class="heatfill" x="590" y="315" width="24" height="10" rx="3" opacity="0.34"/>
+  <rect class="acc" x="590" y="328" width="24" height="10" rx="3" opacity="0.79"/>
+  <rect class="heatfill" x="590" y="341" width="24" height="10" rx="3" opacity="0.76"/>
+  <rect class="acc" x="590" y="354" width="24" height="10" rx="3" opacity="0.65"/>
+  <rect class="heatfill" x="590" y="367" width="24" height="10" rx="3" opacity="0.47"/>
+  <rect class="heatfill" x="630" y="302" width="24" height="10" rx="3" opacity="0.65"/>
+  <rect class="heatfill" x="630" y="315" width="24" height="10" rx="3" opacity="0.68"/>
+  <rect class="heatfill" x="630" y="328" width="24" height="10" rx="3" opacity="0.45"/>
+  <rect class="acc" x="630" y="341" width="24" height="10" rx="3" opacity="0.60"/>
+  <rect class="heatfill" x="630" y="354" width="24" height="10" rx="3" opacity="0.60"/>
+  <rect class="acc" x="630" y="367" width="24" height="10" rx="3" opacity="0.32"/>
+  <rect class="acc" x="670" y="302" width="24" height="10" rx="3" opacity="0.39"/>
+  <rect class="heatfill" x="670" y="315" width="24" height="10" rx="3" opacity="0.37"/>
+  <rect class="acc" x="670" y="328" width="24" height="10" rx="3" opacity="0.28"/>
+  <rect class="heatfill" x="670" y="341" width="24" height="10" rx="3" opacity="0.74"/>
+  <rect class="heatfill" x="670" y="354" width="24" height="10" rx="3" opacity="0.75"/>
+  <rect class="heatfill" x="670" y="367" width="24" height="10" rx="3" opacity="0.57"/>
+  <rect class="acc" x="710" y="302" width="24" height="10" rx="3" opacity="0.44"/>
+  <rect class="heatfill" x="710" y="315" width="24" height="10" rx="3" opacity="0.31"/>
+  <rect class="heatfill" x="710" y="328" width="24" height="10" rx="3" opacity="0.44"/>
+  <rect class="acc" x="710" y="341" width="24" height="10" rx="3" opacity="0.32"/>
+  <rect class="heatfill" x="710" y="354" width="24" height="10" rx="3" opacity="0.28"/>
+  <rect class="heatfill" x="710" y="367" width="24" height="10" rx="3" opacity="0.46"/>
+  <rect class="acc" x="750" y="302" width="24" height="10" rx="3" opacity="0.57"/>
+  <rect class="acc" x="750" y="315" width="24" height="10" rx="3" opacity="0.46"/>
+  <rect class="heatfill" x="750" y="328" width="24" height="10" rx="3" opacity="0.53"/>
+  <rect class="acc" x="750" y="341" width="24" height="10" rx="3" opacity="0.31"/>
+  <rect class="acc" x="750" y="354" width="24" height="10" rx="3" opacity="0.25"/>
+  <rect class="acc" x="750" y="367" width="24" height="10" rx="3" opacity="0.67"/>
+  <rect class="acc" x="790" y="302" width="24" height="10" rx="3" opacity="0.50"/>
+  <rect class="heatfill" x="790" y="315" width="24" height="10" rx="3" opacity="0.47"/>
+  <rect class="acc" x="790" y="328" width="24" height="10" rx="3" opacity="0.80"/>
+  <rect class="heatfill" x="790" y="341" width="24" height="10" rx="3" opacity="0.68"/>
+  <rect class="heatfill" x="790" y="354" width="24" height="10" rx="3" opacity="0.32"/>
+  <rect class="acc" x="790" y="367" width="24" height="10" rx="3" opacity="0.53"/>
+  <text x="705" y="396" text-anchor="middle" class="muted" font-size="12.5">6 tokens → 6 vectors, now with context</text>
+  <g class="line"><line x1="705" y1="404" x2="705" y2="424" marker-end="url(#a)"/></g>
+  <text x="716" y="418" class="heatink" font-size="12.5" font-weight="700">average them</text>
+  <rect class="hit" x="681" y="428" width="48" height="77" rx="7" stroke-width="2"/>
+  <rect class="acc" x="685" y="432" width="40" height="9" rx="3" opacity="0.47"/>
+  <rect class="heatfill" x="685" y="444" width="40" height="9" rx="3" opacity="0.53"/>
+  <rect class="acc" x="685" y="456" width="40" height="9" rx="3" opacity="0.38"/>
+  <rect class="heatfill" x="685" y="468" width="40" height="9" rx="3" opacity="0.57"/>
+  <rect class="heatfill" x="685" y="480" width="40" height="9" rx="3" opacity="0.44"/>
+  <rect class="acc" x="685" y="492" width="40" height="9" rx="3" opacity="0.22"/>
+  <text x="705" y="530" text-anchor="middle" class="accink" font-size="15" font-weight="700">1 vector for the whole text</text>
+  <text x="880" y="176" class="muted head">COMPARED WITH OTHER TEXTS</text>
+  <rect class="possoft" x="880" y="196" width="260" height="48" rx="10" stroke-width="1.5"/>
+  <text x="894" y="225" class="ink" font-size="13.5">A cat was sitting on a rug</text>
+  <text x="1128" y="226" text-anchor="end" class="posink mono" font-size="15" font-weight="700">0.91</text>
+  <rect class="possoft" x="880" y="258" width="260" height="48" rx="10" stroke-width="1.5"/>
+  <text x="894" y="287" class="ink" font-size="13.5">Where did the cat sit?</text>
+  <text x="1128" y="288" text-anchor="end" class="posink mono" font-size="15" font-weight="700">0.78</text>
+  <rect class="negsoft" x="880" y="320" width="260" height="48" rx="10" stroke-width="1.5"/>
+  <text x="894" y="349" class="ink" font-size="13.5">Stock prices fell today</text>
+  <text x="1128" y="350" text-anchor="end" class="negink mono" font-size="15" font-weight="700">0.06</text>
+  <g class="line" stroke-width="1.5"><path d="M736 468 H858 V282 H872" marker-end="url(#a)"/></g>
+  <text x="1010" y="408" text-anchor="middle" class="muted" font-size="13">cosine similarity: similar</text>
+  <text x="1010" y="426" text-anchor="middle" class="muted" font-size="13">meaning scores close to 1</text>
+  <text x="1010" y="476" text-anchor="middle" class="accink" font-size="13.5" font-weight="700">Used for: search, RAG,</text>
+  <text x="1010" y="494" text-anchor="middle" class="accink" font-size="13.5" font-weight="700">clustering, recommendations</text>
+  <text x="40" y="580" class="muted" font-size="11.5">Vectors drawn with 6 numbers; real ones have hundreds to thousands. Some models take one special token's vector instead of averaging. Scores are illustrative.</text>
+</svg>

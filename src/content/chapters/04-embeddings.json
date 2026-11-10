@@ -362,7 +362,7 @@
         "Closeness is measured with cosine similarity, the same calculation as the fruit comparison in <i>The big picture</i>.",
         "<mark class=\"info\">The table gives each token one fixed vector. \"Bank\" gets the same vector by a river and in the high street. Attention, in the next chapter, adjusts it to fit the sentence.</mark>",
         {
-          "note": "This is exactly how semantic search and RAG work. Turn every document into a vector once, turn the user's question into a vector, and return the documents whose vectors are closest. Vector databases exist to do this search quickly. Search tools use separate <i>embedding models</i> that turn a whole sentence or document into one vector, but the idea is the same: close vectors, similar meaning.",
+          "note": "This is exactly how semantic search and RAG work. Turn every document into a vector once, turn the user's question into a vector, and return the documents whose vectors are closest. Vector databases exist to do this search quickly. Search uses a different kind of embedding, one vector for a whole text, which the next slide explains.",
           "kind": "dev"
         }
       ],
@@ -387,6 +387,139 @@
         {
           "type": "caption",
           "html": "A 2D sketch. Real embeddings have hundreds to thousands of dimensions, and these neat directions are only roughly true."
+        }
+      ]
+    },
+    {
+      "title": "Token embeddings vs sentence embeddings",
+      "summary": "An LLM gives every token its own vector from a table. Search and RAG need one vector for a whole piece of text, made by a separate embedding model.",
+      "body": [
+        "The word <i>embedding</i> is used for two different things, and they're easy to mix up.",
+        {
+          "h": "Token embeddings: one vector per token"
+        },
+        {
+          "ul": [
+            "<b>A lookup.</b> Each token ID picks its row from the embedding table on the previous slides.",
+            "<b>No context.</b> \"Bank\" gets the same vector by a river and in the high street. Context comes later, from attention.",
+            "<b>Internal.</b> They're the LLM's starting point. You rarely use them directly."
+          ]
+        },
+        {
+          "h": "Sentence embeddings: one vector per text"
+        },
+        {
+          "ul": [
+            "<b>Run the whole text through a model.</b> An embedding model is a transformer, so attention mixes context into every token's vector.",
+            "<b>Squash it into one vector.</b> Average all the token vectors, or take the vector of one special token.",
+            "<b>Trained for similarity.</b> Training pulls together texts that mean the same thing, such as a question and its answer, and pushes unrelated texts apart."
+          ]
+        },
+        "<mark>A token embedding is a lookup at the start of an LLM. A sentence embedding is the output of a whole model, built so that texts with similar meanings get similar vectors.</mark>",
+        {
+          "more": "Why not just average the token embeddings from the table?",
+          "text": [
+            "It's cheap, but it loses too much. The table's vectors have no context, so the average can't tell \"dog bites man\" from \"man bites dog\": same tokens, same average. It also can't tell a river bank from a money bank.",
+            "An embedding model runs attention first, so each token's vector already reflects the words around it before they're combined. That's also why embedding models are trained specially: a plain LLM's vectors aren't tuned for comparing texts."
+          ]
+        },
+        {
+          "note": "This is what an embeddings API returns. OpenAI's <code>text-embedding-3-small</code> gives 1,536 numbers per text, and the open <code>all-MiniLM-L6-v2</code> gives 384, however long the text is (up to the model's limit). You store these in a vector database and compare them with cosine similarity.",
+          "kind": "dev"
+        }
+      ],
+      "code": [
+        "# token embeddings: one row per token, no context",
+        "x = E(ids)              # [n, d]",
+        "# sentence embedding: run a model, then pool",
+        "h = encoder(ids)        # [n, d], context mixed in",
+        "v = h.mean(dim=0)       # [d], one vector for the text"
+      ],
+      "figure": {
+        "src": "images/token-vs-sentence-embeddings-light.svg",
+        "darkSrc": "images/token-vs-sentence-embeddings-dark.svg",
+        "alt": "Two kinds of embedding compared. First, token embeddings: the tokens The, cat and sat each look up their own row in the embedding table, giving three vectors, one per token. They carry no context, so the token cat gets exactly the same vector in every sentence. They are the LLM's input. Second, a sentence embedding: the whole text \"The cat sat on the mat\" goes through an embedding model, a transformer whose attention mixes context into every token. That gives six context-aware vectors, which are averaged into one vector for the whole text. That vector is compared with other texts by cosine similarity: \"A cat was sitting on a rug\" scores 0.91 and \"Where did the cat sit?\" 0.78, while \"Stock prices fell today\" scores 0.06. Sentence embeddings are used for search, RAG, clustering and recommendations. Vector values and scores are illustrative.",
+        "width": 1200,
+        "height": 600,
+        "caption": "Token embeddings are looked up one per token. A sentence embedding runs the whole text through a model and averages the result into one vector, ready to compare with other texts."
+      },
+      "viz": [
+        {
+          "type": "table",
+          "rows": [
+            {
+              "head": "",
+              "cells": [
+                {
+                  "text": "Token embedding"
+                },
+                {
+                  "text": "Sentence embedding"
+                }
+              ]
+            },
+            {
+              "head": "Gives a vector to",
+              "cells": [
+                {
+                  "text": "each token",
+                  "tone": "accent"
+                },
+                {
+                  "text": "a whole text",
+                  "tone": "heat"
+                }
+              ]
+            },
+            {
+              "head": "How many",
+              "cells": [
+                {
+                  "text": "n per text"
+                },
+                {
+                  "text": "1 per text"
+                }
+              ]
+            },
+            {
+              "head": "Made by",
+              "cells": [
+                {
+                  "text": "a table lookup"
+                },
+                {
+                  "text": "a full model"
+                }
+              ]
+            },
+            {
+              "head": "Context",
+              "cells": [
+                {
+                  "text": "none"
+                },
+                {
+                  "text": "built in"
+                }
+              ]
+            },
+            {
+              "head": "Used for",
+              "cells": [
+                {
+                  "text": "LLM input"
+                },
+                {
+                  "text": "search, RAG"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "caption",
+          "html": "Both are lists of numbers where close means similar. The difference is <i>what</i> gets a vector, and whether context is included."
         }
       ]
     },
