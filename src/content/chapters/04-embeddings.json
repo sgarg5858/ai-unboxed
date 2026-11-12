@@ -611,7 +611,7 @@
           ],
           "goto": {
             "chapter": "embeddings",
-            "slide": 10
+            "slide": 11
           },
           "link": "Bias in embeddings, later in this chapter"
         },
@@ -745,6 +745,127 @@
           ]
         }
       ]
+    },
+    {
+      "title": "What embeddings are used for",
+      "summary": "Turn anything into a vector, and many different tasks become the same question: what's close to this?",
+      "body": [
+        "<mark>An embedding is a general technique for representing information as numbers. Once things are vectors, similar things can be found by measuring how close they are.</mark>",
+        "Three of the most common uses:",
+        {
+          "more": "Recommendations: YouTube, Spotify, Instagram",
+          "text": [
+            "<b>More like this.</b> Embed every video, song or post. When two are close, people who liked one will probably like the other, so you recommend it.",
+            "<b>Personal recommendations.</b> Build a <b>user vector</b> from what someone watches, likes and interacts with, for example the average of those items' vectors. Then recommend the items closest to it.",
+            "Titles don't need to match. Someone watching a video on the JavaScript <i>microtask queue</i> can be shown one on the <i>event loop</i>, because the topics are related even though the words differ."
+          ]
+        },
+        {
+          "more": "Search and RAG: answers from your own documents",
+          "text": [
+            "Give the system a book, PDFs or company documents and ask a question. It splits them into chunks, such as a page or a few paragraphs each, and gives every chunk its own vector.",
+            "Your question becomes a vector too. The chunks closest to it are the ones most likely to hold the answer, and an LLM writes the answer from them. That's a <b>RAG</b> system."
+          ],
+          "goto": {
+            "chapter": "rag",
+            "slide": 1
+          },
+          "link": "The full story in Retrieval-augmented generation"
+        },
+        {
+          "more": "Clustering: group similar things",
+          "text": [
+            "Embed thousands of student questions, comments or support tickets, then group the vectors that sit close together.",
+            "Each group is a topic, so you can see what people ask about most without reading every message, and spot the same question asked many times."
+          ]
+        },
+        {
+          "note": "Most of these don't need an LLM at all, just an embedding model and cosine similarity. That makes them cheap and fast to run at scale.",
+          "kind": "dev"
+        }
+      ],
+      "viz": [
+        {
+          "type": "panel",
+          "blocks": [
+            {
+              "type": "caption",
+              "html": "<b>A user vector</b>, built from what someone watched"
+            },
+            {
+              "type": "stages",
+              "items": [
+                {
+                  "label": "Watched: JavaScript event loop explained",
+                  "tone": "muted"
+                },
+                {
+                  "label": "Watched: Promises vs async/await",
+                  "tone": "muted"
+                },
+                {
+                  "label": "Watched: Microtask queue deep dive",
+                  "tone": "muted"
+                },
+                {
+                  "label": "<b>User vector</b>",
+                  "sub": "the average of those three videos' vectors",
+                  "value": "[0.41, −0.12, …]",
+                  "tone": "accent",
+                  "mono": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "panel",
+          "blocks": [
+            {
+              "type": "caption",
+              "html": "<b>Candidates</b>, ranked by cosine similarity to the user vector"
+            },
+            {
+              "type": "stages",
+              "items": [
+                {
+                  "label": "Node.js event loop phases",
+                  "value": "0.89",
+                  "tone": "pos",
+                  "highlight": true
+                },
+                {
+                  "label": "setTimeout vs setImmediate",
+                  "value": "0.84",
+                  "tone": "pos"
+                },
+                {
+                  "label": "CSS grid in 10 minutes",
+                  "value": "0.31",
+                  "dim": true
+                },
+                {
+                  "label": "Easy pasta recipes",
+                  "value": "0.04",
+                  "dim": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "caption",
+          "html": "Scores are illustrative. Real systems mix in other signals too, such as what's popular, what's new, and how long people watched."
+        }
+      ],
+      "figure": {
+        "src": "images/embedding-uses-light.svg",
+        "darkSrc": "images/embedding-uses-dark.svg",
+        "alt": "Everything becomes a vector, then every task asks what is close to it. Three uses: recommendations, where a video you watched leads to the nearest videos as \"Up next\"; search and RAG, where your question finds the nearest chunks for an answer from your PDFs; and clustering, where 10,000 student questions form groups of close vectors, showing the topics people ask about.",
+        "width": 1200,
+        "height": 400,
+        "caption": "Same tool every time: an embedding model plus a closeness measure."
+      }
     },
     {
       "title": "Word order matters: adding position",
