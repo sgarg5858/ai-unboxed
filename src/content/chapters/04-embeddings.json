@@ -129,7 +129,7 @@
         {
           "ul": [
             "<b>One row per token.</b> The table has a row for every entry in the vocabulary. Token 8415 (\"␣cat\") picks row 8415, and that row is its vector.",
-            "<b>Thousands of numbers per row.</b> Each row holds <i>d</i> numbers: 768 in GPT-2 small, 12,288 in GPT-3.",
+            "<b>Thousands of numbers per row.</b> Each row holds <i>d</i> numbers: 768 in GPT-2 small, 12,288 in GPT-3. More numbers capture more complex patterns, but cost more to store and compute (next slide).",
             "<b>Almost free to run.</b> It's a plain array lookup, with no maths at all."
           ]
         },
@@ -269,6 +269,10 @@
         },
         "<code>d</code> isn't only the embedding size. Every token's vector keeps that size through every layer, so every attention and MLP layer is built to read and write <code>d</code> numbers. Choosing <code>d</code> means choosing how wide the entire model is.",
         {
+          "h": "Why so many dimensions?"
+        },
+        "The fruit in <i>The big picture</i> needed only 3 numbers. Language is far more complex. As you add dimensions, the representation gets richer, with room for more patterns and relationships. The same word is used in many ways and contexts (a river <i>bank</i>, a money <i>bank</i>), and one model may handle dozens of languages. All of that has to fit into the same <code>d</code> numbers.",
+        {
           "h": "How builders choose it"
         },
         {
@@ -282,7 +286,7 @@
           "more": "What does a model's “shape” mean?",
           "text": "Shape is how the parameters are arranged: how wide each vector is (<code>d</code>), how many layers there are, and how many attention heads each layer has. Two models of the same size but different shapes usually perform about the same, as long as neither is extremely wide or extremely deep. For example, 24 layers with vectors 1,856 numbers wide and 48 layers with vectors 1,312 numbers wide both come to about 1 billion parameters, and they end up almost equally good."
         },
-        "<mark>Wider vectors give the model more room to store meaning, but each layer's cost grows with <code>d²</code>: doubling the width makes every layer about four times bigger.</mark>",
+        "<mark>More dimensions can capture more complex patterns, but they also need more storage and more computation: doubling the width makes every layer about four times bigger.</mark>",
         {
           "more": "Why does cost grow with <code>d²</code>?",
           "text": "Every number going into a layer connects to every number coming out, and each connection is one weight. With <code>d</code> numbers in and <code>d</code> out, that's <code>d × d</code> weights. In the figure below, 8 neurons connect to the next 8 with 64 lines. Double them to 16 and you get 256 lines: <b>4× the weights for 2× the width</b>. Each weight is used once for every token, so the computing grows with <code>d²</code> too. A transformer layer holds several of these grids, which adds up to about <code>12 × d²</code> per layer.",
