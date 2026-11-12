@@ -1,0 +1,63 @@
+@let slide = content();
+<article
+  class="slide"
+  [class.solo]="!slide.viz?.length"
+  [attr.aria-live]="live() ? 'polite' : null"
+>
+  <div class="prose">
+    <h2>{{ slide.title }}</h2>
+    @if (slide.summary) {
+      <p class="lead" [innerHTML]="slide.summary"></p>
+    }
+    @for (p of slide.body; track $index) {
+      @switch (kindOf(p)) {
+        @case ('ul') {
+          <ul>
+            @for (li of $any(p).ul; track $index) {
+              <li [innerHTML]="li"></li>
+            }
+          </ul>
+        }
+        @case ('h') {
+          <h3>{{ $any(p).h }}</h3>
+        }
+        @case ('more') {
+          <details class="more">
+            <summary [innerHTML]="$any(p).more"></summary>
+            @for (para of paragraphsOf(p); track $index) {
+              <p [innerHTML]="para"></p>
+            }
+            @if ($any(p).goto; as g) {
+              <button type="button" class="more-link" (click)="go(g)">
+                {{ $any(p).link ?? 'Read more' }} →
+              </button>
+            }
+          </details>
+        }
+        @case ('note') {
+          <aside class="note" [attr.data-kind]="$any(p).kind">
+            <span class="note-label">{{ noteLabelOf(p) }}</span>
+            <span [innerHTML]="$any(p).note"></span>
+          </aside>
+        }
+        @default {
+          <p [innerHTML]="p"></p>
+        }
+      }
+    }
+    @if (slide.code) {
+      <app-code-block [source]="slide.code.join('\n')" />
+    }
+  </div>
+  @if (slide.viz?.length) {
+    <div class="viz">
+      <!-- track by slide identity so widget state resets when the slide changes -->
+      @for (v of [slide]; track v) {
+        <app-blocks [blocks]="v.viz!" />
+      }
+    </div>
+  }
+  @for (f of figures(slide); track f.src) {
+    <app-slide-figure class="wide" [figure]="f" />
+  }
+</article>

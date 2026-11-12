@@ -1,6 +1,6 @@
 import { computed, inject, Injectable } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { NavigationEnd, Router } from '@angular/router';
+import { NavigationEnd, NavigationExtras, Router } from '@angular/router';
 import { filter, map } from 'rxjs';
 import { SECTIONS } from '../../content/course';
 import { COURSE_CHAPTERS, ChapterStore } from './chapter-store';
@@ -61,8 +61,15 @@ export class CourseNav {
   );
   readonly nextLabel = computed(() => {
     const p = this.position();
-    if (p.slide < this.chapter().slides.length - 1) return 'Next →';
-    return this.isLast() ? 'Back to start ↺' : `Next: ${this.chapters[p.chapter + 1].name} →`;
+    if (p.slide < this.chapter().slides.length - 1) return 'Next';
+    return this.isLast() ? 'Back to start' : 'Next chapter';
+  });
+  /** Where Next leads: the next slide's title, the next chapter's name, or the course start. */
+  readonly nextHint = computed(() => {
+    const p = this.position();
+    const slides = this.chapter().slides;
+    if (p.slide < slides.length - 1) return slides[p.slide + 1].title;
+    return this.isLast() ? this.chapters[0].name : this.chapters[p.chapter + 1].name;
   });
 
   goto(chapterId: string, slideIndex = 0) {
@@ -73,8 +80,12 @@ export class CourseNav {
     return this.router.navigate(toPath(this.chapters, { chapter: c, slide: slideIndex }));
   }
 
-  gotoSlide(slideIndex: number) {
-    return this.router.navigate(toPath(this.chapters, { ...this.position(), slide: slideIndex }));
+  /** Pass { replaceUrl: true } to follow the reader's scrolling without filling the history. */
+  gotoSlide(slideIndex: number, extras?: NavigationExtras) {
+    return this.router.navigate(
+      toPath(this.chapters, { ...this.position(), slide: slideIndex }),
+      extras,
+    );
   }
 
   async step(dir: 1 | -1) {

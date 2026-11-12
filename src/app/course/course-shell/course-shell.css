@@ -59,16 +59,26 @@
   .wrap:not(.nav-hidden) .chapter-bar {
     display: none;
   }
-  /* Collapsed: the header keeps its width so the toggle never moves; the slide re-centres. */
+  /* Hidden: the sidebar shrinks to a slim rail with a button to bring it back. */
   .nav-hidden .layout {
-    display: block;
+    grid-template-columns: 52px minmax(0, 1fr);
   }
-  .nav-hidden .sidebar {
-    display: none;
+  .sidebar.rail {
+    display: grid;
+    justify-items: center;
+    gap: 10px;
+    padding: 6px 0;
+    overflow: visible;
   }
-  .nav-hidden .main {
-    max-width: 1180px;
-    margin-inline: auto;
+  .rail-num {
+    font-family: var(--f-mono);
+    font-size: 11.5px;
+    color: var(--accent-ink);
+  }
+  .side-top {
+    display: flex;
+    justify-content: flex-end;
+    margin: -4px -4px 0 0;
   }
 }
 /* Contents button | title | theme switch; the subtitle sits under the title, not the button. */
@@ -106,61 +116,61 @@ h1 span {
     display: none;
   }
 }
-.slide {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 20px;
-  background: var(--glass-bg);
-  backdrop-filter: var(--glass-fx);
-  -webkit-backdrop-filter: var(--glass-fx);
-  border: 1px solid var(--glass-edge);
-  border-radius: var(--glass-radius);
-  padding: 22px;
-  box-shadow: var(--shadow);
+.kbd {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 0 5px;
+  color: var(--muted);
 }
-@media (min-width: 940px) {
-  .slide {
-    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
-    gap: 32px;
-    padding: 30px;
-  }
-  /* No interactive on the right: let the text use the width (at a readable line length). */
-  .slide.solo {
-    grid-template-columns: minmax(0, 1fr);
-  }
-}
-.slide h2 {
-  font-family: var(--f-display);
-  font-weight: 700;
-  font-size: clamp(22px, 2.6vw, 28px);
-  letter-spacing: -0.01em;
-  line-height: 1.15;
-  margin: 0 0 12px;
-  text-wrap: balance;
-}
-.prose {
-  min-width: 0;
-}
-.prose p {
-  margin: 0 0 12px;
-  max-width: 62ch;
-}
-.prose ul {
-  margin: 0 0 12px;
-  padding-left: 20px;
-  max-width: 60ch;
-}
-.prose li {
-  margin: 0 0 6px;
-}
-.wide {
-  grid-column: 1 / -1;
-}
-.viz {
-  min-width: 0;
+/* Contents | title | Search + theme */
+.tools {
   display: flex;
-  flex-direction: column;
-  gap: 12px;
+  align-items: center;
+  gap: 8px;
+}
+/* Looks like a field, opens the search dialog. */
+.searchbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 230px;
+  min-height: 40px;
+  padding: 6px 10px 6px 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--muted);
+  font: inherit;
+  font-size: 14.5px;
+  cursor: text;
+}
+.searchbox:hover {
+  border-color: var(--muted);
+}
+.searchbox:focus-visible {
+  outline: 2px solid var(--accent-ink);
+  outline-offset: 2px;
+}
+.searchbox .ph {
+  flex: 1;
+  text-align: left;
+}
+.tabs {
+  margin: -6px 0 18px;
+}
+/* Phones: the search field shrinks to an icon button. */
+@media (max-width: 600px) {
+  .searchbox {
+    min-width: 44px;
+    min-height: 44px;
+    justify-content: center;
+  }
+  .searchbox .ph,
+  .searchbox .kbd {
+    display: none;
+  }
 }
 .foot {
   display: flex;
@@ -175,93 +185,18 @@ h1 span {
   color: var(--muted);
 }
 .foot .btn {
+  min-height: 44px;
   padding: 9px 16px;
 }
-.kbd {
-  font-family: var(--f-mono);
-  font-size: 11px;
-  border: 1px solid var(--line);
-  border-radius: 4px;
-  padding: 0 5px;
-  color: var(--muted);
+/* Wide screens: the sidebar has its own toggle, so the header drops the Contents button. */
+@media (min-width: 1360px) {
+  header.top {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+  .toc-btn {
+    display: none;
+  }
+  header.top .sub {
+    grid-column: 1 / -1;
+  }
 }
-/* Reading aids: summary line, subheadings and callouts */
-.prose .lead {
-  font-size: 17px;
-  line-height: 1.5;
-  color: var(--ink);
-  opacity: 0.82;
-  margin: -4px 0 16px;
-  padding-bottom: 14px;
-  border-bottom: 1px solid var(--line);
-}
-.prose h3 {
-  font-family: var(--f-display);
-  font-weight: 700;
-  font-size: 16px;
-  letter-spacing: -0.005em;
-  color: var(--accent-ink);
-  margin: 18px 0 6px;
-}
-.note {
-  --c: var(--accent);
-  display: block;
-  max-width: 62ch;
-  margin: 4px 0 14px;
-  padding: 10px 14px;
-  background: var(--sunk);
-  border-left: 3px solid var(--c);
-  border-radius: 0 8px 8px 0;
-  font-size: 15px;
-  line-height: 1.55;
-}
-.note[data-kind='analogy'] {
-  --c: var(--pos-ink);
-}
-.note[data-kind='dev'] {
-  --c: var(--heat-ink);
-}
-.note[data-kind='warn'] {
-  --c: var(--neg-ink);
-}
-.note[data-kind='example'] {
-  --c: var(--muted);
-}
-.note-label {
-  display: block;
-  font-family: var(--f-mono);
-  font-size: 11px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--c);
-  margin-bottom: 2px;
-}
-/* Accordion: { more, text } prose items */
-.more {
-  max-width: 62ch;
-  margin: 2px 0 14px;
-  background: var(--sunk);
-  border: 1px solid var(--line);
-  border-radius: 8px;
-}
-.more-link {
-  margin: 0 12px 10px;
-  padding: 0;
-  border: 0;
-  background: none;
-  font: inherit;
-  font-weight: 600;
-  color: var(--accent-ink);
-  cursor: pointer;
-}
-.more summary {
-  cursor: pointer;
-  padding: 8px 12px;
-  font-weight: 600;
-  color: var(--accent-ink);
-}
-.more p {
-  margin: 0;
-  padding: 0 12px 10px;
-}
-/* Theme switch */

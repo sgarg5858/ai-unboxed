@@ -1,0 +1,139 @@
+:host {
+  display: block;
+}
+.slide {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 20px;
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-fx);
+  -webkit-backdrop-filter: var(--glass-fx);
+  border: 1px solid var(--glass-edge);
+  border-radius: var(--glass-radius);
+  padding: 22px;
+  box-shadow: var(--shadow);
+}
+@media (min-width: 940px) {
+  .slide {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    gap: 32px;
+    padding: 30px;
+  }
+  /* No interactive on the right: let the text use the width (at a readable line length). */
+  .slide.solo {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+.slide h2 {
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: clamp(22px, 2.6vw, 28px);
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+  margin: 0 0 12px;
+  text-wrap: balance;
+}
+.prose {
+  min-width: 0;
+}
+.prose p {
+  margin: 0 0 12px;
+  max-width: 62ch;
+}
+.prose ul {
+  margin: 0 0 12px;
+  padding-left: 20px;
+  max-width: 60ch;
+}
+.prose li {
+  margin: 0 0 6px;
+}
+.wide {
+  grid-column: 1 / -1;
+}
+.viz {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+/* Reading aids: summary line, subheadings and callouts */
+.prose .lead {
+  font-size: 17px;
+  line-height: 1.5;
+  color: var(--ink);
+  opacity: 0.82;
+  margin: -4px 0 16px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--line);
+}
+.prose h3 {
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: -0.005em;
+  color: var(--accent-ink);
+  margin: 18px 0 6px;
+}
+.note {
+  --c: var(--accent);
+  display: block;
+  max-width: 62ch;
+  margin: 4px 0 14px;
+  padding: 10px 14px;
+  background: var(--sunk);
+  border-left: 3px solid var(--c);
+  border-radius: 0 8px 8px 0;
+  font-size: 15px;
+  line-height: 1.55;
+}
+.note[data-kind='analogy'] {
+  --c: var(--pos-ink);
+}
+.note[data-kind='dev'] {
+  --c: var(--heat-ink);
+}
+.note[data-kind='warn'] {
+  --c: var(--neg-ink);
+}
+.note[data-kind='example'] {
+  --c: var(--muted);
+}
+.note-label {
+  display: block;
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--c);
+  margin-bottom: 2px;
+}
+/* Accordion: { more, text } prose items */
+.more {
+  max-width: 62ch;
+  margin: 2px 0 14px;
+  background: var(--sunk);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+.more-link {
+  margin: 0 12px 10px;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-weight: 600;
+  color: var(--accent-ink);
+  cursor: pointer;
+}
+.more summary {
+  cursor: pointer;
+  padding: 8px 12px;
+  font-weight: 600;
+  color: var(--accent-ink);
+}
+.more p {
+  margin: 0;
+  padding: 0 12px 10px;
+}
+/* Theme switch */

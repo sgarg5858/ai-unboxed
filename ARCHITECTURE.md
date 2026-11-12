@@ -23,7 +23,7 @@ flowchart TD
     SCHEMA["schema/chapter.schema.json"] -. validates in tests .-> JSON
   end
   COURSE -->|COURSE_CONTENT token| NAV["CourseNav service<br/>position / chapter / slide signals"]
-  NAV --> SHELL["CourseShell<br/>rails, prose, footer, keyboard"]
+  NAV --> SHELL["CourseShell<br/>rails, search, keyboard"]
   SHELL -->|slide.viz| BL["BlockList<br/>@switch on block.type"]
   BL --> GEN["Generic blocks<br/>stages, chips, bars, table, stat,<br/>panel, tabs, stepper, code"]
   BL -->|"type: widget, name"| REG["WIDGETS registry"]
@@ -101,11 +101,11 @@ Slides link to other chapters with `goto: { chapter: "<id>", slide: n }` and ref
 2. The Router emits `NavigationEnd`, and the `CourseNav.url` signal updates.
 3. `resolvePosition(COURSE, '/attention/3')` returns `{ chapter: 3, slide: 2 }`, clamping bad ids or numbers.
 4. `CourseShell` renders:
-   - the course outline (`course/course-outline`): a sidebar on wide screens, toggled by the Contents button and remembered in `localStorage` (`SidebarState`), or a `<dialog>` drawer (`course/contents-drawer`) on narrower ones;
-   - the prose of `nav.slide()`;
-   - `<app-blocks [blocks]="slide.viz">`.
+   - the section tabs (`course/section-tabs`) and the course outline (`course/course-outline`): on wide screens a sidebar with the current section's chapters, each expandable to its slides, toggled by the Contents button and remembered in `localStorage` (`SidebarState`); on narrower ones a `<dialog>` drawer (`course/contents-drawer`) with every section;
+   - the slide itself through `SlideView` (`course/slide-view`): prose, `<app-blocks [blocks]="slide.viz">` and figures;
+   - the command palette (`course/command-palette`): a `<dialog>` combobox that searches every loaded slide (`searchSlides` in `course/course-search.ts`), opened with `/`, Ctrl/⌘+K or the header's search field. `ReadingProgress` keeps the slides the reader has ticked as done (the circles in the outline) in `localStorage` (`ai-unboxed:read`), synced across tabs, so the outline and palette can show them.
 5. `BlockList` switches on each block's `type`. For a widget, it looks up `WIDGETS[name]` and renders it through `NgComponentOutlet` with `props`.
-6. ←/→ keys or the footer buttons call `nav.step(±1)`, which navigates, and the cycle repeats.
+6. ←/→ keys or the Back/Next buttons call `nav.step(±1)`, which navigates, and the cycle repeats.
 
 ## Build, test, deploy
 

@@ -1,32 +1,56 @@
 <div class="wrap" [class.nav-hidden]="!sidebar.open()">
   <header class="top">
+    <!-- Narrow screens: the sidebar isn't shown, so this opens the contents drawer. -->
     <button
       type="button"
       class="btn toc-btn"
-      [class.on]="sidebar.wide() && sidebar.open()"
-      [attr.aria-haspopup]="sidebar.wide() ? null : 'dialog'"
-      [attr.aria-controls]="sidebar.wide() ? 'course-sidebar' : null"
-      [attr.aria-expanded]="sidebar.wide() ? sidebar.open() : null"
-      [title]="
-        sidebar.wide() ? (sidebar.open() ? 'Hide contents' : 'Show contents') : 'Open contents'
-      "
-      (click)="toggleContents(drawer)"
+      aria-haspopup="dialog"
+      title="Open contents"
+      (click)="drawer.open()"
     >
       <span aria-hidden="true">☰</span> Contents
     </button>
     <h1>AI, <span>Unboxed</span></h1>
-    <app-theme-switch />
+    <div class="tools">
+      <button
+        type="button"
+        class="searchbox"
+        aria-label="Search slides"
+        aria-haspopup="dialog"
+        aria-keyshortcuts="/ Control+K Meta+K"
+        (click)="palette.open()"
+      >
+        <span class="icon" aria-hidden="true">⌕</span>
+        <span class="ph" aria-hidden="true">Search slides…</span>
+        <span class="kbd" aria-hidden="true">/</span>
+      </button>
+      <app-theme-switch />
+    </div>
     <p class="sub">
-      how modern AI works, one layer at a time ·
-      <span class="kbd">←</span> <span class="kbd">→</span> to move
+      how modern AI works, one layer at a time · <span class="kbd">←</span>
+      <span class="kbd">→</span> to move
     </p>
   </header>
 
+  <app-section-tabs class="tabs" />
+
   <app-contents-drawer #drawer />
+  <app-command-palette #palette />
 
   <div class="layout">
-    <aside class="sidebar" id="course-sidebar" aria-label="Chapters">
-      <app-course-outline />
+    <aside
+      class="sidebar"
+      id="course-sidebar"
+      [class.rail]="!sidebar.open()"
+      aria-label="Chapters in this section"
+    >
+      @if (sidebar.open()) {
+        <div class="side-top"><app-sidebar-toggle /></div>
+        <app-course-outline scope="section" />
+      } @else {
+        <app-sidebar-toggle />
+        <span class="rail-num" [title]="nav.chapter().name">{{ nav.chapterNumber() }}</span>
+      }
     </aside>
     <main class="main">
       <div class="chapter-bar">
@@ -39,72 +63,27 @@
           slide {{ nav.position().slide + 1 }} of {{ nav.chapter().slides.length }}
         </span>
       </div>
-      <app-slide-progress />
 
-      @let slide = nav.slide();
-      <article class="slide" [class.solo]="!slide.viz?.length" #article aria-live="polite">
-        <div class="prose">
-          <h2>{{ slide.title }}</h2>
-          @if (slide.summary) {
-            <p class="lead" [innerHTML]="slide.summary"></p>
-          }
-          @for (p of slide.body; track $index) {
-            @switch (kindOf(p)) {
-              @case ('ul') {
-                <ul>
-                  @for (li of $any(p).ul; track $index) {
-                    <li [innerHTML]="li"></li>
-                  }
-                </ul>
-              }
-              @case ('h') {
-                <h3>{{ $any(p).h }}</h3>
-              }
-              @case ('more') {
-                <details class="more">
-                  <summary [innerHTML]="$any(p).more"></summary>
-                  @for (para of paragraphsOf(p); track $index) {
-                    <p [innerHTML]="para"></p>
-                  }
-                  @if ($any(p).goto; as g) {
-                    <button type="button" class="more-link" (click)="go(g)">
-                      {{ $any(p).link ?? 'Read more' }} →
-                    </button>
-                  }
-                </details>
-              }
-              @case ('note') {
-                <aside class="note" [attr.data-kind]="$any(p).kind">
-                  <span class="note-label">{{ noteLabelOf(p) }}</span>
-                  <span [innerHTML]="$any(p).note"></span>
-                </aside>
-              }
-              @default {
-                <p [innerHTML]="p"></p>
-              }
-            }
-          }
-          @if (slide.code) {
-            <app-code-block [source]="slide.code.join('\n')" />
-          }
-        </div>
-        @if (slide.viz?.length) {
-          <div class="viz">
-            <!-- track by slide identity so widget state resets when the slide changes -->
-            @for (v of [slide]; track v) {
-              <app-blocks [blocks]="v.viz!" />
-            }
-          </div>
+      <div #stage>
+        <!-- track by slide identity so widget state resets when the slide changes -->
+        @for (s of [nav.slide()]; track s) {
+          <app-slide-view [content]="s" [live]="true" />
         }
-        @for (f of figures(slide); track f.src) {
-          <app-slide-figure class="wide" [figure]="f" />
-        }
-      </article>
+      </div>
 
       <div class="foot">
-        <button class="btn" [disabled]="nav.isFirst()" (click)="move(-1)">← Back</button>
+        <button type="button" class="btn" [disabled]="nav.isFirst()" (click)="move(-1)">
+          ← Back
+        </button>
         <span class="cnt">{{ nav.position().slide + 1 }} / {{ nav.chapter().slides.length }}</span>
-        <button class="btn" (click)="move(1)">{{ nav.nextLabel() }}</button>
+        <button
+          type="button"
+          class="btn next"
+          [attr.aria-label]="nav.nextLabel() + ': ' + nav.nextHint()"
+          (click)="move(1)"
+        >
+          {{ nextText() }}
+        </button>
       </div>
     </main>
   </div>

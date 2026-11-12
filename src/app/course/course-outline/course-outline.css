@@ -1,18 +1,3 @@
-.sec {
-  font-family: var(--f-mono);
-  font-size: 11.5px;
-  font-weight: 500;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin: 18px 0 6px;
-}
-.sec:first-of-type {
-  margin-top: 0;
-}
-.sec .num {
-  margin-right: 8px;
-}
 ol {
   list-style: none;
   margin: 0;
@@ -23,7 +8,6 @@ button {
   color: inherit;
   background: none;
   border: 0;
-  width: 100%;
   text-align: left;
   cursor: pointer;
   border-radius: 8px;
@@ -32,23 +16,72 @@ button:focus-visible {
   outline: 2px solid var(--accent-ink);
   outline-offset: 1px;
 }
-.ch {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-  padding: 7px 10px;
-  min-height: 36px;
-  color: var(--ink);
-  font-size: 14.5px;
-}
-.ch:hover {
-  background: var(--sunk);
-}
-.ch .num,
-.ch .count {
+.eyebrow,
+.sec,
+.num,
+.count,
+.n,
+.secprog {
   font-family: var(--f-mono);
   font-size: 11.5px;
   color: var(--muted);
+}
+.eyebrow,
+.sec {
+  margin: 0;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+/* Sidebar: the section's name and how much of it has been read. */
+.sechead {
+  padding: 2px 10px 12px;
+}
+.sechead h2 {
+  margin: 2px 0 8px;
+  font-family: var(--f-display);
+  font-size: 19px;
+  line-height: 1.2;
+}
+.secprog {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+}
+.bar {
+  height: 4px;
+  border-radius: 2px;
+  background: var(--line);
+  overflow: hidden;
+}
+.bar i {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+}
+/* Drawer: every section. */
+.sec {
+  margin: 18px 0 6px;
+}
+.sec:first-child {
+  margin-top: 0;
+}
+.sec .num {
+  margin-right: 8px;
+}
+.row {
+  display: flex;
+  align-items: stretch;
+  gap: 2px;
+}
+.ch {
+  flex: 1;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  min-height: 38px;
+  padding: 8px 10px;
+  font-size: 14.5px;
 }
 .ch .num {
   min-width: 26px;
@@ -56,36 +89,122 @@ button:focus-visible {
 .ch .name {
   flex: 1;
 }
-.current > .ch {
+.count.done {
+  color: var(--pos-ink);
+  font-weight: 700;
+}
+.chev {
+  flex: none;
+  width: 36px;
+  display: grid;
+  place-items: center;
+  font-size: 18px;
+  color: var(--muted);
+}
+.chev span {
+  transition: transform 0.15s ease;
+}
+.chev.up span {
+  transform: rotate(90deg);
+}
+.ch:hover,
+.chev:hover {
+  background: var(--sunk);
+  color: var(--ink);
+}
+.current .ch {
   background: var(--accent-soft);
   color: var(--accent-ink);
   font-weight: 700;
 }
-.current > .ch .num,
-.current > .ch .count {
+.current .ch .num,
+.current .count {
   color: var(--accent-ink);
 }
 .slides {
-  margin: 4px 0 8px 22px;
+  margin: 4px 0 10px 22px;
   border-left: 2px solid var(--line);
 }
-.slides button {
-  display: block;
-  padding: 5px 10px;
+.srow {
+  display: flex;
+  align-items: center;
+}
+.sbtn {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
   min-height: 30px;
-  font-size: 13.5px;
-  line-height: 1.35;
-  color: var(--muted);
-  border-radius: 0 6px 6px 0;
+  padding: 5px 6px 5px 10px;
   margin-left: -2px;
   border-left: 2px solid transparent;
+  border-radius: 0 6px 6px 0;
+  font-size: 13.5px;
+  color: var(--muted);
 }
-.slides button:hover {
+.sbtn:hover {
   color: var(--ink);
   background: var(--sunk);
 }
-.slides button.on {
+.sbtn.on {
   color: var(--ink);
   font-weight: 700;
   border-left-color: var(--accent);
+}
+/* Tick to mark a slide done (24px+ target). */
+.check {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+}
+.check svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: var(--muted);
+  stroke-width: 1.4;
+  opacity: 0.55;
+}
+.check:hover svg {
+  opacity: 1;
+}
+.check.done svg {
+  opacity: 1;
+  stroke: var(--pos);
+}
+.check.done circle {
+  fill: var(--pos);
+}
+.check path {
+  stroke: var(--surface);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.n {
+  flex: none;
+  min-width: 16px;
+}
+.st {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+@media (prefers-reduced-motion: reduce) {
+  .chev span {
+    transition: none;
+  }
 }
