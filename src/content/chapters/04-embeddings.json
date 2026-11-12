@@ -409,7 +409,7 @@
         "Closeness is measured with cosine similarity, the same calculation as the fruit comparison in <i>The big picture</i>.",
         "<mark class=\"info\">The table gives each token one fixed vector. \"Bank\" gets the same vector by a river and in the high street. Attention, in the next chapter, adjusts it to fit the sentence.</mark>",
         {
-          "note": "This is exactly how semantic search and RAG work. Turn every document into a vector once, turn the user's question into a vector, and return the documents whose vectors are closest. Vector databases exist to do this search quickly. Search uses a different kind of embedding, one vector for a whole text, which the next slide explains.",
+          "note": "This is exactly how semantic search and RAG work. Turn every document into a vector once, turn the user's question into a vector, and return the documents whose vectors are closest. Vector databases exist to do this search quickly. Search uses a different kind of embedding, one vector for a whole text, which the next slide explains. <mark class=\"inline\">Vector databases and RAG are covered in full in a later chapter on RAG.</mark>",
           "kind": "dev"
         }
       ],

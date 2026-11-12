@@ -239,6 +239,17 @@ mark.info {
   border-color: var(--accent);
   background: color-mix(in srgb, var(--accent) 9%, transparent);
 }
+/* Inline variant (<mark class="inline">): highlights words in place, without a separate block. */
+mark.inline {
+  display: inline;
+  margin: 0;
+  padding: 1px 4px;
+  border: 0;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--accent) 20%, transparent);
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
 .prose code,
 .k {
   font-family: var(--f-mono);
