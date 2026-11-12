@@ -658,7 +658,9 @@
                   "assistant-architecture",
                   "thinking-budget",
                   "singleton-rate",
-                  "guess-or-abstain"
+                  "guess-or-abstain",
+                  "chunk-size",
+                  "hybrid-search"
                 ],
                 "description": "Key in src/app/widgets/registry.ts"
               },

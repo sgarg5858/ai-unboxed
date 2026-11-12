@@ -75,6 +75,17 @@ export const SECTIONS: readonly SectionContent[] = [
       },
     ],
   },
+  {
+    id: 'rag',
+    name: 'RAG',
+    chapters: [
+      {
+        id: 'rag',
+        name: 'Retrieval-augmented generation',
+        load: () => json(import('./chapters/11-rag.json')),
+      },
+    ],
+  },
 ];
 
 /** Every chapter in reading order. URLs and navigation use this flat list. */

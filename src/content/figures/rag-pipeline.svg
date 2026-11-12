@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 580" role="img" aria-labelledby="t d" font-family="'Schibsted Grotesk', ui-sans-serif, system-ui, sans-serif">
+  <title id="t">RAG in two phases</title>
+  <desc id="d">Phase 1, indexing, runs ahead of time and again whenever documents change: documents such as PDFs, wiki pages, tickets and code are split into chunks of a few paragraphs, each with its title and source. An embedding model turns each chunk into one vector, and a vector database stores the vector, the text, the source and permissions. Phase 2, answering, runs on every question: the question goes through the same embedding model to become a vector; a search finds the stored chunks nearest to it; the prompt is built from instructions, the top chunks and the question; the LLM reads it all and writes an answer with citations. Underneath, the name: R for retrieval, finding the right text; A for augmentation, adding it to the prompt; G for generation, answering from it.</desc>
+  <!--theme-->
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arrowhead"/></marker>
+    <marker id="aa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arrowacc"/></marker>
+    <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="heatfill"/></marker>
+  </defs>
+  <rect class="bg" width="1200" height="580" rx="18"/>
+  <text x="40" y="52" text-anchor="start" class="ink" font-size="26" font-weight="700">RAG in two phases</text>
+  <text x="40" y="78" text-anchor="start" class="muted" font-size="15">Prepare your documents once; then, for every question, retrieve, augment and generate.</text>
+  <rect class="card" x="40" y="100" width="1120" height="170" rx="14"/>
+  <text x="60" y="130" text-anchor="start" class="accink head" font-size="13">1 · INDEXING: AHEAD OF TIME, AND AGAIN WHEN DOCUMENTS CHANGE</text>
+  <rect class="sunk" x="70" y="150" width="235" height="92" rx="10" stroke-width="1.5"/>
+  <text x="187.5" y="182.0" text-anchor="middle" class="ink" font-size="14.5" font-weight="700">Documents</text>
+  <text x="187.5" y="201.0" text-anchor="middle" class="muted" font-size="12">PDFs, wiki pages,</text>
+  <text x="187.5" y="217.0" text-anchor="middle" class="muted" font-size="12">tickets, code</text>
+  <rect class="sunk" x="345" y="150" width="235" height="92" rx="10" stroke-width="1.5"/>
+  <text x="462.5" y="182.0" text-anchor="middle" class="ink" font-size="14.5" font-weight="700">Split into chunks</text>
+  <text x="462.5" y="201.0" text-anchor="middle" class="muted" font-size="12">a few paragraphs each,</text>
+  <text x="462.5" y="217.0" text-anchor="middle" class="muted" font-size="12">with title and source</text>
+  <line class="sacc" x1="307" y1="196" x2="341" y2="196" marker-end="url(#aa)"/>
+  <rect class="sunk" x="620" y="150" width="235" height="92" rx="10" stroke-width="1.5"/>
+  <text x="737.5" y="182.0" text-anchor="middle" class="ink" font-size="14.5" font-weight="700">Embedding model</text>
+  <text x="737.5" y="201.0" text-anchor="middle" class="muted" font-size="12">one vector</text>
+  <text x="737.5" y="217.0" text-anchor="middle" class="muted" font-size="12">per chunk</text>
+  <line class="sacc" x1="582" y1="196" x2="616" y2="196" marker-end="url(#aa)"/>
+  <rect class="accsoft" x="895" y="150" width="235" height="92" rx="10" stroke-width="1.5"/>
+  <text x="1012.5" y="182.0" text-anchor="middle" class="accink" font-size="14.5" font-weight="700">Vector database</text>
+  <text x="1012.5" y="201.0" text-anchor="middle" class="muted" font-size="12">stores vector + text</text>
+  <text x="1012.5" y="217.0" text-anchor="middle" class="muted" font-size="12">+ source + permissions</text>
+  <line class="sacc" x1="857" y1="196" x2="891" y2="196" marker-end="url(#aa)"/>
+  <rect class="card" x="40" y="290" width="1120" height="250" rx="14"/>
+  <text x="60" y="320" text-anchor="start" class="heatink head" font-size="13">2 · ANSWERING: ON EVERY QUESTION</text>
+  <rect class="sunk" x="58" y="342" width="158" height="92" rx="10" stroke-width="1.5"/>
+  <text x="137.0" y="382.0" text-anchor="middle" class="ink" font-size="14.5" font-weight="700">Question</text>
+  <text x="137.0" y="401.0" text-anchor="middle" class="muted" font-size="12">from the user</text>
+  <rect class="sunk" x="244" y="342" width="158" height="92" rx="10" stroke-width="1.5"/>
+  <text x="323.0" y="374.0" text-anchor="middle" class="ink" font-size="14.5" font-weight="700">Embedding model</text>
+  <text x="323.0" y="393.0" text-anchor="middle" class="muted" font-size="12">the same one,</text>
+  <text x="323.0" y="409.0" text-anchor="middle" class="muted" font-size="12">question → vector</text>
+  <line class="sheat" x1="218" y1="388" x2="241" y2="388" marker-end="url(#ah)"/>
+  <rect class="heat" x="430" y="342" width="158" height="92" rx="10" stroke-width="1.5"/>
+  <text x="509.0" y="374.0" text-anchor="middle" class="heatink" font-size="14.5" font-weight="700">Search</text>
+  <text x="509.0" y="393.0" text-anchor="middle" class="muted" font-size="12">find the chunks</text>
+  <text x="509.0" y="409.0" text-anchor="middle" class="muted" font-size="12">nearest to it</text>
+  <line class="sheat" x1="404" y1="388" x2="427" y2="388" marker-end="url(#ah)"/>
+  <rect class="heat" x="616" y="342" width="158" height="92" rx="10" stroke-width="1.5"/>
+  <text x="695.0" y="374.0" text-anchor="middle" class="heatink" font-size="14.5" font-weight="700">Build the prompt</text>
+  <text x="695.0" y="393.0" text-anchor="middle" class="muted" font-size="12">instructions + top</text>
+  <text x="695.0" y="409.0" text-anchor="middle" class="muted" font-size="12">chunks + question</text>
+  <line class="sheat" x1="590" y1="388" x2="613" y2="388" marker-end="url(#ah)"/>
+  <rect class="sunk" x="802" y="342" width="158" height="92" rx="10" stroke-width="1.5"/>
+  <text x="881.0" y="374.0" text-anchor="middle" class="ink" font-size="14.5" font-weight="700">LLM</text>
+  <text x="881.0" y="393.0" text-anchor="middle" class="muted" font-size="12">reads it all,</text>
+  <text x="881.0" y="409.0" text-anchor="middle" class="muted" font-size="12">writes the answer</text>
+  <line class="sheat" x1="776" y1="388" x2="799" y2="388" marker-end="url(#ah)"/>
+  <rect class="sunk" x="988" y="342" width="158" height="92" rx="10" stroke-width="1.5"/>
+  <text x="1067.0" y="374.0" text-anchor="middle" class="ink" font-size="14.5" font-weight="700">Answer</text>
+  <text x="1067.0" y="393.0" text-anchor="middle" class="muted" font-size="12">with citations</text>
+  <text x="1067.0" y="409.0" text-anchor="middle" class="muted" font-size="12">to the chunks</text>
+  <line class="sheat" x1="962" y1="388" x2="985" y2="388" marker-end="url(#ah)"/>
+  <path class="dash" d="M1012 246 V 281 H 509 V 336" marker-end="url(#aa)"/>
+  <text x="522" y="330" text-anchor="start" class="accink" font-size="12.5" font-weight="700">search the stored vectors</text>
+  <path class="thin" d="M248 446 V 454 H 584 V 446"/>
+  <text x="416.0" y="478" text-anchor="middle" class="heatink" font-size="20" font-weight="800">R</text>
+  <text x="416.0" y="500" text-anchor="middle" class="ink" font-size="13" font-weight="600">Retrieval: find the right text</text>
+  <path class="thin" d="M620 446 V 454 H 770 V 446"/>
+  <text x="695.0" y="478" text-anchor="middle" class="heatink" font-size="20" font-weight="800">A</text>
+  <text x="695.0" y="500" text-anchor="middle" class="ink" font-size="13" font-weight="600">Augmentation: add it</text>
+  <path class="thin" d="M806 446 V 454 H 1142 V 446"/>
+  <text x="974.0" y="478" text-anchor="middle" class="heatink" font-size="20" font-weight="800">G</text>
+  <text x="974.0" y="500" text-anchor="middle" class="ink" font-size="13" font-weight="600">Generation: answer from it</text>
+  <text x="40" y="562" text-anchor="start" class="muted" font-size="11.5">Most real systems add keyword search and a reranking step to the search box. Later slides cover both.</text>
+</svg>
