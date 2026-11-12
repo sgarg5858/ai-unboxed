@@ -127,6 +127,10 @@
       "body": [
         "A token ID is just a label: the number 8415 says nothing about meaning. So the model's first real step swaps each ID for a list of numbers, called a <b>vector</b>, by looking it up in an <b>embedding table</b>.",
         {
+          "note": "<b>Embedding:</b> a dense vector of numbers, learned during training, that is a token's <b>starting representation</b>. Training places it so it has useful relationships with other tokens. As the model reads the surrounding words, this representation is updated to fit the context.",
+          "kind": "key"
+        },
+        {
           "ul": [
             "<b>One row per token.</b> The table has a row for every entry in the vocabulary. Token 8415 (\"␣cat\") picks row 8415, and that row is its vector.",
             "<b>Thousands of numbers per row.</b> Each row holds <i>d</i> numbers: 768 in GPT-2 small, 12,288 in GPT-3. More numbers capture more complex patterns, but cost more to store and compute (next slide).",
@@ -620,7 +624,7 @@
         "\"How do I reset my password?\" and \"I'm locked out of my account. What should I do?\" share few words and differ in length, yet ask the same thing. A good embedding model gives them vectors that <b>point the same way</b>.",
         "<b>Cosine similarity</b> measures the angle between two vectors and ignores their length: <b>1</b> means same direction, <b>0</b> unrelated, and <b>−1</b> opposite (rare with real text).",
         "<mark>Cosine similarity compares direction, not length, so texts with the same intent score high even when their wording and length differ.</mark>",
-        "<mark>Embeddings capture relationships. They don't independently verify facts, intent, quality or safety.</mark>",
+        "<mark><b>Embeddings capture relationships. They don't independently verify facts, intent, quality or safety.</b></mark>",
         {
           "more": "How is it calculated?",
           "text": [
@@ -748,26 +752,26 @@
               "type": "stages",
               "items": [
                 {
-                  "label": "<b>It doesn't understand truth</b>",
+                  "label": "It doesn't understand truth",
                   "sub": "\"The Eiffel Tower is in Paris\" and \"…is in Rome\" score high."
                 },
                 {
-                  "label": "<b>Two false statements can match</b>",
+                  "label": "Two false statements can match",
                   "sub": "Being wrong in the same way still looks similar."
                 },
                 {
-                  "label": "<b>Two harmful instructions can match</b>",
+                  "label": "Two harmful instructions can match",
                   "sub": "Similarity finds them; it doesn't judge them."
                 },
                 {
-                  "label": "<b>Same topic, opposite views</b>",
+                  "label": "Same topic, opposite views",
                   "sub": "\"JavaScript is the best language\" and \"JavaScript is the worst language\" are both opinions about JavaScript, so they land close."
                 }
               ]
             },
             {
               "type": "caption",
-              "html": "Embeddings capture relationships. They don't independently verify facts, intent, quality or safety."
+              "html": "<b>Embeddings capture relationships. They don't independently verify facts, intent, quality or safety.</b>"
             }
           ]
         }

@@ -289,8 +289,60 @@ pre.code .kw {
   border: 1.5px solid var(--neg);
   background: color-mix(in srgb, var(--neg) 7%, var(--sunk));
 }
+/* Inside a warning panel, stages read as a plain list: ✕ marker, bold heading, divider lines. */
+.panel.warn .stack {
+  gap: 0;
+}
 .panel.warn .stage {
-  background: var(--surface);
+  position: relative;
+  display: block;
+  padding: 12px 0 12px 32px;
+  background: none;
+  border: 0;
+  border-top: 1px solid color-mix(in srgb, var(--neg) 22%, transparent);
+  border-radius: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+}
+.panel.warn .stage:first-child {
+  border-top: 0;
+  padding-top: 4px;
+}
+.panel.warn .stage::before {
+  content: '✕';
+  position: absolute;
+  left: 0;
+  top: 13px;
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--neg) 16%, transparent);
+  color: var(--neg-ink);
+  font-size: 11px;
+}
+.panel.warn .stage:first-child::before {
+  top: 5px;
+}
+.panel.warn .stage .cap {
+  display: block;
+  margin-top: 3px;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--ink);
+  opacity: 0.85;
+}
+/* The panel's closing caption is its takeaway. */
+.panel.warn p.cap {
+  margin-top: 6px;
+  padding-top: 12px;
+  border-top: 1.5px solid var(--neg);
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--ink);
 }
 /* Collapsible panel ({ "type": "panel", "title": "…" }): the title is the click target. */
 details.panel > summary {
