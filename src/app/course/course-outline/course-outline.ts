@@ -179,7 +179,8 @@ export class CourseOutline {
   }
 
   protected openChapter(id: string) {
-    this.nav.goto(id).then(() => window.scrollTo?.({ top: 0, behavior: 'smooth' }));
+    const calm = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    this.nav.goto(id).then(() => window.scrollTo?.({ top: 0, behavior: calm ? 'auto' : 'smooth' }));
     this.navigated.emit();
   }
 

@@ -932,16 +932,8 @@
           "props": {
             "word": "strawberry",
             "letter": "r",
-            "pieces": [
-              "str",
-              "aw",
-              "berry"
-            ],
-            "ids": [
-              496,
-              675,
-              15717
-            ]
+            "pieces": ["str", "aw", "berry"],
+            "ids": [496, 675, 15717]
           }
         },
         {

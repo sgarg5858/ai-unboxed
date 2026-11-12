@@ -1,3 +1,9 @@
+<a class="skip" href="#slide-main" (click)="skipTo($event, 'slide-main')">Skip to slide</a>
+@if (sidebar.wide() && sidebar.open()) {
+  <a class="skip" href="#course-sidebar" (click)="skipTo($event, 'course-sidebar')"
+    >Skip to chapters</a
+  >
+}
 <div class="wrap" [class.nav-hidden]="!sidebar.open()">
   <header class="top">
     <!-- Narrow screens: the sidebar isn't shown, so this opens the contents drawer. -->
@@ -28,7 +34,7 @@
     </div>
     <p class="sub">
       how modern AI works, one layer at a time · <span class="kbd">←</span>
-      <span class="kbd">→</span> to move
+      <span class="kbd">→</span> to move · <span class="kbd">?</span> shortcuts
     </p>
   </header>
 
@@ -36,12 +42,14 @@
 
   <app-contents-drawer #drawer />
   <app-command-palette #palette />
+  <app-shortcuts-help #keys />
 
   <div class="layout">
     <aside
       class="sidebar"
       id="course-sidebar"
       [class.rail]="!sidebar.open()"
+      tabindex="-1"
       aria-label="Chapters in this section"
     >
       @if (sidebar.open()) {
@@ -52,7 +60,7 @@
         <span class="rail-num" [title]="nav.chapter().name">{{ nav.chapterNumber() }}</span>
       }
     </aside>
-    <main class="main">
+    <main class="main" id="slide-main" tabindex="-1">
       <div class="chapter-bar">
         <span class="num">{{ nav.chapterNumber() }}</span>
         <span class="name">{{ nav.chapter().name }}</span>
@@ -67,12 +75,20 @@
       <div #stage>
         <!-- track by slide identity so widget state resets when the slide changes -->
         @for (s of [nav.slide()]; track s) {
-          <app-slide-view [content]="s" [live]="true" />
+          <app-slide-view [content]="s" />
         }
       </div>
 
-      <div class="foot">
-        <button type="button" class="btn" [disabled]="nav.isFirst()" (click)="move(-1)">
+      <p class="sr-only" aria-live="polite">{{ announcement() }}</p>
+
+      <nav class="foot" aria-label="Previous and next slide">
+        <button
+          type="button"
+          class="btn"
+          [disabled]="nav.isFirst()"
+          aria-keyshortcuts="ArrowLeft"
+          (click)="move(-1)"
+        >
           ← Back
         </button>
         <span class="cnt">{{ nav.position().slide + 1 }} / {{ nav.chapter().slides.length }}</span>
@@ -80,11 +96,12 @@
           type="button"
           class="btn next"
           [attr.aria-label]="nav.nextLabel() + ': ' + nav.nextHint()"
+          aria-keyshortcuts="ArrowRight"
           (click)="move(1)"
         >
           {{ nextText() }}
         </button>
-      </div>
+      </nav>
     </main>
   </div>
 </div>

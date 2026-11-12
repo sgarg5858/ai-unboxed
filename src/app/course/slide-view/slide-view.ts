@@ -16,8 +16,6 @@ import { CourseNav } from '../course-nav';
 export class SlideView {
   private readonly nav = inject(CourseNav);
   readonly content = input.required<SlideContent>();
-  /** Announce the slide to screen readers when it changes (the one-slide view). */
-  readonly live = input(false);
 
   protected readonly kindOf = (p: Prose) =>
     typeof p === 'string' ? 'p' : 'ul' in p ? 'ul' : 'h' in p ? 'h' : 'more' in p ? 'more' : 'note';

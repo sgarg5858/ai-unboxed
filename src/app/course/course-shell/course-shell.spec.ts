@@ -75,6 +75,20 @@ describe('CourseShell', () => {
     expect(localStorage.getItem('ai-unboxed:read')).not.toContain('attention/0');
   });
 
+  it('helps keyboard users: skip link, shortcuts list, slide title, announcement', async () => {
+    const { el, settle } = await open('/attention/2');
+    const attention = COURSE.find((c) => c.id === 'attention')!;
+    const skip = document.querySelector('a.skip') as HTMLAnchorElement;
+    expect(skip.textContent).toContain('Skip to slide');
+    skip.click();
+    expect(document.activeElement?.id).toBe('slide-main');
+    expect(document.title).toContain(attention.slides[1].title);
+    expect(el.querySelector('main [aria-live="polite"]')?.textContent).toContain('Slide 2 of');
+    document.body.dispatchEvent(new KeyboardEvent('keydown', { key: '?', bubbles: true }));
+    await settle();
+    expect(el.querySelector('app-shortcuts-help h2')?.textContent).toBe('Keyboard shortcuts');
+  });
+
   it('switches section with the tabs', async () => {
     const { el, router, settle } = await open(`/${COURSE[0].id}/1`);
     const tabs = el.querySelectorAll('app-section-tabs button');

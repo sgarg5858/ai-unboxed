@@ -1,11 +1,7 @@
 @let slide = content();
-<article
-  class="slide"
-  [class.solo]="!slide.viz?.length"
-  [attr.aria-live]="live() ? 'polite' : null"
->
+<article class="slide" [class.solo]="!slide.viz?.length">
   <div class="prose">
-    <h2>{{ slide.title }}</h2>
+    <h2 tabindex="-1">{{ slide.title }}</h2>
     @if (slide.summary) {
       <p class="lead" [innerHTML]="slide.summary"></p>
     }

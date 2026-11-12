@@ -24,6 +24,9 @@
     grid-template-columns: minmax(0, 1fr);
   }
 }
+.slide h2:focus:not(:focus-visible) {
+  outline: none;
+}
 .slide h2 {
   font-family: var(--f-display);
   font-weight: 700;

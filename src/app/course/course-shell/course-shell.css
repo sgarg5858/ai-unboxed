@@ -200,3 +200,7 @@ h1 span {
     grid-column: 1 / -1;
   }
 }
+main:focus,
+.sidebar:focus {
+  outline: none;
+}
