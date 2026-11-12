@@ -231,7 +231,7 @@
         {
           "h": "It's the width of the whole model"
         },
-        "Every token's vector keeps this size through every layer of the model. So choosing <code>d</code> means choosing how wide the whole model is.",
+        "<code>d</code> isn't only the embedding size. Every token's vector keeps that size through every layer, so every attention and MLP layer is built to read and write <code>d</code> numbers. Choosing <code>d</code> means choosing how wide the entire model is.",
         {
           "h": "Why so many dimensions?"
         },
@@ -250,7 +250,11 @@
           "more": "What does a model's “shape” mean?",
           "text": "Shape is how a model's size is arranged: how wide each vector is (<code>d</code>) and how many layers there are. Two models of the same size but different shapes usually perform about the same, as long as neither is extremely wide or extremely deep. The figure below shows two examples."
         },
-        "<mark>More dimensions can capture more complex patterns, but they also need more storage and more computation.</mark>"
+        "<mark>More dimensions can capture more complex patterns, but they also need more storage and more computation.</mark>",
+        {
+          "note": "The width also sets the size of the KV cache, the memory a model keeps for every token in the conversation (see <i>Output &amp; inference</i>). Wider and deeper models need more memory per user, which is a big part of what they cost to serve.",
+          "kind": "dev"
+        }
       ],
       "figure": {
         "src": "images/same-size-different-shape-light.svg",
