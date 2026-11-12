@@ -611,7 +611,7 @@
           ],
           "goto": {
             "chapter": "embeddings",
-            "slide": 11
+            "slide": 10
           },
           "link": "Bias in embeddings, later in this chapter"
         },
@@ -869,74 +869,48 @@
     },
     {
       "title": "Word order matters: adding position",
-      "summary": "Attention doesn't notice word order by itself, so position information has to be added.",
+      "summary": "So far, “dog” gets the same vector wherever it appears. To tell “dog bites man” from “man bites dog”, the model also needs to know where each word sits.",
       "body": [
-        "Attention, the core step in the next chapter, compares every token with every other token. On its own it treats the input like a bag of words: shuffle the tokens and each one gets the same result. <mark>It can't tell \"dog bites man\" from \"man bites dog\".</mark>",
-        "So position has to be added in. The original Transformer (2017) added a fixed pattern of waves to each token's vector:",
+        "Look up “dog bites man” in the embedding table and you get three vectors. Look up “man bites dog” and you get <b>the same three vectors</b>, just in a different order.",
+        "We read one word at a time, so order comes for free. A transformer reads all the tokens <b>at once</b>, side by side, and nothing in the vectors says which came first.",
+        "<mark>Without extra information, “dog bites man” and “man bites dog” look the same to the model. It needs to know each word's position.</mark>",
+        {
+          "h": "The fix: add a position vector"
+        },
+        "Give every position (0, 1, 2, …) its own vector, the same length as a token's vector, and add the two together:",
         {
           "ul": [
-            "Each pair of numbers goes up and down at a different speed, from very fast to very slow.",
-            "Together they give every position its own unique fingerprint.",
-            "Nearby positions get similar fingerprints, so the model can tell near from far."
+            "<b>dog</b> at position 0 = dog's vector + position 0's vector",
+            "<b>dog</b> at position 2 = dog's vector + position 2's vector"
           ]
         },
+        "Now the same word in different places gives a different input, and the model can learn that order changes meaning.",
         {
-          "note": "Think of a clock with many hands. The second hand alone can't tell you the time. But seconds, minutes, hours and days together mark every moment uniquely, and moments close together look alike.",
+          "note": "Like a seat number on a concert ticket. The person is the same; the seat number says where they sit.",
           "kind": "analogy"
         },
-        "In the heatmap, each row is a position and each column is one number. The fast-changing columns are on the left and the slow ones on the right."
-      ],
-      "code": [
-        "# PE[pos, 2i]   = sin(pos / 10000**(2i/d))",
-        "# PE[pos, 2i+1] = cos(pos / 10000**(2i/d))",
-        "x = token_embedding + PE[:n]"
-      ],
-      "figure": {
-        "src": "images/positional-encoding-light.svg",
-        "darkSrc": "images/positional-encoding-dark.svg",
-        "alt": "Why models need position, and how the original Transformer added it. First, without position, \"dog bites man\" and \"man bites dog\" contain the same three tokens, so attention alone gives the same result for both. Second, with position, every token is stamped with its place in the sentence, 0, 1 or 2, so \"dog at position 0\" and \"dog at position 2\" become different inputs: the input is the token vector plus a position vector. Third, the position vector comes from waves at different speeds. Four waves are drawn across positions 0 to 16, from the fastest to the slowest. Reading all four waves at position 5 gives that position its own stamp: about −0.96, +0.60, +0.89 and +0.43. Nearby positions get similar stamps.",
-        "width": 1200,
-        "height": 680,
-        "caption": "Without position, \"dog bites man\" and \"man bites dog\" look the same to attention. A position vector, read off waves at different speeds, stamps each token with where it sits."
-      },
-      "viz": [
         {
-          "type": "widget",
-          "name": "positional-heatmap"
-        }
-      ]
-    },
-    {
-      "title": "RoPE: what modern models use",
-      "summary": "Modern models mark position by rotating vectors, so attention can directly see how far apart two tokens are.",
-      "body": [
-        "Most current open models (Llama, Mistral, Qwen and others) use <b>rotary position embeddings</b> (RoPE) instead. Nothing is added to the token's vector. Instead, inside attention, the query and key vectors (next chapter) are <b>rotated</b> by an angle that grows with the token's position.",
-        "Why rotate? Attention scores two tokens with a dot product, and the dot product depends on the angle between the two vectors. <mark>Rotate one by position <code>m</code> and the other by position <code>n</code>, and the angle between them only depends on <code>m − n</code>: how far apart they are.</mark>",
-        "Try it: move both sliders by the same amount. Both arrows turn, but the angle between them, and so the score, doesn't change.",
-        {
-          "note": "RoPE tells the model <i>relative</i> position (\"three tokens back\"), not <i>absolute</i> position (\"token 1,207\"). That suits language, where nearby words usually matter most. It's also one reason context windows can be made longer after training.",
-          "kind": "key"
+          "more": "How are position vectors made, and what is RoPE?",
+          "text": "Both make more sense once you know how attention works, so they're covered at the end of the Attention chapter: the wave pattern the original Transformer used, and RoPE, the method most modern models use.",
+          "goto": {
+            "chapter": "attention",
+            "slide": 8
+          },
+          "link": "Position in depth, in Attention"
         }
       ],
       "code": [
-        "def rope(x, pos, theta=10000):",
-        "    # rotate each (x[2i], x[2i+1]) pair",
-        "    angle = pos / theta**(2*i/d)",
-        "    return rotate_pairs(x, angle)",
-        "q, k = rope(q, m), rope(k, n)   # then q·k as usual"
+        "# one vector per token + one vector per position",
+        "x = token_vectors[ids] + position_vectors[0:n]"
       ],
-      "figure": {
-        "src": "images/rope-rotation-light.svg",
-        "darkSrc": "images/rope-rotation-dark.svg",
-        "alt": "How rotary position embeddings, RoPE, mark position. First, the same vector is drawn at positions 0 to 4: at each position it is rotated by one more step, theta. Second, a query at position 5 is rotated 5 steps and a key at position 2 is rotated 2 steps, leaving an angle of 3 steps between them. Third, a query at position 9 and a key at position 6 are both rotated further, but the angle between them is again 3 steps. Because the dot product depends on that angle, the same distance between two tokens gives the same attention score, wherever they are in the text.",
-        "width": 1200,
-        "height": 620,
-        "caption": "RoPE turns queries and keys by their position. Two tokens 3 apart always end up 3 steps apart in angle, so they get the same score wherever they are."
-      },
-      "viz": [
+      "figure": [
         {
-          "type": "widget",
-          "name": "rope"
+          "src": "images/position-into-model-light.svg",
+          "darkSrc": "images/position-into-model-dark.svg",
+          "alt": "How position reaches the model, for \"dog bites man\". Each token, dog at position 0, bites at 1 and man at 2, looks up its token vector (what the word is), and a position vector for its slot (where it sits) is added to it. The sum, the input vector, is what plus where, one per token. The transformer model gets all three input vectors at once, side by side, so order now lives inside the numbers. Side panel: in \"man bites dog\", dog is at position 2. Its token vector is the same, but position 2's vector differs from position 0's, so dog at 0 and dog at 2 become different input vectors and the model can learn who bit whom. Models that use RoPE skip this addition and turn vectors inside attention instead. Values are illustrative.",
+          "width": 1200,
+          "height": 610,
+          "caption": "What the model actually receives: for each token, its word vector plus its position vector, added into one input vector."
         }
       ]
     },

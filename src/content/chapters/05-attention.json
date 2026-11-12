@@ -200,6 +200,84 @@
           "name": "attention-cost"
         }
       ]
+    },
+    {
+      "title": "Position in depth: the wave pattern",
+      "summary": "Attention on its own ignores word order. The original Transformer fixed that with position vectors built from waves at different speeds.",
+      "body": [
+        "Now you can see why attention needs position. Each token scores every other token with a dot product of a query and a key, and nothing in that calculation depends on where the tokens sit. Leave out the mask and shuffle the input, and every token gets the same scores, just in a different order.",
+        "Embeddings showed the fix: add a position vector to each token's vector. Here is how the original Transformer (2017) built those vectors.",
+        {
+          "ul": [
+            "Each pair of numbers in the position vector follows a wave (a sine and a cosine) at its own speed, from very fast to very slow.",
+            "To get position 5's vector, read every wave at position 5. That is the stamp added to the token there.",
+            "Fast waves tell neighbours apart; slow waves tell near from far."
+          ]
+        },
+        "<mark>Every position gets a unique vector, nearby positions get similar ones, and every value stays between −1 and +1, so the position never drowns out the word.</mark>",
+        {
+          "note": "Think of a clock with many hands. The second hand alone can't tell you the time. But seconds, minutes, hours and days together mark every moment uniquely, and moments close together look alike.",
+          "kind": "analogy"
+        },
+        {
+          "more": "Why not just add the number 5?",
+          "text": "Token vectors hold small numbers, roughly between −1 and +1. Adding 5,000 for a late position would swamp the word's meaning. Dividing by the text length instead would make position 5 mean different things in short and long texts. Waves avoid both, and need no training."
+        },
+        "In the heatmap, each row is a position and each column one number: fast-changing columns on the left, slow ones on the right."
+      ],
+      "code": [
+        "# PE[pos, 2i]   = sin(pos / 10000**(2i/d))",
+        "# PE[pos, 2i+1] = cos(pos / 10000**(2i/d))",
+        "x = token_embedding + PE[:n]"
+      ],
+      "viz": [
+        {
+          "type": "widget",
+          "name": "positional-heatmap"
+        }
+      ],
+      "figure": {
+        "src": "images/positional-encoding-light.svg",
+        "darkSrc": "images/positional-encoding-dark.svg",
+        "alt": "Why models need position, and how the original Transformer added it. First, without position, \"dog bites man\" and \"man bites dog\" contain the same three tokens, so attention alone gives the same result for both. Second, with position, every token is stamped with its place in the sentence, 0, 1 or 2, so \"dog at position 0\" and \"dog at position 2\" become different inputs: the input is the token vector plus a position vector. Third, the position vector comes from waves at different speeds. Four waves are drawn across positions 0 to 16, from the fastest to the slowest. Reading all four waves at position 5 gives that position its own stamp: about −0.96, +0.60, +0.89 and +0.43. Nearby positions get similar stamps.",
+        "width": 1200,
+        "height": 680,
+        "caption": "Without position, \"dog bites man\" and \"man bites dog\" look the same to attention. A position vector, read off waves at different speeds, stamps each token with where it sits."
+      }
+    },
+    {
+      "title": "RoPE: what modern models use",
+      "summary": "Modern models mark position by rotating vectors, so attention can directly see how far apart two tokens are.",
+      "body": [
+        "Most current open models (Llama, Mistral, Qwen and others) use <b>rotary position embeddings</b> (RoPE) instead. Nothing is added to the token's vector. Instead, inside attention, each token's query and key are <b>rotated</b> by an angle that grows with the token's position.",
+        "Why rotate? Attention scores two tokens with a dot product, and the dot product depends on the angle between the two vectors. <mark>Rotate one by position <code>m</code> and the other by position <code>n</code>, and the angle between them only depends on <code>m − n</code>: how far apart they are.</mark>",
+        "Try it: move both sliders by the same amount. Both arrows turn, but the angle between them, and so the score, doesn't change.",
+        {
+          "note": "RoPE tells the model <i>relative</i> position (\"three tokens back\"), not <i>absolute</i> position (\"token 1,207\"). That suits language, where nearby words usually matter most. It's also one reason context windows can be made longer after training.",
+          "kind": "key"
+        }
+      ],
+      "code": [
+        "def rope(x, pos, theta=10000):",
+        "    # rotate each (x[2i], x[2i+1]) pair",
+        "    angle = pos / theta**(2*i/d)",
+        "    return rotate_pairs(x, angle)",
+        "q, k = rope(q, m), rope(k, n)   # then q·k as usual"
+      ],
+      "figure": {
+        "src": "images/rope-rotation-light.svg",
+        "darkSrc": "images/rope-rotation-dark.svg",
+        "alt": "How rotary position embeddings, RoPE, mark position. First, the same vector is drawn at positions 0 to 4: at each position it is rotated by one more step, theta. Second, a query at position 5 is rotated 5 steps and a key at position 2 is rotated 2 steps, leaving an angle of 3 steps between them. Third, a query at position 9 and a key at position 6 are both rotated further, but the angle between them is again 3 steps. Because the dot product depends on that angle, the same distance between two tokens gives the same attention score, wherever they are in the text.",
+        "width": 1200,
+        "height": 620,
+        "caption": "RoPE turns queries and keys by their position. Two tokens 3 apart always end up 3 steps apart in angle, so they get the same score wherever they are."
+      },
+      "viz": [
+        {
+          "type": "widget",
+          "name": "rope"
+        }
+      ]
     }
   ]
 }
