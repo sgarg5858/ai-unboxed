@@ -608,7 +608,12 @@
             "<b>Long texts dilute.</b> One vector for a 50-page document mixes many topics, so documents are split into chunks first.",
             "<b>Scores belong to one model.</b> A 0.8 from one model isn't a 0.8 from another, and vectors from different models can't be compared at all.",
             "<b>Bias comes along.</b> Embeddings learn from human text, stereotypes included. A 2016 study found word vectors linking \"man\" to \"programmer\" and \"woman\" to \"homemaker\"."
-          ]
+          ],
+          "goto": {
+            "chapter": "embeddings",
+            "slide": 10
+          },
+          "link": "Bias in embeddings, later in this chapter"
         },
         {
           "note": "Many embedding APIs, including OpenAI's, return vectors of length 1, so cosine similarity is just the dot product. Real RAG systems treat similarity as a fast first pass: <b>hybrid search</b> adds keyword matching, a <b>reranker</b> rescores the top hits, and the LLM plus safety checks judge what the text actually says.",
@@ -839,7 +844,129 @@
         "alt": "The text \"The cat sat\" is split into three tokens with IDs 791, 8415 and 7731. Each ID looks up its row in the embedding table, giving one vector per token. A position signal is added to each vector (or, in models using RoPE, applied later inside attention). The result is a matrix with one row per token and d columns, shape n by d. This is the residual stream that every later layer reads and updates. Vector values are illustrative.",
         "width": 1200,
         "height": 560,
-        "caption": "Everything in this chapter in one picture: token IDs become vectors, position is added, and the result is the [n, d] matrix the rest of the model works on."
+        "caption": "The input stage in one picture: token IDs become vectors, position is added, and the result is the [n, d] matrix the rest of the model works on."
+      }
+    },
+    {
+      "title": "Bias: embeddings learn our stereotypes",
+      "summary": "Embeddings learn from human text, so they learn its stereotypes too. Close vectors can reflect prejudice, not truth.",
+      "body": [
+        "An embedding records which words appear in similar contexts. If the training text mentions nurses with “she” and engineers with “he” more often, the vectors learn that link too. Nobody programs it in; it comes with the data.",
+        "<mark>Embeddings reflect how people have written, not how the world should be. A stereotype in the data becomes a direction in the vectors.</mark>",
+        {
+          "h": "What researchers found"
+        },
+        {
+          "ul": [
+            "<b>2016:</b> word vectors trained on Google News completed “man is to computer programmer as woman is to …” with <b>“homemaker”</b> (Bolukbasi and others).",
+            "<b>2017:</b> word embeddings reproduced biases known from psychology tests, such as linking male names with careers and female names with family (Caliskan and others).",
+            "<b>Since then:</b> similar biases have been measured in newer, context-aware models. Some are smaller, but no model is free of them."
+          ]
+        },
+        {
+          "h": "Why it matters"
+        },
+        "Bias doesn't stay inside the vectors. It flows into everything built on them: search results, CV screening, recommendations, moderation, and the chunks a RAG system retrieves.",
+        {
+          "note": "Similar is not the same as fair. Every score can be “correct” for the model and the result still unfair, for example ranking one CV above an identical one because of the name.",
+          "kind": "warn"
+        },
+        {
+          "h": "What helps"
+        },
+        {
+          "ul": [
+            "<b>Swap tests:</b> change only a name, gender or group in the input, and check whether scores or results change.",
+            "<b>Measure per group</b> on your own data, not just overall accuracy.",
+            "<b>Keep humans</b> on high-stakes decisions such as hiring, lending and moderation."
+          ]
+        },
+        {
+          "more": "Can't we just remove the bias direction?",
+          "text": [
+            "One early method found the “gender direction” and subtracted it from words that should be neutral, such as job titles.",
+            "Later work showed this mostly hides the bias: words that were linked still cluster together, so the pattern can be recovered (Gonen and Goldberg, 2019, “Lipstick on a Pig”). It helps a little, but testing the final system matters more."
+          ]
+        },
+        {
+          "more": "Do chat assistants have this problem too?",
+          "text": "An LLM's own embeddings learn the same associations. Chat models get extra training to avoid biased answers, which helps but doesn't remove the patterns underneath. Embedding models used for search usually get no such training.",
+          "goto": {
+            "chapter": "assistant",
+            "slide": 6
+          },
+          "link": "Values are built into the model, in Assistant architecture"
+        }
+      ],
+      "viz": [
+        {
+          "type": "panel",
+          "blocks": [
+            {
+              "type": "caption",
+              "html": "<b>A swap test</b> · query: “strong candidate for senior software engineer”"
+            },
+            {
+              "type": "stages",
+              "items": [
+                {
+                  "label": "CV: <b>James</b>, 8 years of Python, led a team of 5",
+                  "value": "0.82",
+                  "tone": "accent"
+                },
+                {
+                  "label": "CV: <b>Emily</b>, 8 years of Python, led a team of 5",
+                  "value": "0.77",
+                  "tone": "heat"
+                },
+                {
+                  "label": "Only the name changed",
+                  "sub": "Any gap is bias, not merit. Here it could decide who gets shortlisted.",
+                  "value": "gap 0.05",
+                  "tone": "neg"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "caption",
+          "html": "Scores are illustrative. Run tests like this on your own system: many swapped pairs, then compare the averages."
+        }
+      ],
+      "figure": {
+        "src": "images/embedding-bias-light.svg",
+        "darkSrc": "images/embedding-bias-dark.svg",
+        "alt": "Occupation words placed along a \"he\" to \"she\" direction in word vectors trained on Google News. Captain, philosopher, architect, financier and warrior lean towards \"he\"; homemaker, nurse, receptionist, librarian and hairdresser lean towards \"she\", though job titles should show no lean. The analogy \"man is to computer programmer as woman is to ?\" was answered \"homemaker\". The pattern was learned from how often news text mentions these jobs with he or she. Right: bias comes from human-written text; it shows up in search and ranking, CV screening, recommendations, moderation and RAG retrieval; swap tests, per-group measurement and human review help. Positions are illustrative; word lists from Bolukbasi et al., 2016.",
+        "width": 1200,
+        "height": 580,
+        "caption": "Nobody chose these positions. They come from how people wrote about these jobs."
+      }
+    },
+    {
+      "title": "Recap: embeddings in one picture",
+      "summary": "Token IDs pick rows from a learned table, become vectors that capture relationships, get position added, and form the matrix the rest of the model works on.",
+      "body": [
+        "<mark>An embedding is a learned list of numbers for a token. Its meaning comes from where it sits relative to other tokens, not from any single number.</mark>",
+        {
+          "ul": [
+            "<b>The table:</b> one row per token in the vocabulary, learned during training.",
+            "<b>The width</b> <code>d</code>: a design choice, made before training, that sets the width of the whole model.",
+            "<b>The geometry:</b> related words sit close, and cosine similarity measures how close.",
+            "<b>Two kinds:</b> token embeddings feed the LLM; sentence embeddings power search and RAG.",
+            "<b>Position:</b> added separately, so word order counts. Modern models use RoPE.",
+            "<b>Bias:</b> learned from human text along with everything else."
+          ]
+        },
+        "Next, in <i>Attention</i>: every token's vector is still the same in every sentence. Attention lets tokens look at each other, so “Apple” in “I love Apple” and in “Apple shares fell” can end up meaning different things."
+      ],
+      "figure": {
+        "src": "images/embeddings-recap-light.svg",
+        "darkSrc": "images/embeddings-recap-dark.svg",
+        "alt": "The path: token IDs from the tokenizer, such as 40, 3021, 8325 for \"I love Apple\", pick rows from the embedding table, vocab by d, learned during training. Each gives a vector of d numbers with no context yet. Position is added so word order counts, using RoPE in modern models. The result is a matrix with one row per token, the residual stream, which goes to attention. What this means: relationships, not definitions; width is a design choice, 768 in GPT-2 and 12,288 in GPT-3; close means similar, measured by cosine, but similar isn't true or safe; token embeddings feed the LLM while sentence embeddings power search and RAG; order is added separately; and bias comes along from human text.",
+        "width": 1200,
+        "height": 630,
+        "caption": "The top row is the path every token takes. The cards below are what follows from it, one per idea in this chapter."
       }
     }
   ]
