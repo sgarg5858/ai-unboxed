@@ -405,7 +405,6 @@
       "summary": "After training, similar words sit close together, and some relationships point in a consistent direction.",
       "body": [
         "If you could plot the trained vectors, you'd see a pattern. <mark>Words with related meanings group together: fruits near fruits, programming languages near programming languages.</mark>",
-        "Some relationships even become consistent <b>directions</b>. Going from \"man\" to \"woman\" points roughly the same way as going from \"king\" to \"queen\". That's why the famous sum <code>king − man + woman ≈ queen</code> roughly works, first shown with word2vec in 2013.",
         "<b>Why does this happen?</b> Words that appear in similar sentences get nudged in similar ways during training. \"Cat\" and \"kitten\" both show up near \"purr\" and \"pet\", so their vectors drift together.",
         "Closeness is measured with cosine similarity, the same calculation as the fruit comparison in <i>The big picture</i>.",
         "<mark class=\"info\">The table gives each token one fixed vector. \"Bank\" gets the same vector by a river and in the high street. Attention, in the next chapter, adjusts it to fit the sentence.</mark>",
@@ -413,11 +412,6 @@
           "note": "This is exactly how semantic search and RAG work. Turn every document into a vector once, turn the user's question into a vector, and return the documents whose vectors are closest. Vector databases exist to do this search quickly. Search uses a different kind of embedding, one vector for a whole text, which the next slide explains.",
           "kind": "dev"
         }
-      ],
-      "code": [
-        "def cosine(a, b):",
-        "    return (a @ b) / (a.norm() * b.norm())",
-        "cosine(E[king] - E[man] + E[woman], E[queen])  # high"
       ],
       "figure": {
         "src": "images/embedding-geometry-light.svg",
