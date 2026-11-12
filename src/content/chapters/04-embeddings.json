@@ -125,80 +125,40 @@
       "title": "The embedding table",
       "summary": "Each token ID picks one row of a big learned table. That row, a list of numbers, is the token's embedding.",
       "body": [
-        "A token ID is just a label: the number 8415 says nothing about meaning. So the model's first real step swaps each ID for a list of numbers, called a <b>vector</b>, by looking it up in an <b>embedding table</b>.",
+        "A token ID is just a label. The model's first step swaps each ID for a list of numbers, called a <b>vector</b>, by looking it up in an <b>embedding table</b>.",
         {
-          "note": "<b>Embedding:</b> a dense vector of numbers, learned during training, that is a token's <b>starting representation</b>. Training places it so it has useful relationships with other tokens. As the model reads the surrounding words, this representation is updated to fit the context.",
+          "note": "<b>Embedding:</b> a list of numbers for one token, learned during training, so that related words end up close together. It's the token's starting point; context gets added later.",
           "kind": "key"
         },
         {
           "ul": [
-            "<b>One row per token.</b> The table has a row for every entry in the vocabulary. Token 8415 (\"␣cat\") picks row 8415, and that row is its vector.",
-            "<b>Thousands of numbers per row.</b> Each row holds <i>d</i> numbers: 768 in GPT-2 small, 12,288 in GPT-3. More numbers capture more complex patterns, but cost more to store and compute (next slide).",
-            "<b>Almost free to run.</b> It's a plain array lookup, with no maths at all."
+            "<b>One row per token.</b> The tokenizer's vocabulary is fixed before training, and it sets the number of rows: 50,257 in GPT-2, about 100,000 in GPT-4. Token 8415 (\"␣cat\") picks row 8415.",
+            "<b>Thousands of numbers per row:</b> 768 in GPT-2 small, 12,288 in GPT-3. More numbers capture more patterns, but cost more (next slide).",
+            "<b>Almost free to run.</b> It's a plain lookup, with no maths."
           ]
         },
         {
-          "note": "<code>\"I love Apple\"</code> → token IDs <code>[40, 3021, 8325]</code> → one row each:<br><code>40 → [0.12, 0.25, …]</code><br><code>3021 → [0.65, 0.10, …]</code><br><code>8325 → [−0.10, 0.90, …]</code><br>The IDs are GPT-4's real ones; the numbers are illustrative.",
+          "note": "<code>\"I love Apple\"</code> → token IDs <code>[40, 3021, 8325]</code> → one row each:<br><code>40 → [0.12, 0.25, …]</code><br><code>3021 → [0.65, 0.10, …]</code><br><code>8325 → [−0.10, 0.90, …]</code><br>Real GPT-4 IDs; the numbers are illustrative.",
           "kind": "example"
         },
+        "<mark>An embedding is not a definition. It is a place among other words, and its meaning comes from what's nearby.</mark>",
         {
           "h": "A starting point, not the final meaning"
         },
-        "<mark>The looked-up vector is only the token's starting point: the table row stays fixed, while a copy of it flows through the model and gets updated with context.</mark>",
-        "Take <i>Apple</i>. It starts with the same vector in \"I love Apple. I ate one this afternoon.\" and \"I love Apple. They're launching new Macs this fall.\" As the model reads on, attention mixes in the surrounding words, and the context settles whether it's the fruit or the company.",
+        "The table row never changes. <i>Apple</i> starts with the same vector whether the text means the fruit or the company. As the model reads on, attention uses the surrounding words to settle which one it is.",
         {
-          "more": "Wait: the clue comes after \"Apple\". Can it still help?",
+          "more": "Where do the numbers come from?",
           "text": [
-            "In a chat LLM, each token can only read the words <i>before</i> it, so the vector for \"Apple\" never sees \"ate one\" or \"Macs\". Instead, the later tokens read both \"Apple\" and the clue, and the meaning is settled there. Embedding models, which read in both directions, do update \"Apple\" itself.",
-            "Capitalisation also helps a little: <code>\" apple\"</code> (token 24149) and <code>\" Apple\"</code> (token 8325) are different tokens with different rows."
-          ],
-          "goto": {
-            "chapter": "attention",
-            "slide": 1
-          },
-          "link": "How tokens read each other, in Attention"
-        },
-        {
-          "h": "Where the numbers come from"
-        },
-        "The numbers start out random. Training nudges them millions of times, until words used in similar sentences end up with similar rows.",
-        {
-          "more": "When are embeddings learned?",
-          "text": [
-            "<b>During training, together with everything else</b>, not in a separate step first.",
-            "<b>1. Before training:</b> only the tokenizer is built. It fixes the vocabulary, and so how many rows the table has.",
-            "<b>2. When training starts:</b> every row is filled with small random numbers, so \"cat\" is no closer to \"kitten\" than to \"carpet\".",
-            "<b>3. On every batch:</b> the model predicts the next tokens and measures its mistakes, and backprop nudges all the weights, including the rows of the tokens in that batch. Common tokens get nudged constantly, rare ones less often.",
-            "<b>4. After training:</b> the table is frozen with the rest of the model.",
-            "Older NLP systems often did it the other way round: they trained word vectors first with tools like word2vec, then plugged them into a model. Modern LLMs learn them on the job."
+            "They're learned during training, together with the rest of the model.",
+            "<b>At the start</b>, every row is random, so \"cat\" is no closer to \"kitten\" than to \"carpet\".",
+            "<b>During training</b>, each time the model guesses the next word wrong, it nudges the rows of the tokens involved. Words used in similar sentences slowly drift together.",
+            "<b>After training</b>, the table is frozen."
           ],
           "goto": {
             "chapter": "training",
             "slide": 3
           },
           "link": "How the nudging works, in Training"
-        },
-        {
-          "h": "What does an embedding actually store?"
-        },
-        {
-          "ul": [
-            "<b>Not a definition.</b> On its own, <code>[0.12, 0.25, …]</code> says nothing about cats. There's no dictionary entry hidden in the numbers.",
-            "<b>A position among all the other tokens.</b> Training places each row so its distances and directions to other rows are useful for predicting text: <i>cat</i> lands near <i>kitten</i>, and <i>man → woman</i> points the same way as <i>king → queen</i>.",
-            "<b>No dimension has a label.</b> Dimension 42 doesn't mean \"animal\" or \"sweetness\". Each idea is spread across many dimensions, and each dimension takes part in many ideas."
-          ]
-        },
-        "<mark>An embedding is not a definition of a word. It is a place among all the other words, and the word's meaning comes from what it sits close to.</mark>",
-        {
-          "more": "So what does a single dimension store?",
-          "text": [
-            "Nothing you could name. Researchers do find <i>directions</i>, combinations of many dimensions, that line up with ideas like gender, plural or past tense. But no single slot is \"the gender number\".",
-            "A neat test: rotate every vector by the same amount, and adjust the rest of the model to match. Every number changes, yet the model behaves exactly the same, because all the distances and angles are unchanged. The individual numbers are arbitrary; the relationships are what's learned."
-          ]
-        },
-        {
-          "note": "The table is learned along with the rest of the model, and in small models it's one of the biggest parts: GPT-2 small uses 38.6M of its 124M parameters here.",
-          "kind": "dev"
         }
       ],
       "code": [
@@ -265,13 +225,13 @@
     },
     {
       "title": "Who picks the size of a vector?",
-      "summary": "The number of dimensions is a design choice made before training. It sets the width of the whole model, and its cost grows with the square of the width.",
+      "summary": "The number of dimensions is a design choice made before training. It sets the width of the whole model: wider can capture more, but costs more.",
       "body": [
-        "Training learns the <i>numbers</i> in the embedding table, but not its <i>shape</i>. <mark>The people building the model choose <code>d</code> (also called <code>d_model</code> or hidden size) before training starts, and it never changes.</mark> The dimensions don't get assigned meanings either. Training decides what each one ends up encoding.",
+        "Training learns the <i>numbers</i> in the embedding table, but not its <i>shape</i>. <mark>The people building the model choose <code>d</code> (also called <code>d_model</code> or hidden size) before training starts, and it never changes.</mark>",
         {
           "h": "It's the width of the whole model"
         },
-        "<code>d</code> isn't only the embedding size. Every token's vector keeps that size through every layer, so every attention and MLP layer is built to read and write <code>d</code> numbers. Choosing <code>d</code> means choosing how wide the entire model is.",
+        "Every token's vector keeps this size through every layer of the model. So choosing <code>d</code> means choosing how wide the whole model is.",
         {
           "h": "Why so many dimensions?"
         },
@@ -288,34 +248,22 @@
         },
         {
           "more": "What does a model's “shape” mean?",
-          "text": "Shape is how the parameters are arranged: how wide each vector is (<code>d</code>), how many layers there are, and how many attention heads each layer has. Two models of the same size but different shapes usually perform about the same, as long as neither is extremely wide or extremely deep. For example, 24 layers with vectors 1,856 numbers wide and 48 layers with vectors 1,312 numbers wide both come to about 1 billion parameters, and they end up almost equally good."
+          "text": "Shape is how a model's size is arranged: how wide each vector is (<code>d</code>) and how many layers there are. Two models of the same size but different shapes usually perform about the same, as long as neither is extremely wide or extremely deep. The figure below shows two examples."
         },
-        "<mark>More dimensions can capture more complex patterns, but they also need more storage and more computation: doubling the width makes every layer about four times bigger.</mark>",
-        {
-          "more": "Why does cost grow with <code>d²</code>?",
-          "text": "Every number going into a layer connects to every number coming out, and each connection is one weight. With <code>d</code> numbers in and <code>d</code> out, that's <code>d × d</code> weights. In the figure below, 8 neurons connect to the next 8 with 64 lines. Double them to 16 and you get 256 lines: <b>4× the weights for 2× the width</b>. Each weight is used once for every token, so the computing grows with <code>d²</code> too. A transformer layer holds several of these grids, which adds up to about <code>12 × d²</code> per layer.",
-          "goto": { "chapter": "block", "slide": 4 },
-          "link": "Count them up in The transformer block"
-        },
-        {
-          "note": "The width also sets the size of the KV cache, the memory a model keeps for every token in the conversation (see <i>Output &amp; inference</i>). Wider and deeper models need more memory per user, which is a big part of what they cost to serve.",
-          "kind": "dev"
-        }
+        "<mark>More dimensions can capture more complex patterns, but they also need more storage and more computation.</mark>"
       ],
       "figure": {
         "src": "images/same-size-different-shape-light.svg",
         "darkSrc": "images/same-size-different-shape-dark.svg",
-        "alt": "Two models with the same number of parameters but different shapes. Each is drawn as a small neural network, with circles for neurons and lines for weights. Model A is wide and shallow: few, tall columns of neurons, standing for 24 layers that are 1,856 numbers wide. Model B is narrow and deep: more, shorter columns, standing for 48 layers that are 1,312 numbers wide. Each comes to about 0.99 billion parameters, using 12 times d squared per layer. After training on the same data, both reach almost the same quality. In scaling-law studies (Kaplan et al., 2020), models of the same size with very different shapes ended up within a few percent of each other. Only extreme shapes hurt: for example 2 layers with d = 6,450 is also about 1 billion parameters, but has too few layers to build up meaning. Quality bars are illustrative.",
+        "alt": "Two models with the same number of parameters but different shapes. Each is drawn as a small neural network, with circles for neurons and lines for weights. Model A is wide and shallow: few, tall columns of neurons, standing for 24 layers that are 1,856 numbers wide. Model B is narrow and deep: more, shorter columns, standing for 48 layers that are 1,312 numbers wide. Each comes to about 0.99 billion parameters. After training on the same data, both reach almost the same quality. In scaling-law studies (Kaplan et al., 2020), models of the same size with very different shapes ended up within a few percent of each other. Only extreme shapes hurt: for example 2 layers with d = 6,450 is also about 1 billion parameters, but has too few layers to build up meaning. Quality bars are illustrative.",
         "width": 1200,
         "height": 640,
         "caption": "Same budget, two shapes: 24 wide layers or 48 narrow ones, drawn as small neural networks. Trained on the same data, they end up almost equally good. Only extreme shapes fall behind."
       },
       "code": [
-        "# GPT-3 175B",
-        "d, layers, V = 12288, 96, 50257",
-        "per_layer = 12 * d**2          # ≈ 1.8B",
-        "body  = layers * per_layer     # ≈ 174B",
-        "table = V * d                  # ≈ 0.6B"
+        "# The width is a setting, chosen before training",
+        "vocab, d_model = 50257, 768      # GPT-2 small",
+        "E = torch.nn.Embedding(vocab, d_model)"
       ],
       "viz": [
         {
@@ -329,53 +277,80 @@
                   "rows": [
                     {
                       "head": "Model",
-                      "cells": [{ "text": "d" }, { "text": "layers" }, { "text": "heads × size" }]
+                      "cells": [
+                        {
+                          "text": "d"
+                        },
+                        {
+                          "text": "layers"
+                        }
+                      ]
                     },
                     {
                       "head": "GPT-2 small",
                       "cells": [
-                        { "text": "768", "tone": "accent" },
-                        { "text": "12" },
-                        { "text": "12 × 64" }
+                        {
+                          "text": "768",
+                          "tone": "accent"
+                        },
+                        {
+                          "text": "12"
+                        }
                       ]
                     },
                     {
                       "head": "GPT-2 XL",
                       "cells": [
-                        { "text": "1,600", "tone": "accent" },
-                        { "text": "48" },
-                        { "text": "25 × 64" }
+                        {
+                          "text": "1,600",
+                          "tone": "accent"
+                        },
+                        {
+                          "text": "48"
+                        }
                       ]
                     },
                     {
                       "head": "Llama 3 8B",
                       "cells": [
-                        { "text": "4,096", "tone": "accent" },
-                        { "text": "32" },
-                        { "text": "32 × 128" }
+                        {
+                          "text": "4,096",
+                          "tone": "accent"
+                        },
+                        {
+                          "text": "32"
+                        }
                       ]
                     },
                     {
                       "head": "GPT-3 175B",
                       "cells": [
-                        { "text": "12,288", "tone": "accent" },
-                        { "text": "96" },
-                        { "text": "96 × 128" }
+                        {
+                          "text": "12,288",
+                          "tone": "accent"
+                        },
+                        {
+                          "text": "96"
+                        }
                       ]
                     },
                     {
                       "head": "Llama 3 405B",
                       "cells": [
-                        { "text": "16,384", "tone": "accent" },
-                        { "text": "126" },
-                        { "text": "128 × 128" }
+                        {
+                          "text": "16,384",
+                          "tone": "accent"
+                        },
+                        {
+                          "text": "126"
+                        }
                       ]
                     }
                   ]
                 },
                 {
                   "type": "caption",
-                  "html": "Width and depth grow together. The width always splits evenly into attention heads (<i>Attention</i> chapter): <code>d = heads × head size</code>."
+                  "html": "Bigger models are both wider and deeper. Builders set these numbers before training starts."
                 }
               ]
             },
@@ -387,13 +362,13 @@
                   "items": [
                     {
                       "label": "<b>Wider</b>: more room for meaning",
-                      "sub": "more concepts fit without crowding, and there's room for more attention heads",
+                      "sub": "more room for patterns and relationships",
                       "value": "more capable",
                       "tone": "pos"
                     },
                     {
-                      "label": "<b>Wider</b>: cost grows with d²",
-                      "sub": "2× the width ≈ 4× the parameters and computing per layer, plus a bigger embedding table and KV cache",
+                      "label": "<b>Wider</b>: costs more",
+                      "sub": "more numbers to store and compute for every token",
                       "value": "slower, pricier",
                       "tone": "neg"
                     },
@@ -414,24 +389,6 @@
                 {
                   "type": "caption",
                   "html": "No single best width exists. Labs pick a total size for their budget, then choose a sensible shape."
-                }
-              ]
-            },
-            {
-              "label": "Where the parameters go",
-              "blocks": [
-                {
-                  "type": "bars",
-                  "items": [
-                    { "label": "GPT-2 small: embedding table", "value": 0.31, "display": "31%" },
-                    { "label": "GPT-2 small: layers", "value": 0.69, "display": "69%" },
-                    { "label": "GPT-3: embedding table", "value": 0.004, "display": "0.4%" },
-                    { "label": "GPT-3: layers", "value": 0.996, "display": "99.6%" }
-                  ]
-                },
-                {
-                  "type": "caption",
-                  "html": "The table grows with <code>d</code> but the layers grow with <code>d²</code>, so in big models the embedding table becomes a tiny share of the total."
                 }
               ]
             }
