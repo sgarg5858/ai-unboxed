@@ -17,7 +17,7 @@
         },
         "Even then, one word can mean different things: the <i>bank</i> of a river, or a <i>bank</i> that holds your money. Words like \"it\" and \"they\" point back to something said earlier. It's the same token ID every time, so the right meaning has to come from the surrounding words.",
         {
-          "note": "Two problems, two solutions. <b>Embeddings</b> give every token a meaning as a list of numbers (the next slides). <b>Attention</b> then adjusts that meaning to fit the words around it (the <i>Attention</i> chapter).",
+          "note": "Two problems, two solutions. <b>Embeddings</b> turn every token into numbers, so similar words end up close together (the next slides). <b>Attention</b> then adjusts that meaning to fit the words around it (the <i>Attention</i> chapter).",
           "kind": "key"
         }
       ],
@@ -137,7 +137,9 @@
           "note": "<code>\"I love Apple\"</code> → token IDs <code>[40, 3021, 8325]</code> → one row each:<br><code>40 → [0.12, 0.25, …]</code><br><code>3021 → [0.65, 0.10, …]</code><br><code>8325 → [−0.10, 0.90, …]</code><br>The IDs are GPT-4's real ones; the numbers are illustrative.",
           "kind": "example"
         },
-        { "h": "A starting point, not the final meaning" },
+        {
+          "h": "A starting point, not the final meaning"
+        },
         "<mark>The looked-up vector is only the token's starting point: the table row stays fixed, while a copy of it flows through the model and gets updated with context.</mark>",
         "Take <i>Apple</i>. It starts with the same vector in \"I love Apple. I ate one this afternoon.\" and \"I love Apple. They're launching new Macs this fall.\" As the model reads on, attention mixes in the surrounding words, and the context settles whether it's the fruit or the company.",
         {
@@ -146,13 +148,16 @@
             "In a chat LLM, each token can only read the words <i>before</i> it, so the vector for \"Apple\" never sees \"ate one\" or \"Macs\". Instead, the later tokens read both \"Apple\" and the clue, and the meaning is settled there. Embedding models, which read in both directions, do update \"Apple\" itself.",
             "Capitalisation also helps a little: <code>\" apple\"</code> (token 24149) and <code>\" Apple\"</code> (token 8325) are different tokens with different rows."
           ],
-          "goto": { "chapter": "attention", "slide": 1 },
+          "goto": {
+            "chapter": "attention",
+            "slide": 1
+          },
           "link": "How tokens read each other, in Attention"
         },
         {
           "h": "Where the numbers come from"
         },
-        "The numbers start out random. Training nudges them millions of times, and words used in similar sentences end up with similar rows. Unlike the fruit example in <i>The big picture</i>, no single number means \"sweetness\". Meaning is spread across all of them.",
+        "The numbers start out random. Training nudges them millions of times, until words used in similar sentences end up with similar rows.",
         {
           "more": "When are embeddings learned?",
           "text": [
@@ -163,10 +168,30 @@
             "<b>4. After training:</b> the table is frozen with the rest of the model.",
             "Older NLP systems often did it the other way round: they trained word vectors first with tools like word2vec, then plugged them into a model. Modern LLMs learn them on the job."
           ],
-          "goto": { "chapter": "training", "slide": 3 },
+          "goto": {
+            "chapter": "training",
+            "slide": 3
+          },
           "link": "How the nudging works, in Training"
         },
-        "<mark>An embedding is a token's row in this table: a list of learned numbers, where similar meanings get similar numbers.</mark>",
+        {
+          "h": "What does an embedding actually store?"
+        },
+        {
+          "ul": [
+            "<b>Not a definition.</b> On its own, <code>[0.12, 0.25, …]</code> says nothing about cats. There's no dictionary entry hidden in the numbers.",
+            "<b>A position among all the other tokens.</b> Training places each row so its distances and directions to other rows are useful for predicting text: <i>cat</i> lands near <i>kitten</i>, and <i>man → woman</i> points the same way as <i>king → queen</i>.",
+            "<b>No dimension has a label.</b> Dimension 42 doesn't mean \"animal\" or \"sweetness\". Each idea is spread across many dimensions, and each dimension takes part in many ideas."
+          ]
+        },
+        "<mark>An embedding is not a definition of a word. It is a place among all the other words, and the word's meaning comes from what it sits close to.</mark>",
+        {
+          "more": "So what does a single dimension store?",
+          "text": [
+            "Nothing you could name. Researchers do find <i>directions</i>, combinations of many dimensions, that line up with ideas like gender, plural or past tense. But no single slot is \"the gender number\".",
+            "A neat test: rotate every vector by the same amount, and adjust the rest of the model to match. Every number changes, yet the model behaves exactly the same, because all the distances and angles are unchanged. The individual numbers are arbitrary; the relationships are what's learned."
+          ]
+        },
         {
           "note": "The table is learned along with the rest of the model, and in small models it's one of the biggest parts: GPT-2 small uses 38.6M of its 124M parameters here.",
           "kind": "dev"
@@ -185,6 +210,44 @@
         {
           "type": "caption",
           "html": "Click a token to see which row it selects. GPT-2 small: 50,257 rows × 768 numbers ≈ 38.6M parameters in this one table."
+        },
+        {
+          "type": "panel",
+          "blocks": [
+            {
+              "type": "caption",
+              "html": "<b>What's in a row?</b>"
+            },
+            {
+              "type": "stages",
+              "items": [
+                {
+                  "label": "Its position among other tokens",
+                  "sub": "close to <i>kitten</i>, far from <i>carpet</i>",
+                  "value": "✓ stored",
+                  "tone": "pos"
+                },
+                {
+                  "label": "Useful relationships",
+                  "sub": "<i>man → woman</i> ≈ <i>king → queen</i>",
+                  "value": "✓ stored",
+                  "tone": "pos"
+                },
+                {
+                  "label": "A definition of the word",
+                  "sub": "no meaning in the numbers by themselves",
+                  "value": "✗ not stored",
+                  "tone": "neg"
+                },
+                {
+                  "label": "One idea per dimension",
+                  "sub": "each idea is spread across many dimensions",
+                  "value": "✗ not stored",
+                  "tone": "neg"
+                }
+              ]
+            }
+          ]
         }
       ],
       "figure": {
