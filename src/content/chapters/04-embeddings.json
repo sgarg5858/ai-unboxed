@@ -849,48 +849,35 @@
     },
     {
       "title": "Bias: embeddings learn our stereotypes",
-      "summary": "Embeddings learn from human text, so they learn its stereotypes too. Close vectors can reflect prejudice, not truth.",
+      "summary": "Models learn from text written by people, so they learn our flaws too. What you feed a model is what it becomes.",
       "body": [
-        "An embedding records which words appear in similar contexts. If the training text mentions nurses with “she” and engineers with “he” more often, the vectors learn that link too. Nobody programs it in; it comes with the data.",
-        "<mark>Embeddings reflect how people have written, not how the world should be. A stereotype in the data becomes a direction in the vectors.</mark>",
-        {
-          "h": "What researchers found"
-        },
+        "Embeddings are learned from text, and that text was written by people. People have opinions, make mistakes and describe the world in their own way. Until recently almost all training text was written by humans; AI-written text now adds to it, and it copies the same patterns.",
+        "Human text carries:",
         {
           "ul": [
-            "<b>2016:</b> word vectors trained on Google News completed “man is to computer programmer as woman is to …” with <b>“homemaker”</b> (Bolukbasi and others).",
-            "<b>2017:</b> word embeddings reproduced biases known from psychology tests, such as linking male names with careers and female names with family (Caliskan and others).",
-            "<b>Since then:</b> similar biases have been measured in newer, context-aware models. Some are smaller, but no model is free of them."
+            "<b>Stereotypes</b> and <b>social biases</b>",
+            "<b>Historical inequalities</b>, such as who held which jobs",
+            "<b>Cultural patterns</b> from whoever wrote the most",
+            "<b>Representation gaps</b>: some groups and languages barely appear"
           ]
         },
+        "<mark>What you feed a model is what it becomes. Patterns in the data, wanted or not, become patterns in the vectors.</mark>",
+        "For example, word vectors trained on news articles completed “man is to computer programmer as woman is to …” with <b>“homemaker”</b> (2016). Nobody programmed that; some jobs simply appeared more often with “he” or “she”.",
         {
-          "h": "Why it matters"
-        },
-        "Bias doesn't stay inside the vectors. It flows into everything built on them: search results, CV screening, recommendations, moderation, and the chunks a RAG system retrieves.",
-        {
-          "note": "Similar is not the same as fair. Every score can be “correct” for the model and the result still unfair, for example ranking one CV above an identical one because of the name.",
+          "note": "Bias doesn't stay in the vectors. It flows into search results, CV screening, recommendations and the chunks RAG retrieves. Similar is not the same as fair.",
           "kind": "warn"
         },
         {
-          "h": "What helps"
+          "note": "No model is free of bias. AI labs put a lot of work into training assistants to answer fairly and even-handedly, which reduces bias but doesn't remove it. If you build on embeddings, test for it: change only a name or gender and check whether the results change.",
+          "kind": "key"
         },
         {
-          "ul": [
-            "<b>Swap tests:</b> change only a name, gender or group in the input, and check whether scores or results change.",
-            "<b>Measure per group</b> on your own data, not just overall accuracy.",
-            "<b>Keep humans</b> on high-stakes decisions such as hiring, lending and moderation."
-          ]
-        },
-        {
-          "more": "Can't we just remove the bias direction?",
+          "more": "How do labs reduce it?",
           "text": [
-            "One early method found the “gender direction” and subtracted it from words that should be neutral, such as job titles.",
-            "Later work showed this mostly hides the bias: words that were linked still cluster together, so the pattern can be recovered (Gonen and Goldberg, 2019, “Lipstick on a Pig”). It helps a little, but testing the final system matters more."
-          ]
-        },
-        {
-          "more": "Do chat assistants have this problem too?",
-          "text": "An LLM's own embeddings learn the same associations. Chat models get extra training to avoid biased answers, which helps but doesn't remove the patterns underneath. Embedding models used for search usually get no such training.",
+            "Curating training data, training the model on examples of fair, balanced answers, and testing it on many swapped prompts before release.",
+            "Simply deleting a “gender direction” from the vectors doesn't work well: the bias mostly hides and can still be recovered. Testing the final system matters more.",
+            "<b>Most of this work goes into chat models, not embedding models.</b> The embedding models used for search usually get no fairness training, so search and RAG systems inherit the bias as it was learned."
+          ],
           "goto": {
             "chapter": "assistant",
             "slide": 6
