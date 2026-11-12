@@ -26,7 +26,11 @@ import { DomSanitizer } from '@angular/platform-browser';
         ></iframe>
       }
       <div class="row" style="margin-top:10px">
-        @if (!loaded()) {
+        @if (loaded()) {
+          <button type="button" class="btn" (click)="loaded.set(false)">
+            <span aria-hidden="true">✕</span> Close
+          </button>
+        } @else {
           <button type="button" class="btn on" (click)="loaded.set(true)">
             <span aria-hidden="true">▶</span> Try it here
           </button>
