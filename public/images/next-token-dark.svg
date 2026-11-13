@@ -1,0 +1,162 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 640" role="img" aria-labelledby="t d" font-family="'Schibsted Grotesk', ui-sans-serif, system-ui, sans-serif">
+  <title id="t">How an LLM predicts the next token</title>
+  <desc id="d">How an LLM predicts the next token, for the text "The pizza is ready". Step 1: split it into tokens: The, space pizza, space is, space ready. Step 2: look up each token ID; with GPT-4's tokenizer they are 791, 23317, 374 and 5644. Step 3: each ID picks a vector of numbers from the embedding table, plus a position signal. Step 4: run the transformer: N identical layers (96 in GPT-3), each with layer norm, self-attention, where "ready" looks back at every earlier token, layer norm again, and a feed-forward network that refines each token on its own. A final layer norm and a linear plus softmax step turn the last position into one score per vocabulary token. Self-attention is the subject of this chapter. Step 5: score every possible token: "for" 42%, "to" 31%, "at" 12%, "now" 6%, and a score for each of about 100,000 tokens; pick one, here the most likely, giving "The pizza is ready for". Step 6: add it to the text and run again, one token at a time: "The pizza is ready", then "for", then "for you", then "for you!". Vector values and probabilities are illustrative.</desc>
+  <style>
+    .bg{fill:#0f1413}.card{fill:#171e1c;stroke:#2c3835}.sunk{fill:#1f2826}
+    .ink{fill:#e4ece9}.muted{fill:#9aa9a4}.onacc{fill:#0f1413}
+    .acc{fill:#4db3d1}.accink{fill:#8fd3e6}.accsoft{fill:#163742}
+    .pos{fill:#3fc4a3}.posink{fill:#3fc4a3}.possoft{fill:#123a30;stroke:#3fc4a3}
+    .neg{fill:#f07d60}.negink{fill:#f07d60}.negsoft{fill:#42221a;stroke:#f07d60}
+    .heat{fill:#3d2e14;stroke:#f0ac40}.heatink{fill:#f0ac40}.heatfill{fill:#f0ac40}
+    .line{stroke:#9aa9a4;fill:none;stroke-width:2}.thin{stroke:#2c3835;fill:none;stroke-width:1.5}
+    .dash{stroke:#4db3d1;fill:none;stroke-width:2;stroke-dasharray:6 5}
+    .sacc{stroke:#4db3d1;fill:none;stroke-width:2.5}.sheat{stroke:#f0ac40;fill:none;stroke-width:2.5}
+    .spos{stroke:#3fc4a3;fill:none;stroke-width:2.5}.sneg{stroke:#f07d60;fill:none;stroke-width:2.5}
+    .edge{stroke:#4db3d1;fill:none;stroke-width:1;opacity:.45}
+    .stream{stroke:#4db3d1;fill:none;stroke-width:14;stroke-linecap:round;opacity:.35}
+    .row{fill:#1f2826}.hit{fill:#163742;stroke:#4db3d1}
+    .mono{font-family:'JetBrains Mono',ui-monospace,Menlo,monospace}
+    .head{font-size:13px;font-weight:700;letter-spacing:.08em}
+    .arrowhead{fill:#9aa9a4}.arrowacc{fill:#4db3d1}
+  </style>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arrowhead"/></marker>
+    <marker id="aa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arrowacc"/></marker>
+  </defs>
+  <rect class="bg" width="1200" height="640" rx="18"/>
+  <text x="40" y="50" class="ink" font-size="26" font-weight="700">How an LLM predicts the next token</text>
+  <text x="40" y="74" class="muted" font-size="15">Example: “The pizza is ready …”. What comes next? Token IDs are GPT-4’s real ones.</text>
+  <circle class="acc" cx="51" cy="107" r="11"/>
+  <text x="51" y="111.5" text-anchor="middle" class="onacc" font-size="12.5" font-weight="700">1</text>
+  <text x="70" y="112" text-anchor="start" class="ink" font-size="15" font-weight="700">Split into tokens</text>
+  <rect class="hit" x="40" y="126" width="84" height="32" rx="16" stroke-width="1.5"/>
+  <text x="82" y="147" text-anchor="middle" class="accink mono" font-size="13.5" font-weight="700">The</text>
+  <rect class="hit" x="132" y="126" width="84" height="32" rx="16" stroke-width="1.5"/>
+  <text x="174" y="147" text-anchor="middle" class="accink mono" font-size="13.5" font-weight="700">␣pizza</text>
+  <rect class="hit" x="224" y="126" width="84" height="32" rx="16" stroke-width="1.5"/>
+  <text x="266" y="147" text-anchor="middle" class="accink mono" font-size="13.5" font-weight="700">␣is</text>
+  <rect class="hit" x="316" y="126" width="84" height="32" rx="16" stroke-width="1.5"/>
+  <text x="358" y="147" text-anchor="middle" class="accink mono" font-size="13.5" font-weight="700">␣ready</text>
+  <circle class="acc" cx="51" cy="191" r="11"/>
+  <text x="51" y="195.5" text-anchor="middle" class="onacc" font-size="12.5" font-weight="700">2</text>
+  <text x="70" y="196" text-anchor="start" class="ink" font-size="15" font-weight="700">Look up token IDs</text>
+  <rect class="sunk" x="40" y="210" width="84" height="30" rx="6"/>
+  <text x="82" y="230" text-anchor="middle" class="ink mono" font-size="13" font-weight="600">#791</text>
+  <rect class="sunk" x="132" y="210" width="84" height="30" rx="6"/>
+  <text x="174" y="230" text-anchor="middle" class="ink mono" font-size="13" font-weight="600">#23317</text>
+  <rect class="sunk" x="224" y="210" width="84" height="30" rx="6"/>
+  <text x="266" y="230" text-anchor="middle" class="ink mono" font-size="13" font-weight="600">#374</text>
+  <rect class="sunk" x="316" y="210" width="84" height="30" rx="6"/>
+  <text x="358" y="230" text-anchor="middle" class="ink mono" font-size="13" font-weight="600">#5644</text>
+  <circle class="acc" cx="51" cy="275" r="11"/>
+  <text x="51" y="279.5" text-anchor="middle" class="onacc" font-size="12.5" font-weight="700">3</text>
+  <text x="70" y="280" text-anchor="start" class="ink" font-size="15" font-weight="700">Turn IDs into vectors</text>
+  <rect class="heatfill" x="48" y="294" width="68" height="22" rx="4" opacity="0.31"/>
+  <text x="82" y="309" text-anchor="middle" class="ink mono" font-size="11.5">0.10</text>
+  <rect class="heatfill" x="48" y="320" width="68" height="22" rx="4" opacity="0.61"/>
+  <text x="82" y="335" text-anchor="middle" class="ink mono" font-size="11.5">0.60</text>
+  <rect class="heatfill" x="48" y="346" width="68" height="22" rx="4" opacity="0.85"/>
+  <text x="82" y="361" text-anchor="middle" class="ink mono" font-size="11.5">1.20</text>
+  <rect class="pos" x="48" y="372" width="68" height="22" rx="4" opacity="0.55"/>
+  <text x="82" y="387" text-anchor="middle" class="ink mono" font-size="11.5">-0.50</text>
+  <rect class="heatfill" x="48" y="398" width="68" height="22" rx="4" opacity="0.83"/>
+  <text x="82" y="413" text-anchor="middle" class="ink mono" font-size="11.5">0.97</text>
+  <rect class="pos" x="140" y="294" width="68" height="22" rx="4" opacity="0.53"/>
+  <text x="174" y="309" text-anchor="middle" class="ink mono" font-size="11.5">-0.46</text>
+  <rect class="pos" x="140" y="320" width="68" height="22" rx="4" opacity="0.63"/>
+  <text x="174" y="335" text-anchor="middle" class="ink mono" font-size="11.5">-0.64</text>
+  <rect class="heatfill" x="140" y="346" width="68" height="22" rx="4" opacity="0.56"/>
+  <text x="174" y="361" text-anchor="middle" class="ink mono" font-size="11.5">0.52</text>
+  <rect class="heatfill" x="140" y="372" width="68" height="22" rx="4" opacity="0.43"/>
+  <text x="174" y="387" text-anchor="middle" class="ink mono" font-size="11.5">0.30</text>
+  <rect class="heatfill" x="140" y="398" width="68" height="22" rx="4" opacity="0.67"/>
+  <text x="174" y="413" text-anchor="middle" class="ink mono" font-size="11.5">0.70</text>
+  <rect class="heatfill" x="232" y="294" width="68" height="22" rx="4" opacity="0.56"/>
+  <text x="266" y="309" text-anchor="middle" class="ink mono" font-size="11.5">0.52</text>
+  <rect class="pos" x="232" y="320" width="68" height="22" rx="4" opacity="0.61"/>
+  <text x="266" y="335" text-anchor="middle" class="ink mono" font-size="11.5">-0.60</text>
+  <rect class="heatfill" x="232" y="346" width="68" height="22" rx="4" opacity="0.73"/>
+  <text x="266" y="361" text-anchor="middle" class="ink mono" font-size="11.5">0.80</text>
+  <rect class="heatfill" x="232" y="372" width="68" height="22" rx="4" opacity="0.79"/>
+  <text x="266" y="387" text-anchor="middle" class="ink mono" font-size="11.5">0.90</text>
+  <rect class="heatfill" x="232" y="398" width="68" height="22" rx="4" opacity="0.45"/>
+  <text x="266" y="413" text-anchor="middle" class="ink mono" font-size="11.5">0.34</text>
+  <rect class="heatfill" x="324" y="294" width="68" height="22" rx="4" opacity="0.68"/>
+  <text x="358" y="309" text-anchor="middle" class="ink mono" font-size="11.5">0.72</text>
+  <rect class="heatfill" x="324" y="320" width="68" height="22" rx="4" opacity="0.80"/>
+  <text x="358" y="335" text-anchor="middle" class="ink mono" font-size="11.5">0.91</text>
+  <rect class="pos" x="324" y="346" width="68" height="22" rx="4" opacity="0.32"/>
+  <text x="358" y="361" text-anchor="middle" class="ink mono" font-size="11.5">-0.12</text>
+  <rect class="pos" x="324" y="372" width="68" height="22" rx="4" opacity="0.61"/>
+  <text x="358" y="387" text-anchor="middle" class="ink mono" font-size="11.5">-0.60</text>
+  <rect class="heatfill" x="324" y="398" width="68" height="22" rx="4" opacity="0.74"/>
+  <text x="358" y="413" text-anchor="middle" class="ink mono" font-size="11.5">0.82</text>
+  <text x="40" y="446" text-anchor="start" class="muted" font-size="12">plus a position signal · real vectors have thousands of numbers</text>
+  <path class="line" d="M412 300 H 452" marker-end="url(#a)"/>
+  <circle class="acc" cx="481" cy="93" r="11"/>
+  <text x="481" y="97.5" text-anchor="middle" class="onacc" font-size="12.5" font-weight="700">4</text>
+  <text x="500" y="98" text-anchor="start" class="ink" font-size="15" font-weight="700">Run the transformer</text>
+  <rect class="card" x="470" y="112" width="320" height="400" rx="14"/>
+  <rect class="sunk" x="490" y="128" width="280" height="32" rx="8"/>
+  <text x="630.0" y="149" text-anchor="middle" class="ink" font-size="13.5" font-weight="600">Token vectors + position</text>
+  <rect class="dash" x="482" y="172" width="296" height="248" rx="10" fill="none"/>
+  <text x="768" y="190" text-anchor="end" class="accink mono" font-size="11.5" font-weight="700">× N layers (GPT-3: 96)</text>
+  <rect class="heat" x="500" y="198" width="260" height="18" rx="5" stroke-width="1"/>
+  <text x="630.0" y="211" text-anchor="middle" class="heatink" font-size="11.5" font-weight="600">Layer norm</text>
+  <rect class="hit" x="500" y="222" width="260" height="112" rx="8" stroke-width="1.5"/>
+  <text x="514" y="242" text-anchor="start" class="accink" font-size="14.5" font-weight="700">Self-attention</text>
+  <text x="746" y="242" text-anchor="end" class="accink mono" font-size="10.5" font-weight="700">THIS CHAPTER</text>
+  <rect class="card" x="498" y="288" width="60" height="24" rx="12" stroke-width="1.2"/>
+  <text x="528" y="304" text-anchor="middle" class="ink" font-size="12" font-weight="600">The</text>
+  <rect class="card" x="566" y="288" width="60" height="24" rx="12" stroke-width="1.2"/>
+  <text x="596" y="304" text-anchor="middle" class="ink" font-size="12" font-weight="600">pizza</text>
+  <rect class="card" x="634" y="288" width="60" height="24" rx="12" stroke-width="1.2"/>
+  <text x="664" y="304" text-anchor="middle" class="ink" font-size="12" font-weight="600">is</text>
+  <rect class="acc" x="702" y="288" width="60" height="24" rx="12" stroke-width="1.2"/>
+  <text x="732" y="304" text-anchor="middle" class="onacc" font-size="12" font-weight="700">ready</text>
+  <path class="sheat" d="M732 288 Q 630.0 265.0 528 288" stroke-width="2"/>
+  <path class="sheat" d="M732 288 Q 664.0 259.3333333333333 596 288" stroke-width="2"/>
+  <path class="sheat" d="M732 288 Q 698.0 253.66666666666666 664 288" stroke-width="2"/>
+  <text x="630.0" y="328" text-anchor="middle" class="accink" font-size="11.5">“ready” looks back at every earlier token</text>
+  <rect class="heat" x="500" y="344" width="260" height="18" rx="5" stroke-width="1"/>
+  <text x="630.0" y="357" text-anchor="middle" class="heatink" font-size="11.5" font-weight="600">Layer norm</text>
+  <rect class="sunk" x="500" y="368" width="260" height="40" rx="8"/>
+  <text x="630.0" y="385" text-anchor="middle" class="ink" font-size="13.5" font-weight="700">Feed-forward</text>
+  <text x="630.0" y="400" text-anchor="middle" class="muted" font-size="11.5">refines each token on its own</text>
+  <rect class="heat" x="500" y="430" width="260" height="18" rx="5" stroke-width="1"/>
+  <text x="630.0" y="443" text-anchor="middle" class="heatink" font-size="11.5" font-weight="600">Layer norm</text>
+  <rect class="sunk" x="490" y="456" width="280" height="40" rx="8"/>
+  <text x="630.0" y="473" text-anchor="middle" class="ink" font-size="13.5" font-weight="700">Linear + softmax</text>
+  <text x="630.0" y="488" text-anchor="middle" class="muted" font-size="11.5">one score per vocabulary token</text>
+  <path class="line" d="M790 476 H 812 V 150 H 836" marker-end="url(#a)"/>
+  <circle class="acc" cx="857" cy="93" r="11"/>
+  <text x="857" y="97.5" text-anchor="middle" class="onacc" font-size="12.5" font-weight="700">5</text>
+  <text x="876" y="98" text-anchor="start" class="ink" font-size="15" font-weight="700">Score every possible token</text>
+  <text x="902" y="141" text-anchor="end" class="heatink mono" font-size="13" font-weight="700">␣for</text>
+  <rect class="sunk" x="912" y="128" width="200" height="18" rx="4"/>
+  <rect class="heatfill" x="912" y="128" width="180.0" height="18" rx="4"/>
+  <text x="1160" y="141" text-anchor="end" class="heatink mono" font-size="12.5" font-weight="700">42%</text>
+  <text x="902" y="179" text-anchor="end" class="ink mono" font-size="13" font-weight="500">␣to</text>
+  <rect class="sunk" x="912" y="166" width="200" height="18" rx="4"/>
+  <rect class="muted" x="912" y="166" width="132.85714285714286" height="18" rx="4" opacity="0.45"/>
+  <text x="1160" y="179" text-anchor="end" class="muted mono" font-size="12.5">31%</text>
+  <text x="902" y="217" text-anchor="end" class="ink mono" font-size="13" font-weight="500">␣at</text>
+  <rect class="sunk" x="912" y="204" width="200" height="18" rx="4"/>
+  <rect class="muted" x="912" y="204" width="51.42857142857143" height="18" rx="4" opacity="0.45"/>
+  <text x="1160" y="217" text-anchor="end" class="muted mono" font-size="12.5">12%</text>
+  <text x="902" y="255" text-anchor="end" class="ink mono" font-size="13" font-weight="500">␣now</text>
+  <rect class="sunk" x="912" y="242" width="200" height="18" rx="4"/>
+  <rect class="muted" x="912" y="242" width="25.714285714285715" height="18" rx="4" opacity="0.45"/>
+  <text x="1160" y="255" text-anchor="end" class="muted mono" font-size="12.5">6%</text>
+  <text x="846" y="290" text-anchor="start" class="muted" font-size="12">…and a score for each of ~100,000 tokens</text>
+  <rect class="possoft" x="846" y="308" width="314" height="78" rx="12" stroke-width="1.5"/>
+  <text x="1003" y="332" text-anchor="middle" class="posink" font-size="12" font-weight="600">Pick one (here, the most likely)</text>
+  <text x="1003" y="364" text-anchor="middle" class="ink" font-size="18" font-weight="700">The pizza is ready <tspan class="heatink">for</tspan></text>
+  <path class="dash" d="M1003 390 V 560 H 200 V 462" fill="none" marker-end="url(#aa)"/>
+  <rect class="bg" x="400" y="546" width="420" height="28"/>
+  <circle class="acc" cx="424" cy="560" r="11"/>
+  <text x="424" y="564.5" text-anchor="middle" class="onacc" font-size="12.5" font-weight="700">6</text>
+  <text x="444" y="565" text-anchor="start" class="accink" font-size="13.5" font-weight="700">Add it to the text and run again, one token at a time</text>
+  <text x="600" y="604" text-anchor="middle" class="muted" font-size="13">“The pizza is ready” → “… for” → “… for you” → “… for you!”</text>
+  <text x="40" y="628" class="muted" font-size="11.5">Vector values and probabilities are illustrative.</text>
+</svg>

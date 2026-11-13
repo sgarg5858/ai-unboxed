@@ -894,7 +894,7 @@
           "text": "Both make more sense once you know how attention works, so they're covered at the end of the Attention chapter: the wave pattern the original Transformer used, and RoPE, the method most modern models use.",
           "goto": {
             "chapter": "attention",
-            "slide": 8
+            "slide": 9
           },
           "link": "Position in depth, in Attention"
         }
