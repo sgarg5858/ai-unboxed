@@ -894,7 +894,7 @@
           "text": "Both make more sense once you know how attention works, so they're covered at the end of the Attention chapter: the wave pattern the original Transformer used, and RoPE, the method most modern models use.",
           "goto": {
             "chapter": "attention",
-            "slide": 9
+            "slide": 8
           },
           "link": "Position in depth, in Attention"
         }
@@ -1040,7 +1040,7 @@
             "<b>Bias:</b> learned from human text along with everything else."
           ]
         },
-        "Next, in <i>Attention</i>: every token's vector is still the same in every sentence. Attention lets tokens look at each other, so “Apple” in “I love Apple” and in “Apple shares fell” can end up meaning different things."
+        "Next, in <i>Transformer architecture</i>: how the model turns these vectors into an answer, one token at a time. Then <i>Attention</i> lets tokens look at each other, so “Apple” in “I love Apple” and in “Apple shares fell” can end up meaning different things."
       ],
       "figure": {
         "src": "images/embeddings-recap-light.svg",

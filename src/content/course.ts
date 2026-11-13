@@ -44,6 +44,11 @@ export const SECTIONS: readonly SectionContent[] = [
         load: () => json(import('./chapters/04-embeddings.json')),
       },
       {
+        id: 'transformer',
+        name: 'Transformer architecture',
+        load: () => json(import('./chapters/12-transformer-architecture.json')),
+      },
+      {
         id: 'attention',
         name: 'Attention',
         load: () => json(import('./chapters/05-attention.json')),
