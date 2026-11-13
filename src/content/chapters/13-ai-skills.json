@@ -1,0 +1,613 @@
+{
+  "$schema": "../schema/chapter.schema.json",
+  "id": "skills",
+  "name": "Skills: from idea to shipped code",
+  "slides": [
+    {
+      "title": "Vibe coding vs engineering with an agent",
+      "summary": "A coding agent writes code fast. Engineering is making sure it builds the right thing, and that the thing works.",
+      "body": [
+        "<b>Vibe coding</b> means describing what you want, accepting whatever the agent writes, and moving on if it seems to run. That's fine for a weekend demo. On a real codebase it fails in predictable ways:",
+        {
+          "ul": [
+            "<b>It builds the wrong thing.</b> A vague request leaves gaps, and the model fills them with plausible guesses.",
+            "<b>It drifts.</b> One huge task in one long chat, and the model loses track of decisions made an hour ago.",
+            "<b>Nobody checks it.</b> Code that runs isn't the same as code that's correct, and untested changes pile up."
+          ]
+        },
+        "<mark>A fast agent moves the bottleneck. Writing code is cheap now; deciding what to build and checking that it's right is the real work.</mark>",
+        "The fix is the discipline good teams already use: agree on the plan, write it down, split it into small tasks, test, review. <b>Skills</b> package each of those steps so the agent follows them the same way every time.",
+        {
+          "more": "Why do vague requests go wrong?",
+          "text": "An LLM predicts likely text. When your request leaves a decision open, it picks the most common answer from its training data, not the one your project needs, and states it with full confidence.",
+          "goto": {
+            "chapter": "hallucination",
+            "slide": 2
+          },
+          "link": "Cause 1 in Why LLMs hallucinate"
+        }
+      ],
+      "viz": [
+        {
+          "type": "table",
+          "rows": [
+            {
+              "head": "",
+              "cells": [
+                {
+                  "text": "Vibe coding"
+                },
+                {
+                  "text": "Engineering with an agent"
+                }
+              ]
+            },
+            {
+              "head": "Starts with",
+              "cells": [
+                {
+                  "text": "a one-line prompt"
+                },
+                {
+                  "text": "questions until the plan is clear",
+                  "tone": "accent"
+                }
+              ]
+            },
+            {
+              "head": "The plan",
+              "cells": [
+                {
+                  "text": "lives in the chat, then is lost",
+                  "tone": "heat"
+                },
+                {
+                  "text": "a written spec",
+                  "tone": "accent"
+                }
+              ]
+            },
+            {
+              "head": "Work size",
+              "cells": [
+                {
+                  "text": "one big change",
+                  "tone": "heat"
+                },
+                {
+                  "text": "small tickets, one at a time",
+                  "tone": "accent"
+                }
+              ]
+            },
+            {
+              "head": "Checked by",
+              "cells": [
+                {
+                  "text": "“it seems to run”",
+                  "tone": "heat"
+                },
+                {
+                  "text": "tests, and a review against the spec",
+                  "tone": "accent"
+                }
+              ]
+            },
+            {
+              "head": "Good for",
+              "cells": [
+                {
+                  "text": "demos and throwaway ideas"
+                },
+                {
+                  "text": "code you'll have to maintain"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "What is a skill?",
+      "summary": "A skill is a folder of instructions that the agent loads only when a task needs it.",
+      "body": [
+        "A <b>skill</b> is a folder with a <code>SKILL.md</code> file in it: a <b>name</b>, a one-line <b>description</b> of when to use it, and step-by-step instructions. It can also hold scripts, templates and reference files.",
+        {
+          "h": "Loaded only when needed"
+        },
+        {
+          "ul": [
+            "<b>Always in context:</b> the name and description of every skill, a few dozen tokens each.",
+            "<b>When a task matches:</b> the agent reads that skill's full instructions. You can also run one yourself by typing <code>/name</code>.",
+            "<b>Only if a step needs them:</b> the extra files, such as a script or a checklist."
+          ]
+        },
+        "<mark>Only the descriptions are always loaded, so you can install dozens of skills without filling the context window.</mark>",
+        "This pattern is called <b>progressive disclosure</b>. Anthropic introduced <b>Agent Skills</b> in October 2025 and published the format as an open standard (<a href=\"https://agentskills.io\" target=\"_blank\" rel=\"noopener noreferrer\">agentskills.io</a>) that December. Dozens of tools now read the same folder, including Claude Code, OpenAI Codex, GitHub Copilot, Cursor and Gemini CLI.",
+        {
+          "note": "Anthropic's post “<a href=\"https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills\" target=\"_blank\" rel=\"noopener noreferrer\">Equipping agents for the real world with Agent Skills</a>” describes these three levels, and notes that a bundled script can run without its code ever entering the context.",
+          "kind": "dev"
+        },
+        {
+          "more": "Skills vs CLAUDE.md vs tools",
+          "text": [
+            "<b>CLAUDE.md</b> (or AGENTS.md): project rules, loaded into every session. Keep it short.",
+            "<b>Skills:</b> know-how for one kind of task, loaded on demand.",
+            "<b>Tools and MCP servers:</b> actions the agent can take, such as running tests or querying a database. A skill often tells the agent which tools to use, and when."
+          ],
+          "goto": {
+            "chapter": "assistant",
+            "slide": 8
+          },
+          "link": "Tools in Assistant architecture"
+        },
+        {
+          "more": "Why not put everything in one big prompt?",
+          "text": "Every token in the context window costs money, and models follow instructions less reliably as the context grows. Loading only the skill the current task needs keeps the important instructions easy to find.",
+          "goto": {
+            "chapter": "tokens",
+            "slide": 6
+          },
+          "link": "The context window in Tokens"
+        }
+      ],
+      "code": [
+        "# .claude/skills/tdd/SKILL.md",
+        "---",
+        "name: tdd",
+        "description: Build a feature or fix a bug test-first.",
+        "  Use when the user asks for TDD or a test-first change.",
+        "---",
+        "",
+        "1. Agree with the user which behaviour to test.",
+        "2. Write ONE failing test through the public interface.",
+        "3. Write the least code that makes it pass.",
+        "4. Repeat. Never weaken a test to make it pass."
+      ],
+      "figure": {
+        "src": "images/skill-loading-light.svg",
+        "darkSrc": "images/skill-loading-dark.svg",
+        "alt": "Progressive disclosure. The context window always holds the system prompt, CLAUDE.md and one line per installed skill. When the request 'The checkout total is wrong for some users' matches the diagnosing-bugs description, the agent loads that skill's SKILL.md. A bundled script is loaded only if a step needs it.",
+        "width": 1200,
+        "height": 560,
+        "caption": "Three levels: descriptions always, the full instructions when a task matches, extra files only when a step needs them."
+      }
+    },
+    {
+      "title": "The main flow: from idea to shipped code",
+      "summary": "Five skills in order: align, spec, tickets, build, review. Three more help while building, and a few are useful any time.",
+      "body": [
+        "Each step produces a file the next step reads, so nothing important lives only in a chat that will be forgotten.",
+        {
+          "ul": [
+            "<b>1 · Align</b> (<code>/grill-with-docs</code>): the agent interviews you until the plan has no gaps.",
+            "<b>2 · Spec</b> (<code>/to-spec</code>): the agreed plan becomes a written spec.",
+            "<b>3 · Tickets</b> (<code>/to-tickets</code>): the spec is split into small tasks, in order.",
+            "<b>4 · Build</b> (<code>/implement</code>): the agent builds one ticket at a time, test first.",
+            "<b>5 · Review</b> (<code>/code-review</code>): the change is checked against the code standards and the spec."
+          ]
+        },
+        "<mark>Most of the effort goes into the first three steps, before any code exists. A mistake in the plan is the most expensive one to fix later.</mark>",
+        {
+          "note": "These skill names come from Matt Pocock's open-source collection “<a href=\"https://github.com/mattpocock/skills\" target=\"_blank\" rel=\"noopener noreferrer\">Skills For Real Engineers</a>” (MIT licence). The steps matter more than the names, and you can write your own versions.",
+          "kind": "dev"
+        }
+      ],
+      "viz": [
+        {
+          "type": "stepper",
+          "accumulate": true,
+          "nextLabel": "Next step",
+          "steps": [
+            {
+              "item": {
+                "label": "<b>Align</b>",
+                "sub": "“All invoices, or a date range?” → a date range, up to one year.",
+                "value": "/grill-with-docs",
+                "tone": "accent"
+              },
+              "caption": "Feature request: “Let accountants export invoices as CSV.” The agent asks before it builds."
+            },
+            {
+              "item": {
+                "label": "<b>Spec</b>",
+                "sub": "spec.md: goal, out of scope, acceptance criteria",
+                "value": "/to-spec",
+                "mono": true
+              },
+              "caption": "The answers become a file. A fresh agent can build from it without seeing the chat."
+            },
+            {
+              "item": {
+                "label": "<b>Tickets</b>",
+                "sub": "#1 CSV for one invoice → #2 date-range endpoint → #3 Export button",
+                "value": "/to-tickets"
+              },
+              "caption": "Small tasks, in order, each with its own acceptance criteria."
+            },
+            {
+              "item": {
+                "label": "<b>Build</b>",
+                "sub": "Ticket #1: failing test → code → test passes",
+                "value": "/implement",
+                "tone": "pos"
+              },
+              "caption": "One ticket at a time, each in a fresh session, test first."
+            },
+            {
+              "item": {
+                "label": "<b>Review</b>",
+                "sub": "Matches the spec ✓ · missing: the empty date-range case",
+                "value": "/code-review",
+                "tone": "heat"
+              },
+              "caption": "The review finds a gap. It goes back to Build as a fix, and then the change ships."
+            }
+          ]
+        }
+      ],
+      "figure": {
+        "src": "images/skills-workflow-light.svg",
+        "darkSrc": "images/skills-workflow-dark.svg",
+        "alt": "The skills workflow. Main flow in order: 1 Align (/grill-with-docs), 2 Spec (/to-spec), 3 Tickets (/to-tickets), 4 Build (/implement), 5 Review (/code-review), with an arrow from Review back to Build when changes are needed. Used while building: /tdd, /diagnosing-bugs, /prototype. Any time: /wayfinder, /handoff, /research, /improve-codebase-architecture, /retro.",
+        "width": 1200,
+        "height": 660,
+        "caption": "Workflow from Matt Pocock's Skills For Real Engineers, redrawn."
+      }
+    },
+    {
+      "title": "Align and spec: agree before any code",
+      "summary": "Let the agent ask the questions first. The answers become a short spec that every later step checks against.",
+      "body": [
+        "Ask an agent to “add CSV export” and it starts coding straight away, guessing at every decision you didn't mention. A <b>grilling</b> skill flips this: the agent asks <b>you</b> questions first.",
+        {
+          "h": "A good grilling session"
+        },
+        {
+          "ul": [
+            "<b>One question at a time</b>, each with the agent's suggested answer, so you can often just say yes.",
+            "<b>It reads the code first</b> and only asks what the code can't tell it.",
+            "<b>It follows each answer</b> to the next open question, until no decision is left.",
+            "<b>It writes decisions down</b> as it goes: terms in a glossary, big choices in short decision records (ADRs)."
+          ]
+        },
+        "<mark>Every question answered now is a guess the model doesn't make later.</mark>",
+        {
+          "h": "Then write the spec"
+        },
+        "The spec turns the conversation into a file: the goal, what's out of scope, and <b>acceptance criteria</b> that a test or a reviewer can check. A new session can build from it without ever seeing the chat.",
+        {
+          "note": "Anthropic's <a href=\"https://code.claude.com/docs/en/best-practices\" target=\"_blank\" rel=\"noopener noreferrer\">Claude Code best practices</a> recommend the same pattern: let Claude interview you, write the result to <code>SPEC.md</code>, then start a fresh session to build from it.",
+          "kind": "dev"
+        },
+        {
+          "note": "A good builder asks questions before quoting the job, not after building the wrong wall.",
+          "kind": "analogy"
+        }
+      ],
+      "code": [
+        "# Spec: export invoices as CSV",
+        "",
+        "## Goal",
+        "Accountants download invoices for a date range.",
+        "",
+        "## Out of scope",
+        "PDF export. Scheduled exports.",
+        "",
+        "## Acceptance criteria",
+        "- Columns: number, date, customer, total, currency",
+        "- Range longer than one year → clear error message",
+        "- No invoices in range → file with the header row only"
+      ]
+    },
+    {
+      "title": "Tickets and build: small steps, fresh context",
+      "summary": "Split the spec into thin tasks that each work end to end. Build them one at a time, each in a clean session.",
+      "body": [
+        "Give an agent the whole spec at once and you get one huge change that's hard to test and harder to review. So split it into <b>tickets</b>:",
+        {
+          "ul": [
+            "<b>Thin vertical slices.</b> Each ticket cuts through every layer (data, API, UI) for one small behaviour, so it can be tested and shipped on its own. These are sometimes called <b>tracer bullets</b>.",
+            "<b>A clear order.</b> Each ticket says which tickets block it, so the agent knows what it can start.",
+            "<b>A checkable “done”.</b> Each ticket carries its acceptance criteria from the spec."
+          ]
+        },
+        {
+          "h": "Why a fresh session for each ticket?"
+        },
+        "Everything in a chat stays in the context window: old attempts, dead ends, long test logs. As it fills up, the model gets less reliable. A 2025 study by Chroma tested 18 models and found that accuracy dropped as the input grew, even on simple tasks. This is known as <b>context rot</b>.",
+        "<mark>Start each ticket in a new session that reads the spec and the ticket, not the whole history. The files carry the memory, not the chat.</mark>",
+        "In Claude Code, <code>/clear</code> starts a new context. Anthropic's guide adds a rule of thumb: if you've corrected the agent twice on the same thing, clear the chat and write one better prompt instead of a third correction.",
+        {
+          "more": "What if I have to stop halfway?",
+          "text": "Run a <b>handoff</b> skill. It writes a short note for the next session: what's done, what's next, and links to the spec, tickets and commits instead of copies of them. The next agent starts from the note with a clean context.",
+          "goto": {
+            "chapter": "tokens",
+            "slide": 6
+          },
+          "link": "The context window in Tokens"
+        }
+      ],
+      "viz": [
+        {
+          "type": "table",
+          "rows": [
+            {
+              "head": "",
+              "cells": [
+                {
+                  "text": "Sliced by layer"
+                },
+                {
+                  "text": "Sliced by behaviour"
+                }
+              ]
+            },
+            {
+              "head": "Ticket 1",
+              "cells": [
+                {
+                  "text": "all the database code"
+                },
+                {
+                  "text": "one invoice → one CSV row, end to end",
+                  "tone": "accent"
+                }
+              ]
+            },
+            {
+              "head": "Ticket 2",
+              "cells": [
+                {
+                  "text": "all the API code"
+                },
+                {
+                  "text": "export a date range",
+                  "tone": "accent"
+                }
+              ]
+            },
+            {
+              "head": "Ticket 3",
+              "cells": [
+                {
+                  "text": "all the UI"
+                },
+                {
+                  "text": "Export button with error messages",
+                  "tone": "accent"
+                }
+              ]
+            },
+            {
+              "head": "First testable result",
+              "cells": [
+                {
+                  "text": "after ticket 3",
+                  "tone": "heat"
+                },
+                {
+                  "text": "after ticket 1",
+                  "tone": "accent"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "caption",
+          "html": "Slicing by behaviour gives you something working, and testable, after the first ticket."
+        }
+      ]
+    },
+    {
+      "title": "While building: tests, debugging, prototypes",
+      "summary": "Three skills keep the build honest: write the test first, debug with evidence, and prototype to learn.",
+      "body": [
+        {
+          "h": "Test first (<code>/tdd</code>)"
+        },
+        "The agent writes one failing test for one behaviour, then the least code that makes it pass, then repeats.",
+        {
+          "ul": [
+            "<b>Red first.</b> If you never saw the test fail, you don't know that it tests anything.",
+            "<b>Test behaviour, not internals.</b> Tests go through the public interface, so a refactor doesn't break them.",
+            "<b>Never weaken a test to make it pass.</b> Agents sometimes do this, so review checks for it."
+          ]
+        },
+        "<mark>A test gives the agent a result it can check by itself, instead of saying “done” because the code looks right.</mark>",
+        "Anthropic's Claude Code guide puts it simply: give Claude “something it can run that comes back pass or fail”, and ask for the command and its output as proof.",
+        {
+          "h": "Debug with evidence (<code>/diagnosing-bugs</code>)"
+        },
+        {
+          "ul": [
+            "<b>Reproduce first:</b> a fast command that shows the bug, every time.",
+            "<b>List a few hypotheses</b> that an experiment could prove wrong, and test one at a time.",
+            "<b>Write the regression test before the fix</b>, so the bug can't quietly come back."
+          ]
+        },
+        {
+          "h": "Prototype to learn (<code>/prototype</code>)"
+        },
+        "When the question is “will this approach even work?”, build a quick throwaway version to find out. Then delete it and build properly from what you learned."
+      ],
+      "viz": [
+        {
+          "type": "stages",
+          "items": [
+            {
+              "label": "<b>Red</b>",
+              "sub": "Write one test. Run it. It fails.",
+              "tone": "neg"
+            },
+            {
+              "label": "<b>Green</b>",
+              "sub": "Write the least code that passes. Run it again.",
+              "tone": "pos"
+            },
+            {
+              "label": "<b>Next slice</b>",
+              "sub": "Pick the next behaviour and repeat.",
+              "tone": "accent"
+            }
+          ]
+        },
+        {
+          "type": "caption",
+          "html": "All three replace guessing with a check: a test that passes, a bug that reproduces, a prototype that answers a question."
+        }
+      ]
+    },
+    {
+      "title": "Review: you own what ships",
+      "summary": "Check every change two ways: does it meet the code standards, and does it do what the spec says?",
+      "body": [
+        "The agent wrote the code, but whoever merges it is responsible for it. Review is how you earn that.",
+        {
+          "ul": [
+            "<b>Against the spec:</b> every acceptance criterion is met, and nothing out of scope crept in.",
+            "<b>Against the standards:</b> it follows the project's conventions, with no needless complexity, duplicated helpers or secrets in the code.",
+            "<b>Check the tests too:</b> new behaviour is tested, and no test was deleted, skipped or weakened."
+          ]
+        },
+        "<mark>Have a fresh agent review the change, not the one that wrote it. It doesn't share the writer's assumptions.</mark>",
+        "Anthropic recommends exactly this: one session writes the code, and another reviews it “without having watched it being written”.",
+        "Then read the diff yourself. Agents make different mistakes from people: confident code that calls a function that doesn't exist, or a fix that hides a symptom instead of removing the cause.",
+        {
+          "more": "If all the tests pass, can I skip review?",
+          "text": "No. Tests only check what someone thought to test, and the agent may have written those tests itself. Passing tests are necessary, not sufficient."
+        }
+      ],
+      "viz": [
+        {
+          "type": "table",
+          "rows": [
+            {
+              "head": "",
+              "cells": [
+                {
+                  "text": "Spec review"
+                },
+                {
+                  "text": "Standards review"
+                }
+              ]
+            },
+            {
+              "head": "Asks",
+              "cells": [
+                {
+                  "text": "Did we build the right thing?",
+                  "tone": "accent"
+                },
+                {
+                  "text": "Did we build it well?",
+                  "tone": "accent"
+                }
+              ]
+            },
+            {
+              "head": "Checks against",
+              "cells": [
+                {
+                  "text": "acceptance criteria, scope"
+                },
+                {
+                  "text": "conventions, simplicity, security"
+                }
+              ]
+            },
+            {
+              "head": "Typical catch",
+              "cells": [
+                {
+                  "text": "empty date range not handled",
+                  "tone": "heat"
+                },
+                {
+                  "text": "a second copy of an existing date helper",
+                  "tone": "heat"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Any time skills, and writing your own",
+      "summary": "Some skills aren't one step of the flow. They plan big work, carry it between sessions, and improve the setup itself.",
+      "body": [
+        {
+          "ul": [
+            "<b>Plan work too big for one chat</b> (<code>/wayfinder</code>): map the open decisions as tickets, and settle them one at a time.",
+            "<b>Hand off</b> (<code>/handoff</code>): sum up the session so a new one can continue with a clean context.",
+            "<b>Research</b> (<code>/research</code>): look a question up in primary sources, and save notes with citations in the repo.",
+            "<b>Check the design</b> (<code>/improve-codebase-architecture</code>): find weak spots in the codebase, then plan the fix together.",
+            "<b>Retro</b> (<code>/retro</code>): after a session, suggest improvements to the agent's setup, worst problem first."
+          ]
+        },
+        "<mark>The retro closes the loop: every mistake the agent makes is a chance to fix its instructions so it doesn't happen again.</mark>",
+        {
+          "h": "Writing your own skill"
+        },
+        {
+          "ul": [
+            "<b>Start from a real failure.</b> When you give the agent the same correction twice, turn it into a skill.",
+            "<b>Test before you write much.</b> Run a few real tasks <i>without</i> the skill first, so you can measure whether it helps.",
+            "<b>Write the description for the model.</b> It decides when the skill runs. Say what it does and when to use it, in the third person: “Reviews diffs against the spec”, not “I can help you…”.",
+            "<b>Be concise.</b> The model is already smart, so only add what it doesn't know. Keep <code>SKILL.md</code> under 500 lines and move long references into separate files.",
+            "<b>Test it with every model you'll use.</b> A small fast model may need more detail than a large one."
+          ]
+        },
+        {
+          "note": "These tips follow Anthropic's <a href=\"https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices\" target=\"_blank\" rel=\"noopener noreferrer\">skill authoring best practices</a>. They also suggest pairing two sessions: one helps you write the skill, and a fresh one tries it on real tasks.",
+          "kind": "dev"
+        }
+      ],
+      "viz": [
+        {
+          "type": "stages",
+          "items": [
+            {
+              "label": "<a href=\"https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills\" target=\"_blank\" rel=\"noopener noreferrer\">Equipping agents for the real world with Agent Skills</a>",
+              "sub": "Anthropic Engineering, October 2025. How skills work.",
+              "tone": "accent"
+            },
+            {
+              "label": "<a href=\"https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices\" target=\"_blank\" rel=\"noopener noreferrer\">Skill authoring best practices</a>",
+              "sub": "Anthropic docs. How to write skills that work.",
+              "tone": "accent"
+            },
+            {
+              "label": "<a href=\"https://code.claude.com/docs/en/best-practices\" target=\"_blank\" rel=\"noopener noreferrer\">Claude Code best practices</a>",
+              "sub": "Anthropic docs. Specs, fresh context, tests, separate review.",
+              "tone": "accent"
+            },
+            {
+              "label": "<a href=\"https://agentskills.io\" target=\"_blank\" rel=\"noopener noreferrer\">agentskills.io</a>",
+              "sub": "The open Agent Skills format.",
+              "tone": "muted"
+            },
+            {
+              "label": "<a href=\"https://github.com/mattpocock/skills\" target=\"_blank\" rel=\"noopener noreferrer\">Skills For Real Engineers</a>",
+              "sub": "Matt Pocock's open-source skills (MIT), used in this chapter.",
+              "tone": "muted"
+            },
+            {
+              "label": "<a href=\"https://research.trychroma.com/context-rot\" target=\"_blank\" rel=\"noopener noreferrer\">Context rot</a>",
+              "sub": "Chroma, July 2025. Accuracy drops as the input grows.",
+              "tone": "muted"
+            }
+          ]
+        },
+        {
+          "type": "caption",
+          "html": "Further reading. Links open in a new tab."
+        }
+      ]
+    }
+  ]
+}

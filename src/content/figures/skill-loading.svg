@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 560" role="img" aria-labelledby="t d" font-family="'Schibsted Grotesk', ui-sans-serif, system-ui, sans-serif">
+  <title id="t">Skills load in three levels</title>
+  <desc id="d">Progressive disclosure. The context window always holds the system prompt and tools, CLAUDE.md, and a skill menu with one short line per installed skill, about 50 tokens each. The request "The checkout total is wrong for some users" matches the diagnosing-bugs description, so the agent loads that skill’s full SKILL.md into context. Level 3: files in the skill folder, such as scripts/repro.sh and reference/profiling.md, are read only if a step needs them.</desc>
+  <!--theme-->
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arrowhead"/></marker>
+    <marker id="aa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arrowacc"/></marker>
+    <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="heatfill"/></marker>
+  </defs>
+  <rect class="bg" width="1200" height="560" rx="18"/>
+  <text x="40" y="50" text-anchor="start" class="ink" font-size="26" font-weight="700">Skills load in three levels</text>
+  <text x="40" y="76" text-anchor="start" class="muted" font-size="15">The agent always sees a one-line menu. It reads a skill in full only when the task needs it.</text>
+  <rect class="card" x="40" y="110" width="520" height="410" rx="14"/>
+  <text x="60" y="140" text-anchor="start" class="muted mono" font-size="11.5" font-weight="700">CONTEXT WINDOW</text>
+  <rect class="sunk" x="60" y="154" width="480" height="34" rx="8"/>
+  <text x="74" y="176" text-anchor="start" class="ink" font-size="14" font-weight="600">System prompt · tools</text>
+  <rect class="sunk" x="60" y="196" width="480" height="34" rx="8"/>
+  <text x="74" y="218" text-anchor="start" class="ink" font-size="14" font-weight="600">CLAUDE.md: project rules</text>
+  <text x="60" y="256" text-anchor="start" class="accink mono" font-size="11.5" font-weight="700">1  SKILL MENU (always loaded, ~50 tokens each)</text>
+  <rect class="row" x="60" y="268" width="480" height="26" rx="6"/>
+  <text x="72" y="286" text-anchor="start" class="ink mono" font-size="13" font-weight="700">tdd</text>
+  <text x="240" y="286" text-anchor="start" class="muted" font-size="13">Build test-first…</text>
+  <rect class="hit" x="60" y="298" width="480" height="26" rx="6" stroke-width="1.5"/>
+  <text x="72" y="316" text-anchor="start" class="accink mono" font-size="13" font-weight="700">diagnosing-bugs</text>
+  <text x="240" y="316" text-anchor="start" class="muted" font-size="13">Hard bugs and slow code…</text>
+  <rect class="row" x="60" y="328" width="480" height="26" rx="6"/>
+  <text x="72" y="346" text-anchor="start" class="ink mono" font-size="13" font-weight="700">to-spec</text>
+  <text x="240" y="346" text-anchor="start" class="muted" font-size="13">Turn a plan into a spec…</text>
+  <rect class="row" x="60" y="358" width="480" height="26" rx="6"/>
+  <text x="72" y="376" text-anchor="start" class="ink mono" font-size="13" font-weight="700">code-review</text>
+  <text x="240" y="376" text-anchor="start" class="muted" font-size="13">Review a diff against…</text>
+  <rect class="row" x="60" y="388" width="480" height="26" rx="6"/>
+  <text x="72" y="406" text-anchor="start" class="ink mono" font-size="13" font-weight="700">+ 20 more</text>
+  <text x="240" y="406" text-anchor="start" class="muted" font-size="13"></text>
+  <text x="60" y="442" text-anchor="start" class="heatink mono" font-size="11.5" font-weight="700">2  LOADED NOW</text>
+  <rect class="heat" x="60" y="454" width="480" height="46" rx="8" stroke-width="1.5"/>
+  <text x="74" y="474" text-anchor="start" class="heatink mono" font-size="13" font-weight="700">diagnosing-bugs/SKILL.md</text>
+  <text x="74" y="492" text-anchor="start" class="ink" font-size="13">Full steps: reproduce → hypotheses → instrument → fix</text>
+  <text x="640" y="140" text-anchor="start" class="muted mono" font-size="11.5" font-weight="700">YOUR REQUEST</text>
+  <rect class="card" x="640" y="152" width="520" height="56" rx="10"/>
+  <text x="658" y="186" text-anchor="start" class="ink" font-size="15" font-weight="600">“The checkout total is wrong for some users.”</text>
+  <path class="sacc" d="M640 200 C600 230 600 290 546 299" marker-end="url(#aa)"/>
+  <text x="670" y="250" text-anchor="start" class="accink" font-size="13" font-weight="700">Matches the description of diagnosing-bugs</text>
+  <text x="670" y="268" text-anchor="start" class="muted" font-size="13">so the agent reads its full instructions.</text>
+  <path class="sheat" d="M714 393 C630 393 600 476 546 476" marker-end="url(#ah)"/>
+  <text x="700" y="330" text-anchor="start" class="muted mono" font-size="11.5" font-weight="700">SKILL FOLDER ON DISK</text>
+  <rect class="sunk" x="700" y="342" width="460" height="150" rx="10"/>
+  <text x="720" y="370" text-anchor="start" class="ink mono" font-size="13.5" font-weight="700">diagnosing-bugs/</text>
+  <text x="742" y="398" text-anchor="start" class="heatink mono" font-size="13.5" font-weight="700">SKILL.md</text>
+  <text x="742" y="426" text-anchor="start" class="accink mono" font-size="13.5" font-weight="600">scripts/repro.sh</text>
+  <text x="742" y="454" text-anchor="start" class="accink mono" font-size="13.5" font-weight="600">reference/profiling.md</text>
+  <text x="960" y="398" text-anchor="start" class="heatink" font-size="12.5" font-weight="700">← 2 read when matched</text>
+  <text x="960" y="426" text-anchor="start" class="accink" font-size="12.5" font-weight="700">← 3 read only if a</text>
+  <text x="960" y="443" text-anchor="start" class="accink" font-size="12.5" font-weight="700">    step needs it</text>
+  <text x="700" y="520" text-anchor="start" class="muted" font-size="13">Dozens of skills cost little: only their menu lines are always in context.</text>
+</svg>

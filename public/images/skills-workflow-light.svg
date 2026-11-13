@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 660" role="img" aria-labelledby="t d" font-family="'Schibsted Grotesk', ui-sans-serif, system-ui, sans-serif">
+  <title id="t">The skills workflow</title>
+  <desc id="d">The main flow, in order: 1 Align with /grill-with-docs, the agent asks you questions until the plan is clear; 2 Spec with /to-spec, writes down what to build; 3 Tickets with /to-tickets, splits the spec into small ordered tasks; 4 Build with /implement, one ticket at a time, test first; 5 Review with /code-review, checks the change against the spec and standards. If changes are needed, Review loops back to Build. Used while building: /tdd, /diagnosing-bugs, /prototype. Any time: /wayfinder, /handoff, /research, /improve-codebase-architecture, /retro.</desc>
+  <style>
+    .bg{fill:#f6f4ef}.card{fill:#fffdf9;stroke:#e5e0d5}.sunk{fill:#f3f0e9}
+    .ink{fill:#1c1b22}.muted{fill:#5b5866}.onacc{fill:#ffffff}
+    .acc{fill:#2b5fd9}.accink{fill:#1d47ad}.accsoft{fill:#e6edfc}
+    .pos{fill:#168a64}.posink{fill:#0d6a4b}.possoft{fill:#dcf2e8;stroke:#168a64}
+    .neg{fill:#d24a2b}.negink{fill:#ad3417}.negsoft{fill:#fbe3da;stroke:#d24a2b}
+    .heat{fill:#fcefd2;stroke:#d08a0c}.heatink{fill:#875700}.heatfill{fill:#d08a0c}
+    .line{stroke:#5b5866;fill:none;stroke-width:2}.thin{stroke:#e5e0d5;fill:none;stroke-width:1.5}
+    .dash{stroke:#2b5fd9;fill:none;stroke-width:2;stroke-dasharray:6 5}
+    .sacc{stroke:#2b5fd9;fill:none;stroke-width:2.5}.sheat{stroke:#d08a0c;fill:none;stroke-width:2.5}
+    .spos{stroke:#168a64;fill:none;stroke-width:2.5}.sneg{stroke:#d24a2b;fill:none;stroke-width:2.5}
+    .edge{stroke:#2b5fd9;fill:none;stroke-width:1;opacity:.45}
+    .stream{stroke:#2b5fd9;fill:none;stroke-width:14;stroke-linecap:round;opacity:.35}
+    .row{fill:#f3f0e9}.hit{fill:#e6edfc;stroke:#2b5fd9}
+    .mono{font-family:'JetBrains Mono',ui-monospace,Menlo,monospace}
+    .head{font-size:13px;font-weight:700;letter-spacing:.08em}
+    .arrowhead{fill:#5b5866}.arrowacc{fill:#2b5fd9}
+  </style>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arrowhead"/></marker>
+    <marker id="aa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arrowacc"/></marker>
+    <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="heatfill"/></marker>
+  </defs>
+  <rect class="bg" width="1200" height="660" rx="18"/>
+  <text x="40" y="50" text-anchor="start" class="ink" font-size="26" font-weight="700">From idea to shipped code</text>
+  <text x="40" y="76" text-anchor="start" class="muted" font-size="15">Each step leaves a file for the next one: questions → spec → tickets → commits → review notes.</text>
+  <text x="40" y="136" text-anchor="start" class="muted mono" font-size="11.5" font-weight="700">THE MAIN FLOW, IN ORDER</text>
+  <rect class="hit" x="40" y="150" width="200" height="108" rx="10" stroke-width="1.5"/>
+  <text x="54" y="174" text-anchor="start" class="accink mono" font-size="11" font-weight="700">1 · ALIGN</text>
+  <text x="54" y="196" text-anchor="start" class="ink mono" font-size="14" font-weight="700">/grill-with-docs</text>
+  <text x="54" y="218" text-anchor="start" class="muted" font-size="13.5">The agent asks you</text>
+  <text x="54" y="237" text-anchor="start" class="muted" font-size="13.5">questions until clear</text>
+  <path class="sacc" d="M242 204.0 L267 204.0" marker-end="url(#aa)"/>
+  <rect class="hit" x="270" y="150" width="200" height="108" rx="10" stroke-width="1.5"/>
+  <text x="284" y="174" text-anchor="start" class="accink mono" font-size="11" font-weight="700">2 · SPEC</text>
+  <text x="284" y="196" text-anchor="start" class="ink mono" font-size="14" font-weight="700">/to-spec</text>
+  <text x="284" y="218" text-anchor="start" class="muted" font-size="13.5">Writes down what</text>
+  <text x="284" y="237" text-anchor="start" class="muted" font-size="13.5">to build, and why</text>
+  <path class="sacc" d="M472 204.0 L497 204.0" marker-end="url(#aa)"/>
+  <rect class="hit" x="500" y="150" width="200" height="108" rx="10" stroke-width="1.5"/>
+  <text x="514" y="174" text-anchor="start" class="accink mono" font-size="11" font-weight="700">3 · TICKETS</text>
+  <text x="514" y="196" text-anchor="start" class="ink mono" font-size="14" font-weight="700">/to-tickets</text>
+  <text x="514" y="218" text-anchor="start" class="muted" font-size="13.5">Splits the spec into</text>
+  <text x="514" y="237" text-anchor="start" class="muted" font-size="13.5">small, ordered tasks</text>
+  <path class="sacc" d="M702 204.0 L727 204.0" marker-end="url(#aa)"/>
+  <rect class="hit" x="730" y="150" width="200" height="108" rx="10" stroke-width="1.5"/>
+  <text x="744" y="174" text-anchor="start" class="accink mono" font-size="11" font-weight="700">4 · BUILD</text>
+  <text x="744" y="196" text-anchor="start" class="ink mono" font-size="14" font-weight="700">/implement</text>
+  <text x="744" y="218" text-anchor="start" class="muted" font-size="13.5">Builds one ticket</text>
+  <text x="744" y="237" text-anchor="start" class="muted" font-size="13.5">at a time, test first</text>
+  <path class="sacc" d="M932 204.0 L957 204.0" marker-end="url(#aa)"/>
+  <rect class="hit" x="960" y="150" width="200" height="108" rx="10" stroke-width="1.5"/>
+  <text x="974" y="174" text-anchor="start" class="accink mono" font-size="11" font-weight="700">5 · REVIEW</text>
+  <text x="974" y="196" text-anchor="start" class="ink mono" font-size="14" font-weight="700">/code-review</text>
+  <text x="974" y="218" text-anchor="start" class="muted" font-size="13.5">Checks the change</text>
+  <text x="974" y="237" text-anchor="start" class="muted" font-size="13.5">against spec + standards</text>
+  <path class="sheat" d="M1060.0 146 C1060.0 106 830.0 106 834.0 144" marker-end="url(#ah)"/>
+  <text x="945.0" y="110" text-anchor="middle" class="heatink" font-size="12" font-weight="700">changes needed</text>
+  <text x="40" y="418.0" text-anchor="start" class="muted mono" font-size="11.5" font-weight="700">USED WHILE BUILDING</text>
+  <rect class="card" x="500" y="360" width="200" height="108" rx="10" stroke-width="1"/>
+  <text x="514" y="384" text-anchor="start" class="accink mono" font-size="11" font-weight="700">TEST</text>
+  <text x="514" y="406" text-anchor="start" class="ink mono" font-size="14" font-weight="700">/tdd</text>
+  <text x="514" y="428" text-anchor="start" class="muted" font-size="13.5">Writes the failing test</text>
+  <text x="514" y="447" text-anchor="start" class="muted" font-size="13.5">first, then the code</text>
+  <path class="line" d="M830.0 260 C830.0 308 600.0 310 600.0 356" marker-end="url(#a)"/>
+  <rect class="card" x="730" y="360" width="200" height="108" rx="10" stroke-width="1"/>
+  <text x="744" y="384" text-anchor="start" class="accink mono" font-size="11" font-weight="700">DEBUG</text>
+  <text x="744" y="406" text-anchor="start" class="ink mono" font-size="14" font-weight="700">/diagnosing-bugs</text>
+  <text x="744" y="428" text-anchor="start" class="muted" font-size="13.5">Reproduce, test a few</text>
+  <text x="744" y="447" text-anchor="start" class="muted" font-size="13.5">hypotheses, then fix</text>
+  <path class="line" d="M830.0 260 C830.0 308 830.0 310 830.0 356" marker-end="url(#a)"/>
+  <rect class="card" x="960" y="360" width="200" height="108" rx="10" stroke-width="1"/>
+  <text x="974" y="384" text-anchor="start" class="accink mono" font-size="11" font-weight="700">LEARN</text>
+  <text x="974" y="406" text-anchor="start" class="ink mono" font-size="14" font-weight="700">/prototype</text>
+  <text x="974" y="428" text-anchor="start" class="muted" font-size="13.5">A quick throwaway</text>
+  <text x="974" y="447" text-anchor="start" class="muted" font-size="13.5">to answer a question</text>
+  <path class="line" d="M830.0 260 C830.0 308 1060.0 310 1060.0 356" marker-end="url(#a)"/>
+  <text x="40" y="516" text-anchor="start" class="muted mono" font-size="11.5" font-weight="700">ANY TIME</text>
+  <rect class="sunk" x="40" y="530" width="200" height="108" rx="10" stroke-width="1"/>
+  <text x="54" y="554" text-anchor="start" class="accink mono" font-size="11" font-weight="700">BIG PLANS</text>
+  <text x="54" y="576" text-anchor="start" class="ink mono" font-size="14" font-weight="700">/wayfinder</text>
+  <text x="54" y="598" text-anchor="start" class="muted" font-size="13.5">Plans work too big</text>
+  <text x="54" y="617" text-anchor="start" class="muted" font-size="13.5">for one session</text>
+  <rect class="sunk" x="270" y="530" width="200" height="108" rx="10" stroke-width="1"/>
+  <text x="284" y="554" text-anchor="start" class="accink mono" font-size="11" font-weight="700">SESSIONS</text>
+  <text x="284" y="576" text-anchor="start" class="ink mono" font-size="14" font-weight="700">/handoff</text>
+  <text x="284" y="598" text-anchor="start" class="muted" font-size="13.5">A note so a fresh</text>
+  <text x="284" y="617" text-anchor="start" class="muted" font-size="13.5">session can continue</text>
+  <rect class="sunk" x="500" y="530" width="200" height="108" rx="10" stroke-width="1"/>
+  <text x="514" y="554" text-anchor="start" class="accink mono" font-size="11" font-weight="700">FACTS</text>
+  <text x="514" y="576" text-anchor="start" class="ink mono" font-size="14" font-weight="700">/research</text>
+  <text x="514" y="598" text-anchor="start" class="muted" font-size="13.5">Looks it up, saves</text>
+  <text x="514" y="617" text-anchor="start" class="muted" font-size="13.5">notes with sources</text>
+  <rect class="sunk" x="730" y="530" width="200" height="108" rx="10" stroke-width="1"/>
+  <text x="744" y="554" text-anchor="start" class="accink mono" font-size="11" font-weight="700">DESIGN</text>
+  <text x="744" y="576" text-anchor="start" class="ink mono" font-size="14" font-weight="700">/improve-codebase-</text>
+  <text x="744" y="598" text-anchor="start" class="muted" font-size="13.5">architecture: finds</text>
+  <text x="744" y="617" text-anchor="start" class="muted" font-size="13.5">weak spots in the code</text>
+  <rect class="sunk" x="960" y="530" width="200" height="108" rx="10" stroke-width="1"/>
+  <text x="974" y="554" text-anchor="start" class="accink mono" font-size="11" font-weight="700">AFTER</text>
+  <text x="974" y="576" text-anchor="start" class="ink mono" font-size="14" font-weight="700">/retro</text>
+  <text x="974" y="598" text-anchor="start" class="muted" font-size="13.5">Improves the agent’s</text>
+  <text x="974" y="617" text-anchor="start" class="muted" font-size="13.5">setup after a session</text>
+</svg>

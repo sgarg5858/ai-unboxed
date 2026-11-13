@@ -206,18 +206,21 @@ select:focus-visible {
 }
 /* Links inside slide text (injected with [innerHTML], so they can't be styled per component). */
 .prose a,
-.cap a {
+.cap a,
+.stage a {
   color: var(--accent-ink);
   text-decoration: underline;
   text-underline-offset: 2px;
   font-weight: 500;
 }
 .prose a:hover,
-.cap a:hover {
+.cap a:hover,
+.stage a:hover {
   text-decoration-thickness: 2px;
 }
 .prose a:focus-visible,
-.cap a:focus-visible {
+.cap a:focus-visible,
+.stage a:focus-visible {
   outline: 2px solid var(--accent-ink);
   outline-offset: 2px;
   border-radius: 3px;

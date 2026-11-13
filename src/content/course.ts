@@ -91,6 +91,17 @@ export const SECTIONS: readonly SectionContent[] = [
       },
     ],
   },
+  {
+    id: 'engineering',
+    name: 'AI-assisted software engineering',
+    chapters: [
+      {
+        id: 'skills',
+        name: 'Skills: from idea to shipped code',
+        load: () => json(import('./chapters/13-ai-skills.json')),
+      },
+    ],
+  },
 ];
 
 /** Every chapter in reading order. URLs and navigation use this flat list. */
