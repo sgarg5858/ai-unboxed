@@ -4,109 +4,6 @@
   "name": "Transformer architecture",
   "slides": [
     {
-      "title": "GPT: Generative Pre-trained Transformer",
-      "body": [
-        "<mark>GPT stands for <b>G</b>enerative <b>P</b>re-trained <b>T</b>ransformer.</mark>",
-        {
-          "ul": [
-            "A <b>transformer</b> is a type of neural network architecture designed to process sequences of information using <b>attention</b>.",
-            "It was introduced in the 2017 paper <b>“Attention Is All You Need”</b>.",
-            "Before transformers, sequence models commonly used architectures such as <b>RNNs</b> and <b>LSTMs</b>, which processed text more sequentially."
-          ]
-        },
-        "In 2017, Google researchers published “Attention Is All You Need”. Their transformer reads all the tokens at once, and attention links any two words directly, however far apart they are."
-      ],
-      "viz": [
-        {
-          "type": "table",
-          "rows": [
-            {
-              "head": "",
-              "cells": [
-                {
-                  "text": "RNN / LSTM"
-                },
-                {
-                  "text": "Transformer"
-                }
-              ]
-            },
-            {
-              "head": "Reads",
-              "cells": [
-                {
-                  "text": "one word at a time"
-                },
-                {
-                  "text": "all tokens at once",
-                  "tone": "accent"
-                }
-              ]
-            },
-            {
-              "head": "Training",
-              "cells": [
-                {
-                  "text": "step by step"
-                },
-                {
-                  "text": "in parallel on GPUs",
-                  "tone": "accent"
-                }
-              ]
-            },
-            {
-              "head": "Distant words",
-              "cells": [
-                {
-                  "text": "fade from memory",
-                  "tone": "heat"
-                },
-                {
-                  "text": "linked directly",
-                  "tone": "accent"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "type": "stages",
-          "items": [
-            {
-              "label": "<b>2017</b> “Attention Is All You Need”",
-              "sub": "the transformer is introduced, for translation",
-              "tone": "muted"
-            },
-            {
-              "label": "<b>2018</b> GPT-1",
-              "sub": "OpenAI pre-trains a transformer on books",
-              "value": "117M"
-            },
-            {
-              "label": "<b>2019</b> GPT-2",
-              "sub": "writes surprisingly fluent paragraphs",
-              "value": "1.5B"
-            },
-            {
-              "label": "<b>2020</b> GPT-3",
-              "sub": "learns tasks from a few examples in the prompt",
-              "value": "175B"
-            },
-            {
-              "label": "<b>2022</b> ChatGPT",
-              "sub": "a GPT model fine-tuned for conversation",
-              "tone": "accent"
-            }
-          ]
-        },
-        {
-          "type": "caption",
-          "html": "Numbers are parameters, the model's learned weights."
-        }
-      ]
-    },
-    {
       "title": "The loop: how a model writes an answer",
       "summary": "The model predicts one token, adds it to the text, and runs again on the longer text. It stops when its best guess is the end token.",
       "body": [
@@ -233,6 +130,148 @@
           "caption": "One run in full, from text to the next token. Attention, the highlighted box, is the next chapter."
         }
       ]
+    },
+    {
+      "title": "GPT: Generative Pre-trained Transformer",
+      "body": [
+        "<mark>GPT stands for <b>G</b>enerative <b>P</b>re-trained <b>T</b>ransformer.</mark>",
+        {
+          "ul": [
+            "A <b>transformer</b> is a type of neural network architecture designed to process sequences of information using <b>attention</b>.",
+            "It was introduced in the 2017 paper <b>“Attention Is All You Need”</b>.",
+            "Before transformers, sequence models commonly used architectures such as <b>RNNs</b> and <b>LSTMs</b>, which processed text more sequentially."
+          ]
+        },
+        "In 2017, Google researchers published “Attention Is All You Need”. Their transformer reads all the tokens at once, and attention links any two words directly, however far apart they are."
+      ],
+      "viz": [
+        {
+          "type": "table",
+          "rows": [
+            {
+              "head": "",
+              "cells": [
+                {
+                  "text": "RNN / LSTM"
+                },
+                {
+                  "text": "Transformer"
+                }
+              ]
+            },
+            {
+              "head": "Reads",
+              "cells": [
+                {
+                  "text": "one word at a time"
+                },
+                {
+                  "text": "all tokens at once",
+                  "tone": "accent"
+                }
+              ]
+            },
+            {
+              "head": "Training",
+              "cells": [
+                {
+                  "text": "step by step"
+                },
+                {
+                  "text": "in parallel on GPUs",
+                  "tone": "accent"
+                }
+              ]
+            },
+            {
+              "head": "Distant words",
+              "cells": [
+                {
+                  "text": "fade from memory",
+                  "tone": "heat"
+                },
+                {
+                  "text": "linked directly",
+                  "tone": "accent"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "stages",
+          "items": [
+            {
+              "label": "<b>2017</b> “Attention Is All You Need”",
+              "sub": "the transformer is introduced, for translation",
+              "tone": "muted"
+            },
+            {
+              "label": "<b>2018</b> GPT-1",
+              "sub": "OpenAI pre-trains a transformer on books",
+              "value": "117M"
+            },
+            {
+              "label": "<b>2019</b> GPT-2",
+              "sub": "writes surprisingly fluent paragraphs",
+              "value": "1.5B"
+            },
+            {
+              "label": "<b>2020</b> GPT-3",
+              "sub": "learns tasks from a few examples in the prompt",
+              "value": "175B"
+            },
+            {
+              "label": "<b>2022</b> ChatGPT",
+              "sub": "a GPT model fine-tuned for conversation",
+              "tone": "accent"
+            }
+          ]
+        },
+        {
+          "type": "caption",
+          "html": "Numbers are parameters, the model's learned weights."
+        }
+      ]
+    },
+    {
+      "title": "Why transformers need attention",
+      "summary": "A word's meaning depends on the words around it. Attention lets each word look at the others and decide which ones matter.",
+      "body": [
+        "For every word, attention answers one question: <b>which other words should I focus on right now, and how much?</b>",
+        {
+          "ul": [
+            "“The cat sat on the mat, because <b>it</b> was <b>tired</b>.” Here “it” is the cat.",
+            "“…because <b>it</b> was <b>cozy</b>.” Now “it” is the mat.",
+            "“…because <b>it</b> was <b>cold weather</b>.” Now “it” is the weather."
+          ]
+        },
+        "<b>Self-attention</b> means attention between tokens of the same text: each token looks at the other tokens around it and works out how they relate.",
+        "<mark>Without attention, a word looks the same wherever it appears. With it, the surrounding words decide what it means.</mark>",
+        {
+          "ul": [
+            "I went to the <b>bank</b> to deposit <b>money</b>. → a place for money",
+            "I sat on the <b>bank</b> of the <b>river</b>. → the side of a river"
+          ]
+        },
+        {
+          "more": "How does attention actually work?",
+          "text": "Each token makes a query, a key and a value, scores every pair and blends the values by those scores. The Attention chapter walks through it step by step.",
+          "goto": {
+            "chapter": "attention",
+            "slide": 1
+          },
+          "link": "Go to Attention"
+        }
+      ],
+      "figure": {
+        "src": "images/why-attention-light.svg",
+        "darkSrc": "images/why-attention-dark.svg",
+        "alt": "Attention lets a word look at the other words in its sentence; thicker lines mean more attention. In \"The cat sat on the mat, because it was tired\", \"it\" attends most to \"cat\" (0.71), so it means the cat. With \"cozy\", \"it\" attends most to \"mat\" (0.66). With \"cold weather\", \"it\" attends most to \"weather\" (0.58). In \"I went to the bank to deposit money\", \"bank\" attends to \"money\" and \"deposit\": a place for money. In \"I sat on the bank of the river\", \"bank\" attends to \"river\": the side of a river. Weights are illustrative.",
+        "width": 1200,
+        "height": 720,
+        "caption": "The highlighted word decides what “it” and “bank” mean. Attention is how the model finds that word."
+      }
     }
   ]
 }
