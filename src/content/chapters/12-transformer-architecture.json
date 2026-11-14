@@ -743,7 +743,7 @@
             {
               "label": "<b>Output</b>",
               "sub": "Final norm, a score per token, then softmax.",
-              "value": "ch 2.7",
+              "value": "ch 2.8",
               "goto": {
                 "chapter": "output",
                 "slide": 1
@@ -1075,10 +1075,10 @@
       "figure": {
         "src": "images/feed-forward-light.svg",
         "darkSrc": "images/feed-forward-dark.svg",
-        "alt": "The feed-forward layer for the token “it”. Its vector of 768 numbers is expanded to 3,072, four times wider. A simple rule keeps the strong signals and switches the rest down: some middle cells light up, others stay grey. It's then shrunk back to 768 numbers, giving an update that is added to “it”'s vector. Behind it, identical copies run for “cat” and “The”: the same network runs on every token at the same time. Sizes from GPT-2; values are illustrative.",
+        "alt": "The feed-forward layer for the token “it”. Its 768 numbers fan out into 3,072 detectors, four times wider, each checking for one meaning. For “it”, the detectors for a pronoun, refers to an animal, one thing (singular) and subject of a verb fire. Others, such as about food, past tense, a place and a number, come out negative and are switched to 0. Only the detectors that fired feed the shrink step, which squeezes them back into 768 numbers: an update meaning an animal, one thing, the subject, which is added to “it”'s vector. The same network runs on every token at once. Sizes from GPT-2; detector names and values are illustrative.",
         "width": 1200,
         "height": 620,
-        "caption": "One small network, applied to every token separately, all at once."
+        "caption": "Expand to give room for thousands of meanings, keep the ones that fire, shrink them back into one update."
       }
     },
     {
