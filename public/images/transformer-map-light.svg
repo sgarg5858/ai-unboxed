@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-labelledby="t d" font-family="'Schibsted Grotesk', ui-sans-serif, system-ui, sans-serif">
   <title id="t">A GPT-style transformer, in one picture</title>
-  <desc id="d">A GPT-style transformer from text to the next token. Text, "The cat sat", goes to the tokenizer, which gives token IDs 791, 8415, 7731 (Tokens chapter). Each ID gets a token embedding, what the word is, plus a position, where it sits, giving a 3 by 768 matrix (slides 4 and 5). Then a transformer block, repeated N times (12 in GPT-2, 32 in Llama 3 8B): norm, then multi-head causal self-attention, whose output is added back to the main line; then norm, then feed-forward, added back again (slides 7, 8 and 9; feed-forward in The transformer block). Each layer takes 3 by 768 in and gives 3 by 768 out, adding an update. Then a final norm, a linear layer giving a score for every token in the vocabulary (50,257 in GPT-2; Output &amp; inference chapter), and softmax, which turns scores into probabilities for the next token, for example "on" 61%, "down" 20%. Pick one, append it, and repeat (slide 1, the loop). Probabilities are illustrative.</desc>
+  <desc id="d">A GPT-style transformer from text to the next token. Text, "The cat sat", goes to the tokenizer, which gives token IDs 791, 8415, 7731 (Tokens chapter). Each ID gets a token embedding, what the word is, plus a position, where it sits, giving a matrix of 3 tokens by 768 numbers; 768 is the embedding size d, fixed by the model, GPT-2 here (slides 4 and 5). Then a transformer block, repeated N times (12 in GPT-2, 32 in Llama 3 8B): norm, then multi-head causal self-attention, whose output is added back to the main line; then norm, then feed-forward, added back again (slides 7, 8 and 9; feed-forward in The transformer block). Each layer takes 3 by 768 in and gives 3 by 768 out, adding an update. Then a final norm, a linear layer giving a score for every token in the vocabulary: 50,257 scores, because GPT-2’s vocabulary has 50,257 tokens (Output &amp; inference chapter), and softmax, which turns scores into probabilities for the next token, for example "on" 61%, "down" 20%. Pick one, append it, and repeat (slide 1, the loop). Probabilities are illustrative.</desc>
   <style>
     .bg{fill:#f6f4ef}.card{fill:#fffdf9;stroke:#e5e0d5}.sunk{fill:#f3f0e9}
     .ink{fill:#1c1b22}.muted{fill:#5b5866}.onacc{fill:#ffffff}
@@ -43,7 +43,9 @@
   <rect class="heat" x="585" y="240" width="205" height="44" rx="10" stroke-width="1.4"/>
   <text x="687.5" y="259" text-anchor="middle" class="heatink" font-size="14" font-weight="700">Position</text>
   <text x="687.5" y="276" text-anchor="middle" class="muted" font-size="12">where it sits</text>
-  <text x="300" y="267" text-anchor="end" class="muted mono" font-size="12" font-weight="600">3 × 768 matrix</text>
+  <text x="300" y="251" text-anchor="end" class="muted mono" font-size="12" font-weight="600">3 tokens × 768 numbers</text>
+  <text x="300" y="268" text-anchor="end" class="muted" font-size="12" font-weight="600">768 = embedding size (d),</text>
+  <text x="300" y="284" text-anchor="end" class="muted" font-size="12" font-weight="600">set by the model: GPT-2</text>
   <rect class="hit" x="840" y="241" width="58" height="22" rx="11" stroke-width="1.2"/>
   <text x="869" y="257" text-anchor="middle" class="accink mono" font-size="11.5" font-weight="700">4</text>
   <text x="910" y="257" text-anchor="start" class="ink" font-size="13.5" font-weight="600">Token + position</text>
@@ -98,7 +100,9 @@
   <line class="line" x1="560" y1="642" x2="560" y2="660" marker-end="url(#a)"/>
   <rect class="hit" x="330" y="664" width="460" height="44" rx="10" stroke-width="1.4"/>
   <text x="560.0" y="691.0" text-anchor="middle" class="accink" font-size="14" font-weight="700">Linear: a score for every token in the vocabulary</text>
-  <text x="300" y="691" text-anchor="end" class="muted mono" font-size="12" font-weight="600">50,257 scores</text>
+  <text x="300" y="675" text-anchor="end" class="muted mono" font-size="12" font-weight="600">50,257 scores</text>
+  <text x="300" y="692" text-anchor="end" class="muted" font-size="12" font-weight="600">one per token in the vocabulary;</text>
+  <text x="300" y="708" text-anchor="end" class="muted" font-size="12" font-weight="600">GPT-2 knows 50,257 tokens</text>
   <rect class="hit" x="840" y="671" width="58" height="22" rx="11" stroke-width="1.2"/>
   <text x="869" y="687" text-anchor="middle" class="accink mono" font-size="11.5" font-weight="700">2.7</text>
   <text x="910" y="687" text-anchor="start" class="ink" font-size="13.5" font-weight="600">Output &amp; inference</text>
