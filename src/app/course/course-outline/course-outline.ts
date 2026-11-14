@@ -56,7 +56,9 @@ import { ReadingProgress } from '../reading-progress';
                 >
                   <span class="num">{{ c.number }}</span>
                   <span class="name">{{ c.name }}</span>
-                  @if (c.total) {
+                  @if (c.soon) {
+                    <span class="count soon">soon</span>
+                  } @else if (c.total) {
                     <span class="count" [class.done]="c.read >= c.total">
                       <span aria-hidden="true">{{
                         c.read >= c.total ? '✓' : c.read ? c.read + '/' + c.total : c.total
@@ -146,7 +148,8 @@ export class CourseOutline {
         name: c.name,
         number: chapterNumber(this.nav.sections, si, ci),
         current: c.id === here,
-        total: loaded.get(c.id)?.slides.length ?? 0,
+        soon: !!c.soon,
+        total: c.soon ? 0 : (loaded.get(c.id)?.slides.length ?? 0),
         read: this.progress.count(c.id),
       }));
       return {

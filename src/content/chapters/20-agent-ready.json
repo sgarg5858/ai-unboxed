@@ -1,0 +1,40 @@
+{
+  "$schema": "../schema/chapter.schema.json",
+  "id": "agent-ready",
+  "name": "Agent-ready codebases",
+  "slides": [
+    {
+      "title": "Coming soon: Agent-ready codebases",
+      "summary": "How to set up a codebase so coding agents do good work in it. This chapter is on its way.",
+      "body": [
+        "A coding agent is only as good as the feedback your codebase gives it. An <b>agent-ready</b> codebase tells the agent how things work, and catches its mistakes fast.",
+        {
+          "h": "What this chapter will cover"
+        },
+        {
+          "ul": [
+            "Instruction files: CLAUDE.md and AGENTS.md",
+            "Fast, reliable tests the agent can run",
+            "Types, linters and formatters as guardrails",
+            "Clear structure and docs an agent can find",
+            "One-command setup and repeatable builds",
+            "CI checks on every change"
+          ]
+        }
+      ],
+      "viz": [
+        {
+          "type": "widget",
+          "name": "coming-soon",
+          "props": {
+            "num": "08",
+            "title": "Agent-ready codebases",
+            "orbit": ["CLAUDE.md", "Tests", "Types", "Linters", "Docs", "CI"],
+            "status": ["Tidying the repo", "Writing the CLAUDE.md", "Drafting slides"],
+            "progress": 0.15
+          }
+        }
+      ]
+    }
+  ]
+}

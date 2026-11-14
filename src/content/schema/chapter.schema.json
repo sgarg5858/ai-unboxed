@@ -660,7 +660,8 @@
                   "guess-or-abstain",
                   "chunk-size",
                   "hybrid-search",
-                  "walkthrough"
+                  "walkthrough",
+                  "coming-soon"
                 ],
                 "description": "Key in src/app/widgets/registry.ts"
               },

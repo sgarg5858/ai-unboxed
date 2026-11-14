@@ -89,6 +89,11 @@ button:focus-visible {
 .ch .name {
   flex: 1;
 }
+.count.soon {
+  color: var(--heat-ink);
+  font-weight: 700;
+  text-transform: uppercase;
+}
 .count.done {
   color: var(--pos-ink);
   font-weight: 700;

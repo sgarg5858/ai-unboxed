@@ -1,0 +1,51 @@
+{
+  "$schema": "../schema/chapter.schema.json",
+  "id": "security",
+  "name": "AI security: attacks and defences",
+  "slides": [
+    {
+      "title": "Coming soon: AI security",
+      "summary": "How AI systems that read untrusted text and use tools get attacked, and how to defend them. This chapter is on its way.",
+      "body": [
+        "Once a model reads untrusted text and can use tools, attackers can talk to it too. This chapter covers how AI systems get attacked, and how to defend them.",
+        {
+          "h": "What this chapter will cover"
+        },
+        {
+          "ul": [
+            "Prompt injection, typed in or hidden in documents",
+            "Jailbreaks",
+            "Data leaks through tools and links",
+            "The “lethal trifecta”: private data, untrusted content and a way to send data out",
+            "Sandboxes, permissions and human approval",
+            "Red-teaming your own system"
+          ]
+        }
+      ],
+      "viz": [
+        {
+          "type": "widget",
+          "name": "coming-soon",
+          "props": {
+            "num": "07",
+            "title": "AI security",
+            "orbit": [
+              "Injection",
+              "Jailbreaks",
+              "Data leaks",
+              "Sandboxing",
+              "Permissions",
+              "Red-teaming"
+            ],
+            "status": [
+              "Red-teaming the drafts",
+              "Patching the slides",
+              "Drafting attacks (safely)"
+            ],
+            "progress": 0.1
+          }
+        }
+      ]
+    }
+  ]
+}

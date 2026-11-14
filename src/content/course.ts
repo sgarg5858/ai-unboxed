@@ -4,8 +4,8 @@
  *
  * To add a chapter: create a JSON file in ./chapters (copy an existing one; the $schema line gives
  * you autocomplete) and add an entry below with the same id and name as the file.
- * course.spec.ts checks that every entry matches its JSON. To add a topic such as RAG or Agents,
- * add a new section. Slides refer to other chapters by id, not number, so reordering is safe.
+ * course.spec.ts checks that every entry matches its JSON. To add a topic, add a new section. A chapter marked
+ * `soon: true` is a placeholder: its tab and outline entry say so. Slides refer to other chapters by id, not number, so reordering is safe.
  */
 import type { ChapterContent, ChapterRef, SectionContent } from '../app/course/content.model';
 
@@ -97,13 +97,80 @@ export const SECTIONS: readonly SectionContent[] = [
     ],
   },
   {
+    id: 'tools',
+    name: 'Tools & MCP',
+    chapters: [
+      {
+        id: 'tool-calling',
+        name: 'Tool calling: how models use tools',
+        load: () => json(import('./chapters/21-tool-calling.json')),
+        soon: true,
+      },
+      {
+        id: 'mcp',
+        name: 'MCP: connecting AI to tools and data',
+        load: () => json(import('./chapters/15-mcp.json')),
+        soon: true,
+      },
+    ],
+  },
+  {
+    id: 'agents',
+    name: 'AI agents',
+    chapters: [
+      {
+        id: 'agents',
+        name: 'AI agents: models that act',
+        load: () => json(import('./chapters/16-agents.json')),
+        soon: true,
+      },
+      {
+        id: 'context',
+        name: 'Context engineering',
+        load: () => json(import('./chapters/17-context-engineering.json')),
+        soon: true,
+      },
+    ],
+  },
+  {
+    id: 'evals',
+    name: 'Evals',
+    chapters: [
+      {
+        id: 'evals',
+        name: 'Evals: measuring AI quality',
+        load: () => json(import('./chapters/18-evals.json')),
+        soon: true,
+      },
+    ],
+  },
+  {
+    id: 'security',
+    name: 'AI security',
+    chapters: [
+      {
+        id: 'security',
+        name: 'AI security: attacks and defences',
+        load: () => json(import('./chapters/19-ai-security.json')),
+        soon: true,
+      },
+    ],
+  },
+  {
     id: 'engineering',
-    name: 'AI-assisted software engineering',
+    name: 'AI-assisted engineering',
     chapters: [
       {
         id: 'skills',
         name: 'Skills: from idea to shipped code',
         load: () => json(import('./chapters/13-ai-skills.json')),
+        soon: true,
+      },
+      {
+        id: 'agent-ready',
+        name: 'Agent-ready codebases',
+        load: () => json(import('./chapters/20-agent-ready.json')),
+        soon: true,
       },
     ],
   },

@@ -1002,7 +1002,7 @@
       "title": "Feed-forward: each token, on its own",
       "summary": "After attention gathers context, a small network processes each token's vector by itself.",
       "body": [
-        "Attention lets tokens share information. The <b>feed-forward</b> layer (also called the <b>MLP</b>) then works on each token <b>on its own</b>, using what it just gathered.",
+        "Attention lets tokens share information. The <b>feed-forward</b> layer (also called the <b>MLP</b>, short for <b>multi-layer perceptron</b>) then works on each token <b>on its own</b>, using what it just gathered.",
         {
           "h": "Three steps"
         },
@@ -1106,6 +1106,7 @@
       "body": [
         "After attention, the transformer doesn't replace a token's vector. It <b>adds</b> attention's output to it. The input “skips” around the step, so this is called a <b>skip</b> or <b>residual connection</b>.",
         "<mark>Each step adds an update. Nothing the token already knew is thrown away.</mark>",
+        "<mark class=\"info\">This is called a <b>residual update</b>: the layer adds a small change instead of replacing the vector, which is why we say it <b>nudges</b>.</mark>",
         {
           "h": "Why it matters"
         },

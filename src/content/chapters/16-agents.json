@@ -1,0 +1,45 @@
+{
+  "$schema": "../schema/chapter.schema.json",
+  "id": "agents",
+  "name": "AI agents: models that act",
+  "slides": [
+    {
+      "title": "Coming soon: AI agents",
+      "summary": "An agent is a model that works in a loop, using tools until the job is done. This chapter is on its way.",
+      "body": [
+        "An <b>agent</b> is a model that works in a loop: it decides what to do, uses a tool, looks at the result, and repeats until the task is done.",
+        {
+          "h": "What this chapter will cover"
+        },
+        {
+          "ul": [
+            "The agent loop: think, act, observe",
+            "Workflows vs agents, and when you need which",
+            "Tools and planning",
+            "Memory across steps and sessions",
+            "Multi-agent systems: an orchestrator and helpers",
+            "Computer use: agents that click and type"
+          ]
+        }
+      ],
+      "viz": [
+        {
+          "type": "widget",
+          "name": "coming-soon",
+          "props": {
+            "num": "05",
+            "title": "AI agents",
+            "orbit": ["Loop", "Tools", "Planning", "Memory", "Sub-agents", "Computer use"],
+            "status": [
+              "Teaching the agent when to stop",
+              "Drafting slides",
+              "Drawing the agent loop",
+              "Testing tool calls"
+            ],
+            "progress": 0.2
+          }
+        }
+      ]
+    }
+  ]
+}

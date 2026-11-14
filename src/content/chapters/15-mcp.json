@@ -1,0 +1,45 @@
+{
+  "$schema": "../schema/chapter.schema.json",
+  "id": "mcp",
+  "name": "MCP: connecting AI to tools and data",
+  "slides": [
+    {
+      "title": "Coming soon: MCP",
+      "summary": "The Model Context Protocol is an open standard for plugging tools and data into AI apps. This chapter is on its way.",
+      "body": [
+        "<b>MCP</b> (the Model Context Protocol) is an open standard, introduced by Anthropic in November 2024, that lets any AI app connect to tools and data through one common plug, instead of a custom integration for each pair.",
+        {
+          "h": "What this chapter will cover"
+        },
+        {
+          "ul": [
+            "Why a standard: the many-apps × many-tools problem",
+            "Hosts, clients and servers",
+            "Tools, resources and prompts",
+            "Local and remote servers",
+            "Auth, permissions and security",
+            "Building a small server of your own"
+          ]
+        }
+      ],
+      "viz": [
+        {
+          "type": "widget",
+          "name": "coming-soon",
+          "props": {
+            "num": "04",
+            "title": "MCP",
+            "orbit": ["Hosts", "Clients", "Servers", "Tools", "Resources", "Prompts"],
+            "status": [
+              "Wiring up a test server",
+              "Drafting slides",
+              "Drawing the protocol diagram",
+              "Reading the spec, again"
+            ],
+            "progress": 0.15
+          }
+        }
+      ]
+    }
+  ]
+}

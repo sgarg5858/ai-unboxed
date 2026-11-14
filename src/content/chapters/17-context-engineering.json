@@ -1,0 +1,40 @@
+{
+  "$schema": "../schema/chapter.schema.json",
+  "id": "context",
+  "name": "Context engineering",
+  "slides": [
+    {
+      "title": "Coming soon: Context engineering",
+      "summary": "Choosing what goes into the model's context window at every step. This chapter is on its way.",
+      "body": [
+        "An agent's context window is its whole working memory. <b>Context engineering</b> is choosing what goes in it, and what stays out, at every step.",
+        {
+          "h": "What this chapter will cover"
+        },
+        {
+          "ul": [
+            "Why more context isn't always better (context rot)",
+            "Fetching what's needed, just in time",
+            "Compaction: summarising long histories",
+            "Sub-agents that start with a clean context",
+            "Notes and memory files that outlive the window",
+            "Keeping tool results short"
+          ]
+        }
+      ],
+      "viz": [
+        {
+          "type": "widget",
+          "name": "coming-soon",
+          "props": {
+            "num": "05",
+            "title": "Context engineering",
+            "orbit": ["Window", "Compaction", "Retrieval", "Memory", "Sub-agents"],
+            "status": ["Compacting the drafts", "Drafting slides", "Measuring context rot"],
+            "progress": 0.1
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -127,6 +127,8 @@ export interface ChapterRef {
   id: string;
   name: string;
   load: () => Promise<ChapterContent>;
+  /** A placeholder chapter: marked "soon" in the tabs and outline, left out of progress counts. */
+  soon?: boolean;
 }
 
 /** A top-level group of chapters, shown as a heading in the outline. */

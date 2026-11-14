@@ -1,0 +1,40 @@
+{
+  "$schema": "../schema/chapter.schema.json",
+  "id": "tool-calling",
+  "name": "Tool calling: how models use tools",
+  "slides": [
+    {
+      "title": "Coming soon: Tool calling",
+      "summary": "How a model that can only write text gets things done: it asks your code to run a tool. This chapter is on its way.",
+      "body": [
+        "A model can only write text. <b>Tool calling</b> lets it ask your code to run something, like a search, a calculator or an API, and read the result before it answers.",
+        {
+          "h": "What this chapter will cover"
+        },
+        {
+          "ul": [
+            "What a tool definition looks like: a name, a description and its inputs",
+            "How the model decides to call a tool",
+            "The round trip: request, run, result, answer",
+            "Several calls at once, and calls in a chain",
+            "Writing tool descriptions the model understands",
+            "Errors, retries and safety"
+          ]
+        }
+      ],
+      "viz": [
+        {
+          "type": "widget",
+          "name": "coming-soon",
+          "props": {
+            "num": "04",
+            "title": "Tool calling",
+            "orbit": ["Schema", "Call", "Run", "Result", "Answer"],
+            "status": ["Calling the draft tool", "Parsing the JSON", "Drafting slides"],
+            "progress": 0.1
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  afterRenderEffect,
+  inject,
+} from '@angular/core';
 import { SectionContent } from '../content.model';
 import { CourseNav } from '../course-nav';
 
@@ -15,7 +21,7 @@ import { CourseNav } from '../course-nav';
     }
     ol {
       display: flex;
-      gap: 4px;
+      gap: 0;
       list-style: none;
       margin: 0;
       padding: 0;
@@ -24,15 +30,15 @@ import { CourseNav } from '../course-nav';
       position: relative;
       display: flex;
       align-items: baseline;
-      gap: 8px;
+      gap: 6px;
       min-height: 44px;
-      padding: 10px 14px;
+      padding: 10px 10px;
       border: 0;
       border-radius: 8px 8px 0 0;
       background: none;
       color: var(--muted);
       font: inherit;
-      font-size: 15px;
+      font-size: 14.5px;
       font-weight: 600;
       white-space: nowrap;
       cursor: pointer;
@@ -52,6 +58,26 @@ import { CourseNav } from '../course-nav';
     }
     [aria-current] {
       color: var(--accent-ink);
+    }
+    /* Pulsing dot on sections whose chapters are all still to come. */
+    .soon {
+      align-self: center;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--heat);
+      animation: pulse 1.6s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      50% {
+        opacity: 0.3;
+        transform: scale(0.6);
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .soon {
+        animation: none;
+      }
     }
     [aria-current]::after {
       content: '';
@@ -76,6 +102,10 @@ import { CourseNav } from '../course-nav';
             >
               <span class="num">{{ pad(i + 1) }}</span
               >{{ sec.name }}
+              @if (isSoon(sec)) {
+                <span class="soon" aria-hidden="true"></span
+                ><span class="sr-only">(coming soon)</span>
+              }
             </button>
           </li>
         }
@@ -86,6 +116,17 @@ import { CourseNav } from '../course-nav';
 export class SectionTabs {
   protected readonly nav = inject(CourseNav);
   protected readonly pad = (n: number) => String(n).padStart(2, '0');
+  protected readonly isSoon = (sec: SectionContent) => sec.chapters.every((c) => c.soon);
+  private readonly host = inject(ElementRef<HTMLElement>);
+
+  constructor() {
+    // Keep the current tab visible when the row is wider than the screen.
+    afterRenderEffect(() => {
+      this.nav.sectionIndex();
+      const tab = this.host.nativeElement.querySelector('[aria-current]');
+      tab?.scrollIntoView?.({ block: 'nearest', inline: 'nearest' });
+    });
+  }
 
   protected open(sec: SectionContent, i: number) {
     if (i === this.nav.sectionIndex()) return;

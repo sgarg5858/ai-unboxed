@@ -1,0 +1,40 @@
+{
+  "$schema": "../schema/chapter.schema.json",
+  "id": "evals",
+  "name": "Evals: measuring AI quality",
+  "slides": [
+    {
+      "title": "Coming soon: Evals",
+      "summary": "Tests for AI systems, so every change is measured, not guessed. This chapter is on its way.",
+      "body": [
+        "An <b>eval</b> is a test for an AI system: a set of inputs, what a good output looks like, and a way to grade it. Without evals, every prompt or model change is a guess.",
+        {
+          "h": "What this chapter will cover"
+        },
+        {
+          "ul": [
+            "Why “it looked fine” isn't enough",
+            "Building a test set from real cases",
+            "Graders: code checks, an LLM as judge, human review",
+            "Evaluating agents: did it finish, and how",
+            "Benchmarks and their limits",
+            "Running evals on every change"
+          ]
+        }
+      ],
+      "viz": [
+        {
+          "type": "widget",
+          "name": "coming-soon",
+          "props": {
+            "num": "06",
+            "title": "Evals",
+            "orbit": ["Test sets", "Graders", "LLM judge", "Agents", "Benchmarks", "CI"],
+            "status": ["Grading the graders", "Writing test cases", "Drafting slides"],
+            "progress": 0.1
+          }
+        }
+      ]
+    }
+  ]
+}
