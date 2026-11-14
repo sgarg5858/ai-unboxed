@@ -699,6 +699,19 @@
         },
         "<mark>Each token is normalized on its own, using only its own numbers. However big or small it comes in, it goes out in the same steady range.</mark>",
         {
+          "note": "<b>Why it matters:</b> normalization keeps the neural network's internal representations well behaved, which makes training deep networks more stable.",
+          "kind": "key"
+        },
+        {
+          "more": "Does normalizing lose meaning?",
+          "text": [
+            "Mostly no. A vector's meaning is in its <b>pattern</b>, which numbers are high and which are low, and normalization keeps that exactly. It only removes the overall size.",
+            "<b>The original is kept.</b> In modern models (GPT-2 onwards, Llama), the norm works on a copy going into attention or the feed-forward step. The token's own vector keeps its full values, and each step adds its result back onto it. The original 2017 Transformer normalized the main vector itself, after each step; moving the norm before each step made deep models easier to train.",
+            "<b>The size can come back.</b> The learned scale and shift in step 3 let the model stretch each slot back to whatever range is useful.",
+            "One small loss: <code>[6, −2, 10, 2]</code> and <code>[60, −20, 100, 20]</code> look the same to the step reading the copy. The sizes aren't gone, though: they stay in the token's own vector, and models do use them."
+          ]
+        },
+        {
           "note": "Like the volume control on a microphone: whether the singer whispers or shouts, the level going to the speakers stays steady, and the song stays the same.",
           "kind": "analogy"
         },
