@@ -104,12 +104,13 @@
 }
 .note-label {
   display: block;
-  font-family: var(--f-mono);
-  font-size: 11px;
-  letter-spacing: 0.06em;
+  font-family: var(--f-display);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--c);
-  margin-bottom: 2px;
+  margin-bottom: 4px;
 }
 /* Accordion: { more, text } prose items */
 .more {

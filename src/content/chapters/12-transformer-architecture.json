@@ -934,6 +934,10 @@
       "title": "Multi-head causal self-attention",
       "summary": "The attention step in every layer of a GPT-style model. Each part of the name says one thing about how it works.",
       "body": [
+        "<b>Self-attention</b> is how a token works out what it means from the other words in the same text. A word on its own is often unclear: in “The cat sat on the mat because it…”, “it” could be the cat or the mat. So “it” looks back over the sentence, scores how relevant each word is, and takes in the most from the best match, “cat”.",
+        {
+          "h": "What each part of the name means"
+        },
         {
           "ul": [
             "<b>Self-attention:</b> each token looks at the other tokens in the same text to work out what it means. “it” looks back and finds “cat”.",
@@ -943,16 +947,22 @@
         },
         "<mark>Each token comes out with a new vector that mixes in what it found in the earlier words, gathered by many heads at once.</mark>",
         {
-          "note": "Like a few readers going over the same sentence, each with a different question, who then pool their notes.",
+          "note": "<b>Like a few readers going over the same sentence, each with a different question, who then pool their notes.</b>",
           "kind": "analogy"
         },
         {
           "more": "How many heads?",
-          "text": "GPT-2 has 12 heads in each of its 12 layers; Llama 3 8B has 32 in each of its 32 layers. Nobody tells a head what to look for: each one learns its job during training."
+          "text": [
+            "GPT-2 has 12 heads in each of its 12 layers; Llama 3 8B has 32 in each of its 32 layers.",
+            "<mark>Nobody tells a head what to look for: each one learns its job during training.</mark>"
+          ]
         },
         {
           "more": "Why can't a token look ahead?",
-          "text": "In training, the model sees whole sentences at once. Without the mask, it could simply read the next word instead of learning to predict it.",
+          "text": [
+            "Because the model learns by <b>guessing the next word</b>. In training it sees a whole sentence at once and practises at every position together: after “The cat sat” it should guess “on”; after “The cat sat on”, “the”; and so on.",
+            "<mark>If “sat” could look ahead, the answer “on” would be right there to copy. The model would score perfectly in training and learn nothing. And when it writes for real, the next word doesn't exist yet. The mask hides every later word, so each position has to actually predict.</mark>"
+          ],
           "goto": {
             "chapter": "attention",
             "slide": 4
