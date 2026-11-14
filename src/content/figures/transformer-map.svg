@@ -1,100 +1,113 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-labelledby="t d" font-family="'Schibsted Grotesk', ui-sans-serif, system-ui, sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1010" role="img" aria-labelledby="t d" font-family="'Schibsted Grotesk', ui-sans-serif, system-ui, sans-serif">
   <title id="t">A GPT-style transformer, in one picture</title>
-  <desc id="d">A GPT-style transformer from text to the next token. Text, "The cat sat", goes to the tokenizer, which gives token IDs 791, 8415, 7731 (Tokens chapter). Each ID gets a token embedding, what the word is, plus a position, where it sits, giving a matrix of 3 tokens by 768 numbers; 768 is the embedding size d, fixed by the model, GPT-2 here (slides 4 and 5). Then a transformer block, repeated N times (12 in GPT-2, 32 in Llama 3 8B): norm, then multi-head causal self-attention, whose output is added back to the main line; then norm, then feed-forward, added back again (slides 7 to 10). Each layer takes 3 by 768 in and gives 3 by 768 out, adding an update. Then a final norm, a linear layer giving a score for every token in the vocabulary: 50,257 scores, because GPT-2’s vocabulary has 50,257 tokens (Output &amp; inference chapter), and softmax, which turns scores into probabilities for the next token, for example "on" 61%, "down" 20%. Pick one, append it, and repeat (slide 1, the loop). Probabilities are illustrative.</desc>
+  <desc id="d">A GPT-style transformer from text to the next token. Text, "The cat sat", enters the LLM. The tokenizer gives token IDs 791, 8415, 7731 (Tokens chapter). Each ID gets a token embedding, what the word is, and a position, where it sits, is added, giving a matrix of 3 tokens by 768 numbers; 768 is the embedding size d, set by the model, GPT-2 here (slides 4 and 5). Then a transformer block, repeated N times (12 in GPT-2, 32 in Llama 3): the main line splits; one copy goes through norm and multi-head causal self-attention, the other skips round (a green residual line) and the two are added. The same again with norm and feed-forward (slides 7 to 10). Each layer takes 3 by 768 in and gives 3 by 768 out. Then a final norm, a linear layer giving 50,257 scores, one per token in GPT-2’s vocabulary (Output &amp; inference chapter), and softmax, which turns scores into next-token probabilities, for example "on" 61%, "down" 20%. An arrow loops from the output back to the input: pick one token, append it to the text, run again (slide 1, the loop). Probabilities are illustrative.</desc>
   <!--theme-->
   <defs>
     <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arrowhead"/></marker>
+    <marker id="ap" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="pos"/></marker>
+    <marker id="aa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arrowacc"/></marker>
   </defs>
-  <rect class="bg" width="1200" height="800" rx="18"/>
+  <rect class="bg" width="1200" height="1010" rx="18"/>
   <text x="40" y="50" text-anchor="start" class="ink" font-size="26" font-weight="700">A GPT-style transformer, in one picture</text>
   <text x="40" y="76" text-anchor="start" class="muted" font-size="15">From text to the next token. Labels on the right show where each part is explained.</text>
-  <rect class="card" x="330" y="100" width="460" height="44" rx="10" stroke-width="1.4"/>
-  <text x="560.0" y="127.0" text-anchor="middle" class="ink" font-size="14" font-weight="700">Text: “The cat sat”</text>
-  <line class="line" x1="560" y1="144" x2="560" y2="166" marker-end="url(#a)"/>
-  <rect class="sunk" x="330" y="170" width="460" height="44" rx="10" stroke-width="1.4"/>
-  <text x="560.0" y="197.0" text-anchor="middle" class="ink" font-size="14" font-weight="700">Tokenizer → token IDs</text>
-  <text x="300" y="197" text-anchor="end" class="muted mono" font-size="12" font-weight="600">791 · 8415 · 7731</text>
-  <rect class="hit" x="840" y="177" width="58" height="22" rx="11" stroke-width="1.2"/>
-  <text x="869" y="193" text-anchor="middle" class="accink mono" font-size="11.5" font-weight="700">2.2</text>
-  <text x="910" y="193" text-anchor="start" class="ink" font-size="13.5" font-weight="600">Tokens chapter</text>
-  <line class="line" x1="560" y1="214" x2="560" y2="236" marker-end="url(#a)"/>
-  <rect class="hit" x="330" y="240" width="205" height="44" rx="10" stroke-width="1.4"/>
-  <text x="432.5" y="259" text-anchor="middle" class="accink" font-size="14" font-weight="700">Token embedding</text>
-  <text x="432.5" y="276" text-anchor="middle" class="muted" font-size="12">what the word is</text>
-  <circle class="card" cx="560" cy="262" r="14" stroke-width="2"/>
-  <text x="560" y="269" text-anchor="middle" class="ink" font-size="20" font-weight="700">+</text>
-  <rect class="heat" x="585" y="240" width="205" height="44" rx="10" stroke-width="1.4"/>
-  <text x="687.5" y="259" text-anchor="middle" class="heatink" font-size="14" font-weight="700">Position</text>
-  <text x="687.5" y="276" text-anchor="middle" class="muted" font-size="12">where it sits</text>
-  <text x="300" y="251" text-anchor="end" class="muted mono" font-size="12" font-weight="600">3 tokens × 768 numbers</text>
-  <text x="300" y="268" text-anchor="end" class="muted" font-size="12" font-weight="600">768 = embedding size (d),</text>
-  <text x="300" y="284" text-anchor="end" class="muted" font-size="12" font-weight="600">set by the model: GPT-2</text>
-  <rect class="hit" x="840" y="241" width="58" height="22" rx="11" stroke-width="1.2"/>
-  <text x="869" y="257" text-anchor="middle" class="accink mono" font-size="11.5" font-weight="700">4</text>
-  <text x="910" y="257" text-anchor="start" class="ink" font-size="13.5" font-weight="600">Token + position</text>
+  <rect class="card" x="370" y="100" width="300" height="40" rx="10" stroke-width="1.4"/>
+  <text x="520.0" y="125.0" text-anchor="middle" class="ink" font-size="14" font-weight="700">Text: “The cat sat”</text>
+  <line class="line" x1="520" y1="140" x2="520" y2="192" marker-end="url(#a)"/>
+  <rect class="sunk" x="310" y="164" width="470" height="786" rx="16" stroke-width="1.4" stroke-dasharray="3 4" fill-opacity="0.5"/>
+  <text x="330" y="188" text-anchor="start" class="ink mono" font-size="14" font-weight="700">LLM</text>
+  <rect class="card" x="370" y="196" width="300" height="40" rx="10" stroke-width="1.4"/>
+  <text x="520.0" y="221.0" text-anchor="middle" class="ink" font-size="14" font-weight="700">Tokenizer → token IDs</text>
+  <text x="296" y="218" text-anchor="end" class="muted mono" font-size="12" font-weight="600">791 · 8415 · 7731</text>
+  <rect class="hit" x="840" y="198" width="58" height="22" rx="11" stroke-width="1.2"/>
+  <text x="869" y="214" text-anchor="middle" class="accink mono" font-size="11.5" font-weight="700">2.2</text>
+  <text x="910" y="214" text-anchor="start" class="ink" font-size="13.5" font-weight="600">Tokens chapter</text>
+  <line class="line" x1="520" y1="236" x2="520" y2="252" marker-end="url(#a)"/>
+  <rect class="hit" x="370" y="256" width="300" height="44" rx="10" stroke-width="1.4"/>
+  <text x="520.0" y="275" text-anchor="middle" class="accink" font-size="14" font-weight="700">Token embedding</text>
+  <text x="520.0" y="292" text-anchor="middle" class="muted" font-size="12">what the word is</text>
+  <line class="line" x1="520" y1="300" x2="520" y2="312" marker-end="url(#a)"/>
+  <circle class="card" cx="520" cy="330" r="14" stroke-width="2"/>
+  <text x="520" y="337" text-anchor="middle" class="ink" font-size="20" font-weight="700">+</text>
+  <rect class="heat" x="600" y="312" width="130" height="38" rx="10" stroke-width="1.4"/>
+  <text x="665" y="328" text-anchor="middle" class="heatink" font-size="13.5" font-weight="700">Position</text>
+  <text x="665" y="346" text-anchor="middle" class="muted" font-size="11.5">where it sits</text>
+  <line class="line" x1="600" y1="331" x2="538" y2="331" marker-end="url(#a)"/>
+  <text x="296" y="277" text-anchor="end" class="muted mono" font-size="12" font-weight="600">3 tokens × 768 numbers</text>
+  <text x="296" y="294" text-anchor="end" class="muted" font-size="12" font-weight="600">768 = embedding size (d),</text>
+  <text x="296" y="310" text-anchor="end" class="muted" font-size="12" font-weight="600">set by the model: GPT-2</text>
   <rect class="hit" x="840" y="267" width="58" height="22" rx="11" stroke-width="1.2"/>
-  <text x="869" y="283" text-anchor="middle" class="accink mono" font-size="11.5" font-weight="700">5</text>
-  <text x="910" y="283" text-anchor="start" class="ink" font-size="13.5" font-weight="600">RoPE (modern models)</text>
-  <rect class="card" x="310" y="318" width="500" height="250" rx="14" stroke-width="1.6" stroke-dasharray="7 5"/>
-  <text x="802" y="342" text-anchor="end" class="muted" font-size="12">12 in GPT-2 · 32 in Llama 3 8B</text>
-  <text x="382" y="342" text-anchor="start" class="accink mono" font-size="12" font-weight="700">TRANSFORMER BLOCK × N</text>
-  <path class="line" d="M560 284 V300 H360 V354" marker-end="url(#a)"/>
-  <line class="stream" x1="360" y1="358" x2="360" y2="554"/>
-  <line class="line" x1="360" y1="384" x2="406" y2="384" marker-end="url(#a)"/>
-  <rect class="heat" x="410" y="362" width="90" height="44" rx="10" stroke-width="1.4"/>
-  <text x="455.0" y="389.0" text-anchor="middle" class="heatink" font-size="14" font-weight="700">Norm</text>
-  <line class="line" x1="502" y1="384" x2="526" y2="384" marker-end="url(#a)"/>
-  <rect class="hit" x="530" y="362" width="260" height="44" rx="10" stroke-width="1.4"/>
-  <text x="660.0" y="389.0" text-anchor="middle" class="accink" font-size="14" font-weight="700">Multi-head causal self-attention</text>
-  <path class="line" d="M790 384 H798 V432 H378" marker-end="url(#a)"/>
-  <circle class="card" cx="360" cy="432" r="14" stroke-width="2"/>
-  <text x="360" y="439" text-anchor="middle" class="ink" font-size="20" font-weight="700">+</text>
-  <rect class="hit" x="840" y="361" width="58" height="22" rx="11" stroke-width="1.2"/>
-  <text x="869" y="377" text-anchor="middle" class="accink mono" font-size="11.5" font-weight="700">7</text>
-  <text x="910" y="377" text-anchor="start" class="ink" font-size="13.5" font-weight="600">Layer normalization</text>
-  <rect class="hit" x="840" y="383" width="58" height="22" rx="11" stroke-width="1.2"/>
-  <text x="869" y="399" text-anchor="middle" class="accink mono" font-size="11.5" font-weight="700">8</text>
-  <text x="910" y="399" text-anchor="start" class="ink" font-size="13.5" font-weight="600">Multi-head attention</text>
-  <line class="line" x1="360" y1="480" x2="406" y2="480" marker-end="url(#a)"/>
-  <rect class="heat" x="410" y="458" width="90" height="44" rx="10" stroke-width="1.4"/>
-  <text x="455.0" y="485.0" text-anchor="middle" class="heatink" font-size="14" font-weight="700">Norm</text>
-  <line class="line" x1="502" y1="480" x2="526" y2="480" marker-end="url(#a)"/>
-  <rect class="hit" x="530" y="458" width="260" height="44" rx="10" stroke-width="1.4"/>
-  <text x="660.0" y="485.0" text-anchor="middle" class="accink" font-size="14" font-weight="700">Feed-forward</text>
-  <path class="line" d="M790 480 H798 V528 H378" marker-end="url(#a)"/>
-  <circle class="card" cx="360" cy="528" r="14" stroke-width="2"/>
-  <text x="360" y="535" text-anchor="middle" class="ink" font-size="20" font-weight="700">+</text>
-  <rect class="hit" x="840" y="457" width="58" height="22" rx="11" stroke-width="1.2"/>
-  <text x="869" y="473" text-anchor="middle" class="accink mono" font-size="11.5" font-weight="700">9</text>
-  <text x="910" y="473" text-anchor="start" class="ink" font-size="13.5" font-weight="600">Feed-forward</text>
-  <rect class="hit" x="840" y="513" width="58" height="22" rx="11" stroke-width="1.2"/>
-  <text x="869" y="529" text-anchor="middle" class="accink mono" font-size="11.5" font-weight="700">10</text>
-  <text x="910" y="529" text-anchor="start" class="ink" font-size="13.5" font-weight="600">Residual (skip) connections</text>
-  <text x="300" y="439" text-anchor="end" class="muted mono" font-size="12" font-weight="600">3 × 768 in,</text>
-  <text x="300" y="457" text-anchor="end" class="muted mono" font-size="12" font-weight="600">3 × 768 out</text>
-  <text x="300" y="489" text-anchor="end" class="muted" font-size="12" font-weight="600">each layer adds</text>
-  <text x="300" y="505" text-anchor="end" class="muted" font-size="12" font-weight="600">an update</text>
-  <path class="line" d="M360 556 V580 H560 V594" marker-end="url(#a)"/>
-  <rect class="heat" x="330" y="598" width="460" height="44" rx="10" stroke-width="1.4"/>
-  <text x="560.0" y="625.0" text-anchor="middle" class="heatink" font-size="14" font-weight="700">Final norm</text>
-  <rect class="hit" x="840" y="605" width="58" height="22" rx="11" stroke-width="1.2"/>
-  <text x="869" y="621" text-anchor="middle" class="accink mono" font-size="11.5" font-weight="700">7</text>
-  <text x="910" y="621" text-anchor="start" class="ink" font-size="13.5" font-weight="600">Layer normalization</text>
-  <line class="line" x1="560" y1="642" x2="560" y2="660" marker-end="url(#a)"/>
-  <rect class="hit" x="330" y="664" width="460" height="44" rx="10" stroke-width="1.4"/>
-  <text x="560.0" y="691.0" text-anchor="middle" class="accink" font-size="14" font-weight="700">Linear: a score for every token in the vocabulary</text>
-  <text x="300" y="675" text-anchor="end" class="muted mono" font-size="12" font-weight="600">50,257 scores</text>
-  <text x="300" y="692" text-anchor="end" class="muted" font-size="12" font-weight="600">one per token in the vocabulary;</text>
-  <text x="300" y="708" text-anchor="end" class="muted" font-size="12" font-weight="600">GPT-2 knows 50,257 tokens</text>
-  <rect class="hit" x="840" y="671" width="58" height="22" rx="11" stroke-width="1.2"/>
-  <text x="869" y="687" text-anchor="middle" class="accink mono" font-size="11.5" font-weight="700">2.8</text>
-  <text x="910" y="687" text-anchor="start" class="ink" font-size="13.5" font-weight="600">Output &amp; inference</text>
-  <line class="line" x1="560" y1="708" x2="560" y2="726" marker-end="url(#a)"/>
-  <rect class="possoft" x="330" y="730" width="460" height="44" rx="10" stroke-width="1.4"/>
-  <text x="560.0" y="749" text-anchor="middle" class="posink" font-size="14" font-weight="700">Softmax → probabilities</text>
-  <text x="560.0" y="766" text-anchor="middle" class="muted" font-size="12">next token: “on” 61% · “down” 20% · …</text>
-  <text x="300" y="757" text-anchor="end" class="muted mono" font-size="12" font-weight="600">pick one, append, repeat</text>
-  <rect class="hit" x="840" y="737" width="58" height="22" rx="11" stroke-width="1.2"/>
-  <text x="869" y="753" text-anchor="middle" class="accink mono" font-size="11.5" font-weight="700">1</text>
-  <text x="910" y="753" text-anchor="start" class="ink" font-size="13.5" font-weight="600">The loop</text>
+  <text x="869" y="283" text-anchor="middle" class="accink mono" font-size="11.5" font-weight="700">4</text>
+  <text x="910" y="283" text-anchor="start" class="ink" font-size="13.5" font-weight="600">Token + position</text>
+  <rect class="hit" x="840" y="315" width="58" height="22" rx="11" stroke-width="1.2"/>
+  <text x="869" y="331" text-anchor="middle" class="accink mono" font-size="11.5" font-weight="700">5</text>
+  <text x="910" y="331" text-anchor="start" class="ink" font-size="13.5" font-weight="600">RoPE (modern models)</text>
+  <line class="line" x1="520" y1="344" x2="520" y2="418" marker-end="url(#a)"/>
+  <rect class="card" x="330" y="372" width="430" height="370" rx="14" stroke-width="1.6" stroke-dasharray="7 5"/>
+  <text x="348" y="396" text-anchor="start" class="accink mono" font-size="12" font-weight="700">TRANSFORMER BLOCK × N</text>
+  <text x="744" y="396" text-anchor="end" class="muted" font-size="12">12 in GPT-2 · 32 in Llama 3</text>
+  <circle class="pos" cx="520" cy="422" r="4"/>
+  <path class="spos" fill="none" d="M520 422 H736 V558 H539" marker-end="url(#ap)"/>
+  <line class="line" x1="520" y1="422" x2="520" y2="432" marker-end="url(#a)"/>
+  <rect class="heat" x="430" y="436" width="180" height="36" rx="10" stroke-width="1.4"/>
+  <text x="520.0" y="459.0" text-anchor="middle" class="heatink" font-size="14" font-weight="700">Norm</text>
+  <line class="line" x1="520" y1="472" x2="520" y2="484" marker-end="url(#a)"/>
+  <rect class="hit" x="370" y="488" width="300" height="42" rx="10" stroke-width="1.4"/>
+  <text x="520.0" y="514.0" text-anchor="middle" class="accink" font-size="14" font-weight="700">Multi-head causal self-attention</text>
+  <line class="line" x1="520" y1="530" x2="520" y2="540" marker-end="url(#a)"/>
+  <circle class="card" cx="520" cy="558" r="14" stroke-width="2"/>
+  <text x="520" y="565" text-anchor="middle" class="ink" font-size="20" font-weight="700">+</text>
+  <rect class="hit" x="840" y="439" width="58" height="22" rx="11" stroke-width="1.2"/>
+  <text x="869" y="455" text-anchor="middle" class="accink mono" font-size="11.5" font-weight="700">7</text>
+  <text x="910" y="455" text-anchor="start" class="ink" font-size="13.5" font-weight="600">Layer normalization</text>
+  <rect class="hit" x="840" y="494" width="58" height="22" rx="11" stroke-width="1.2"/>
+  <text x="869" y="510" text-anchor="middle" class="accink mono" font-size="11.5" font-weight="700">8</text>
+  <text x="910" y="510" text-anchor="start" class="ink" font-size="13.5" font-weight="600">Multi-head attention</text>
+  <line class="line" x1="520" y1="572" x2="520" y2="586"/>
+  <circle class="pos" cx="520" cy="586" r="4"/>
+  <path class="spos" fill="none" d="M520 586 H736 V722 H539" marker-end="url(#ap)"/>
+  <line class="line" x1="520" y1="586" x2="520" y2="596" marker-end="url(#a)"/>
+  <rect class="heat" x="430" y="600" width="180" height="36" rx="10" stroke-width="1.4"/>
+  <text x="520.0" y="623.0" text-anchor="middle" class="heatink" font-size="14" font-weight="700">Norm</text>
+  <line class="line" x1="520" y1="636" x2="520" y2="648" marker-end="url(#a)"/>
+  <rect class="hit" x="370" y="652" width="300" height="42" rx="10" stroke-width="1.4"/>
+  <text x="520.0" y="678.0" text-anchor="middle" class="accink" font-size="14" font-weight="700">Feed-forward</text>
+  <line class="line" x1="520" y1="694" x2="520" y2="704" marker-end="url(#a)"/>
+  <circle class="card" cx="520" cy="722" r="14" stroke-width="2"/>
+  <text x="520" y="729" text-anchor="middle" class="ink" font-size="20" font-weight="700">+</text>
+  <rect class="hit" x="840" y="658" width="58" height="22" rx="11" stroke-width="1.2"/>
+  <text x="869" y="674" text-anchor="middle" class="accink mono" font-size="11.5" font-weight="700">9</text>
+  <text x="910" y="674" text-anchor="start" class="ink" font-size="13.5" font-weight="600">Feed-forward</text>
+  <rect class="hit" x="840" y="707" width="58" height="22" rx="11" stroke-width="1.2"/>
+  <text x="869" y="723" text-anchor="middle" class="accink mono" font-size="11.5" font-weight="700">10</text>
+  <text x="910" y="723" text-anchor="start" class="ink" font-size="13.5" font-weight="600">Residual (skip) connections</text>
+  <text x="728" y="492" text-anchor="end" class="posink" font-size="12" font-weight="700">skip</text>
+  <text x="296" y="503" text-anchor="end" class="muted mono" font-size="12" font-weight="600">3 × 768 in,</text>
+  <text x="296" y="520" text-anchor="end" class="muted mono" font-size="12" font-weight="600">3 × 768 out</text>
+  <text x="296" y="553" text-anchor="end" class="muted" font-size="12" font-weight="600">each sub-layer adds</text>
+  <text x="296" y="569" text-anchor="end" class="muted" font-size="12" font-weight="600">an update to the</text>
+  <text x="296" y="585" text-anchor="end" class="muted" font-size="12" font-weight="600">main line (green = skip)</text>
+  <line class="line" x1="520" y1="736" x2="520" y2="756" marker-end="url(#a)"/>
+  <rect class="heat" x="370" y="760" width="300" height="40" rx="10" stroke-width="1.4"/>
+  <text x="520.0" y="785.0" text-anchor="middle" class="heatink" font-size="14" font-weight="700">Final norm</text>
+  <rect class="hit" x="840" y="765" width="58" height="22" rx="11" stroke-width="1.2"/>
+  <text x="869" y="781" text-anchor="middle" class="accink mono" font-size="11.5" font-weight="700">7</text>
+  <text x="910" y="781" text-anchor="start" class="ink" font-size="13.5" font-weight="600">Layer normalization</text>
+  <line class="line" x1="520" y1="800" x2="520" y2="814" marker-end="url(#a)"/>
+  <rect class="hit" x="370" y="818" width="300" height="40" rx="10" stroke-width="1.4"/>
+  <text x="520.0" y="843.0" text-anchor="middle" class="accink" font-size="14" font-weight="700">Linear: a score per vocab token</text>
+  <text x="296" y="827" text-anchor="end" class="muted mono" font-size="12" font-weight="600">50,257 scores</text>
+  <text x="296" y="844" text-anchor="end" class="muted" font-size="12" font-weight="600">one per token in the vocabulary;</text>
+  <text x="296" y="860" text-anchor="end" class="muted" font-size="12" font-weight="600">GPT-2 knows 50,257 tokens</text>
+  <rect class="hit" x="840" y="823" width="58" height="22" rx="11" stroke-width="1.2"/>
+  <text x="869" y="839" text-anchor="middle" class="accink mono" font-size="11.5" font-weight="700">2.8</text>
+  <text x="910" y="839" text-anchor="start" class="ink" font-size="13.5" font-weight="600">Output &amp; inference</text>
+  <line class="line" x1="520" y1="858" x2="520" y2="872" marker-end="url(#a)"/>
+  <rect class="possoft" x="370" y="876" width="300" height="46" rx="10" stroke-width="1.4"/>
+  <text x="520.0" y="895" text-anchor="middle" class="posink" font-size="14" font-weight="700">Softmax → probabilities</text>
+  <text x="520.0" y="912" text-anchor="middle" class="muted" font-size="12">next: “on” 61% · “down” 20% · …</text>
+  <rect class="hit" x="840" y="885" width="58" height="22" rx="11" stroke-width="1.2"/>
+  <text x="869" y="901" text-anchor="middle" class="accink mono" font-size="11.5" font-weight="700">1</text>
+  <text x="910" y="901" text-anchor="start" class="ink" font-size="13.5" font-weight="600">The loop</text>
+  <path class="sacc" fill="none" d="M520 922 V982 H800 V120 H674" marker-end="url(#aa)"/>
+  <text x="534" y="972" text-anchor="start" class="accink" font-size="12.5" font-weight="700">append the picked token, run again</text>
 </svg>
