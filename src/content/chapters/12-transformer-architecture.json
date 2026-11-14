@@ -725,19 +725,19 @@
             {
               "label": "<b>Feed-forward</b>",
               "sub": "Processes each token on its own.",
-              "value": "ch 2.6",
+              "value": "slide 9",
               "goto": {
-                "chapter": "block",
-                "slide": 3
+                "chapter": "transformer",
+                "slide": 9
               }
             },
             {
               "label": "<b>Residual connections</b>",
               "sub": "Each step adds its update to the vector.",
-              "value": "slide 9",
+              "value": "slide 10",
               "goto": {
                 "chapter": "transformer",
-                "slide": 9
+                "slide": 10
               }
             },
             {
@@ -980,6 +980,108 @@
       ]
     },
     {
+      "title": "Feed-forward: each token, on its own",
+      "summary": "After attention gathers context, a small network processes each token's vector by itself.",
+      "body": [
+        "Attention lets tokens share information. The <b>feed-forward</b> layer (also called the <b>MLP</b>) then works on each token <b>on its own</b>, using what it just gathered.",
+        {
+          "h": "Three steps"
+        },
+        {
+          "ul": [
+            "<b>1 · Expand:</b> stretch the vector 4× wider, from 768 to 3,072 numbers in GPT-2.",
+            "<b>2 · Keep the strong signals:</b> a simple curve (GELU) lets strong signals through and turns the rest down.",
+            "<b>3 · Shrink:</b> squeeze back to 768 numbers and add the result to the token's vector."
+          ]
+        },
+        "<mark>Attention moves information between tokens. Feed-forward works on each token by itself. Every layer does both.</mark>",
+        {
+          "note": "About two-thirds of a model's parameters are in these layers, and research suggests much of what it knows, like facts, is stored here.",
+          "kind": "key"
+        },
+        {
+          "note": "Attention is the group discussion; feed-forward is each person thinking it over alone.",
+          "kind": "analogy"
+        },
+        {
+          "more": "Why expand and then shrink?",
+          "text": "The wider middle gives room to detect thousands of patterns at once: each middle number acts like a detector for something, such as a topic, a grammar rule or a fact. Shrinking back keeps the vector the same size for the next layer.",
+          "goto": {
+            "chapter": "block",
+            "slide": 3
+          },
+          "link": "The MLP in depth, in The transformer block"
+        },
+        {
+          "more": "What do modern models use?",
+          "text": "Llama and most new models use <b>SwiGLU</b>, a version with a gate that decides how much of each signal to let through. <b>Mixture-of-experts</b> models keep many feed-forward networks and send each token to just a few of them.",
+          "goto": {
+            "chapter": "block",
+            "slide": 6
+          },
+          "link": "Mixture of experts"
+        }
+      ],
+      "viz": [
+        {
+          "type": "table",
+          "rows": [
+            {
+              "head": "Step",
+              "cells": [
+                {
+                  "text": "Size per token (GPT-2)"
+                }
+              ]
+            },
+            {
+              "head": "In",
+              "cells": [
+                {
+                  "text": "768"
+                }
+              ]
+            },
+            {
+              "head": "1 · Expand",
+              "cells": [
+                {
+                  "text": "3,072",
+                  "tone": "heat"
+                }
+              ]
+            },
+            {
+              "head": "2 · Keep strong",
+              "cells": [
+                {
+                  "text": "3,072",
+                  "tone": "heat"
+                }
+              ]
+            },
+            {
+              "head": "3 · Shrink",
+              "cells": [
+                {
+                  "text": "768",
+                  "tone": "accent"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "figure": {
+        "src": "images/feed-forward-light.svg",
+        "darkSrc": "images/feed-forward-dark.svg",
+        "alt": "The feed-forward layer for the token “it”. Its vector of 768 numbers is expanded to 3,072, four times wider. A simple rule keeps the strong signals and switches the rest down: some middle cells light up, others stay grey. It's then shrunk back to 768 numbers, giving an update that is added to “it”'s vector. Behind it, identical copies run for “cat” and “The”: the same network runs on every token at the same time. Sizes from GPT-2; values are illustrative.",
+        "width": 1200,
+        "height": 620,
+        "caption": "One small network, applied to every token separately, all at once."
+      }
+    },
+    {
       "title": "Residual connections: add, don't replace",
       "summary": "Each step adds its output to the vector instead of replacing it.",
       "body": [
@@ -1073,10 +1175,10 @@
       "figure": {
         "src": "images/residual-connection-light.svg",
         "darkSrc": "images/residual-connection-dark.svg",
-        "alt": "Residual connections in one transformer layer. The vector runs straight down a main line, the skip path. A copy goes through a norm and attention, and attention's update is added back onto the main line; a second copy goes through a norm and the feed-forward step, and its update is added back too. As numbers: “it” goes into attention as [1, 2, 3], attention's update is [0.2, −0.5, 0.7], and the sum is [1.2, 1.5, 3.7]: the old vector, nudged.",
+        "alt": "Residual connections inside a transformer block, repeated N times. The input x goes through layer norm and multi-head attention (causal: looks back only), while a green residual line copies x around them and adds it back at a plus sign. The result then goes through layer norm and feed-forward (each token on its own), and a second residual line copies it around and adds it back; the output goes to the next block. On the right, the same addition as numbers: “it” goes into attention as [1, 2, 3], attention's update is [0.2, −0.5, 0.7], and the sum is [1.2, 1.5, 3.7]: the old vector, nudged.",
         "width": 1200,
         "height": 600,
-        "caption": "The main line carries the vector straight through. Each step reads a copy and adds its update back."
+        "caption": "Inside every transformer block: two residual lines copy the input around each step and add it back."
       }
     }
   ]
