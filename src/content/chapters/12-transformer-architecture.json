@@ -878,6 +878,106 @@
           "caption": "All heads run at once on the same input. Their small outputs are joined side by side, then mixed back to the input's shape."
         }
       ]
+    },
+    {
+      "title": "Residual connections: add, don't replace",
+      "summary": "Each step adds its output to the vector instead of replacing it.",
+      "body": [
+        "After attention, the transformer doesn't replace a token's vector. It <b>adds</b> attention's output to it. The input “skips” around the step, so this is called a <b>skip</b> or <b>residual connection</b>.",
+        "<mark>Each step adds an update. Nothing the token already knew is thrown away.</mark>",
+        {
+          "h": "Why it matters"
+        },
+        {
+          "ul": [
+            "<b>Nothing is lost:</b> meaning and position stay in the vector all the way up.",
+            "<b>Deep models can train:</b> learning flows back easily through the additions."
+          ]
+        },
+        "Every layer has two: one around attention, one around the feed-forward step.",
+        {
+          "more": "How does this fit with layer normalization?",
+          "text": "The norm tidies a <i>copy</i> going into each step. The step's result is then added back onto the untouched original."
+        }
+      ],
+      "viz": [
+        {
+          "type": "table",
+          "rows": [
+            {
+              "head": "“it”",
+              "cells": [
+                {
+                  "text": "n1"
+                },
+                {
+                  "text": "n2"
+                },
+                {
+                  "text": "n3"
+                }
+              ]
+            },
+            {
+              "head": "Going in",
+              "cells": [
+                {
+                  "text": "1"
+                },
+                {
+                  "text": "2"
+                },
+                {
+                  "text": "3"
+                }
+              ]
+            },
+            {
+              "head": "+ attention's output",
+              "cells": [
+                {
+                  "text": "0.2"
+                },
+                {
+                  "text": "−0.5"
+                },
+                {
+                  "text": "0.7"
+                }
+              ]
+            },
+            {
+              "head": "= new vector",
+              "cells": [
+                {
+                  "text": "1.2",
+                  "tone": "accent"
+                },
+                {
+                  "text": "1.5",
+                  "tone": "accent"
+                },
+                {
+                  "text": "3.7",
+                  "tone": "accent"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "caption",
+          "html": "Output = input + update. Values are illustrative."
+        }
+      ],
+      "figure": {
+        "src": "images/residual-connection-light.svg",
+        "darkSrc": "images/residual-connection-dark.svg",
+        "alt": "Residual connections in one transformer layer. The vector runs straight down a main line, the skip path. A copy goes through a norm and attention, and attention's update is added back onto the main line; a second copy goes through a norm and the feed-forward step, and its update is added back too. As numbers: “it” goes into attention as [1, 2, 3], attention's update is [0.2, −0.5, 0.7], and the sum is [1.2, 1.5, 3.7]: the old vector, nudged.",
+        "width": 1200,
+        "height": 600,
+        "caption": "The main line carries the vector straight through. Each step reads a copy and adds its update back."
+      }
     }
   ]
 }
