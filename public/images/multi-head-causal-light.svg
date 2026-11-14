@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 640" role="img" aria-labelledby="t d" font-family="'Schibsted Grotesk', ui-sans-serif, system-ui, sans-serif">
+  <title id="t">Multi-head causal self-attention</title>
+  <desc id="d">Multi-head causal self-attention for the word "it" in "The cat sat on the mat because it", followed by "was tired", which is not written yet and is masked: "it" cannot look ahead. Head 1 asks who "it" is and points back to "cat". Head 2 asks where, and points to "mat". Head 3 looks at the word just before, "because". The three heads’ results are combined (joined and mixed) into a new vector for "it" that now carries the cat, on the mat, and the words around it. Real models use 12 to 100+ heads per layer and learn what each one looks for.</desc>
+  <style>
+    .bg{fill:#f6f4ef}.card{fill:#fffdf9;stroke:#e5e0d5}.sunk{fill:#f3f0e9}
+    .ink{fill:#1c1b22}.muted{fill:#5b5866}.onacc{fill:#ffffff}
+    .acc{fill:#2b5fd9}.accink{fill:#1d47ad}.accsoft{fill:#e6edfc}
+    .pos{fill:#168a64}.posink{fill:#0d6a4b}.possoft{fill:#dcf2e8;stroke:#168a64}
+    .neg{fill:#d24a2b}.negink{fill:#ad3417}.negsoft{fill:#fbe3da;stroke:#d24a2b}
+    .heat{fill:#fcefd2;stroke:#d08a0c}.heatink{fill:#875700}.heatfill{fill:#d08a0c}
+    .line{stroke:#5b5866;fill:none;stroke-width:2}.thin{stroke:#e5e0d5;fill:none;stroke-width:1.5}
+    .dash{stroke:#2b5fd9;fill:none;stroke-width:2;stroke-dasharray:6 5}
+    .sacc{stroke:#2b5fd9;fill:none;stroke-width:2.5}.sheat{stroke:#d08a0c;fill:none;stroke-width:2.5}
+    .spos{stroke:#168a64;fill:none;stroke-width:2.5}.sneg{stroke:#d24a2b;fill:none;stroke-width:2.5}
+    .edge{stroke:#2b5fd9;fill:none;stroke-width:1;opacity:.45}
+    .stream{stroke:#2b5fd9;fill:none;stroke-width:14;stroke-linecap:round;opacity:.35}
+    .row{fill:#f3f0e9}.hit{fill:#e6edfc;stroke:#2b5fd9}
+    .mono{font-family:'JetBrains Mono',ui-monospace,Menlo,monospace}
+    .head{font-size:13px;font-weight:700;letter-spacing:.08em}
+    .arrowhead{fill:#5b5866}.arrowacc{fill:#2b5fd9}
+  </style>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arrowhead"/></marker>
+    <marker id="aa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arrowacc"/></marker>
+    <marker id="ap" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="pos"/></marker>
+    <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="heatfill"/></marker>
+  </defs>
+  <rect class="bg" width="1200" height="640" rx="18"/>
+  <text x="40" y="50" text-anchor="start" class="ink" font-size="26" font-weight="700">Multi-head causal self-attention</text>
+  <text x="40" y="76" text-anchor="start" class="muted" font-size="15">“it” looks back over the earlier words. Each head asks a different question; their answers are combined.</text>
+  <rect class="card" x="40" y="262" width="54" height="36" rx="18" stroke-width="1.2"/>
+  <text x="67.0" y="286" text-anchor="middle" class="ink mono" font-size="15" font-weight="500">The</text>
+  <rect class="card" x="104" y="262" width="54" height="36" rx="18" stroke-width="1.2"/>
+  <text x="131.0" y="286" text-anchor="middle" class="ink mono" font-size="15" font-weight="500">cat</text>
+  <rect class="card" x="168" y="262" width="54" height="36" rx="18" stroke-width="1.2"/>
+  <text x="195.0" y="286" text-anchor="middle" class="ink mono" font-size="15" font-weight="500">sat</text>
+  <rect class="card" x="232" y="262" width="44" height="36" rx="18" stroke-width="1.2"/>
+  <text x="254.0" y="286" text-anchor="middle" class="ink mono" font-size="15" font-weight="500">on</text>
+  <rect class="card" x="286" y="262" width="54" height="36" rx="18" stroke-width="1.2"/>
+  <text x="313.0" y="286" text-anchor="middle" class="ink mono" font-size="15" font-weight="500">the</text>
+  <rect class="card" x="350" y="262" width="54" height="36" rx="18" stroke-width="1.2"/>
+  <text x="377.0" y="286" text-anchor="middle" class="ink mono" font-size="15" font-weight="500">mat</text>
+  <rect class="card" x="414" y="262" width="94" height="36" rx="18" stroke-width="1.2"/>
+  <text x="461.0" y="286" text-anchor="middle" class="ink mono" font-size="15" font-weight="500">because</text>
+  <rect class="hit" x="518" y="262" width="44" height="36" rx="18" stroke-width="1.6"/>
+  <text x="540.0" y="286" text-anchor="middle" class="accink mono" font-size="15" font-weight="700">it</text>
+  <rect class="card" x="598" y="262" width="54" height="36" rx="18" stroke-width="1.2" stroke-dasharray="4 4" opacity=".55"/>
+  <text x="625.0" y="286" text-anchor="middle" class="muted mono" font-size="15" font-weight="500">was</text>
+  <rect class="card" x="662" y="262" width="74" height="36" rx="18" stroke-width="1.2" stroke-dasharray="4 4" opacity=".55"/>
+  <text x="699.0" y="286" text-anchor="middle" class="muted mono" font-size="15" font-weight="500">tired</text>
+  <line class="thin" x1="584" y1="232" x2="584" y2="318" stroke-dasharray="5 4"/>
+  <text x="667.0" y="324" text-anchor="middle" class="muted" font-size="12.5" font-weight="600">not written yet:</text>
+  <text x="667.0" y="340" text-anchor="middle" class="muted" font-size="12.5" font-weight="600">masked (causal)</text>
+  <path class="sacc" d="M540.0 258 Q335.5 18.5 131.0 256" marker-end="url(#aa)"/>
+  <circle class="acc" cx="335.5" cy="139.25" r="12"/>
+  <text x="335.5" y="144.25" text-anchor="middle" class="onacc" font-size="13" font-weight="700">1</text>
+  <path class="spos" d="M540.0 258 Q458.5 106.0 377.0 256" marker-end="url(#ap)"/>
+  <circle class="pos" cx="458.5" cy="183.0" r="12"/>
+  <text x="458.5" y="188.0" text-anchor="middle" class="onacc" font-size="13" font-weight="700">2</text>
+  <path class="sheat" d="M540.0 258 Q500.5 178.5 461.0 256" marker-end="url(#ah)"/>
+  <circle class="heatfill" cx="500.5" cy="219.25" r="12"/>
+  <text x="500.5" y="224.25" text-anchor="middle" class="onacc" font-size="13" font-weight="700">3</text>
+  <path class="thin" d="M556.0 258 Q619.5 202 695.0 254" stroke-dasharray="4 4"/>
+  <text x="625.5" y="218" text-anchor="middle" class="negink" font-size="18" font-weight="700">✕</text>
+  <rect class="sunk" x="40" y="370" width="1120" height="240" rx="12"/>
+  <text x="64" y="400" text-anchor="start" class="muted mono" font-size="11.5" font-weight="700">EACH HEAD BRINGS BACK SOMETHING DIFFERENT, THEN THEY ARE COMBINED</text>
+  <rect class="card" x="64" y="418" width="400" height="48" rx="10" stroke-width="1.2"/>
+  <text x="82" y="447" text-anchor="start" class="accink mono" font-size="12" font-weight="700">HEAD 1</text>
+  <text x="150" y="447" text-anchor="start" class="ink" font-size="14">“it” refers to</text>
+  <rect class="hit" x="340" y="428" width="110" height="28" rx="14" stroke-width="1.4"/>
+  <text x="395" y="447" text-anchor="middle" class="accink mono" font-size="14" font-weight="700">cat</text>
+  <path class="line" d="M468 442 C520 442 520 508 566 508" marker-end="url(#a)"/>
+  <rect class="card" x="64" y="478" width="400" height="48" rx="10" stroke-width="1.2"/>
+  <text x="82" y="507" text-anchor="start" class="posink mono" font-size="12" font-weight="700">HEAD 2</text>
+  <text x="150" y="507" text-anchor="start" class="ink" font-size="14">the place is</text>
+  <rect class="possoft" x="340" y="488" width="110" height="28" rx="14" stroke-width="1.4"/>
+  <text x="395" y="507" text-anchor="middle" class="posink mono" font-size="14" font-weight="700">mat</text>
+  <path class="line" d="M468 502 C520 502 520 508 566 508" marker-end="url(#a)"/>
+  <rect class="card" x="64" y="538" width="400" height="48" rx="10" stroke-width="1.2"/>
+  <text x="82" y="567" text-anchor="start" class="heatink mono" font-size="12" font-weight="700">HEAD 3</text>
+  <text x="150" y="567" text-anchor="start" class="ink" font-size="14">the word just before</text>
+  <rect class="heat" x="340" y="548" width="110" height="28" rx="14" stroke-width="1.4"/>
+  <text x="395" y="567" text-anchor="middle" class="heatink mono" font-size="14" font-weight="700">because</text>
+  <path class="line" d="M468 562 C520 562 520 508 566 508" marker-end="url(#a)"/>
+  <rect class="hit" x="570" y="478" width="170" height="60" rx="10" stroke-width="1.5"/>
+  <text x="655" y="504" text-anchor="middle" class="accink" font-size="15" font-weight="700">Combine</text>
+  <text x="655" y="523" text-anchor="middle" class="muted" font-size="12.5">join + mix</text>
+  <line class="line" x1="744" y1="508" x2="786" y2="508" marker-end="url(#a)"/>
+  <rect class="card" x="790" y="466" width="346" height="84" rx="12" stroke-width="1.4"/>
+  <text x="808" y="492" text-anchor="start" class="ink" font-size="15" font-weight="700">New vector for “it”</text>
+  <text x="808" y="514" text-anchor="start" class="muted" font-size="13.5">now carries: the cat, on the mat,</text>
+  <text x="808" y="533" text-anchor="start" class="muted" font-size="13.5">and the words around it</text>
+  <text x="1136" y="592" text-anchor="end" class="muted" font-size="12">Real models use 12 to 100+ heads per layer, and learn what each one looks for.</text>
+</svg>

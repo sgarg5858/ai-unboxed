@@ -820,6 +820,64 @@
         "height": 620,
         "caption": "Same pattern, steady size: a norm before each main step, and one at the end."
       }
+    },
+    {
+      "title": "Multi-head causal self-attention",
+      "summary": "The attention step in every layer of a GPT-style model. Each part of the name says one thing about how it works.",
+      "body": [
+        {
+          "ul": [
+            "<b>Self-attention:</b> each token looks at the other tokens in the same text to work out what it means. “it” looks back and finds “cat”.",
+            "<b>Causal:</b> a token can look only at itself and earlier tokens, never later ones. The model writes one token at a time, so later words don't exist yet.",
+            "<b>Multi-head:</b> several attention <b>heads</b> run side by side, each looking for something different. Their results are combined into one new vector."
+          ]
+        },
+        "<mark>Each token comes out with a new vector that mixes in what it found in the earlier words, gathered by many heads at once.</mark>",
+        {
+          "note": "Like a few readers going over the same sentence, each with a different question, who then pool their notes.",
+          "kind": "analogy"
+        },
+        {
+          "more": "How many heads?",
+          "text": "GPT-2 has 12 heads in each of its 12 layers; Llama 3 8B has 32 in each of its 32 layers. Nobody tells a head what to look for: each one learns its job during training."
+        },
+        {
+          "more": "Why can't a token look ahead?",
+          "text": "In training, the model sees whole sentences at once. Without the mask, it could simply read the next word instead of learning to predict it.",
+          "goto": {
+            "chapter": "attention",
+            "slide": 4
+          },
+          "link": "No peeking ahead, in Attention"
+        },
+        {
+          "more": "How does one head work?",
+          "text": "Each head turns every token into a query, a key and a value, scores every pair, and mixes the values. The next chapter walks through it step by step.",
+          "goto": {
+            "chapter": "attention",
+            "slide": 1
+          },
+          "link": "Attention, step by step"
+        }
+      ],
+      "figure": [
+        {
+          "src": "images/multi-head-causal-light.svg",
+          "darkSrc": "images/multi-head-causal-dark.svg",
+          "alt": "Multi-head causal self-attention for “it” in “The cat sat on the mat because it”. The next words, “was tired”, are not written yet and are masked, so “it” can't look at them. Head 1 points back to “cat” (who “it” refers to), head 2 to “mat” (the place), and head 3 to “because” (the word just before). The three results are combined into a new vector for “it” that carries the cat, on the mat, and the words around it. Real models use 12 to 100+ heads per layer and learn what each one looks for.",
+          "width": 1200,
+          "height": 640,
+          "caption": "Look back only, ask several questions at once, combine the answers."
+        },
+        {
+          "src": "images/attention-heads-parallel-light.svg",
+          "darkSrc": "images/attention-heads-parallel-dark.svg",
+          "alt": "Attention heads working in parallel. The input, 5 tokens (The cat sat on the) by 768 numbers, goes to every head at the same time. Head 1 links back to “cat”, head 2 looks at the word before, head 3 looks at the first word; each has its own query, key and value, and a look-back grid where later words are masked. Heads 4 to 12 run at the same time. Each head outputs 5 by 64 numbers. The 12 outputs are joined side by side (12 × 64 = 768), then mixed by one learned layer into an output of 5 by 768, the same shape as the input. Numbers from GPT-2.",
+          "width": 1200,
+          "height": 600,
+          "caption": "All heads run at once on the same input. Their small outputs are joined side by side, then mixed back to the input's shape."
+        }
+      ]
     }
   ]
 }

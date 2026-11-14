@@ -1,0 +1,298 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600" role="img" aria-labelledby="t d" font-family="'Schibsted Grotesk', ui-sans-serif, system-ui, sans-serif">
+  <title id="t">Attention heads in parallel</title>
+  <desc id="d">Attention heads working in parallel. The input, 5 tokens (The cat sat on the) by 768 numbers, goes to every head at the same time. Head 1 links back to "cat"; head 2 looks at the word before; head 3 looks at the first word. Each has its own query, key and value, and a look-back grid where later words are masked. Heads 4 to 12 run at the same time too. Each head outputs 5 by 64 numbers. The 12 outputs are joined side by side, 12 times 64 equals 768, then mixed by one learned layer into an output of 5 by 768, the same shape as the input. Numbers from GPT-2.</desc>
+  <style>
+    .bg{fill:#f6f4ef}.card{fill:#fffdf9;stroke:#e5e0d5}.sunk{fill:#f3f0e9}
+    .ink{fill:#1c1b22}.muted{fill:#5b5866}.onacc{fill:#ffffff}
+    .acc{fill:#2b5fd9}.accink{fill:#1d47ad}.accsoft{fill:#e6edfc}
+    .pos{fill:#168a64}.posink{fill:#0d6a4b}.possoft{fill:#dcf2e8;stroke:#168a64}
+    .neg{fill:#d24a2b}.negink{fill:#ad3417}.negsoft{fill:#fbe3da;stroke:#d24a2b}
+    .heat{fill:#fcefd2;stroke:#d08a0c}.heatink{fill:#875700}.heatfill{fill:#d08a0c}
+    .line{stroke:#5b5866;fill:none;stroke-width:2}.thin{stroke:#e5e0d5;fill:none;stroke-width:1.5}
+    .dash{stroke:#2b5fd9;fill:none;stroke-width:2;stroke-dasharray:6 5}
+    .sacc{stroke:#2b5fd9;fill:none;stroke-width:2.5}.sheat{stroke:#d08a0c;fill:none;stroke-width:2.5}
+    .spos{stroke:#168a64;fill:none;stroke-width:2.5}.sneg{stroke:#d24a2b;fill:none;stroke-width:2.5}
+    .edge{stroke:#2b5fd9;fill:none;stroke-width:1;opacity:.45}
+    .stream{stroke:#2b5fd9;fill:none;stroke-width:14;stroke-linecap:round;opacity:.35}
+    .row{fill:#f3f0e9}.hit{fill:#e6edfc;stroke:#2b5fd9}
+    .mono{font-family:'JetBrains Mono',ui-monospace,Menlo,monospace}
+    .head{font-size:13px;font-weight:700;letter-spacing:.08em}
+    .arrowhead{fill:#5b5866}.arrowacc{fill:#2b5fd9}
+  </style>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arrowhead"/></marker>
+  </defs>
+  <rect class="bg" width="1200" height="600" rx="18"/>
+  <text x="40" y="50" text-anchor="start" class="ink" font-size="26" font-weight="700">Many heads, side by side</text>
+  <text x="40" y="76" text-anchor="start" class="muted" font-size="15">Every head reads the same tokens at the same time. Their outputs are placed side by side, then mixed into one.</text>
+  <text x="78" y="234" text-anchor="start" class="muted mono" font-size="11.5" font-weight="700">INPUT</text>
+  <text x="70" y="263" text-anchor="end" class="muted mono" font-size="11.5" font-weight="600">The</text>
+  <text x="70" y="278" text-anchor="end" class="muted mono" font-size="11.5" font-weight="600">cat</text>
+  <text x="70" y="293" text-anchor="end" class="muted mono" font-size="11.5" font-weight="600">sat</text>
+  <text x="70" y="308" text-anchor="end" class="muted mono" font-size="11.5" font-weight="600">on</text>
+  <text x="70" y="323" text-anchor="end" class="muted mono" font-size="11.5" font-weight="600">the</text>
+  <rect class="card" x="78.0" y="250.0" width="13" height="13" rx="3"/>
+  <rect class="card" x="93.0" y="250.0" width="13" height="13" rx="3"/>
+  <rect class="card" x="108.0" y="250.0" width="13" height="13" rx="3"/>
+  <rect class="card" x="123.0" y="250.0" width="13" height="13" rx="3"/>
+  <rect class="card" x="138.0" y="250.0" width="13" height="13" rx="3"/>
+  <rect class="card" x="153.0" y="250.0" width="13" height="13" rx="3"/>
+  <rect class="card" x="168.0" y="250.0" width="13" height="13" rx="3"/>
+  <rect class="card" x="183.0" y="250.0" width="13" height="13" rx="3"/>
+  <rect class="card" x="78.0" y="265.0" width="13" height="13" rx="3"/>
+  <rect class="card" x="93.0" y="265.0" width="13" height="13" rx="3"/>
+  <rect class="card" x="108.0" y="265.0" width="13" height="13" rx="3"/>
+  <rect class="card" x="123.0" y="265.0" width="13" height="13" rx="3"/>
+  <rect class="card" x="138.0" y="265.0" width="13" height="13" rx="3"/>
+  <rect class="card" x="153.0" y="265.0" width="13" height="13" rx="3"/>
+  <rect class="card" x="168.0" y="265.0" width="13" height="13" rx="3"/>
+  <rect class="card" x="183.0" y="265.0" width="13" height="13" rx="3"/>
+  <rect class="card" x="78.0" y="280.0" width="13" height="13" rx="3"/>
+  <rect class="card" x="93.0" y="280.0" width="13" height="13" rx="3"/>
+  <rect class="card" x="108.0" y="280.0" width="13" height="13" rx="3"/>
+  <rect class="card" x="123.0" y="280.0" width="13" height="13" rx="3"/>
+  <rect class="card" x="138.0" y="280.0" width="13" height="13" rx="3"/>
+  <rect class="card" x="153.0" y="280.0" width="13" height="13" rx="3"/>
+  <rect class="card" x="168.0" y="280.0" width="13" height="13" rx="3"/>
+  <rect class="card" x="183.0" y="280.0" width="13" height="13" rx="3"/>
+  <rect class="card" x="78.0" y="295.0" width="13" height="13" rx="3"/>
+  <rect class="card" x="93.0" y="295.0" width="13" height="13" rx="3"/>
+  <rect class="card" x="108.0" y="295.0" width="13" height="13" rx="3"/>
+  <rect class="card" x="123.0" y="295.0" width="13" height="13" rx="3"/>
+  <rect class="card" x="138.0" y="295.0" width="13" height="13" rx="3"/>
+  <rect class="card" x="153.0" y="295.0" width="13" height="13" rx="3"/>
+  <rect class="card" x="168.0" y="295.0" width="13" height="13" rx="3"/>
+  <rect class="card" x="183.0" y="295.0" width="13" height="13" rx="3"/>
+  <rect class="card" x="78.0" y="310.0" width="13" height="13" rx="3"/>
+  <rect class="card" x="93.0" y="310.0" width="13" height="13" rx="3"/>
+  <rect class="card" x="108.0" y="310.0" width="13" height="13" rx="3"/>
+  <rect class="card" x="123.0" y="310.0" width="13" height="13" rx="3"/>
+  <rect class="card" x="138.0" y="310.0" width="13" height="13" rx="3"/>
+  <rect class="card" x="153.0" y="310.0" width="13" height="13" rx="3"/>
+  <rect class="card" x="168.0" y="310.0" width="13" height="13" rx="3"/>
+  <rect class="card" x="183.0" y="310.0" width="13" height="13" rx="3"/>
+  <text x="138" y="343" text-anchor="middle" class="muted mono" font-size="11.5" font-weight="600">5 tokens × 768</text>
+  <rect class="card" x="230.0" y="118.0" width="420" height="100" rx="12" stroke-width="1.2"/>
+  <text x="248" y="146" text-anchor="start" class="accink mono" font-size="12.5" font-weight="700">HEAD 1</text>
+  <text x="248" y="168" text-anchor="start" class="ink" font-size="13.5">links back to “cat”</text>
+  <text x="248" y="188" text-anchor="start" class="muted" font-size="12.5">its own Q, K, V</text>
+  <rect class="acc" x="440.0" y="130.0" width="13" height="13" rx="2" opacity="1.00"/>
+  <rect class="row" x="455.0" y="130.0" width="13" height="13" rx="2"/>
+  <rect class="row" x="470.0" y="130.0" width="13" height="13" rx="2"/>
+  <rect class="row" x="485.0" y="130.0" width="13" height="13" rx="2"/>
+  <rect class="row" x="500.0" y="130.0" width="13" height="13" rx="2"/>
+  <rect class="acc" x="440.0" y="145.0" width="13" height="13" rx="2" opacity="0.12"/>
+  <rect class="acc" x="455.0" y="145.0" width="13" height="13" rx="2" opacity="1.00"/>
+  <rect class="row" x="470.0" y="145.0" width="13" height="13" rx="2"/>
+  <rect class="row" x="485.0" y="145.0" width="13" height="13" rx="2"/>
+  <rect class="row" x="500.0" y="145.0" width="13" height="13" rx="2"/>
+  <rect class="acc" x="440.0" y="160.0" width="13" height="13" rx="2" opacity="0.12"/>
+  <rect class="acc" x="455.0" y="160.0" width="13" height="13" rx="2" opacity="1.00"/>
+  <rect class="acc" x="470.0" y="160.0" width="13" height="13" rx="2" opacity="0.12"/>
+  <rect class="row" x="485.0" y="160.0" width="13" height="13" rx="2"/>
+  <rect class="row" x="500.0" y="160.0" width="13" height="13" rx="2"/>
+  <rect class="acc" x="440.0" y="175.0" width="13" height="13" rx="2" opacity="0.12"/>
+  <rect class="acc" x="455.0" y="175.0" width="13" height="13" rx="2" opacity="1.00"/>
+  <rect class="acc" x="470.0" y="175.0" width="13" height="13" rx="2" opacity="0.12"/>
+  <rect class="acc" x="485.0" y="175.0" width="13" height="13" rx="2" opacity="0.12"/>
+  <rect class="row" x="500.0" y="175.0" width="13" height="13" rx="2"/>
+  <rect class="acc" x="440.0" y="190.0" width="13" height="13" rx="2" opacity="0.12"/>
+  <rect class="acc" x="455.0" y="190.0" width="13" height="13" rx="2" opacity="1.00"/>
+  <rect class="acc" x="470.0" y="190.0" width="13" height="13" rx="2" opacity="0.12"/>
+  <rect class="acc" x="485.0" y="190.0" width="13" height="13" rx="2" opacity="0.12"/>
+  <rect class="acc" x="500.0" y="190.0" width="13" height="13" rx="2" opacity="0.12"/>
+  <text x="477" y="222" text-anchor="middle" class="muted" font-size="11">look-back grid</text>
+  <rect class="acc" x="560.0" y="130.0" width="12" height="12" rx="3"/>
+  <rect class="acc" x="574.0" y="130.0" width="12" height="12" rx="3"/>
+  <rect class="acc" x="560.0" y="144.0" width="12" height="12" rx="3"/>
+  <rect class="acc" x="574.0" y="144.0" width="12" height="12" rx="3"/>
+  <rect class="acc" x="560.0" y="158.0" width="12" height="12" rx="3"/>
+  <rect class="acc" x="574.0" y="158.0" width="12" height="12" rx="3"/>
+  <rect class="acc" x="560.0" y="172.0" width="12" height="12" rx="3"/>
+  <rect class="acc" x="574.0" y="172.0" width="12" height="12" rx="3"/>
+  <rect class="acc" x="560.0" y="186.0" width="12" height="12" rx="3"/>
+  <rect class="acc" x="574.0" y="186.0" width="12" height="12" rx="3"/>
+  <text x="574" y="214" text-anchor="middle" class="muted mono" font-size="11" font-weight="600">5 × 64</text>
+  <path class="line" d="M204 287 C248 287 180 168 226 168" marker-end="url(#a)"/>
+  <path class="line" d="M654 168 C690 168 700 287 728 287" marker-end="url(#a)"/>
+  <rect class="card" x="230.0" y="236.0" width="420" height="100" rx="12" stroke-width="1.2"/>
+  <text x="248" y="264" text-anchor="start" class="posink mono" font-size="12.5" font-weight="700">HEAD 2</text>
+  <text x="248" y="286" text-anchor="start" class="ink" font-size="13.5">looks at the word before</text>
+  <text x="248" y="306" text-anchor="start" class="muted" font-size="12.5">its own Q, K, V</text>
+  <rect class="pos" x="440.0" y="248.0" width="13" height="13" rx="2" opacity="1.00"/>
+  <rect class="row" x="455.0" y="248.0" width="13" height="13" rx="2"/>
+  <rect class="row" x="470.0" y="248.0" width="13" height="13" rx="2"/>
+  <rect class="row" x="485.0" y="248.0" width="13" height="13" rx="2"/>
+  <rect class="row" x="500.0" y="248.0" width="13" height="13" rx="2"/>
+  <rect class="pos" x="440.0" y="263.0" width="13" height="13" rx="2" opacity="1.00"/>
+  <rect class="pos" x="455.0" y="263.0" width="13" height="13" rx="2" opacity="0.12"/>
+  <rect class="row" x="470.0" y="263.0" width="13" height="13" rx="2"/>
+  <rect class="row" x="485.0" y="263.0" width="13" height="13" rx="2"/>
+  <rect class="row" x="500.0" y="263.0" width="13" height="13" rx="2"/>
+  <rect class="pos" x="440.0" y="278.0" width="13" height="13" rx="2" opacity="0.12"/>
+  <rect class="pos" x="455.0" y="278.0" width="13" height="13" rx="2" opacity="1.00"/>
+  <rect class="pos" x="470.0" y="278.0" width="13" height="13" rx="2" opacity="0.12"/>
+  <rect class="row" x="485.0" y="278.0" width="13" height="13" rx="2"/>
+  <rect class="row" x="500.0" y="278.0" width="13" height="13" rx="2"/>
+  <rect class="pos" x="440.0" y="293.0" width="13" height="13" rx="2" opacity="0.12"/>
+  <rect class="pos" x="455.0" y="293.0" width="13" height="13" rx="2" opacity="0.12"/>
+  <rect class="pos" x="470.0" y="293.0" width="13" height="13" rx="2" opacity="1.00"/>
+  <rect class="pos" x="485.0" y="293.0" width="13" height="13" rx="2" opacity="0.12"/>
+  <rect class="row" x="500.0" y="293.0" width="13" height="13" rx="2"/>
+  <rect class="pos" x="440.0" y="308.0" width="13" height="13" rx="2" opacity="0.12"/>
+  <rect class="pos" x="455.0" y="308.0" width="13" height="13" rx="2" opacity="0.12"/>
+  <rect class="pos" x="470.0" y="308.0" width="13" height="13" rx="2" opacity="0.12"/>
+  <rect class="pos" x="485.0" y="308.0" width="13" height="13" rx="2" opacity="1.00"/>
+  <rect class="pos" x="500.0" y="308.0" width="13" height="13" rx="2" opacity="0.12"/>
+  <text x="477" y="340" text-anchor="middle" class="muted" font-size="11">look-back grid</text>
+  <rect class="pos" x="560.0" y="248.0" width="12" height="12" rx="3"/>
+  <rect class="pos" x="574.0" y="248.0" width="12" height="12" rx="3"/>
+  <rect class="pos" x="560.0" y="262.0" width="12" height="12" rx="3"/>
+  <rect class="pos" x="574.0" y="262.0" width="12" height="12" rx="3"/>
+  <rect class="pos" x="560.0" y="276.0" width="12" height="12" rx="3"/>
+  <rect class="pos" x="574.0" y="276.0" width="12" height="12" rx="3"/>
+  <rect class="pos" x="560.0" y="290.0" width="12" height="12" rx="3"/>
+  <rect class="pos" x="574.0" y="290.0" width="12" height="12" rx="3"/>
+  <rect class="pos" x="560.0" y="304.0" width="12" height="12" rx="3"/>
+  <rect class="pos" x="574.0" y="304.0" width="12" height="12" rx="3"/>
+  <text x="574" y="332" text-anchor="middle" class="muted mono" font-size="11" font-weight="600">5 × 64</text>
+  <path class="line" d="M204 287 C248 287 180 286 226 286" marker-end="url(#a)"/>
+  <path class="line" d="M654 286 C690 286 700 287 728 287" marker-end="url(#a)"/>
+  <rect class="card" x="230.0" y="354.0" width="420" height="100" rx="12" stroke-width="1.2"/>
+  <text x="248" y="382" text-anchor="start" class="heatink mono" font-size="12.5" font-weight="700">HEAD 3</text>
+  <text x="248" y="404" text-anchor="start" class="ink" font-size="13.5">looks at the first word</text>
+  <text x="248" y="424" text-anchor="start" class="muted" font-size="12.5">its own Q, K, V</text>
+  <rect class="heatfill" x="440.0" y="366.0" width="13" height="13" rx="2" opacity="1.00"/>
+  <rect class="row" x="455.0" y="366.0" width="13" height="13" rx="2"/>
+  <rect class="row" x="470.0" y="366.0" width="13" height="13" rx="2"/>
+  <rect class="row" x="485.0" y="366.0" width="13" height="13" rx="2"/>
+  <rect class="row" x="500.0" y="366.0" width="13" height="13" rx="2"/>
+  <rect class="heatfill" x="440.0" y="381.0" width="13" height="13" rx="2" opacity="1.00"/>
+  <rect class="heatfill" x="455.0" y="381.0" width="13" height="13" rx="2" opacity="0.12"/>
+  <rect class="row" x="470.0" y="381.0" width="13" height="13" rx="2"/>
+  <rect class="row" x="485.0" y="381.0" width="13" height="13" rx="2"/>
+  <rect class="row" x="500.0" y="381.0" width="13" height="13" rx="2"/>
+  <rect class="heatfill" x="440.0" y="396.0" width="13" height="13" rx="2" opacity="1.00"/>
+  <rect class="heatfill" x="455.0" y="396.0" width="13" height="13" rx="2" opacity="0.12"/>
+  <rect class="heatfill" x="470.0" y="396.0" width="13" height="13" rx="2" opacity="0.12"/>
+  <rect class="row" x="485.0" y="396.0" width="13" height="13" rx="2"/>
+  <rect class="row" x="500.0" y="396.0" width="13" height="13" rx="2"/>
+  <rect class="heatfill" x="440.0" y="411.0" width="13" height="13" rx="2" opacity="1.00"/>
+  <rect class="heatfill" x="455.0" y="411.0" width="13" height="13" rx="2" opacity="0.12"/>
+  <rect class="heatfill" x="470.0" y="411.0" width="13" height="13" rx="2" opacity="0.12"/>
+  <rect class="heatfill" x="485.0" y="411.0" width="13" height="13" rx="2" opacity="0.12"/>
+  <rect class="row" x="500.0" y="411.0" width="13" height="13" rx="2"/>
+  <rect class="heatfill" x="440.0" y="426.0" width="13" height="13" rx="2" opacity="1.00"/>
+  <rect class="heatfill" x="455.0" y="426.0" width="13" height="13" rx="2" opacity="0.12"/>
+  <rect class="heatfill" x="470.0" y="426.0" width="13" height="13" rx="2" opacity="0.12"/>
+  <rect class="heatfill" x="485.0" y="426.0" width="13" height="13" rx="2" opacity="0.12"/>
+  <rect class="heatfill" x="500.0" y="426.0" width="13" height="13" rx="2" opacity="0.12"/>
+  <text x="477" y="458" text-anchor="middle" class="muted" font-size="11">look-back grid</text>
+  <rect class="heatfill" x="560.0" y="366.0" width="12" height="12" rx="3"/>
+  <rect class="heatfill" x="574.0" y="366.0" width="12" height="12" rx="3"/>
+  <rect class="heatfill" x="560.0" y="380.0" width="12" height="12" rx="3"/>
+  <rect class="heatfill" x="574.0" y="380.0" width="12" height="12" rx="3"/>
+  <rect class="heatfill" x="560.0" y="394.0" width="12" height="12" rx="3"/>
+  <rect class="heatfill" x="574.0" y="394.0" width="12" height="12" rx="3"/>
+  <rect class="heatfill" x="560.0" y="408.0" width="12" height="12" rx="3"/>
+  <rect class="heatfill" x="574.0" y="408.0" width="12" height="12" rx="3"/>
+  <rect class="heatfill" x="560.0" y="422.0" width="12" height="12" rx="3"/>
+  <rect class="heatfill" x="574.0" y="422.0" width="12" height="12" rx="3"/>
+  <text x="574" y="450" text-anchor="middle" class="muted mono" font-size="11" font-weight="600">5 × 64</text>
+  <path class="line" d="M204 287 C248 287 180 404 226 404" marker-end="url(#a)"/>
+  <path class="line" d="M654 404 C690 404 700 287 728 287" marker-end="url(#a)"/>
+  <rect class="sunk" x="230.0" y="476.0" width="420" height="46" rx="12"/>
+  <text x="440.0" y="505" text-anchor="middle" class="muted" font-size="13.5" font-weight="600">⋯ heads 4 to 12, all at the same time</text>
+  <text x="732" y="234" text-anchor="start" class="muted mono" font-size="11.5" font-weight="700">JOINED</text>
+  <rect class="acc" x="732.0" y="250.0" width="13" height="13" rx="3"/>
+  <rect class="acc" x="747.0" y="250.0" width="13" height="13" rx="3"/>
+  <rect class="pos" x="762.0" y="250.0" width="13" height="13" rx="3"/>
+  <rect class="pos" x="777.0" y="250.0" width="13" height="13" rx="3"/>
+  <rect class="heatfill" x="792.0" y="250.0" width="13" height="13" rx="3"/>
+  <rect class="heatfill" x="807.0" y="250.0" width="13" height="13" rx="3"/>
+  <rect class="row" x="822.0" y="250.0" width="13" height="13" rx="3"/>
+  <rect class="row" x="837.0" y="250.0" width="13" height="13" rx="3"/>
+  <rect class="acc" x="732.0" y="265.0" width="13" height="13" rx="3"/>
+  <rect class="acc" x="747.0" y="265.0" width="13" height="13" rx="3"/>
+  <rect class="pos" x="762.0" y="265.0" width="13" height="13" rx="3"/>
+  <rect class="pos" x="777.0" y="265.0" width="13" height="13" rx="3"/>
+  <rect class="heatfill" x="792.0" y="265.0" width="13" height="13" rx="3"/>
+  <rect class="heatfill" x="807.0" y="265.0" width="13" height="13" rx="3"/>
+  <rect class="row" x="822.0" y="265.0" width="13" height="13" rx="3"/>
+  <rect class="row" x="837.0" y="265.0" width="13" height="13" rx="3"/>
+  <rect class="acc" x="732.0" y="280.0" width="13" height="13" rx="3"/>
+  <rect class="acc" x="747.0" y="280.0" width="13" height="13" rx="3"/>
+  <rect class="pos" x="762.0" y="280.0" width="13" height="13" rx="3"/>
+  <rect class="pos" x="777.0" y="280.0" width="13" height="13" rx="3"/>
+  <rect class="heatfill" x="792.0" y="280.0" width="13" height="13" rx="3"/>
+  <rect class="heatfill" x="807.0" y="280.0" width="13" height="13" rx="3"/>
+  <rect class="row" x="822.0" y="280.0" width="13" height="13" rx="3"/>
+  <rect class="row" x="837.0" y="280.0" width="13" height="13" rx="3"/>
+  <rect class="acc" x="732.0" y="295.0" width="13" height="13" rx="3"/>
+  <rect class="acc" x="747.0" y="295.0" width="13" height="13" rx="3"/>
+  <rect class="pos" x="762.0" y="295.0" width="13" height="13" rx="3"/>
+  <rect class="pos" x="777.0" y="295.0" width="13" height="13" rx="3"/>
+  <rect class="heatfill" x="792.0" y="295.0" width="13" height="13" rx="3"/>
+  <rect class="heatfill" x="807.0" y="295.0" width="13" height="13" rx="3"/>
+  <rect class="row" x="822.0" y="295.0" width="13" height="13" rx="3"/>
+  <rect class="row" x="837.0" y="295.0" width="13" height="13" rx="3"/>
+  <rect class="acc" x="732.0" y="310.0" width="13" height="13" rx="3"/>
+  <rect class="acc" x="747.0" y="310.0" width="13" height="13" rx="3"/>
+  <rect class="pos" x="762.0" y="310.0" width="13" height="13" rx="3"/>
+  <rect class="pos" x="777.0" y="310.0" width="13" height="13" rx="3"/>
+  <rect class="heatfill" x="792.0" y="310.0" width="13" height="13" rx="3"/>
+  <rect class="heatfill" x="807.0" y="310.0" width="13" height="13" rx="3"/>
+  <rect class="row" x="822.0" y="310.0" width="13" height="13" rx="3"/>
+  <rect class="row" x="837.0" y="310.0" width="13" height="13" rx="3"/>
+  <text x="836" y="246" text-anchor="middle" class="muted mono" font-size="10.5" font-weight="600">4–12</text>
+  <text x="792" y="343" text-anchor="middle" class="muted mono" font-size="11.5" font-weight="600">12 × 64 = 768</text>
+  <line class="line" x1="856" y1="287" x2="876" y2="287" marker-end="url(#a)"/>
+  <rect class="hit" x="880.0" y="262.0" width="120" height="66" rx="10" stroke-width="1.5"/>
+  <text x="940" y="290" text-anchor="middle" class="accink" font-size="15" font-weight="700">Mix</text>
+  <text x="940" y="310" text-anchor="middle" class="muted" font-size="12">one learned layer</text>
+  <line class="line" x1="1004" y1="287" x2="1036" y2="287" marker-end="url(#a)"/>
+  <text x="1040" y="234" text-anchor="start" class="muted mono" font-size="11.5" font-weight="700">OUTPUT</text>
+  <rect class="possoft" x="1040.0" y="250.0" width="13" height="13" rx="3"/>
+  <rect class="possoft" x="1055.0" y="250.0" width="13" height="13" rx="3"/>
+  <rect class="possoft" x="1070.0" y="250.0" width="13" height="13" rx="3"/>
+  <rect class="possoft" x="1085.0" y="250.0" width="13" height="13" rx="3"/>
+  <rect class="possoft" x="1100.0" y="250.0" width="13" height="13" rx="3"/>
+  <rect class="possoft" x="1115.0" y="250.0" width="13" height="13" rx="3"/>
+  <rect class="possoft" x="1130.0" y="250.0" width="13" height="13" rx="3"/>
+  <rect class="possoft" x="1145.0" y="250.0" width="13" height="13" rx="3"/>
+  <rect class="possoft" x="1040.0" y="265.0" width="13" height="13" rx="3"/>
+  <rect class="possoft" x="1055.0" y="265.0" width="13" height="13" rx="3"/>
+  <rect class="possoft" x="1070.0" y="265.0" width="13" height="13" rx="3"/>
+  <rect class="possoft" x="1085.0" y="265.0" width="13" height="13" rx="3"/>
+  <rect class="possoft" x="1100.0" y="265.0" width="13" height="13" rx="3"/>
+  <rect class="possoft" x="1115.0" y="265.0" width="13" height="13" rx="3"/>
+  <rect class="possoft" x="1130.0" y="265.0" width="13" height="13" rx="3"/>
+  <rect class="possoft" x="1145.0" y="265.0" width="13" height="13" rx="3"/>
+  <rect class="possoft" x="1040.0" y="280.0" width="13" height="13" rx="3"/>
+  <rect class="possoft" x="1055.0" y="280.0" width="13" height="13" rx="3"/>
+  <rect class="possoft" x="1070.0" y="280.0" width="13" height="13" rx="3"/>
+  <rect class="possoft" x="1085.0" y="280.0" width="13" height="13" rx="3"/>
+  <rect class="possoft" x="1100.0" y="280.0" width="13" height="13" rx="3"/>
+  <rect class="possoft" x="1115.0" y="280.0" width="13" height="13" rx="3"/>
+  <rect class="possoft" x="1130.0" y="280.0" width="13" height="13" rx="3"/>
+  <rect class="possoft" x="1145.0" y="280.0" width="13" height="13" rx="3"/>
+  <rect class="possoft" x="1040.0" y="295.0" width="13" height="13" rx="3"/>
+  <rect class="possoft" x="1055.0" y="295.0" width="13" height="13" rx="3"/>
+  <rect class="possoft" x="1070.0" y="295.0" width="13" height="13" rx="3"/>
+  <rect class="possoft" x="1085.0" y="295.0" width="13" height="13" rx="3"/>
+  <rect class="possoft" x="1100.0" y="295.0" width="13" height="13" rx="3"/>
+  <rect class="possoft" x="1115.0" y="295.0" width="13" height="13" rx="3"/>
+  <rect class="possoft" x="1130.0" y="295.0" width="13" height="13" rx="3"/>
+  <rect class="possoft" x="1145.0" y="295.0" width="13" height="13" rx="3"/>
+  <rect class="possoft" x="1040.0" y="310.0" width="13" height="13" rx="3"/>
+  <rect class="possoft" x="1055.0" y="310.0" width="13" height="13" rx="3"/>
+  <rect class="possoft" x="1070.0" y="310.0" width="13" height="13" rx="3"/>
+  <rect class="possoft" x="1085.0" y="310.0" width="13" height="13" rx="3"/>
+  <rect class="possoft" x="1100.0" y="310.0" width="13" height="13" rx="3"/>
+  <rect class="possoft" x="1115.0" y="310.0" width="13" height="13" rx="3"/>
+  <rect class="possoft" x="1130.0" y="310.0" width="13" height="13" rx="3"/>
+  <rect class="possoft" x="1145.0" y="310.0" width="13" height="13" rx="3"/>
+  <text x="1100" y="343" text-anchor="middle" class="muted mono" font-size="11.5" font-weight="600">5 × 768</text>
+  <text x="1100" y="359" text-anchor="middle" class="muted" font-size="11.5">same shape as input</text>
+  <text x="40" y="576" text-anchor="start" class="muted" font-size="12.5">Numbers from GPT-2: 12 heads of 64 numbers each. Grids: darker = more attention; grey = later words, masked.</text>
+</svg>
