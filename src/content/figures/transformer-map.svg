@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-labelledby="t d" font-family="'Schibsted Grotesk', ui-sans-serif, system-ui, sans-serif">
+  <title id="t">A GPT-style transformer, in one picture</title>
+  <desc id="d">A GPT-style transformer from text to the next token. Text, "The cat sat", goes to the tokenizer, which gives token IDs 791, 8415, 7731 (Tokens chapter). Each ID gets a token embedding, what the word is, plus a position, where it sits, giving a 3 by 768 matrix (slides 4 and 5). Then a transformer block, repeated N times (12 in GPT-2, 32 in Llama 3 8B): norm, then multi-head causal self-attention, whose output is added back to the main line; then norm, then feed-forward, added back again (slides 7, 8 and 9; feed-forward in The transformer block). Each layer takes 3 by 768 in and gives 3 by 768 out, adding an update. Then a final norm, a linear layer giving a score for every token in the vocabulary (50,257 in GPT-2; Output &amp; inference chapter), and softmax, which turns scores into probabilities for the next token, for example "on" 61%, "down" 20%. Pick one, append it, and repeat (slide 1, the loop). Probabilities are illustrative.</desc>
+  <!--theme-->
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arrowhead"/></marker>
+  </defs>
+  <rect class="bg" width="1200" height="800" rx="18"/>
+  <text x="40" y="50" text-anchor="start" class="ink" font-size="26" font-weight="700">A GPT-style transformer, in one picture</text>
+  <text x="40" y="76" text-anchor="start" class="muted" font-size="15">From text to the next token. Labels on the right show where each part is explained.</text>
+  <rect class="card" x="330" y="100" width="460" height="44" rx="10" stroke-width="1.4"/>
+  <text x="560.0" y="127.0" text-anchor="middle" class="ink" font-size="14" font-weight="700">Text: “The cat sat”</text>
+  <line class="line" x1="560" y1="144" x2="560" y2="166" marker-end="url(#a)"/>
+  <rect class="sunk" x="330" y="170" width="460" height="44" rx="10" stroke-width="1.4"/>
+  <text x="560.0" y="197.0" text-anchor="middle" class="ink" font-size="14" font-weight="700">Tokenizer → token IDs</text>
+  <text x="300" y="197" text-anchor="end" class="muted mono" font-size="12" font-weight="600">791 · 8415 · 7731</text>
+  <rect class="hit" x="840" y="177" width="58" height="22" rx="11" stroke-width="1.2"/>
+  <text x="869" y="193" text-anchor="middle" class="accink mono" font-size="11.5" font-weight="700">2.2</text>
+  <text x="910" y="193" text-anchor="start" class="ink" font-size="13.5" font-weight="600">Tokens chapter</text>
+  <line class="line" x1="560" y1="214" x2="560" y2="236" marker-end="url(#a)"/>
+  <rect class="hit" x="330" y="240" width="205" height="44" rx="10" stroke-width="1.4"/>
+  <text x="432.5" y="259" text-anchor="middle" class="accink" font-size="14" font-weight="700">Token embedding</text>
+  <text x="432.5" y="276" text-anchor="middle" class="muted" font-size="12">what the word is</text>
+  <circle class="card" cx="560" cy="262" r="14" stroke-width="2"/>
+  <text x="560" y="269" text-anchor="middle" class="ink" font-size="20" font-weight="700">+</text>
+  <rect class="heat" x="585" y="240" width="205" height="44" rx="10" stroke-width="1.4"/>
+  <text x="687.5" y="259" text-anchor="middle" class="heatink" font-size="14" font-weight="700">Position</text>
+  <text x="687.5" y="276" text-anchor="middle" class="muted" font-size="12">where it sits</text>
+  <text x="300" y="267" text-anchor="end" class="muted mono" font-size="12" font-weight="600">3 × 768 matrix</text>
+  <rect class="hit" x="840" y="241" width="58" height="22" rx="11" stroke-width="1.2"/>
+  <text x="869" y="257" text-anchor="middle" class="accink mono" font-size="11.5" font-weight="700">4</text>
+  <text x="910" y="257" text-anchor="start" class="ink" font-size="13.5" font-weight="600">Token + position</text>
+  <rect class="hit" x="840" y="267" width="58" height="22" rx="11" stroke-width="1.2"/>
+  <text x="869" y="283" text-anchor="middle" class="accink mono" font-size="11.5" font-weight="700">5</text>
+  <text x="910" y="283" text-anchor="start" class="ink" font-size="13.5" font-weight="600">RoPE (modern models)</text>
+  <rect class="card" x="310" y="318" width="500" height="250" rx="14" stroke-width="1.6" stroke-dasharray="7 5"/>
+  <text x="802" y="342" text-anchor="end" class="muted" font-size="12">12 in GPT-2 · 32 in Llama 3 8B</text>
+  <text x="382" y="342" text-anchor="start" class="accink mono" font-size="12" font-weight="700">TRANSFORMER BLOCK × N</text>
+  <path class="line" d="M560 284 V300 H360 V354" marker-end="url(#a)"/>
+  <line class="stream" x1="360" y1="358" x2="360" y2="554"/>
+  <line class="line" x1="360" y1="384" x2="406" y2="384" marker-end="url(#a)"/>
+  <rect class="heat" x="410" y="362" width="90" height="44" rx="10" stroke-width="1.4"/>
+  <text x="455.0" y="389.0" text-anchor="middle" class="heatink" font-size="14" font-weight="700">Norm</text>
+  <line class="line" x1="502" y1="384" x2="526" y2="384" marker-end="url(#a)"/>
+  <rect class="hit" x="530" y="362" width="260" height="44" rx="10" stroke-width="1.4"/>
+  <text x="660.0" y="389.0" text-anchor="middle" class="accink" font-size="14" font-weight="700">Multi-head causal self-attention</text>
+  <path class="line" d="M790 384 H798 V432 H378" marker-end="url(#a)"/>
+  <circle class="card" cx="360" cy="432" r="14" stroke-width="2"/>
+  <text x="360" y="439" text-anchor="middle" class="ink" font-size="20" font-weight="700">+</text>
+  <rect class="hit" x="840" y="361" width="58" height="22" rx="11" stroke-width="1.2"/>
+  <text x="869" y="377" text-anchor="middle" class="accink mono" font-size="11.5" font-weight="700">7</text>
+  <text x="910" y="377" text-anchor="start" class="ink" font-size="13.5" font-weight="600">Layer normalization</text>
+  <rect class="hit" x="840" y="383" width="58" height="22" rx="11" stroke-width="1.2"/>
+  <text x="869" y="399" text-anchor="middle" class="accink mono" font-size="11.5" font-weight="700">8</text>
+  <text x="910" y="399" text-anchor="start" class="ink" font-size="13.5" font-weight="600">Multi-head attention</text>
+  <line class="line" x1="360" y1="480" x2="406" y2="480" marker-end="url(#a)"/>
+  <rect class="heat" x="410" y="458" width="90" height="44" rx="10" stroke-width="1.4"/>
+  <text x="455.0" y="485.0" text-anchor="middle" class="heatink" font-size="14" font-weight="700">Norm</text>
+  <line class="line" x1="502" y1="480" x2="526" y2="480" marker-end="url(#a)"/>
+  <rect class="hit" x="530" y="458" width="260" height="44" rx="10" stroke-width="1.4"/>
+  <text x="660.0" y="485.0" text-anchor="middle" class="accink" font-size="14" font-weight="700">Feed-forward</text>
+  <path class="line" d="M790 480 H798 V528 H378" marker-end="url(#a)"/>
+  <circle class="card" cx="360" cy="528" r="14" stroke-width="2"/>
+  <text x="360" y="535" text-anchor="middle" class="ink" font-size="20" font-weight="700">+</text>
+  <rect class="hit" x="840" y="457" width="58" height="22" rx="11" stroke-width="1.2"/>
+  <text x="869" y="473" text-anchor="middle" class="accink mono" font-size="11.5" font-weight="700">2.6</text>
+  <text x="910" y="473" text-anchor="start" class="ink" font-size="13.5" font-weight="600">Feed-forward → The transformer block</text>
+  <rect class="hit" x="840" y="513" width="58" height="22" rx="11" stroke-width="1.2"/>
+  <text x="869" y="529" text-anchor="middle" class="accink mono" font-size="11.5" font-weight="700">9</text>
+  <text x="910" y="529" text-anchor="start" class="ink" font-size="13.5" font-weight="600">Residual (skip) connections</text>
+  <text x="300" y="439" text-anchor="end" class="muted mono" font-size="12" font-weight="600">3 × 768 in,</text>
+  <text x="300" y="457" text-anchor="end" class="muted mono" font-size="12" font-weight="600">3 × 768 out</text>
+  <text x="300" y="489" text-anchor="end" class="muted" font-size="12" font-weight="600">each layer adds</text>
+  <text x="300" y="505" text-anchor="end" class="muted" font-size="12" font-weight="600">an update</text>
+  <path class="line" d="M360 556 V580 H560 V594" marker-end="url(#a)"/>
+  <rect class="heat" x="330" y="598" width="460" height="44" rx="10" stroke-width="1.4"/>
+  <text x="560.0" y="625.0" text-anchor="middle" class="heatink" font-size="14" font-weight="700">Final norm</text>
+  <rect class="hit" x="840" y="605" width="58" height="22" rx="11" stroke-width="1.2"/>
+  <text x="869" y="621" text-anchor="middle" class="accink mono" font-size="11.5" font-weight="700">7</text>
+  <text x="910" y="621" text-anchor="start" class="ink" font-size="13.5" font-weight="600">Layer normalization</text>
+  <line class="line" x1="560" y1="642" x2="560" y2="660" marker-end="url(#a)"/>
+  <rect class="hit" x="330" y="664" width="460" height="44" rx="10" stroke-width="1.4"/>
+  <text x="560.0" y="691.0" text-anchor="middle" class="accink" font-size="14" font-weight="700">Linear: a score for every token in the vocabulary</text>
+  <text x="300" y="691" text-anchor="end" class="muted mono" font-size="12" font-weight="600">50,257 scores</text>
+  <rect class="hit" x="840" y="671" width="58" height="22" rx="11" stroke-width="1.2"/>
+  <text x="869" y="687" text-anchor="middle" class="accink mono" font-size="11.5" font-weight="700">2.7</text>
+  <text x="910" y="687" text-anchor="start" class="ink" font-size="13.5" font-weight="600">Output &amp; inference</text>
+  <line class="line" x1="560" y1="708" x2="560" y2="726" marker-end="url(#a)"/>
+  <rect class="possoft" x="330" y="730" width="460" height="44" rx="10" stroke-width="1.4"/>
+  <text x="560.0" y="749" text-anchor="middle" class="posink" font-size="14" font-weight="700">Softmax → probabilities</text>
+  <text x="560.0" y="766" text-anchor="middle" class="muted" font-size="12">next token: “on” 61% · “down” 20% · …</text>
+  <text x="300" y="757" text-anchor="end" class="muted mono" font-size="12" font-weight="600">pick one, append, repeat</text>
+  <rect class="hit" x="840" y="737" width="58" height="22" rx="11" stroke-width="1.2"/>
+  <text x="869" y="753" text-anchor="middle" class="accink mono" font-size="11.5" font-weight="700">1</text>
+  <text x="910" y="753" text-anchor="start" class="ink" font-size="13.5" font-weight="600">The loop</text>
+</svg>

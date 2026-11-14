@@ -675,6 +675,106 @@
       }
     },
     {
+      "title": "The whole transformer, in one picture",
+      "summary": "Text goes in, one block repeats many times, and out comes a probability for every possible next token.",
+      "body": [
+        "Every GPT-style model, from GPT-2 to today's chatbots, follows this plan. Use this slide as a map: click any part on the right to jump to where it's explained.",
+        "<mark>Almost all the work happens in the transformer block, repeated many times. Bigger models mostly stack more blocks and make each one wider.</mark>",
+        "GPT-2 stacks 12 blocks, 768 numbers wide. Llama 3 8B stacks 32 blocks, 4,096 wide."
+      ],
+      "viz": [
+        {
+          "type": "stages",
+          "items": [
+            {
+              "label": "<b>Tokens</b>",
+              "sub": "Text becomes token IDs.",
+              "value": "ch 2.2",
+              "goto": {
+                "chapter": "tokens",
+                "slide": 1
+              }
+            },
+            {
+              "label": "<b>Token + position</b>",
+              "sub": "One vector per token: what and where.",
+              "value": "slide 4",
+              "goto": {
+                "chapter": "transformer",
+                "slide": 4
+              }
+            },
+            {
+              "label": "<b>Layer normalization</b>",
+              "sub": "Keeps the numbers steady before each step.",
+              "value": "slide 7",
+              "goto": {
+                "chapter": "transformer",
+                "slide": 7
+              }
+            },
+            {
+              "label": "<b>Multi-head causal self-attention</b>",
+              "sub": "Each token gathers context from earlier tokens.",
+              "value": "slide 8",
+              "goto": {
+                "chapter": "transformer",
+                "slide": 8
+              }
+            },
+            {
+              "label": "<b>Feed-forward</b>",
+              "sub": "Processes each token on its own.",
+              "value": "ch 2.6",
+              "goto": {
+                "chapter": "block",
+                "slide": 3
+              }
+            },
+            {
+              "label": "<b>Residual connections</b>",
+              "sub": "Each step adds its update to the vector.",
+              "value": "slide 9",
+              "goto": {
+                "chapter": "transformer",
+                "slide": 9
+              }
+            },
+            {
+              "label": "<b>Output</b>",
+              "sub": "Final norm, a score per token, then softmax.",
+              "value": "ch 2.7",
+              "goto": {
+                "chapter": "output",
+                "slide": 1
+              }
+            },
+            {
+              "label": "<b>The loop</b>",
+              "sub": "Pick a token, append it, run again.",
+              "value": "slide 1",
+              "goto": {
+                "chapter": "transformer",
+                "slide": 1
+              }
+            }
+          ]
+        },
+        {
+          "type": "caption",
+          "html": "Click a part to jump to it."
+        }
+      ],
+      "figure": {
+        "src": "images/transformer-map-light.svg",
+        "darkSrc": "images/transformer-map-dark.svg",
+        "alt": "A GPT-style transformer from text to the next token. Text, “The cat sat”, goes to the tokenizer, giving token IDs 791, 8415, 7731. Each gets a token embedding (what the word is) plus a position (where it sits), making a 3 by 768 matrix. Then a transformer block repeated N times (12 in GPT-2, 32 in Llama 3 8B): norm, multi-head causal self-attention, added back to the main line; norm, feed-forward, added back again. Each layer takes 3 by 768 in and gives 3 by 768 out. Then a final norm, a linear layer giving a score for every token in the vocabulary (50,257 in GPT-2), and softmax, giving next-token probabilities such as “on” 61% and “down” 20%. Pick one, append it, repeat. Labels on the right give the slide or chapter that explains each part. Probabilities are illustrative.",
+        "width": 1200,
+        "height": 800,
+        "caption": "The full stack. Numbers on the right are the slides (or chapters) that explain each part."
+      }
+    },
+    {
       "title": "Layer normalization: keeping the numbers steady",
       "summary": "Before each main step, every token's vector is rescaled to a standard range, so the numbers don't grow too big or shrink too small as they pass through many layers.",
       "body": [
