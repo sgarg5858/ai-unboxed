@@ -970,12 +970,12 @@
           "caption": "Look back only, ask several questions at once, combine the answers."
         },
         {
-          "src": "images/attention-heads-parallel-light.svg",
-          "darkSrc": "images/attention-heads-parallel-dark.svg",
-          "alt": "Attention heads working in parallel. The input, 5 tokens (The cat sat on the) by 768 numbers, goes to every head at the same time. Head 1 links back to “cat”, head 2 looks at the word before, head 3 looks at the first word; each has its own query, key and value, and a look-back grid where later words are masked. Heads 4 to 12 run at the same time. Each head outputs 5 by 64 numbers. The 12 outputs are joined side by side (12 × 64 = 768), then mixed by one learned layer into an output of 5 by 768, the same shape as the input. Numbers from GPT-2.",
+          "src": "images/attention-heads-3d-light.svg",
+          "darkSrc": "images/attention-heads-3d-dark.svg",
+          "alt": "Attention heads drawn as a 3D stack of sheets, one behind another. The same input, 5 tokens (The cat sat on the) by 768 numbers, feeds every sheet at once. Each sheet is one head with its own look-back grid, where later words are masked: head 1 links back to “cat”, head 2 looks at the previous word, head 3 at the first word, head 4 at itself, head 5 spreads its attention, and head 6 looks two words back; the stack continues to head 12. All heads' outputs are joined (12 × 64 = 768) and mixed into an output of 5 by 768. Numbers from GPT-2.",
           "width": 1200,
-          "height": 600,
-          "caption": "All heads run at once on the same input. Their small outputs are joined side by side, then mixed back to the input's shape."
+          "height": 620,
+          "caption": "The heads are a stack, not a queue: every one reads the same input at the same moment, and their outputs are joined and mixed."
         }
       ]
     },
