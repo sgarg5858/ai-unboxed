@@ -106,6 +106,8 @@ export interface Figure {
   height: number;
   /** Inline HTML allowed. */
   caption?: string;
+  /** "top" shows it under the title, before the text; default is under both columns. */
+  placement?: 'top' | 'bottom';
 }
 
 export interface SlideContent {

@@ -1,9 +1,24 @@
 @let slide = content();
+@let tops = topFigures();
+<ng-template #head>
+  <h2 tabindex="-1">{{ slide.title }}</h2>
+  @if (slide.summary) {
+    <p class="lead" [innerHTML]="slide.summary"></p>
+  }
+</ng-template>
 <article class="slide" [class.solo]="!slide.viz?.length">
+  @if (tops.length) {
+    <!-- A top figure spans both columns, so the title moves above it. -->
+    <header class="wide prose">
+      <ng-container [ngTemplateOutlet]="head" />
+    </header>
+    @for (f of tops; track f.src) {
+      <app-slide-figure class="wide" [figure]="f" />
+    }
+  }
   <div class="prose">
-    <h2 tabindex="-1">{{ slide.title }}</h2>
-    @if (slide.summary) {
-      <p class="lead" [innerHTML]="slide.summary"></p>
+    @if (!tops.length) {
+      <ng-container [ngTemplateOutlet]="head" />
     }
     @for (p of slide.body; track $index) {
       @switch (kindOf(p)) {
@@ -53,7 +68,7 @@
       }
     </div>
   }
-  @for (f of figures(slide); track f.src) {
+  @for (f of bottomFigures(); track f.src) {
     <app-slide-figure class="wide" [figure]="f" />
   }
 </article>

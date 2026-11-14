@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 170" role="img" aria-labelledby="t d" font-family="'Schibsted Grotesk', ui-sans-serif, system-ui, sans-serif">
+  <title id="t">Where layer normalization sits</title>
+  <desc id="d">Where layer normalization sits: input matrix, norm, attention, norm, feed-forward; that layer is repeated N times, 12 in GPT-2 and 32 in Llama 3 8B; then a final norm, then predict the next token.</desc>
+  <style>
+    .bg{fill:#f6f4ef}.card{fill:#fffdf9;stroke:#e5e0d5}.sunk{fill:#f3f0e9}
+    .ink{fill:#1c1b22}.muted{fill:#5b5866}.onacc{fill:#ffffff}
+    .acc{fill:#2b5fd9}.accink{fill:#1d47ad}.accsoft{fill:#e6edfc}
+    .pos{fill:#168a64}.posink{fill:#0d6a4b}.possoft{fill:#dcf2e8;stroke:#168a64}
+    .neg{fill:#d24a2b}.negink{fill:#ad3417}.negsoft{fill:#fbe3da;stroke:#d24a2b}
+    .heat{fill:#fcefd2;stroke:#d08a0c}.heatink{fill:#875700}.heatfill{fill:#d08a0c}
+    .line{stroke:#5b5866;fill:none;stroke-width:2}.thin{stroke:#e5e0d5;fill:none;stroke-width:1.5}
+    .dash{stroke:#2b5fd9;fill:none;stroke-width:2;stroke-dasharray:6 5}
+    .sacc{stroke:#2b5fd9;fill:none;stroke-width:2.5}.sheat{stroke:#d08a0c;fill:none;stroke-width:2.5}
+    .spos{stroke:#168a64;fill:none;stroke-width:2.5}.sneg{stroke:#d24a2b;fill:none;stroke-width:2.5}
+    .edge{stroke:#2b5fd9;fill:none;stroke-width:1;opacity:.45}
+    .stream{stroke:#2b5fd9;fill:none;stroke-width:14;stroke-linecap:round;opacity:.35}
+    .row{fill:#f3f0e9}.hit{fill:#e6edfc;stroke:#2b5fd9}
+    .mono{font-family:'JetBrains Mono',ui-monospace,Menlo,monospace}
+    .head{font-size:13px;font-weight:700;letter-spacing:.08em}
+    .arrowhead{fill:#5b5866}.arrowacc{fill:#2b5fd9}
+  </style>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arrowhead"/></marker>
+  </defs>
+  <rect class="sunk" width="1120" height="170" rx="14"/>
+  <g transform="translate(-40,0)">
+  <text x="64" y="34" text-anchor="start" class="muted mono" font-size="11.5" font-weight="700">WHERE IT SITS: BEFORE EACH MAIN STEP, AND ONCE AT THE END</text>
+  <rect class="card" x="64" y="66" width="130" height="46" rx="10" stroke-width="1.4"/>
+  <text x="129.0" y="94" text-anchor="middle" class="ink" font-size="14" font-weight="700">Input matrix</text>
+  <rect class="heat" x="228" y="66" width="82" height="46" rx="10" stroke-width="1.4"/>
+  <text x="269.0" y="94" text-anchor="middle" class="heatink" font-size="14" font-weight="700">Norm</text>
+  <rect class="hit" x="344" y="66" width="120" height="46" rx="10" stroke-width="1.4"/>
+  <text x="404.0" y="94" text-anchor="middle" class="accink" font-size="14" font-weight="700">Attention</text>
+  <rect class="heat" x="498" y="66" width="82" height="46" rx="10" stroke-width="1.4"/>
+  <text x="539.0" y="94" text-anchor="middle" class="heatink" font-size="14" font-weight="700">Norm</text>
+  <rect class="hit" x="614" y="66" width="130" height="46" rx="10" stroke-width="1.4"/>
+  <text x="679.0" y="94" text-anchor="middle" class="accink" font-size="14" font-weight="700">Feed-forward</text>
+  <rect class="heat" x="778" y="66" width="110" height="46" rx="10" stroke-width="1.4"/>
+  <text x="833.0" y="94" text-anchor="middle" class="heatink" font-size="14" font-weight="700">Final norm</text>
+  <rect class="card" x="922" y="66" width="170" height="46" rx="10" stroke-width="1.4"/>
+  <text x="1007.0" y="94" text-anchor="middle" class="ink" font-size="14" font-weight="700">Predict next token</text>
+  <line class="line" x1="197" y1="89" x2="224" y2="89" marker-end="url(#a)"/>
+  <line class="line" x1="313" y1="89" x2="340" y2="89" marker-end="url(#a)"/>
+  <line class="line" x1="467" y1="89" x2="494" y2="89" marker-end="url(#a)"/>
+  <line class="line" x1="583" y1="89" x2="610" y2="89" marker-end="url(#a)"/>
+  <line class="line" x1="747" y1="89" x2="774" y2="89" marker-end="url(#a)"/>
+  <line class="line" x1="891" y1="89" x2="918" y2="89" marker-end="url(#a)"/>
+  <path class="thin" d="M228 126 L228 134 L744 134 L744 126"/>
+  <text x="486.0" y="152" text-anchor="middle" class="muted" font-size="12.5" font-weight="600">one transformer layer, repeated N times (12 in GPT-2, 32 in Llama 3 8B)</text>
+  </g>
+</svg>

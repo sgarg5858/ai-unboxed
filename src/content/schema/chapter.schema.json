@@ -734,6 +734,10 @@
         "caption": {
           "type": "string",
           "description": "Inline HTML allowed (b, i, code, span class, a href (with target _blank and rel noopener noreferrer), and <mark> around the few points that are critical to understand)."
+        },
+        "placement": {
+          "enum": ["top", "bottom"],
+          "description": "top: under the slide title, before the text (good for a short 'where it sits' strip). Default bottom: under both columns."
         }
       }
     }

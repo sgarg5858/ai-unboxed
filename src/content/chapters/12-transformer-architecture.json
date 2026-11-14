@@ -806,9 +806,8 @@
           "more": "Does normalizing lose meaning?",
           "text": [
             "Mostly no. A vector's meaning is in its <b>pattern</b>, which numbers are high and which are low, and normalization keeps that exactly. It only removes the overall size.",
-            "<b>The original is kept.</b> In modern models (GPT-2 onwards, Llama), the norm works on a copy going into attention or the feed-forward step. The token's own vector keeps its full values, and each step adds its result back onto it. The original 2017 Transformer normalized the main vector itself, after each step; moving the norm before each step made deep models easier to train.",
-            "<b>The size can come back.</b> The learned scale and shift in step 3 let the model stretch each slot back to whatever range is useful.",
-            "One small loss: <code>[6, −2, 10, 2]</code> and <code>[60, −20, 100, 20]</code> look the same to the step reading the copy. The sizes aren't gone, though: they stay in the token's own vector, and models do use them."
+            "<b>The original is kept.</b> In modern models (GPT-2 onwards, Llama), the norm works on a copy going into attention or the feed-forward step. The token's own vector keeps its full values, and each step adds its result back onto it.",
+            "<b>The size can come back.</b> The learned scale and shift in step 3 let the model stretch each slot to a useful range."
           ]
         },
         {
@@ -912,14 +911,24 @@
           "html": "Try ten times bigger, <code>[60, −20, 100, 20]</code>: the average is 40, the spread 44.7, and the result is exactly the same. Values are illustrative."
         }
       ],
-      "figure": {
-        "src": "images/layer-norm-light.svg",
-        "darkSrc": "images/layer-norm-dark.svg",
-        "alt": "Layer normalization for one token. “cat” going in is [6, −2, 10, 2], average 4 and spread 4.47. The same token times 10 is [60, −20, 100, 20], average 40 and spread 44.7. LayerNorm subtracts the average and divides by the spread, and both come out as [0.45, −1.34, 1.34, −0.45], average 0 and spread 1: the pattern is kept, only the size changes. Below, where it sits: input matrix, norm, attention, norm, feed-forward, repeated N times (12 in GPT-2, 32 in Llama 3 8B), then a final norm, then predict the next token. Values are illustrative.",
-        "width": 1200,
-        "height": 620,
-        "caption": "Same pattern, steady size: a norm before each main step, and one at the end."
-      }
+      "figure": [
+        {
+          "src": "images/layer-norm-where-light.svg",
+          "darkSrc": "images/layer-norm-where-dark.svg",
+          "alt": "Where layer normalization sits: input matrix, norm, attention, norm, feed-forward; that layer is repeated N times (12 in GPT-2, 32 in Llama 3 8B); then a final norm, then predict the next token.",
+          "width": 1120,
+          "height": 170,
+          "placement": "top"
+        },
+        {
+          "src": "images/layer-norm-light.svg",
+          "darkSrc": "images/layer-norm-dark.svg",
+          "alt": "Layer normalization for one token. “cat” going in is [6, −2, 10, 2], average 4 and spread 4.47. The same token times 10 is [60, −20, 100, 20], average 40 and spread 44.7. LayerNorm subtracts the average and divides by the spread, and both come out as [0.45, −1.34, 1.34, −0.45], average 0 and spread 1: the pattern is kept, only the size changes. Values are illustrative.",
+          "width": 1200,
+          "height": 430,
+          "caption": "Same pattern, steady size: big or small going in, the same range comes out."
+        }
+      ]
     },
     {
       "title": "Multi-head causal self-attention",
