@@ -632,7 +632,6 @@
                   "embedding-table",
                   "embedding-geometry",
                   "positional-heatmap",
-                  "rope",
                   "residual-matrix",
                   "attention-arcs",
                   "qkv-matrices",

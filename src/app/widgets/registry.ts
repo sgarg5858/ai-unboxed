@@ -17,7 +17,6 @@ export const WIDGETS: Record<string, () => Promise<Type<unknown>>> = {
   'embedding-table': () => import('./tokens.widgets').then((m) => m.EmbeddingTableWidget),
   'embedding-geometry': () => import('./tokens.widgets').then((m) => m.EmbeddingGeometryWidget),
   'positional-heatmap': () => import('./tokens.widgets').then((m) => m.PositionalHeatmapWidget),
-  rope: () => import('./tokens.widgets').then((m) => m.RopeWidget),
   'residual-matrix': () => import('./tokens.widgets').then((m) => m.ResidualMatrixWidget),
   'attention-arcs': () => import('./attention.widgets').then((m) => m.AttentionArcsWidget),
   'qkv-matrices': () => import('./attention.widgets').then((m) => m.QkvMatricesWidget),

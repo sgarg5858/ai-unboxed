@@ -244,40 +244,6 @@
         "height": 680,
         "caption": "Without position, \"dog bites man\" and \"man bites dog\" look the same to attention. A position vector, read off waves at different speeds, stamps each token with where it sits."
       }
-    },
-    {
-      "title": "RoPE: what modern models use",
-      "summary": "Modern models mark position by rotating vectors, so attention can directly see how far apart two tokens are.",
-      "body": [
-        "Most current open models (Llama, Mistral, Qwen and others) use <b>rotary position embeddings</b> (RoPE) instead. Nothing is added to the token's vector. Instead, inside attention, each token's query and key are <b>rotated</b> by an angle that grows with the token's position.",
-        "Why rotate? Attention scores two tokens with a dot product, and the dot product depends on the angle between the two vectors. <mark>Rotate one by position <code>m</code> and the other by position <code>n</code>, and the angle between them only depends on <code>m − n</code>: how far apart they are.</mark>",
-        "Try it: move both sliders by the same amount. Both arrows turn, but the angle between them, and so the score, doesn't change.",
-        {
-          "note": "RoPE tells the model <i>relative</i> position (\"three tokens back\"), not <i>absolute</i> position (\"token 1,207\"). That suits language, where nearby words usually matter most. It's also one reason context windows can be made longer after training.",
-          "kind": "key"
-        }
-      ],
-      "code": [
-        "def rope(x, pos, theta=10000):",
-        "    # rotate each (x[2i], x[2i+1]) pair",
-        "    angle = pos / theta**(2*i/d)",
-        "    return rotate_pairs(x, angle)",
-        "q, k = rope(q, m), rope(k, n)   # then q·k as usual"
-      ],
-      "figure": {
-        "src": "images/rope-rotation-light.svg",
-        "darkSrc": "images/rope-rotation-dark.svg",
-        "alt": "How rotary position embeddings, RoPE, mark position. First, the same vector is drawn at positions 0 to 4: at each position it is rotated by one more step, theta. Second, a query at position 5 is rotated 5 steps and a key at position 2 is rotated 2 steps, leaving an angle of 3 steps between them. Third, a query at position 9 and a key at position 6 are both rotated further, but the angle between them is again 3 steps. Because the dot product depends on that angle, the same distance between two tokens gives the same attention score, wherever they are in the text.",
-        "width": 1200,
-        "height": 620,
-        "caption": "RoPE turns queries and keys by their position. Two tokens 3 apart always end up 3 steps apart in angle, so they get the same score wherever they are."
-      },
-      "viz": [
-        {
-          "type": "widget",
-          "name": "rope"
-        }
-      ]
     }
   ]
 }

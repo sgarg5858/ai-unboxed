@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600" role="img" aria-labelledby="t d" font-family="'Schibsted Grotesk', ui-sans-serif, system-ui, sans-serif">
+  <title id="t">RoPE in one picture</title>
+  <desc id="d">RoPE turns each token by an angle that depends on its position. The same word, cat, drawn as an arrow: at position 0 it is not turned, at position 1 it is turned 35 degrees, at 2 by 70 degrees, at 3 by 105 degrees. The arrow keeps its length, which carries the meaning; its direction shows where the word sits. Bottom: what attention sees is the gap between two words. In “The cat sat”, cat at 1 and sat at 2 are 35 degrees apart; later in a long story, cat at 101 and sat at 102 are also 35 degrees apart. Same gap, same angle, wherever the words are. Real models turn many pairs of numbers, each at its own speed. Angles are illustrative.</desc>
+  <style>
+    .bg{fill:#0f1413}.card{fill:#171e1c;stroke:#2c3835}.sunk{fill:#1f2826}
+    .ink{fill:#e4ece9}.muted{fill:#9aa9a4}.onacc{fill:#0f1413}
+    .acc{fill:#4db3d1}.accink{fill:#8fd3e6}.accsoft{fill:#163742}
+    .pos{fill:#3fc4a3}.posink{fill:#3fc4a3}.possoft{fill:#123a30;stroke:#3fc4a3}
+    .neg{fill:#f07d60}.negink{fill:#f07d60}.negsoft{fill:#42221a;stroke:#f07d60}
+    .heat{fill:#3d2e14;stroke:#f0ac40}.heatink{fill:#f0ac40}.heatfill{fill:#f0ac40}
+    .line{stroke:#9aa9a4;fill:none;stroke-width:2}.thin{stroke:#2c3835;fill:none;stroke-width:1.5}
+    .dash{stroke:#4db3d1;fill:none;stroke-width:2;stroke-dasharray:6 5}
+    .sacc{stroke:#4db3d1;fill:none;stroke-width:2.5}.sheat{stroke:#f0ac40;fill:none;stroke-width:2.5}
+    .spos{stroke:#3fc4a3;fill:none;stroke-width:2.5}.sneg{stroke:#f07d60;fill:none;stroke-width:2.5}
+    .edge{stroke:#4db3d1;fill:none;stroke-width:1;opacity:.45}
+    .stream{stroke:#4db3d1;fill:none;stroke-width:14;stroke-linecap:round;opacity:.35}
+    .row{fill:#1f2826}.hit{fill:#163742;stroke:#4db3d1}
+    .mono{font-family:'JetBrains Mono',ui-monospace,Menlo,monospace}
+    .head{font-size:13px;font-weight:700;letter-spacing:.08em}
+    .arrowhead{fill:#9aa9a4}.arrowacc{fill:#4db3d1}
+  </style>
+  <defs>
+    <marker id="aa" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arrowacc"/></marker>
+    <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="heatfill"/></marker>
+  </defs>
+  <rect class="bg" width="1200" height="600" rx="18"/>
+  <text x="40" y="50" text-anchor="start" class="ink" font-size="26" font-weight="700">RoPE: turn each token by its position</text>
+  <text x="40" y="76" text-anchor="start" class="muted" font-size="15">The vector keeps its length (the meaning). Its direction shows where the word sits.</text>
+  <text x="40" y="128" text-anchor="start" class="muted mono" font-size="11.5" font-weight="700">THE SAME WORD, “cat”, AT DIFFERENT POSITIONS</text>
+  <circle class="card" cx="170" cy="220" r="64" stroke-width="1.2"/>
+  <line class="thin" x1="170" y1="220" x2="234.0" y2="220.0" stroke-dasharray="4 4"/>
+  <line class="sacc" x1="170" y1="220" x2="226.0" y2="220.0" marker-end="url(#aa)"/>
+  <circle class="acc" cx="170" cy="220" r="3.5"/>
+  <text x="170" y="312" text-anchor="middle" class="ink mono" font-size="14" font-weight="700">position 0</text>
+  <text x="170" y="332" text-anchor="middle" class="accink" font-size="13" font-weight="600">no turn</text>
+  <text x="300" y="225" text-anchor="middle" class="muted" font-size="22">→</text>
+  <circle class="card" cx="430" cy="220" r="64" stroke-width="1.2"/>
+  <line class="thin" x1="430" y1="220" x2="494.0" y2="220.0" stroke-dasharray="4 4"/>
+  <line class="sacc" x1="430" y1="220" x2="475.9" y2="187.9" marker-end="url(#aa)"/>
+  <circle class="acc" cx="430" cy="220" r="3.5"/>
+  <text x="430" y="312" text-anchor="middle" class="ink mono" font-size="14" font-weight="700">position 1</text>
+  <text x="430" y="332" text-anchor="middle" class="accink" font-size="13" font-weight="600">turned 35°</text>
+  <text x="560" y="225" text-anchor="middle" class="muted" font-size="22">→</text>
+  <circle class="card" cx="690" cy="220" r="64" stroke-width="1.2"/>
+  <line class="thin" x1="690" y1="220" x2="754.0" y2="220.0" stroke-dasharray="4 4"/>
+  <line class="sacc" x1="690" y1="220" x2="709.2" y2="167.4" marker-end="url(#aa)"/>
+  <circle class="acc" cx="690" cy="220" r="3.5"/>
+  <text x="690" y="312" text-anchor="middle" class="ink mono" font-size="14" font-weight="700">position 2</text>
+  <text x="690" y="332" text-anchor="middle" class="accink" font-size="13" font-weight="600">turned 70°</text>
+  <text x="820" y="225" text-anchor="middle" class="muted" font-size="22">→</text>
+  <circle class="card" cx="950" cy="220" r="64" stroke-width="1.2"/>
+  <line class="thin" x1="950" y1="220" x2="1014.0" y2="220.0" stroke-dasharray="4 4"/>
+  <line class="sacc" x1="950" y1="220" x2="935.5" y2="165.9" marker-end="url(#aa)"/>
+  <circle class="acc" cx="950" cy="220" r="3.5"/>
+  <text x="950" y="312" text-anchor="middle" class="ink mono" font-size="14" font-weight="700">position 3</text>
+  <text x="950" y="332" text-anchor="middle" class="accink" font-size="13" font-weight="600">turned 105°</text>
+  <rect class="sunk" x="40" y="380" width="1120" height="190" rx="12"/>
+  <text x="64" y="410" text-anchor="start" class="muted mono" font-size="11.5" font-weight="700">WHAT ATTENTION SEES: THE GAP BETWEEN TWO WORDS</text>
+  <circle class="card" cx="150" cy="488" r="56" stroke-width="1.2"/>
+  <line class="thin" x1="150" y1="488" x2="206.0" y2="488.0" stroke-dasharray="4 4"/>
+  <path class="heatfill" opacity=".3" d="M150 488 L187.7 461.6 A46 46 0 0 0 165.7 444.8 Z"/>
+  <line class="sacc" x1="150" y1="488" x2="189.3" y2="460.5" marker-end="url(#aa)"/>
+  <line class="sheat" x1="150" y1="488" x2="166.4" y2="442.9" marker-end="url(#ah)"/>
+  <circle class="acc" cx="150" cy="488" r="3.5"/>
+  <text x="230" y="448" text-anchor="start" class="muted" font-size="12.5" font-weight="600">In “The cat sat”</text>
+  <text x="230" y="470" text-anchor="start" class="accink" font-size="14" font-weight="700">“cat” at 1</text>
+  <text x="230" y="490" text-anchor="start" class="heatink" font-size="14" font-weight="700">“sat” at 2</text>
+  <text x="230" y="514" text-anchor="start" class="ink" font-size="15" font-weight="700">35° apart</text>
+  <circle class="card" cx="510" cy="488" r="56" stroke-width="1.2"/>
+  <line class="thin" x1="510" y1="488" x2="566.0" y2="488.0" stroke-dasharray="4 4"/>
+  <path class="heatfill" opacity=".3" d="M510 488 L529.4 529.7 A46 46 0 0 0 549.8 511.0 Z"/>
+  <line class="sacc" x1="510" y1="488" x2="530.3" y2="531.5" marker-end="url(#aa)"/>
+  <line class="sheat" x1="510" y1="488" x2="551.6" y2="512.0" marker-end="url(#ah)"/>
+  <circle class="acc" cx="510" cy="488" r="3.5"/>
+  <text x="590" y="448" text-anchor="start" class="muted" font-size="12.5" font-weight="600">Later in a long story</text>
+  <text x="590" y="470" text-anchor="start" class="accink" font-size="14" font-weight="700">“cat” at 101</text>
+  <text x="590" y="490" text-anchor="start" class="heatink" font-size="14" font-weight="700">“sat” at 102</text>
+  <text x="590" y="514" text-anchor="start" class="ink" font-size="15" font-weight="700">35° apart</text>
+  <text x="840" y="472" text-anchor="start" class="ink" font-size="16" font-weight="700">Same gap, same angle,</text>
+  <text x="840" y="494" text-anchor="start" class="ink" font-size="16" font-weight="700">wherever the words are.</text>
+  <text x="840" y="522" text-anchor="start" class="muted" font-size="13">Real models turn many pairs of</text>
+  <text x="840" y="540" text-anchor="start" class="muted" font-size="13">numbers, each at its own speed.</text>
+</svg>

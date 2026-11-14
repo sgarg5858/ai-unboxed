@@ -272,6 +272,407 @@
         "height": 720,
         "caption": "The highlighted word decides what “it” and “bank” mean. Attention is how the model finds that word."
       }
+    },
+    {
+      "title": "Token + position: building the model's input",
+      "summary": "Each token gets two vectors: one for what the word is, one for where it sits. Add them, stack the results, and you have the matrix the transformer reads.",
+      "body": [
+        "Before the transformer can do anything, every token has to become a list of numbers. That takes two lookups and one addition.",
+        {
+          "h": "Step by step, for “The cat sat”"
+        },
+        {
+          "ul": [
+            "<b>1 · Token IDs.</b> The tokenizer turns the text into numbers, for example The → 791, cat → 8415, sat → 7731.",
+            "<b>2 · Token embedding: what.</b> Each ID picks its row from the <b>token table</b>, which holds one learned vector per word in the vocabulary. “cat” always gets the same row.",
+            "<b>3 · Position embedding: where.</b> Each slot picks a row from the <b>position table</b>: one vector for position 0, one for position 1, and so on. “cat” sits in position 1, so it gets row 1.",
+            "<b>4 · Add.</b> Add the two vectors number by number: first plus first, second plus second. The result has the same length."
+          ]
+        },
+        {
+          "note": "<b>How the adding works:</b> a position vector always has the same length as a token vector: the model's width. Line the two up and add slot by slot: 1st + 1st, 2nd + 2nd, and so on. In GPT-2 both have 768 numbers, so the input has 768 too. Its position table has 1,024 rows, one per position, which is why GPT-2 can read at most 1,024 tokens.",
+          "kind": "key"
+        },
+        "<mark>The transformer never sees the word and its position separately. It gets one vector per token that carries both.</mark>",
+        {
+          "note": "Like a place card at a wedding: one card with the guest's name and their table number. Same guest, different table, different card.",
+          "kind": "analogy"
+        },
+        {
+          "h": "The input is now a matrix"
+        },
+        "Stack the three sums on top of each other, one row per token, and you get a grid of numbers: a <b>matrix</b>. Here it has 3 rows (tokens) and 4 columns (numbers per token), so its shape is <code>[3, 4]</code>.",
+        {
+          "ul": [
+            "<b>Rows grow with the text.</b> A 1,000-token prompt makes 1,000 rows.",
+            "<b>Columns are fixed by the model.</b> GPT-2 uses 768 numbers per token; Llama 3 8B uses 4,096."
+          ]
+        },
+        "<mark>This matrix is the whole input. The transformer reads all its rows at once, and every layer passes on a matrix of the same shape.</mark>",
+        {
+          "more": "Why add them instead of putting them side by side?",
+          "text": "Joining the two vectors end to end would double their length and make every layer bigger and slower. Adding keeps the size the same. With hundreds or thousands of numbers per vector there's room for both kinds of information, and training learns to keep them apart."
+        },
+        {
+          "note": "<b>Is this RoPE? No.</b> Adding a position vector is how GPT-2 worked. Most modern models use RoPE instead, covered on the next slide.",
+          "kind": "dev"
+        },
+        {
+          "more": "Why does word order need this at all?",
+          "text": "Without position, “dog bites man” and “man bites dog” give the model the same three vectors.",
+          "goto": {
+            "chapter": "embeddings",
+            "slide": 8
+          },
+          "link": "Word order matters, in Embeddings"
+        }
+      ],
+      "viz": [
+        {
+          "type": "table",
+          "rows": [
+            {
+              "head": "“cat”, number",
+              "cells": [
+                {
+                  "text": "token (what)"
+                },
+                {
+                  "text": "+ position 1 (where)"
+                },
+                {
+                  "text": "= input"
+                }
+              ]
+            },
+            {
+              "head": "1st",
+              "cells": [
+                {
+                  "text": "0.2"
+                },
+                {
+                  "text": "0.1"
+                },
+                {
+                  "text": "0.3",
+                  "tone": "accent"
+                }
+              ]
+            },
+            {
+              "head": "2nd",
+              "cells": [
+                {
+                  "text": "−0.4"
+                },
+                {
+                  "text": "0.3"
+                },
+                {
+                  "text": "−0.1",
+                  "tone": "accent"
+                }
+              ]
+            },
+            {
+              "head": "3rd",
+              "cells": [
+                {
+                  "text": "0.7"
+                },
+                {
+                  "text": "−0.2"
+                },
+                {
+                  "text": "0.5",
+                  "tone": "accent"
+                }
+              ]
+            },
+            {
+              "head": "4th",
+              "cells": [
+                {
+                  "text": "0.1"
+                },
+                {
+                  "text": "0.4"
+                },
+                {
+                  "text": "0.5",
+                  "tone": "accent"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "table",
+          "rows": [
+            {
+              "head": "Input matrix",
+              "cells": [
+                {
+                  "text": "n1"
+                },
+                {
+                  "text": "n2"
+                },
+                {
+                  "text": "n3"
+                },
+                {
+                  "text": "n4"
+                }
+              ]
+            },
+            {
+              "head": "The · position 0",
+              "cells": [
+                {
+                  "text": "0.5"
+                },
+                {
+                  "text": "0.6"
+                },
+                {
+                  "text": "−0.2"
+                },
+                {
+                  "text": "0.5"
+                }
+              ]
+            },
+            {
+              "head": "cat · position 1",
+              "cells": [
+                {
+                  "text": "0.3",
+                  "tone": "accent"
+                },
+                {
+                  "text": "−0.1",
+                  "tone": "accent"
+                },
+                {
+                  "text": "0.5",
+                  "tone": "accent"
+                },
+                {
+                  "text": "0.5",
+                  "tone": "accent"
+                }
+              ]
+            },
+            {
+              "head": "sat · position 2",
+              "cells": [
+                {
+                  "text": "−0.4"
+                },
+                {
+                  "text": "0.8"
+                },
+                {
+                  "text": "0.6"
+                },
+                {
+                  "text": "−0.4"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "caption",
+          "html": "One row per token, one column per number: shape <code>[3, 4]</code>. Values are illustrative."
+        }
+      ],
+      "figure": {
+        "src": "images/token-plus-position-light.svg",
+        "darkSrc": "images/token-plus-position-dark.svg",
+        "alt": "For “The cat sat”, each token looks up its token embedding (what the word is) and its position embedding (where it sits), and the two are added number by number. For cat in position 1: [0.2, −0.4, 0.7, 0.1] + [0.1, 0.3, −0.2, 0.4] = [0.3, −0.1, 0.5, 0.5]. The three input vectors are stacked into a 3 by 4 input matrix that goes into transformer layer 1. Below: cat in position 1 and cat in position 5 give different input vectors. Values are illustrative.",
+        "width": 1200,
+        "height": 640,
+        "caption": "Two lookups and one addition per token, then the rows are stacked into the input matrix."
+      }
+    },
+    {
+      "title": "RoPE: how modern models add position",
+      "summary": "Instead of adding a position vector, RoPE turns each token's vector by an angle that depends on its position.",
+      "body": [
+        "Most modern models, including Llama, Mistral, Qwen, Gemma and DeepSeek, don't add a position vector at the input. They use <b>RoPE</b>, short for <b>rotary position embedding</b>.",
+        {
+          "h": "Turn, don't add"
+        },
+        {
+          "ul": [
+            "Picture a token's vector as an arrow.",
+            "<b>Position 0:</b> no turn. <b>Position 1:</b> turn a little. <b>Position 2:</b> turn twice as much, and so on.",
+            "The arrow keeps its length, so the meaning is kept. Only its direction changes, and that shows where the word sits."
+          ]
+        },
+        "<mark>When attention compares two words, what matters is the angle between them. That angle depends only on how far apart they are.</mark>",
+        "Take “The cat sat” from the last slide: The is position 0, cat is 1, sat is 2. cat and sat are one step apart. If the same words appear again at positions 101 and 102 in a long story, they're still one step apart, so they get the same angle.",
+        {
+          "note": "Two friends on a merry-go-round: wherever the ride turns, the angle between them stays the same.",
+          "kind": "analogy"
+        },
+        {
+          "more": "Where does the turning happen?",
+          "text": "Inside attention, in every layer, on the <b>query</b> and <b>key</b> vectors that attention uses to compare tokens. The token's own vector is never changed. Attention, the next chapter, explains queries and keys."
+        },
+        {
+          "more": "Relative position, not absolute",
+          "text": "RoPE tells the model “three tokens back”, not “token 1,207”. That suits language, where nearby words usually matter most. It's also one reason context windows can be made longer after training."
+        },
+        {
+          "more": "Why do the pairs turn at different speeds?",
+          "text": "Fast pairs make nearby positions look clearly different. Slow pairs change gradually over long distances. Together they tell the model how far apart words are, both close up and across a long text."
+        }
+      ],
+      "viz": [
+        {
+          "type": "table",
+          "rows": [
+            {
+              "head": "",
+              "cells": [
+                {
+                  "text": "Add (GPT-2)"
+                },
+                {
+                  "text": "RoPE (modern models)"
+                }
+              ]
+            },
+            {
+              "head": "How",
+              "cells": [
+                {
+                  "text": "add a position vector"
+                },
+                {
+                  "text": "turn by an angle",
+                  "tone": "accent"
+                }
+              ]
+            },
+            {
+              "head": "Where",
+              "cells": [
+                {
+                  "text": "once, at the input"
+                },
+                {
+                  "text": "inside attention, every layer",
+                  "tone": "accent"
+                }
+              ]
+            },
+            {
+              "head": "Model sees",
+              "cells": [
+                {
+                  "text": "each word's own position"
+                },
+                {
+                  "text": "how far apart two words are",
+                  "tone": "accent"
+                }
+              ]
+            },
+            {
+              "head": "Long texts",
+              "cells": [
+                {
+                  "text": "capped by the table (1,024 in GPT-2)",
+                  "tone": "heat"
+                },
+                {
+                  "text": "can be stretched further",
+                  "tone": "accent"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "table",
+          "rows": [
+            {
+              "head": "“cat” (position 1)",
+              "cells": [
+                {
+                  "text": "Pair 1 · fast (35°/step)"
+                },
+                {
+                  "text": "Pair 2 · slow (5°/step)"
+                }
+              ]
+            },
+            {
+              "head": "Before",
+              "cells": [
+                {
+                  "text": "(0.60, 0.80)"
+                },
+                {
+                  "text": "(0.50, −0.20)"
+                }
+              ]
+            },
+            {
+              "head": "Turned by",
+              "cells": [
+                {
+                  "text": "1 × 35° = 35°"
+                },
+                {
+                  "text": "1 × 5° = 5°"
+                }
+              ]
+            },
+            {
+              "head": "After",
+              "cells": [
+                {
+                  "text": "(0.03, 1.00)",
+                  "tone": "accent"
+                },
+                {
+                  "text": "(0.52, −0.16)",
+                  "tone": "accent"
+                }
+              ]
+            },
+            {
+              "head": "Length",
+              "cells": [
+                {
+                  "text": "1.00 → 1.00"
+                },
+                {
+                  "text": "0.54 → 0.54"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "caption",
+          "html": "A worked example: “cat” at position 1 in “The cat sat”. Only the direction changes. Values are illustrative."
+        }
+      ],
+      "figure": {
+        "src": "images/rope-simple-light.svg",
+        "darkSrc": "images/rope-simple-dark.svg",
+        "alt": "RoPE turns each token by an angle that depends on its position. The word cat, drawn as an arrow, is not turned at position 0, turned 35 degrees at position 1, 70 at position 2 and 105 at position 3. Its length, the meaning, stays the same. Below, for “The cat sat”: cat at position 1 and sat at position 2 are 35 degrees apart, and the same words later in a long story, at 101 and 102, are also 35 degrees apart. Same gap, same angle, wherever the words are. Angles are illustrative.",
+        "width": 1200,
+        "height": 600,
+        "caption": "Turn by position: the angle between two words shows how far apart they are."
+      }
     }
   ]
 }

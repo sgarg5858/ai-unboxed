@@ -891,12 +891,12 @@
         },
         {
           "more": "How are position vectors made, and what is RoPE?",
-          "text": "Both make more sense once you know how attention works, so they're covered at the end of the Attention chapter: the wave pattern the original Transformer used, and RoPE, the method most modern models use.",
+          "text": "The wave pattern the original Transformer used is covered at the end of the Attention chapter. RoPE, which most modern models use instead, is covered in Transformer architecture.",
           "goto": {
             "chapter": "attention",
             "slide": 8
           },
-          "link": "Position in depth, in Attention"
+          "link": "The wave pattern, in Attention"
         }
       ],
       "code": [
