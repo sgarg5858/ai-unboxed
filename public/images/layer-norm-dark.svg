@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 620" role="img" aria-labelledby="t d" font-family="'Schibsted Grotesk', ui-sans-serif, system-ui, sans-serif">
+  <title id="t">Layer normalization</title>
+  <desc id="d">Layer normalization for one token. "cat" going in is [6, −2, 10, 2], with average 4 and spread 4.47. The same token times 10 is [60, −20, 100, 20], with average 40 and spread 44.7. LayerNorm subtracts the average and divides by the spread. Both come out the same: [0.45, −1.34, 1.34, −0.45], with average 0 and spread 1. The pattern of which numbers are high or low is kept; only the size changes. Where it sits: input matrix, norm, attention, norm, feed-forward; that layer is repeated N times, 12 in GPT-2 and 32 in Llama 3 8B; then a final norm, then predict the next token. Values are illustrative.</desc>
+  <style>
+    .bg{fill:#0f1413}.card{fill:#171e1c;stroke:#2c3835}.sunk{fill:#1f2826}
+    .ink{fill:#e4ece9}.muted{fill:#9aa9a4}.onacc{fill:#0f1413}
+    .acc{fill:#4db3d1}.accink{fill:#8fd3e6}.accsoft{fill:#163742}
+    .pos{fill:#3fc4a3}.posink{fill:#3fc4a3}.possoft{fill:#123a30;stroke:#3fc4a3}
+    .neg{fill:#f07d60}.negink{fill:#f07d60}.negsoft{fill:#42221a;stroke:#f07d60}
+    .heat{fill:#3d2e14;stroke:#f0ac40}.heatink{fill:#f0ac40}.heatfill{fill:#f0ac40}
+    .line{stroke:#9aa9a4;fill:none;stroke-width:2}.thin{stroke:#2c3835;fill:none;stroke-width:1.5}
+    .dash{stroke:#4db3d1;fill:none;stroke-width:2;stroke-dasharray:6 5}
+    .sacc{stroke:#4db3d1;fill:none;stroke-width:2.5}.sheat{stroke:#f0ac40;fill:none;stroke-width:2.5}
+    .spos{stroke:#3fc4a3;fill:none;stroke-width:2.5}.sneg{stroke:#f07d60;fill:none;stroke-width:2.5}
+    .edge{stroke:#4db3d1;fill:none;stroke-width:1;opacity:.45}
+    .stream{stroke:#4db3d1;fill:none;stroke-width:14;stroke-linecap:round;opacity:.35}
+    .row{fill:#1f2826}.hit{fill:#163742;stroke:#4db3d1}
+    .mono{font-family:'JetBrains Mono',ui-monospace,Menlo,monospace}
+    .head{font-size:13px;font-weight:700;letter-spacing:.08em}
+    .arrowhead{fill:#9aa9a4}.arrowacc{fill:#4db3d1}
+  </style>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arrowhead"/></marker>
+  </defs>
+  <rect class="bg" width="1200" height="620" rx="18"/>
+  <text x="40" y="50" text-anchor="start" class="ink" font-size="26" font-weight="700">Layer normalization: same pattern, steady size</text>
+  <text x="40" y="76" text-anchor="start" class="muted" font-size="15">Each token’s numbers are centred and rescaled. Big or small going in, they come out in the same range.</text>
+  <text x="40" y="122" text-anchor="start" class="muted mono" font-size="11.5" font-weight="700">ONE TOKEN, BEFORE AND AFTER</text>
+  <rect class="card" x="40" y="136" width="380" height="128" rx="12" stroke-width="1.2"/>
+  <text x="56" y="160" text-anchor="start" class="ink" font-size="14" font-weight="700">“cat” going in</text>
+  <text x="404" y="160" text-anchor="end" class="muted mono" font-size="12" font-weight="600">avg 4 · spread 4.47</text>
+  <line class="thin" x1="56" y1="214.0" x2="404" y2="214.0"/>
+  <rect class="heatfill" x="98.4" y="196.0" width="34" height="18.0" rx="3"/>
+  <text x="115.4" y="190.0" text-anchor="middle" class="heatink mono" font-size="12" font-weight="700">6</text>
+  <rect class="heatfill" x="174.8" y="214.0" width="34" height="6.0" rx="3"/>
+  <text x="191.8" y="235.0" text-anchor="middle" class="heatink mono" font-size="12" font-weight="700">−2</text>
+  <rect class="heatfill" x="251.2" y="184.0" width="34" height="30.0" rx="3"/>
+  <text x="268.20000000000005" y="178.0" text-anchor="middle" class="heatink mono" font-size="12" font-weight="700">10</text>
+  <rect class="heatfill" x="327.6" y="208.0" width="34" height="6.0" rx="3"/>
+  <text x="344.6" y="202.0" text-anchor="middle" class="heatink mono" font-size="12" font-weight="700">2</text>
+  <rect class="card" x="40" y="278" width="380" height="128" rx="12" stroke-width="1.2"/>
+  <text x="56" y="302" text-anchor="start" class="ink" font-size="14" font-weight="700">the same token × 10</text>
+  <text x="404" y="302" text-anchor="end" class="muted mono" font-size="12" font-weight="600">avg 40 · spread 44.7</text>
+  <line class="thin" x1="56" y1="356.0" x2="404" y2="356.0"/>
+  <rect class="heatfill" x="98.4" y="338.0" width="34" height="18.0" rx="3"/>
+  <text x="115.4" y="332.0" text-anchor="middle" class="heatink mono" font-size="12" font-weight="700">60</text>
+  <rect class="heatfill" x="174.8" y="356.0" width="34" height="6.0" rx="3"/>
+  <text x="191.8" y="377.0" text-anchor="middle" class="heatink mono" font-size="12" font-weight="700">−20</text>
+  <rect class="heatfill" x="251.2" y="326.0" width="34" height="30.0" rx="3"/>
+  <text x="268.20000000000005" y="320.0" text-anchor="middle" class="heatink mono" font-size="12" font-weight="700">100</text>
+  <rect class="heatfill" x="327.6" y="350.0" width="34" height="6.0" rx="3"/>
+  <text x="344.6" y="344.0" text-anchor="middle" class="heatink mono" font-size="12" font-weight="700">20</text>
+  <rect class="heat" x="480" y="246" width="160" height="58" rx="10" stroke-width="1.5"/>
+  <text x="560" y="271" text-anchor="middle" class="heatink" font-size="15" font-weight="700">LayerNorm</text>
+  <text x="560" y="290" text-anchor="middle" class="ink" font-size="12.5">− average, ÷ spread</text>
+  <path class="line" d="M424 200 C455 200 450 264 476 266" marker-end="url(#a)"/>
+  <path class="line" d="M424 342 C455 342 450 286 476 284" marker-end="url(#a)"/>
+  <line class="line" x1="644" y1="275" x2="696" y2="275" marker-end="url(#a)"/>
+  <rect class="card" x="700" y="180" width="460" height="190" rx="12" stroke-width="1.2"/>
+  <text x="716" y="204" text-anchor="start" class="ink" font-size="14" font-weight="700">Comes out: the same for both</text>
+  <text x="1144" y="204" text-anchor="end" class="muted mono" font-size="12" font-weight="600">avg 0 · spread 1</text>
+  <line class="thin" x1="716" y1="289.0" x2="1144" y2="289.0"/>
+  <rect class="acc" x="774.4" y="268.5" width="34" height="20.5" rx="3"/>
+  <text x="791.4" y="262.5149253731343" text-anchor="middle" class="accink mono" font-size="12" font-weight="700">0.45</text>
+  <rect class="acc" x="866.8" y="289.0" width="34" height="61.0" rx="3"/>
+  <text x="883.8" y="365.0" text-anchor="middle" class="accink mono" font-size="12" font-weight="700">−1.34</text>
+  <rect class="acc" x="959.2" y="228.0" width="34" height="61.0" rx="3"/>
+  <text x="976.2" y="222.0" text-anchor="middle" class="accink mono" font-size="12" font-weight="700">1.34</text>
+  <rect class="acc" x="1051.6" y="289.0" width="34" height="20.5" rx="3"/>
+  <text x="1068.6" y="324.4850746268657" text-anchor="middle" class="accink mono" font-size="12" font-weight="700">−0.45</text>
+  <text x="930" y="396" text-anchor="middle" class="muted" font-size="13">The pattern (which numbers are high or low) is kept. Only the size changes.</text>
+  <rect class="sunk" x="40" y="430" width="1120" height="160" rx="12"/>
+  <text x="64" y="460" text-anchor="start" class="muted mono" font-size="11.5" font-weight="700">WHERE IT SITS: BEFORE EACH MAIN STEP, AND ONCE AT THE END</text>
+  <rect class="card" x="64" y="492" width="130" height="46" rx="10" stroke-width="1.4"/>
+  <text x="129.0" y="520" text-anchor="middle" class="ink" font-size="14" font-weight="700">Input matrix</text>
+  <rect class="heat" x="228" y="492" width="82" height="46" rx="10" stroke-width="1.4"/>
+  <text x="269.0" y="520" text-anchor="middle" class="heatink" font-size="14" font-weight="700">Norm</text>
+  <rect class="hit" x="344" y="492" width="120" height="46" rx="10" stroke-width="1.4"/>
+  <text x="404.0" y="520" text-anchor="middle" class="accink" font-size="14" font-weight="700">Attention</text>
+  <rect class="heat" x="498" y="492" width="82" height="46" rx="10" stroke-width="1.4"/>
+  <text x="539.0" y="520" text-anchor="middle" class="heatink" font-size="14" font-weight="700">Norm</text>
+  <rect class="hit" x="614" y="492" width="130" height="46" rx="10" stroke-width="1.4"/>
+  <text x="679.0" y="520" text-anchor="middle" class="accink" font-size="14" font-weight="700">Feed-forward</text>
+  <rect class="heat" x="778" y="492" width="110" height="46" rx="10" stroke-width="1.4"/>
+  <text x="833.0" y="520" text-anchor="middle" class="heatink" font-size="14" font-weight="700">Final norm</text>
+  <rect class="card" x="922" y="492" width="170" height="46" rx="10" stroke-width="1.4"/>
+  <text x="1007.0" y="520" text-anchor="middle" class="ink" font-size="14" font-weight="700">Predict next token</text>
+  <line class="line" x1="197" y1="515" x2="224" y2="515" marker-end="url(#a)"/>
+  <line class="line" x1="313" y1="515" x2="340" y2="515" marker-end="url(#a)"/>
+  <line class="line" x1="467" y1="515" x2="494" y2="515" marker-end="url(#a)"/>
+  <line class="line" x1="583" y1="515" x2="610" y2="515" marker-end="url(#a)"/>
+  <line class="line" x1="747" y1="515" x2="774" y2="515" marker-end="url(#a)"/>
+  <line class="line" x1="891" y1="515" x2="918" y2="515" marker-end="url(#a)"/>
+  <path class="thin" d="M228 552 L228 560 L744 560 L744 552"/>
+  <text x="486.0" y="578" text-anchor="middle" class="muted" font-size="12.5" font-weight="600">one transformer layer, repeated N times (12 in GPT-2, 32 in Llama 3 8B)</text>
+</svg>

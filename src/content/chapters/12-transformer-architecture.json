@@ -673,6 +673,140 @@
         "height": 600,
         "caption": "Turn by position: the angle between two words shows how far apart they are."
       }
+    },
+    {
+      "title": "Layer normalization: keeping the numbers steady",
+      "summary": "Before each main step, every token's vector is rescaled to a standard range, so the numbers don't grow too big or shrink too small as they pass through many layers.",
+      "body": [
+        "The input matrix passes through dozens of layers, and each layer adds to its numbers. Left alone, they drift: some grow huge, others shrink towards zero, and training becomes unstable.",
+        {
+          "h": "What it does to one token"
+        },
+        {
+          "ul": [
+            "<b>1 · Subtract the average</b> of the token's numbers, so they're centred on 0.",
+            "<b>2 · Divide by the spread</b>, how far the numbers typically sit from the average, so they have a standard size.",
+            "<b>3 · Scale and shift</b> with numbers learned in training, so the model can still pick the best range for each slot."
+          ]
+        },
+        {
+          "more": "How is the spread calculated?",
+          "text": [
+            "The spread is the <b>standard deviation</b>: roughly, how far the numbers typically sit from their average. For “cat” <code>[6, −2, 10, 2]</code>:",
+            "<b>1 ·</b> Average: (6 − 2 + 10 + 2) ÷ 4 = <b>4</b>.<br><b>2 ·</b> Distance of each number from the average: <code>[2, −6, 6, −2]</code>.<br><b>3 ·</b> Square them, so negatives don't cancel positives: <code>[4, 36, 36, 4]</code>.<br><b>4 ·</b> Average the squares: 80 ÷ 4 = <b>20</b>.<br><b>5 ·</b> Square root, to undo the squaring: √20 ≈ <b>4.47</b>.",
+            "A small spread means the numbers are bunched together; a large one means they're scattered. Dividing by it gives every token a spread of 1."
+          ]
+        },
+        "<mark>Each token is normalized on its own, using only its own numbers. However big or small it comes in, it goes out in the same steady range.</mark>",
+        {
+          "note": "Like the volume control on a microphone: whether the singer whispers or shouts, the level going to the speakers stays steady, and the song stays the same.",
+          "kind": "analogy"
+        },
+        {
+          "h": "Where it sits"
+        },
+        "Inside every transformer layer, just before attention and just before the feed-forward step, plus once more at the very end, before the model predicts the next token.",
+        {
+          "more": "LayerNorm or RMSNorm?",
+          "text": "The original Transformer and GPT-2 use <b>LayerNorm</b>, as shown here. Most modern models, including Llama, Mistral and Qwen, use <b>RMSNorm</b>, which skips step 1 and only divides by the typical size of the numbers. It's slightly cheaper and works just as well.",
+          "goto": {
+            "chapter": "block",
+            "slide": 2
+          },
+          "link": "Normalisation, in The transformer block"
+        }
+      ],
+      "viz": [
+        {
+          "type": "table",
+          "rows": [
+            {
+              "head": "“cat”",
+              "cells": [
+                {
+                  "text": "n1"
+                },
+                {
+                  "text": "n2"
+                },
+                {
+                  "text": "n3"
+                },
+                {
+                  "text": "n4"
+                }
+              ]
+            },
+            {
+              "head": "Going in",
+              "cells": [
+                {
+                  "text": "6"
+                },
+                {
+                  "text": "−2"
+                },
+                {
+                  "text": "10"
+                },
+                {
+                  "text": "2"
+                }
+              ]
+            },
+            {
+              "head": "− average (4)",
+              "cells": [
+                {
+                  "text": "2"
+                },
+                {
+                  "text": "−6"
+                },
+                {
+                  "text": "6"
+                },
+                {
+                  "text": "−2"
+                }
+              ]
+            },
+            {
+              "head": "÷ spread (4.47)",
+              "cells": [
+                {
+                  "text": "0.45",
+                  "tone": "accent"
+                },
+                {
+                  "text": "−1.34",
+                  "tone": "accent"
+                },
+                {
+                  "text": "1.34",
+                  "tone": "accent"
+                },
+                {
+                  "text": "−0.45",
+                  "tone": "accent"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "caption",
+          "html": "Try ten times bigger, <code>[60, −20, 100, 20]</code>: the average is 40, the spread 44.7, and the result is exactly the same. Values are illustrative."
+        }
+      ],
+      "figure": {
+        "src": "images/layer-norm-light.svg",
+        "darkSrc": "images/layer-norm-dark.svg",
+        "alt": "Layer normalization for one token. “cat” going in is [6, −2, 10, 2], average 4 and spread 4.47. The same token times 10 is [60, −20, 100, 20], average 40 and spread 44.7. LayerNorm subtracts the average and divides by the spread, and both come out as [0.45, −1.34, 1.34, −0.45], average 0 and spread 1: the pattern is kept, only the size changes. Below, where it sits: input matrix, norm, attention, norm, feed-forward, repeated N times (12 in GPT-2, 32 in Llama 3 8B), then a final norm, then predict the next token. Values are illustrative.",
+        "width": 1200,
+        "height": 620,
+        "caption": "Same pattern, steady size: a norm before each main step, and one at the end."
+      }
     }
   ]
 }
