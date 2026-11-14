@@ -47,6 +47,7 @@ export const WIDGETS: Record<string, () => Promise<Type<unknown>>> = {
   'guess-or-abstain': () => import('./hallucination.widgets').then((m) => m.GuessOrAbstainWidget),
   'chunk-size': () => import('./rag.widgets').then((m) => m.ChunkSizeWidget),
   'hybrid-search': () => import('./rag.widgets').then((m) => m.HybridSearchWidget),
+  walkthrough: () => import('./walkthrough.widgets').then((m) => m.WalkthroughWidget),
 };
 
 const loaded = new Map<string, Type<unknown>>();

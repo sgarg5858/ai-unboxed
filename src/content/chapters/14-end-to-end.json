@@ -1,0 +1,370 @@
+{
+  "$schema": "../schema/chapter.schema.json",
+  "id": "walkthrough",
+  "name": "End to end: one sentence",
+  "slides": [
+    {
+      "title": "How an LLM turns your words into its next word",
+      "summary": "Follow “I went to bank to deposit” through every stage of an LLM, until it predicts the next word.",
+      "body": [
+        "This chapter puts the whole <b>Transformer architecture</b> chapter together on one example. The model is given <b>“I went to bank to deposit”</b> and has to predict what comes next.",
+        "<mark>Every stage turns the same 6 tokens into new numbers. Only the last token's numbers are used to pick the next word.</mark>",
+        {
+          "note": "To keep every number readable, this is a toy model: each token gets 4 numbers, with made-up names (money, place, action, grammar). GPT-2 uses 768 numbers, and none of them have names. The token IDs are GPT-2's real ones.",
+          "kind": "example"
+        }
+      ],
+      "figure": {
+        "src": "images/walkthrough-overview-light.svg",
+        "darkSrc": "images/walkthrough-overview-dark.svg",
+        "alt": "One sentence through every stage of a tiny LLM. Text: “I went to bank to deposit”. Tokens: I, went, to, bank, to, deposit. GPT-2 token IDs: 40, 1816, 284, 3331, 284, 14667; both “to” tokens share 284. Each ID picks a row of numbers, its embedding, and a small position vector is added, giving 6 rows of 4 numbers. In the transformer block, attention lets each word look back: “deposit” gives “bank” 34% of its attention, while “bank” can't look ahead at “deposit”. After attention and the feed-forward layer are added, “deposit”'s money slot grows from 0.80 to 0.96 to 2.65. Then a final norm, a score per word and softmax: money 65%, cash 26%, some 4%, my 3%, the 2%, river 0.3%. The model picks “money”, appends it and runs again.",
+        "width": 1200,
+        "height": 900,
+        "caption": "The whole journey on one page. The next slide lets you step through it."
+      }
+    },
+    {
+      "title": "Step through it yourself",
+      "summary": "Click through all 12 stages. Every number is computed live by a tiny model in your browser.",
+      "body": [
+        "Press <b>Next step</b>, or click any stage's name. On <b>Attention</b> and <b>Feed-forward</b>, pick a token to see its own row.",
+        "<mark>Watch the last token, “deposit”: its numbers are the ones that decide the next word.</mark>",
+        {
+          "ul": [
+            "Blue cells are positive numbers, red are negative; stronger colour means bigger.",
+            "In the attention grid, each row is a token looking back. Dots mark later tokens it can't see."
+          ]
+        },
+        {
+          "more": "How close is this to a real model?",
+          "text": "The steps are the same as GPT-2's, in the same order. The differences are size and training: GPT-2 has 768 numbers per token, 12 heads, 12 layers and weights learned from huge amounts of text. This toy has 4 numbers, 1 head, 1 layer and hand-picked weights, so the numbers can be followed by eye."
+        }
+      ],
+      "viz": [
+        {
+          "type": "widget",
+          "name": "walkthrough"
+        }
+      ]
+    },
+    {
+      "title": "From text to numbers",
+      "summary": "Tokens, then IDs, then a row of numbers per token, plus a position vector.",
+      "body": [
+        {
+          "ul": [
+            "<b>Tokens:</b> the tokenizer splits the text into 6 tokens.",
+            "<b>IDs:</b> each token becomes its number in GPT-2's vocabulary.",
+            "<b>Embeddings:</b> each ID picks its row from the embedding table.",
+            "<b>+ Position:</b> a small vector for each slot is added."
+          ]
+        },
+        "<mark>Both “to” tokens get ID 284 and the same embedding. Adding position is what tells them apart.</mark>",
+        "The result is the input: 6 rows (tokens) × 4 numbers. GPT-2's input for this sentence would be 6 × 768.",
+        {
+          "more": "Where do these come from?",
+          "text": "The tokenizer and its vocabulary are covered in Tokens; the embedding table and position vectors in Token + position.",
+          "goto": {
+            "chapter": "transformer",
+            "slide": 4
+          },
+          "link": "Token + position, in Transformer architecture"
+        }
+      ],
+      "viz": [
+        {
+          "type": "table",
+          "rows": [
+            {
+              "head": "Token",
+              "cells": [
+                {
+                  "text": "ID"
+                },
+                {
+                  "text": "embedding"
+                },
+                {
+                  "text": "input (+ position)"
+                }
+              ]
+            },
+            {
+              "head": "I",
+              "cells": [
+                {
+                  "text": "40"
+                },
+                {
+                  "text": "[0.00, 0.10, 0.20, 0.90]"
+                },
+                {
+                  "text": "[0.00, 0.20, 0.20, 1.00]"
+                }
+              ]
+            },
+            {
+              "head": "went",
+              "cells": [
+                {
+                  "text": "1816"
+                },
+                {
+                  "text": "[0.00, 0.50, 0.80, 0.20]"
+                },
+                {
+                  "text": "[0.08, 0.55, 0.83, 0.29]"
+                }
+              ]
+            },
+            {
+              "head": "to",
+              "cells": [
+                {
+                  "text": "284",
+                  "tone": "accent"
+                },
+                {
+                  "text": "[0.00, 0.20, 0.10, 1.00]"
+                },
+                {
+                  "text": "[0.09, 0.16, 0.16, 1.08]",
+                  "tone": "accent"
+                }
+              ]
+            },
+            {
+              "head": "bank",
+              "cells": [
+                {
+                  "text": "3331"
+                },
+                {
+                  "text": "[0.60, 0.80, 0.00, 0.10]"
+                },
+                {
+                  "text": "[0.61, 0.70, 0.08, 0.15]"
+                }
+              ]
+            },
+            {
+              "head": "to",
+              "cells": [
+                {
+                  "text": "284",
+                  "tone": "accent"
+                },
+                {
+                  "text": "[0.00, 0.20, 0.10, 1.00]"
+                },
+                {
+                  "text": "[−0.08, 0.13, 0.20, 1.02]",
+                  "tone": "accent"
+                }
+              ]
+            },
+            {
+              "head": "deposit",
+              "cells": [
+                {
+                  "text": "14667"
+                },
+                {
+                  "text": "[0.90, 0.00, 0.80, 0.10]"
+                },
+                {
+                  "text": "[0.80, 0.03, 0.90, 0.09]"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "caption",
+          "html": "Numbers are (money, place, action, grammar). Values are illustrative; IDs are GPT-2's."
+        }
+      ]
+    },
+    {
+      "title": "Inside the block: “deposit” meets “bank”",
+      "summary": "Attention lets “deposit” look back at “bank”; feed-forward then boosts its money meaning.",
+      "body": [
+        {
+          "h": "Attention"
+        },
+        "Each token looks back at the tokens before it. “deposit” spends most of its attention on itself and on <b>“bank”</b>.",
+        "<mark>“bank” can't see “deposit”, because it comes later. It's “deposit” that looks back at “bank”, so by the end of the sentence the money meaning wins.</mark>",
+        {
+          "h": "Add, then feed-forward"
+        },
+        "Attention's output is added to “deposit”'s vector. Then the feed-forward layer, working on “deposit” alone, sees money and action together and pushes the money slot up. That's added too.",
+        {
+          "note": "A real model repeats this block many times (12 in GPT-2), so meanings are refined step by step.",
+          "kind": "key"
+        },
+        {
+          "more": "Why does attention help with “bank”?",
+          "text": "Words get their meaning from context. Attention is how one token pulls in information from the others.",
+          "goto": {
+            "chapter": "transformer",
+            "slide": 3
+          },
+          "link": "Why transformers need attention"
+        }
+      ],
+      "viz": [
+        {
+          "type": "bars",
+          "items": [
+            {
+              "label": "“deposit” → “I”",
+              "value": 0.077,
+              "display": "8%"
+            },
+            {
+              "label": "“deposit” → “went”",
+              "value": 0.057,
+              "display": "6%"
+            },
+            {
+              "label": "“deposit” → “to”",
+              "value": 0.093,
+              "display": "9%"
+            },
+            {
+              "label": "“deposit” → “bank”",
+              "value": 0.342,
+              "display": "34%"
+            },
+            {
+              "label": "“deposit” → “to”",
+              "value": 0.075,
+              "display": "7%"
+            },
+            {
+              "label": "“deposit” → “deposit”",
+              "value": 0.355,
+              "display": "36%"
+            }
+          ]
+        },
+        {
+          "type": "caption",
+          "html": "Where “deposit” looks. Its attention adds up to 100%."
+        },
+        {
+          "type": "table",
+          "rows": [
+            {
+              "head": "“deposit”",
+              "cells": [
+                {
+                  "text": "money slot"
+                }
+              ]
+            },
+            {
+              "head": "Input",
+              "cells": [
+                {
+                  "text": "0.80"
+                }
+              ]
+            },
+            {
+              "head": "+ attention",
+              "cells": [
+                {
+                  "text": "0.96"
+                }
+              ]
+            },
+            {
+              "head": "+ feed-forward",
+              "cells": [
+                {
+                  "text": "2.65",
+                  "tone": "accent"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "The prediction: “money”",
+      "summary": "The last token's vector is scored against every word, and softmax turns the scores into probabilities.",
+      "body": [
+        {
+          "ul": [
+            "<b>Final norm:</b> “deposit”'s vector is rescaled one last time.",
+            "<b>Scores:</b> it's compared with every word in the vocabulary. Words that point the same way score high.",
+            "<b>Softmax:</b> the scores become probabilities that add up to 100%."
+          ]
+        },
+        "<mark>“money” wins with 65%. “river” gets 0.3%: the context made the money meaning of “bank” win.</mark>",
+        "The model appends “money” and runs again on the longer text. A full stop is a likely next pick, and then the end token.",
+        {
+          "more": "Does it always pick the top word?",
+          "text": "No. Apps usually sample, so “cash” would sometimes win. Temperature and top-p control how adventurous the choice is.",
+          "goto": {
+            "chapter": "output",
+            "slide": 1
+          },
+          "link": "Output & inference"
+        },
+        {
+          "more": "What happens next?",
+          "text": "Generation is a loop: predict one token, append it, run again.",
+          "goto": {
+            "chapter": "transformer",
+            "slide": 1
+          },
+          "link": "The loop, in Transformer architecture"
+        }
+      ],
+      "viz": [
+        {
+          "type": "bars",
+          "items": [
+            {
+              "label": "money",
+              "value": 0.646,
+              "display": "65%"
+            },
+            {
+              "label": "cash",
+              "value": 0.259,
+              "display": "26%"
+            },
+            {
+              "label": "some",
+              "value": 0.043,
+              "display": "4%"
+            },
+            {
+              "label": "my",
+              "value": 0.033,
+              "display": "3%"
+            },
+            {
+              "label": "the",
+              "value": 0.017,
+              "display": "2%"
+            },
+            {
+              "label": "river",
+              "value": 0.003,
+              "display": "0.3%"
+            }
+          ]
+        },
+        {
+          "type": "caption",
+          "html": "Next-token probabilities after “I went to bank to deposit”. Values are illustrative."
+        }
+      ]
+    }
+  ]
+}

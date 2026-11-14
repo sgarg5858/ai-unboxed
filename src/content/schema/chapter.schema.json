@@ -659,7 +659,8 @@
                   "singleton-rate",
                   "guess-or-abstain",
                   "chunk-size",
-                  "hybrid-search"
+                  "hybrid-search",
+                  "walkthrough"
                 ],
                 "description": "Key in src/app/widgets/registry.ts"
               },

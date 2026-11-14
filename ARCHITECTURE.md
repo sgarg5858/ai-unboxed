@@ -29,7 +29,7 @@ flowchart TD
   BL -->|"type: widget, name"| REG["WIDGETS registry"]
   REG -->|NgComponentOutlet + props| W["Widget components"]
   GEN -->|nested blocks| BL
-  W --> SHARED["shared/<br/>slider, matrix-table, code-block,<br/>lib: math, tokenizer, toy-model"]
+  W --> SHARED["shared/<br/>slider, matrix-table, code-block,<br/>lib: math, tokenizer, toy-model, walkthrough-model"]
 ```
 
 | Layer       | Folder                           | Responsibility                                                                                                                           | Must not                                                                                     |
