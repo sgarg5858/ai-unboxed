@@ -37,3 +37,29 @@
     padding: 5px 10px;
   }
 }
+.theme-cycle {
+  display: none;
+}
+/* Phones: one button showing the current theme; each tap moves to the next. */
+@media (max-width: 600px) {
+  .theme-switch {
+    display: none;
+  }
+  .theme-cycle {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--surface);
+    color: var(--ink);
+    font: inherit;
+    font-size: 17px;
+    cursor: pointer;
+  }
+  .theme-cycle:focus-visible {
+    outline: 2px solid var(--accent-ink);
+    outline-offset: 2px;
+  }
+}

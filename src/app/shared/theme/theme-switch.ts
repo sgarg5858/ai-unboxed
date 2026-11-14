@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { Theme, ThemeChoice } from './theme';
 
-/** Segmented Auto / Light / Dark / Glass control. */
+/** Segmented Auto / Light / Dark / Glass control. Phones get one button that steps through them. */
 @Component({
   selector: 'app-theme-switch',
   styleUrl: './theme-switch.css',
@@ -21,6 +21,16 @@ import { Theme, ThemeChoice } from './theme';
         </button>
       }
     </div>
+    @let c = current();
+    <button
+      type="button"
+      class="theme-cycle"
+      [attr.aria-label]="'Theme: ' + c.label + '. Switch to ' + next().label"
+      [attr.title]="'Theme: ' + c.label"
+      (click)="theme.set(next().value)"
+    >
+      <span aria-hidden="true">{{ c.icon }}</span>
+    </button>
   `,
 })
 export class ThemeSwitch {
@@ -37,4 +47,9 @@ export class ThemeSwitch {
         title: 'Glass theme: frosted, see-through panels',
       },
     ];
+  private readonly index = computed(() =>
+    this.options.findIndex((o) => o.value === this.theme.choice()),
+  );
+  protected readonly current = computed(() => this.options[this.index()]);
+  protected readonly next = computed(() => this.options[(this.index() + 1) % this.options.length]);
 }

@@ -101,7 +101,7 @@ Slides link to other chapters with `goto: { chapter: "<id>", slide: n }` and ref
 2. The Router emits `NavigationEnd`, and the `CourseNav.url` signal updates.
 3. `resolvePosition(COURSE, '/attention/3')` returns `{ chapter: 3, slide: 2 }`, clamping bad ids or numbers.
 4. `CourseShell` renders:
-   - the section tabs (`course/section-tabs`) and the course outline (`course/course-outline`): on wide screens a sidebar with the current section's chapters, each expandable to its slides, toggled by the Contents button and remembered in `localStorage` (`SidebarState`); on narrower ones a `<dialog>` drawer (`course/contents-drawer`) with every section;
+   - the section tabs (`course/section-tabs`) and the course outline (`course/course-outline`): on wide screens a sidebar with the current section's chapters, each expandable to its slides, toggled by its panel button (`course/sidebar-toggle`) and remembered in `localStorage` (`SidebarState`); on narrower ones a `<dialog>` drawer (`course/contents-drawer`) with every section, opened by the same panel icon in the header;
    - the slide itself through `SlideView` (`course/slide-view`): prose, `<app-blocks [blocks]="slide.viz">` and figures;
    - the command palette (`course/command-palette`): a `<dialog>` combobox that searches every loaded slide (`searchSlides` in `course/course-search.ts`), opened with `/`, Ctrl/⌘+K or the header's search field. `ReadingProgress` keeps the slides the reader has ticked as done (the circles in the outline) in `localStorage` (`ai-unboxed:read`), synced across tabs, so the outline and palette can show them.
 5. `BlockList` switches on each block's `type`. For a widget, it looks up `WIDGETS[name]` and renders it through `NgComponentOutlet` with `props`.
