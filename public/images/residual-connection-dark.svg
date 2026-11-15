@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600" role="img" aria-labelledby="t d" font-family="'Schibsted Grotesk', ui-sans-serif, system-ui, sans-serif">
   <title id="t">Residual connections</title>
-  <desc id="d">Residual connections inside a transformer block, repeated N times. The input x goes through layer norm and multi-head attention (causal: looks back only); meanwhile a residual line copies x around them and adds it back at a plus sign. Then the result goes through layer norm and feed-forward (each token on its own), and a second residual line copies it around and adds it back. The output goes to the next block. As numbers: "it" goes into attention as [1, 2, 3]; attention’s update is [0.2, −0.5, 0.7]; adding gives [1.2, 1.5, 3.7]: 1 + 0.2, 2 − 0.5, 3 + 0.7. The old vector, nudged.</desc>
+  <desc id="d">Residual connections inside a transformer block, repeated N times. The input x goes through layer norm and multi-head attention (causal: looks back only); meanwhile a residual line copies x around them and adds it back at a plus sign. Then the result goes through layer norm and feed-forward (each token on its own), and a second residual line copies it around and adds it back. The output goes to the next block. As numbers, following “it”: x in is [1, 2, 3]. A copy is kept on the residual line. Layer norm turns a copy into [−1.22, 0, 1.22]; attention reads it and gives an update [0.2, −0.5, 0.7]. At the plus sign, [1, 2, 3] + [0.2, −0.5, 0.7] = [1.2, 1.5, 3.7]. A copy of that is kept; layer norm turns a copy into [−0.84, −0.57, 1.41]; feed-forward gives an update [0.1, 0.3, −0.2]. At the second plus sign, [1.2, 1.5, 3.7] + [0.1, 0.3, −0.2] = [1.3, 1.8, 3.5], which goes to the next block. x only changes at the plus signs; the norms work on copies, so x keeps its full values. Updates are illustrative.</desc>
   <style>
     .bg{fill:#0f1413}.card{fill:#171e1c;stroke:#2c3835}.sunk{fill:#1f2826}
     .ink{fill:#e4ece9}.muted{fill:#9aa9a4}.onacc{fill:#0f1413}
@@ -63,27 +63,37 @@
   <text x="260" y="516" text-anchor="start" class="muted" font-size="12" font-weight="600">x out → next block</text>
   <text x="78" y="540" text-anchor="start" class="muted" font-size="12">Green: the input is copied around each step and added back at +.</text>
   <rect class="card" x="580.0" y="96.0" width="580.0" height="474.0" rx="14" stroke-width="1.2"/>
-  <text x="600" y="124" text-anchor="start" class="muted mono" font-size="11.5" font-weight="700">THE SAME ADDITION, AS NUMBERS</text>
-  <text x="600" y="152" text-anchor="start" class="ink" font-size="14" font-weight="600">“it” going into attention:  [1, 2, 3]</text>
-  <text x="600" y="174" text-anchor="start" class="accink" font-size="14" font-weight="600">attention’s update:  [0.2, −0.5, 0.7]</text>
-  <rect class="card" x="670.0" y="390.0" width="70.0" height="80.0" rx="4" stroke-width="1.4"/>
-  <rect class="acc" x="670.0" y="374.0" width="70.0" height="16.0" rx="4"/>
-  <text x="705.0" y="364.0" text-anchor="middle" class="ink mono" font-size="15" font-weight="700">1.2</text>
-  <text x="705.0" y="492" text-anchor="middle" class="muted mono" font-size="13" font-weight="600">1 + 0.2</text>
-  <rect class="card" x="830.0" y="310.0" width="70.0" height="160.0" rx="4" stroke-width="1.4"/>
-  <rect class="negsoft" x="830.0" y="310.0" width="70.0" height="40.0" rx="4" stroke-width="1.4"/>
-  <text x="865.0" y="300" text-anchor="middle" class="ink mono" font-size="15" font-weight="700">1.5</text>
-  <text x="865.0" y="492" text-anchor="middle" class="muted mono" font-size="13" font-weight="600">2 − 0.5</text>
-  <rect class="card" x="990.0" y="230.0" width="70.0" height="240.0" rx="4" stroke-width="1.4"/>
-  <rect class="acc" x="990.0" y="174.0" width="70.0" height="56.0" rx="4"/>
-  <text x="1025.0" y="164.0" text-anchor="middle" class="ink mono" font-size="15" font-weight="700">3.7</text>
-  <text x="1025.0" y="492" text-anchor="middle" class="muted mono" font-size="13" font-weight="600">3 + 0.7</text>
-  <line class="thin" x1="650" y1="470" x2="1140" y2="470"/>
-  <rect class="card" x="600.0" y="516.0" width="14.0" height="14.0" rx="3" stroke-width="1.4"/>
-  <text x="620" y="528" text-anchor="start" class="muted" font-size="12.5">what it already had</text>
-  <rect class="acc" x="780.0" y="516.0" width="14.0" height="14.0" rx="3"/>
-  <text x="800" y="528" text-anchor="start" class="muted" font-size="12.5">added</text>
-  <rect class="negsoft" x="880.0" y="516.0" width="14.0" height="14.0" rx="3" stroke-width="1.4"/>
-  <text x="900" y="528" text-anchor="start" class="muted" font-size="12.5">taken away</text>
-  <text x="600" y="552" text-anchor="start" class="ink" font-size="13.5" font-weight="700">Result: [1.2, 1.5, 3.7], the old vector, nudged.</text>
+  <text x="600" y="120" text-anchor="start" class="muted mono" font-size="11.5" font-weight="700">THE SAME BLOCK, AS NUMBERS: FOLLOW “it”</text>
+  <text x="600" y="146" text-anchor="start" class="muted" font-size="12.5">x in</text>
+  <text x="738" y="146" text-anchor="start" class="ink mono" font-size="13" font-weight="700">[1, 2, 3]</text>
+  <text x="600" y="166" text-anchor="start" class="posink" font-size="12.5" font-weight="600">residual copy</text>
+  <text x="738" y="166" text-anchor="start" class="posink mono" font-size="13" font-weight="700">[1, 2, 3]</text>
+  <line class="thin" x1="468" y1="195" x2="574" y2="195" stroke-dasharray="2 4"/>
+  <text x="600" y="199" text-anchor="start" class="muted" font-size="12.5">layer norm (copy)</text>
+  <text x="738" y="199" text-anchor="start" class="heatink mono" font-size="13" font-weight="700">[−1.22, 0, 1.22]</text>
+  <line class="thin" x1="468" y1="254" x2="574" y2="254" stroke-dasharray="2 4"/>
+  <text x="600" y="258" text-anchor="start" class="muted" font-size="12.5">attention update</text>
+  <text x="738" y="258" text-anchor="start" class="accink mono" font-size="13" font-weight="700">[0.2, −0.5, 0.7]</text>
+  <line class="thin" x1="468" y1="305" x2="574" y2="305" stroke-dasharray="2 4"/>
+  <text x="600" y="309" text-anchor="start" class="muted" font-size="12.5">add at +</text>
+  <text x="738" y="309" text-anchor="start" class="ink mono" font-size="13" font-weight="700">[1, 2, 3] + [0.2, −0.5, 0.7]</text>
+  <text x="600" y="338" text-anchor="start" class="posink" font-size="12.5" font-weight="600">residual copy</text>
+  <text x="738" y="338" text-anchor="start" class="posink mono" font-size="13" font-weight="700">[1.2, 1.5, 3.7]</text>
+  <line class="thin" x1="468" y1="367" x2="574" y2="367" stroke-dasharray="2 4"/>
+  <text x="600" y="371" text-anchor="start" class="muted" font-size="12.5">layer norm (copy)</text>
+  <text x="738" y="371" text-anchor="start" class="heatink mono" font-size="13" font-weight="700">[−0.84, −0.57, 1.41]</text>
+  <line class="thin" x1="468" y1="426" x2="574" y2="426" stroke-dasharray="2 4"/>
+  <text x="600" y="430" text-anchor="start" class="muted" font-size="12.5">feed-forward update</text>
+  <text x="738" y="430" text-anchor="start" class="accink mono" font-size="13" font-weight="700">[0.1, 0.3, −0.2]</text>
+  <line class="thin" x1="468" y1="477" x2="574" y2="477" stroke-dasharray="2 4"/>
+  <text x="600" y="481" text-anchor="start" class="muted" font-size="12.5">add at +</text>
+  <text x="738" y="481" text-anchor="start" class="ink mono" font-size="13" font-weight="700">[1.2, 1.5, 3.7] + [0.1, 0.3, −0.2]</text>
+  <line class="thin" x1="468" y1="512" x2="574" y2="512" stroke-dasharray="2 4"/>
+  <text x="600" y="516" text-anchor="start" class="muted" font-size="12.5">x out</text>
+  <text x="738" y="516" text-anchor="start" class="ink mono" font-size="13" font-weight="700">[1.3, 1.8, 3.5]</text>
+  <rect class="hit" x="959.2" y="292.0" width="142.6" height="24.0" rx="6" stroke-width="1.2"/>
+  <text x="964.2" y="309" text-anchor="start" class="accink mono" font-size="13" font-weight="700">= [1.2, 1.5, 3.7]</text>
+  <rect class="hit" x="1006.0" y="464.0" width="142.6" height="24.0" rx="6" stroke-width="1.2"/>
+  <text x="1011.0" y="481" text-anchor="start" class="accink mono" font-size="13" font-weight="700">= [1.3, 1.8, 3.5]</text>
+  <text x="600" y="548" text-anchor="start" class="ink" font-size="13" font-weight="700">x only changes at +. The norms work on copies, so x keeps its full values.</text>
 </svg>
