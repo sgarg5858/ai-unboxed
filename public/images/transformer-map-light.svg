@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1010" role="img" aria-labelledby="t d" font-family="'Schibsted Grotesk', ui-sans-serif, system-ui, sans-serif">
   <title id="t">A GPT-style transformer, in one picture</title>
-  <desc id="d">A GPT-style transformer from text to the next token. Text, "The cat sat", enters the LLM. The tokenizer gives token IDs 791, 8415, 7731 (Tokens chapter). Each ID gets a token embedding, what the word is, and a position, where it sits, is added, giving a matrix of 3 tokens by 768 numbers; 768 is the embedding size d, set by the model, GPT-2 here (slides 4 and 5). Then a transformer block, repeated N times (12 in GPT-2, 32 in Llama 3): the main line splits; one copy goes through norm and multi-head causal self-attention, the other skips round (a green residual line) and the two are added. The same again with norm and feed-forward (slides 7 to 10). Each layer takes 3 by 768 in and gives 3 by 768 out. Then a final norm, a linear layer giving 50,257 scores, one per token in GPT-2’s vocabulary (Output &amp; inference chapter), and softmax, which turns scores into next-token probabilities, for example "on" 61%, "down" 20%. An arrow loops from the output back to the input: pick one token, append it to the text, run again (slide 1, the loop). Probabilities are illustrative.</desc>
+  <desc id="d">A GPT-style transformer from text to the next token. Text, "The cat sat", enters the LLM. The tokenizer gives token IDs 791, 8415, 7731 (Tokens chapter). Each ID gets a token embedding, what the word is, and a position, where it sits, is added, giving a matrix of 3 tokens by 768 numbers; 768 is the embedding size d, set by the model, GPT-2 here (slides 4 and 5). Then a transformer block, repeated N times (12 in GPT-2, 32 in Llama 3): the main line splits; one copy goes through norm and multi-head causal self-attention, the other skips round (a green residual line) and the two are added. The same again with norm and feed-forward (slides 7 to 10). Each layer takes 3 by 768 in and gives 3 by 768 out. Then a final norm, a linear layer giving 50,257 scores, one per token in GPT-2’s vocabulary (slide 12), and softmax, which turns scores into next-token probabilities, for example "on" 61%, "down" 20%. An arrow loops from the output back to the input: pick one token, append it to the text, run again (slide 1, the loop). Probabilities are illustrative.</desc>
   <style>
     .bg{fill:#f6f4ef}.card{fill:#fffdf9;stroke:#e5e0d5}.sunk{fill:#f3f0e9}
     .ink{fill:#1c1b22}.muted{fill:#5b5866}.onacc{fill:#ffffff}
@@ -116,8 +116,8 @@
   <text x="296" y="844" text-anchor="end" class="muted" font-size="12" font-weight="600">one per token in the vocabulary;</text>
   <text x="296" y="860" text-anchor="end" class="muted" font-size="12" font-weight="600">GPT-2 knows 50,257 tokens</text>
   <rect class="hit" x="840" y="823" width="58" height="22" rx="11" stroke-width="1.2"/>
-  <text x="869" y="839" text-anchor="middle" class="accink mono" font-size="11.5" font-weight="700">2.8</text>
-  <text x="910" y="839" text-anchor="start" class="ink" font-size="13.5" font-weight="600">Output &amp; inference</text>
+  <text x="869" y="839" text-anchor="middle" class="accink mono" font-size="11.5" font-weight="700">12</text>
+  <text x="910" y="839" text-anchor="start" class="ink" font-size="13.5" font-weight="600">Linear &amp; softmax</text>
   <line class="line" x1="520" y1="858" x2="520" y2="872" marker-end="url(#a)"/>
   <rect class="possoft" x="370" y="876" width="300" height="46" rx="10" stroke-width="1.4"/>
   <text x="520.0" y="895" text-anchor="middle" class="posink" font-size="14" font-weight="700">Softmax → probabilities</text>

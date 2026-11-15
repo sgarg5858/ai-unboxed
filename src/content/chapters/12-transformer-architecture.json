@@ -741,12 +741,12 @@
               }
             },
             {
-              "label": "<b>Output</b>",
-              "sub": "Final norm, a score per token, then softmax.",
-              "value": "ch 2.8",
+              "label": "<b>Linear & softmax</b>",
+              "sub": "Final norm, a score per token, then probabilities.",
+              "value": "slide 12",
               "goto": {
-                "chapter": "output",
-                "slide": 1
+                "chapter": "transformer",
+                "slide": 12
               }
             },
             {
@@ -1253,6 +1253,154 @@
         "height": 1080,
         "caption": "The animation loops every 22 seconds. Weights are illustrative.",
         "animated": true
+      }
+    },
+    {
+      "title": "Linear & softmax: from a vector to the next token",
+      "summary": "After the last layer, the final token's vector becomes a score for every word in the vocabulary, and softmax turns the scores into probabilities.",
+      "body": [
+        "Only the <b>last token's</b> vector is used to predict what comes next. For “The cat sat”, that's “sat”: 768 numbers that, after all the layers, carry the whole sentence.",
+        {
+          "h": "Two steps"
+        },
+        {
+          "ul": [
+            "<b>Linear:</b> compare the vector with every word in the vocabulary, one dot product each. GPT-2 gets <b>50,257 scores</b>, called <b>logits</b>. A high score means “this word fits next”.",
+            "<b>Softmax:</b> turn the scores into probabilities that add up to 100%. A bigger score gets a much bigger share."
+          ]
+        },
+        "<mark>The model doesn't choose a word here. It gives every word a probability; a separate sampling step picks one.</mark>"
+      ],
+      "viz": [
+        {
+          "type": "table",
+          "rows": [
+            {
+              "head": "Next token",
+              "cells": [
+                {
+                  "text": "score"
+                },
+                {
+                  "text": "probability"
+                }
+              ]
+            },
+            {
+              "head": "on",
+              "cells": [
+                {
+                  "text": "6.0"
+                },
+                {
+                  "text": "61%",
+                  "tone": "accent"
+                }
+              ]
+            },
+            {
+              "head": "down",
+              "cells": [
+                {
+                  "text": "4.9"
+                },
+                {
+                  "text": "20%"
+                }
+              ]
+            },
+            {
+              "head": "in",
+              "cells": [
+                {
+                  "text": "4.0"
+                },
+                {
+                  "text": "8%"
+                }
+              ]
+            },
+            {
+              "head": "there",
+              "cells": [
+                {
+                  "text": "3.3"
+                },
+                {
+                  "text": "4%"
+                }
+              ]
+            },
+            {
+              "head": "banana",
+              "cells": [
+                {
+                  "text": "−2.1"
+                },
+                {
+                  "text": "0.02%"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "caption",
+          "html": "For “The cat sat”. Each 1-point drop in score cuts the share by about 2.7×. Values are illustrative."
+        },
+        {
+          "type": "panel",
+          "title": "How does softmax work?",
+          "blocks": [
+            {
+              "type": "text",
+              "html": "Raise <i>e</i> (about 2.72) to the power of each score, then divide each by the total. The results are always positive and add up to 1."
+            },
+            {
+              "type": "text",
+              "html": "Scores <code>2.0, 1.0, 0.1</code> → <code>7.39, 2.72, 1.11</code> → total 11.21 → <b>66%, 24%, 10%</b>."
+            }
+          ]
+        },
+        {
+          "type": "panel",
+          "title": "What is the 768 × 50,257 table?",
+          "blocks": [
+            {
+              "type": "text",
+              "html": "One column of 768 numbers per vocabulary word. A word's score is how well its column lines up with the last token's vector. GPT-2 reuses its token embedding table here, so each word's input and output vectors are the same; many newer models learn a separate table."
+            }
+          ]
+        },
+        {
+          "type": "panel",
+          "title": "What happens next?",
+          "blocks": [
+            {
+              "type": "text",
+              "html": "A sampling step picks one token from these probabilities, shaped by settings like temperature and top-p. The token is appended and the whole model runs again."
+            },
+            {
+              "type": "stages",
+              "items": [
+                {
+                  "label": "Read more: Softmax and temperature, in Output & inference →",
+                  "goto": {
+                    "chapter": "output",
+                    "slide": 2
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "figure": {
+        "src": "images/linear-softmax-light.svg",
+        "darkSrc": "images/linear-softmax-dark.svg",
+        "alt": "The output head of a GPT-style model, for “The cat sat” with GPT-2 sizes. 1: only the last token, “sat”, is used: its 768 numbers after the final norm. 2: a linear layer, a table of 768 by 50,257 numbers, takes one dot product per vocabulary word. 3: the result is 50,257 scores, called logits, for example on 6.0, down 4.9, in 4.0, there 3.3, and banana −2.1. 4: softmax turns the scores into shares of 100%. 5: probabilities: on 61%, down 20%, in 8%, there 4%, all others together 7%, banana 0.02%. Next, a sampling step picks one token, usually a likely one such as “on”; it is appended, giving “The cat sat on”, and the whole model runs again. Values are illustrative.",
+        "width": 1200,
+        "height": 540
       }
     }
   ]
