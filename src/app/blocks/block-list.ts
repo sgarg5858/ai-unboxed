@@ -28,6 +28,12 @@ import { Tabs } from './tabs';
     Tabs,
     Stepper,
   ],
+  styles: `
+    .text {
+      margin: 0;
+      line-height: 1.6;
+    }
+  `,
   host: {
     '[class.stack]': 'nested()',
     '[style.display]': 'nested() ? "flex" : "contents"',
@@ -38,6 +44,9 @@ import { Tabs } from './tabs';
       @switch (b.type) {
         @case ('caption') {
           <p class="cap" [innerHTML]="b.html"></p>
+        }
+        @case ('text') {
+          <p class="text" [innerHTML]="b.html"></p>
         }
         @case ('code') {
           <div>

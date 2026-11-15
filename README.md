@@ -113,20 +113,21 @@ A slide looks like this:
 
 Top-level blocks each get their own panel. Blocks inside a `panel`, `tabs` or `stepper` render inside it.
 
-| type      | What it shows                                                    | Key fields                                                                                                 |
-| --------- | ---------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| `caption` | small muted text                                                 | `html`                                                                                                     |
-| `stages`  | vertical list of labelled rows (pipelines, layers, message logs) | `items[]`: `label`, `sub`, `value`, `tone`, `highlight`, `dim`, `strike`, `mono`, `spacer`, `goto`         |
-| `chips`   | a row of token chips                                             | `items[]`: `text`, `sub`, `hot`, `dim`                                                                     |
-| `bars`    | horizontal bars                                                  | `items[]`: `label`, `value` (0–1), `display`; `layout`: `inline` or `stacked`                              |
-| `table`   | small labelled table                                             | `rows[]`: `head`, `cells[]`: `text`, `tone`                                                                |
-| `stat`    | big-number tiles                                                 | `items[]`: `value`, `label`                                                                                |
-| `code`    | code block                                                       | `source[]` (lines), `title`                                                                                |
-| `shape`   | highlighted monospace tag                                        | `text`                                                                                                     |
-| `panel`   | group several blocks in one panel                                | `blocks[]`                                                                                                 |
-| `tabs`    | buttons that switch between views                                | `tabs[]`: `label`, `blocks[]`                                                                              |
-| `stepper` | click-through sequence                                           | `steps[]`: `blocks[]` or `item`, plus `caption`; `accumulate: true` grows a `stages` list one row per step |
-| `widget`  | a named interactive component                                    | `name`, `props`                                                                                            |
+| type      | What it shows                                                      | Key fields                                                                                                 |
+| --------- | ------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------- |
+| `caption` | small muted text                                                   | `html`                                                                                                     |
+| `text`    | a normal-size paragraph (for example inside a collapsible `panel`) | `html`                                                                                                     |
+| `stages`  | vertical list of labelled rows (pipelines, layers, message logs)   | `items[]`: `label`, `sub`, `value`, `tone`, `highlight`, `dim`, `strike`, `mono`, `spacer`, `goto`         |
+| `chips`   | a row of token chips                                               | `items[]`: `text`, `sub`, `hot`, `dim`                                                                     |
+| `bars`    | horizontal bars                                                    | `items[]`: `label`, `value` (0–1), `display`; `layout`: `inline` or `stacked`                              |
+| `table`   | small labelled table                                               | `rows[]`: `head`, `cells[]`: `text`, `tone`                                                                |
+| `stat`    | big-number tiles                                                   | `items[]`: `value`, `label`                                                                                |
+| `code`    | code block                                                         | `source[]` (lines), `title`                                                                                |
+| `shape`   | highlighted monospace tag                                          | `text`                                                                                                     |
+| `panel`   | group several blocks in one panel                                  | `blocks[]`                                                                                                 |
+| `tabs`    | buttons that switch between views                                  | `tabs[]`: `label`, `blocks[]`                                                                              |
+| `stepper` | click-through sequence                                             | `steps[]`: `blocks[]` or `item`, plus `caption`; `accumulate: true` grows a `stages` list one row per step |
+| `widget`  | a named interactive component                                      | `name`, `props`                                                                                            |
 
 `goto` on a stage row (`{ "chapter": "attention", "slide": 2 }`) makes the row a link.
 

@@ -790,38 +790,14 @@
           ]
         },
         "<mark class=\"info\">In short: each number becomes “how many spreads it sits from the average”. Every token keeps its pattern but comes out the same size.</mark>",
-        {
-          "more": "How is the spread calculated?",
-          "text": [
-            "The spread is the <b>standard deviation</b>: roughly, how far the numbers typically sit from their average. For “cat” <code>[6, −2, 10, 2]</code>:",
-            "<b>1 ·</b> Average: (6 − 2 + 10 + 2) ÷ 4 = <b>4</b>.<br><b>2 ·</b> Distance of each number from the average: <code>[2, −6, 6, −2]</code>.<br><b>3 ·</b> Square them, so negatives don't cancel positives: <code>[4, 36, 36, 4]</code>.<br><b>4 ·</b> Average the squares: 80 ÷ 4 = <b>20</b>.<br><b>5 ·</b> Square root, to undo the squaring: √20 ≈ <b>4.47</b>.",
-            "A small spread means the numbers are bunched together; a large one means they're scattered. Dividing by it gives every token a spread of 1."
-          ]
-        },
         "<mark>Each token is normalized on its own, using only its own numbers. However big or small it comes in, it goes out in the same steady range.</mark>",
         {
           "note": "<b>Why it matters:</b> normalization keeps the neural network's internal representations well behaved, which makes training deep networks more stable.",
           "kind": "key"
         },
         {
-          "more": "Does normalizing lose meaning?",
-          "text": [
-            "Mostly no. A vector's meaning is in its <b>pattern</b>, which numbers are high and which are low, and normalization keeps that exactly. It only removes the overall size.",
-            "<b>The original is kept.</b> In modern models (GPT-2 onwards, Llama), the norm works on a copy going into attention or the feed-forward step. The token's own vector keeps its full values, and each step adds its result back onto it."
-          ]
-        },
-        {
           "note": "Like auto-fix on a photo: too dark or too bright, it comes out looking normal. The picture itself doesn't change.",
           "kind": "analogy"
-        },
-        {
-          "more": "LayerNorm or RMSNorm?",
-          "text": "The original Transformer and GPT-2 use <b>LayerNorm</b>, as shown here. Most modern models, including Llama, Mistral and Qwen, use <b>RMSNorm</b>, which skips step 1 and only divides by the typical size of the numbers. It's slightly cheaper and works just as well.",
-          "goto": {
-            "chapter": "block",
-            "slide": 2
-          },
-          "link": "Normalisation, in The transformer block"
         }
       ],
       "viz": [
@@ -905,6 +881,56 @@
         {
           "type": "caption",
           "html": "Try ten times bigger, <code>[60, −20, 100, 20]</code>: the average is 40, the spread 44.7, and the result is exactly the same. Values are illustrative."
+        },
+        {
+          "type": "panel",
+          "title": "How is the spread calculated?",
+          "blocks": [
+            {
+              "type": "text",
+              "html": "The spread is the <b>standard deviation</b>: roughly, how far the numbers typically sit from their average. For “cat” <code>[6, −2, 10, 2]</code>:"
+            },
+            {
+              "type": "text",
+              "html": "<b>1 ·</b> Average: (6 − 2 + 10 + 2) ÷ 4 = <b>4</b>.<br><b>2 ·</b> Distance of each number from the average: <code>[2, −6, 6, −2]</code>.<br><b>3 ·</b> Square them, so negatives don't cancel positives: <code>[4, 36, 36, 4]</code>.<br><b>4 ·</b> Average the squares: 80 ÷ 4 = <b>20</b>.<br><b>5 ·</b> Square root, to undo the squaring: √20 ≈ <b>4.47</b>."
+            },
+            {
+              "type": "text",
+              "html": "A small spread means the numbers are bunched together; a large one means they're scattered. Dividing by it gives every token a spread of 1."
+            }
+          ]
+        },
+        {
+          "type": "panel",
+          "title": "Does normalizing lose meaning?",
+          "blocks": [
+            {
+              "type": "text",
+              "html": "Mostly no. A vector's meaning is in its <b>pattern</b>, which numbers are high and which are low, and normalization keeps that exactly. It only removes the overall size."
+            }
+          ]
+        },
+        {
+          "type": "panel",
+          "title": "LayerNorm or RMSNorm?",
+          "blocks": [
+            {
+              "type": "text",
+              "html": "The original Transformer and GPT-2 use <b>LayerNorm</b>, as shown here. Most modern models, including Llama, Mistral and Qwen, use <b>RMSNorm</b>, which skips step 1 and only divides by the typical size of the numbers. It's slightly cheaper and works just as well."
+            },
+            {
+              "type": "stages",
+              "items": [
+                {
+                  "label": "Read more: Normalisation, in The transformer block →",
+                  "goto": {
+                    "chapter": "block",
+                    "slide": 2
+                  }
+                }
+              ]
+            }
+          ]
         }
       ],
       "figure": [

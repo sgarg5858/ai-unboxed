@@ -206,6 +206,7 @@
         "type": {
           "enum": [
             "caption",
+            "text",
             "stages",
             "chips",
             "bars",
@@ -222,6 +223,28 @@
         }
       },
       "allOf": [
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "text"
+              }
+            }
+          },
+          "then": {
+            "required": ["html"],
+            "properties": {
+              "type": {
+                "const": "text"
+              },
+              "html": {
+                "type": "string",
+                "description": "One paragraph of normal-size text (captions are small and muted). Inline HTML allowed, as in prose."
+              }
+            },
+            "additionalProperties": false
+          }
+        },
         {
           "if": {
             "properties": {

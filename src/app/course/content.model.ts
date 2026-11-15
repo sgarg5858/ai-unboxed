@@ -70,6 +70,8 @@ export interface TableRow {
 
 export type Block =
   | { type: 'caption'; html: string }
+  /** A paragraph of normal-size text, e.g. inside a collapsible panel. */
+  | { type: 'text'; html: string }
   | { type: 'stages'; items: StageItem[] }
   | { type: 'chips'; items: ChipItem[] }
   | { type: 'bars'; items: BarItem[]; layout?: 'inline' | 'stacked' }
