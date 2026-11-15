@@ -789,6 +789,7 @@
             "<b>3 · Scale and shift</b> with numbers learned in training, so the model can still pick the best range for each slot."
           ]
         },
+        "<mark class=\"info\">In short: each number becomes “how many spreads it sits from the average”. Every token keeps its pattern but comes out the same size.</mark>",
         {
           "more": "How is the spread calculated?",
           "text": [
@@ -806,18 +807,13 @@
           "more": "Does normalizing lose meaning?",
           "text": [
             "Mostly no. A vector's meaning is in its <b>pattern</b>, which numbers are high and which are low, and normalization keeps that exactly. It only removes the overall size.",
-            "<b>The original is kept.</b> In modern models (GPT-2 onwards, Llama), the norm works on a copy going into attention or the feed-forward step. The token's own vector keeps its full values, and each step adds its result back onto it.",
-            "<b>The size can come back.</b> The learned scale and shift in step 3 let the model stretch each slot to a useful range."
+            "<b>The original is kept.</b> In modern models (GPT-2 onwards, Llama), the norm works on a copy going into attention or the feed-forward step. The token's own vector keeps its full values, and each step adds its result back onto it."
           ]
         },
         {
-          "note": "Like the volume control on a microphone: whether the singer whispers or shouts, the level going to the speakers stays steady, and the song stays the same.",
+          "note": "Like auto-fix on a photo: too dark or too bright, it comes out looking normal. The picture itself doesn't change.",
           "kind": "analogy"
         },
-        {
-          "h": "Where it sits"
-        },
-        "Inside every transformer layer, just before attention and just before the feed-forward step, plus once more at the very end, before the model predicts the next token.",
         {
           "more": "LayerNorm or RMSNorm?",
           "text": "The original Transformer and GPT-2 use <b>LayerNorm</b>, as shown here. Most modern models, including Llama, Mistral and Qwen, use <b>RMSNorm</b>, which skips step 1 and only divides by the typical size of the numbers. It's slightly cheaper and works just as well.",
@@ -927,6 +923,14 @@
           "width": 1200,
           "height": 430,
           "caption": "Same pattern, steady size: big or small going in, the same range comes out."
+        },
+        {
+          "src": "images/layer-norm-spread-light.svg",
+          "darkSrc": "images/layer-norm-spread-dark.svg",
+          "alt": "Two tokens drawn as lines on a 2D plot, slot n1 to n4 across, value up. Before: the bunched token [3.5, 4.5, 3.8, 4.2] has average 4 and spread 0.38, so its line looks almost flat and its shaded strip, one spread either side of the average, is thin. “cat” [6, −2, 10, 2] also has average 4 but spread 4.47: a big zigzag with a wide strip. After layer norm: bunched becomes [−1.31, 1.31, −0.53, 0.53] and “cat” becomes [0.45, −1.34, 1.34, −0.45]. Both have average 0 and both strips run from −1 to 1. Each line keeps its own zigzag shape; only the size is standardised.",
+          "width": 1200,
+          "height": 560,
+          "caption": "A small spread means the numbers are bunched together; a large one means they're scattered. Dividing by it gives every token a spread of 1."
         }
       ]
     },

@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 560" role="img" aria-labelledby="t d" font-family="'Schibsted Grotesk', ui-sans-serif, system-ui, sans-serif">
+  <title id="t">Spread on a 2D plot</title>
+  <desc id="d">Two tokens drawn as lines on a 2D plot, slot n1 to n4 across, value up. Before: the bunched token [3.5, 4.5, 3.8, 4.2] has average 4 and spread 0.38, so its line looks almost flat and its shaded strip, one spread either side of the average, is thin. “cat” [6, −2, 10, 2] also has average 4 but spread 4.47: a big zigzag with a wide strip. After layer norm (subtract the average, divide by the spread): bunched becomes [−1.31, 1.31, −0.53, 0.53] and “cat” becomes [0.45, −1.34, 1.34, −0.45]. Both have average 0 and both strips run from −1 to 1. Each line keeps its own zigzag shape; only the size is standardised.</desc>
+  <style>
+    .bg{fill:#f6f4ef}.card{fill:#fffdf9;stroke:#e5e0d5}.sunk{fill:#f3f0e9}
+    .ink{fill:#1c1b22}.muted{fill:#5b5866}.onacc{fill:#ffffff}
+    .acc{fill:#2b5fd9}.accink{fill:#1d47ad}.accsoft{fill:#e6edfc}
+    .pos{fill:#168a64}.posink{fill:#0d6a4b}.possoft{fill:#dcf2e8;stroke:#168a64}
+    .neg{fill:#d24a2b}.negink{fill:#ad3417}.negsoft{fill:#fbe3da;stroke:#d24a2b}
+    .heat{fill:#fcefd2;stroke:#d08a0c}.heatink{fill:#875700}.heatfill{fill:#d08a0c}
+    .line{stroke:#5b5866;fill:none;stroke-width:2}.thin{stroke:#e5e0d5;fill:none;stroke-width:1.5}
+    .dash{stroke:#2b5fd9;fill:none;stroke-width:2;stroke-dasharray:6 5}
+    .sacc{stroke:#2b5fd9;fill:none;stroke-width:2.5}.sheat{stroke:#d08a0c;fill:none;stroke-width:2.5}
+    .spos{stroke:#168a64;fill:none;stroke-width:2.5}.sneg{stroke:#d24a2b;fill:none;stroke-width:2.5}
+    .edge{stroke:#2b5fd9;fill:none;stroke-width:1;opacity:.45}
+    .stream{stroke:#2b5fd9;fill:none;stroke-width:14;stroke-linecap:round;opacity:.35}
+    .row{fill:#f3f0e9}.hit{fill:#e6edfc;stroke:#2b5fd9}
+    .mono{font-family:'JetBrains Mono',ui-monospace,Menlo,monospace}
+    .head{font-size:13px;font-weight:700;letter-spacing:.08em}
+    .arrowhead{fill:#5b5866}.arrowacc{fill:#2b5fd9}
+  </style>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arrowhead"/></marker>
+  </defs>
+  <rect class="bg" width="1200" height="560" rx="18"/>
+  <text x="40.0" y="50.0" text-anchor="start" class="ink" font-size="26" font-weight="700">Spread on a 2D plot: same shape, standard size</text>
+  <text x="40.0" y="76.0" text-anchor="start" class="muted" font-size="15">Each line is one token: its 4 numbers, slot by slot. The shaded strip is one spread either side of the average (dashed).</text>
+  <line class="spos" x1="40" y1="106" x2="66" y2="106" stroke-width="3"/>
+  <circle class="pos" cx="53" cy="106" r="5"/>
+  <text x="74.0" y="111.0" text-anchor="start" class="posink" font-size="14" font-weight="700">bunched [3.5, 4.5, 3.8, 4.2] · avg 4 · spread 0.38</text>
+  <line class="sheat" x1="510" y1="106" x2="536" y2="106" stroke-width="3"/>
+  <circle class="heatfill" cx="523" cy="106" r="5"/>
+  <text x="544.0" y="111.0" text-anchor="start" class="heatink" font-size="14" font-weight="700">“cat” [6, −2, 10, 2] · avg 4 · spread 4.47</text>
+  <text x="80.0" y="154.0" text-anchor="start" class="muted mono" font-size="11.5" font-weight="700">BEFORE</text>
+  <line class="thin" x1="100" y1="450.0" x2="540" y2="450.0"/>
+  <text x="92.0" y="454.0" text-anchor="end" class="muted mono" font-size="11">−4</text>
+  <line class="thin" x1="100" y1="380.0" x2="540" y2="380.0"/>
+  <text x="92.0" y="384.0" text-anchor="end" class="muted mono" font-size="11">0</text>
+  <line class="thin" x1="100" y1="310.0" x2="540" y2="310.0"/>
+  <text x="92.0" y="314.0" text-anchor="end" class="muted mono" font-size="11">4</text>
+  <line class="thin" x1="100" y1="240.0" x2="540" y2="240.0"/>
+  <text x="92.0" y="244.0" text-anchor="end" class="muted mono" font-size="11">8</text>
+  <line class="thin" x1="100" y1="170.0" x2="540" y2="170.0"/>
+  <text x="92.0" y="174.0" text-anchor="end" class="muted mono" font-size="11">12</text>
+  <text x="130.0" y="474.0" text-anchor="middle" class="muted mono" font-size="12" font-weight="600">n1</text>
+  <text x="250.0" y="474.0" text-anchor="middle" class="muted mono" font-size="12" font-weight="600">n2</text>
+  <text x="370.0" y="474.0" text-anchor="middle" class="muted mono" font-size="12" font-weight="600">n3</text>
+  <text x="490.0" y="474.0" text-anchor="middle" class="muted mono" font-size="12" font-weight="600">n4</text>
+  <rect class="pos" x="100" y="303.3" width="440" height="13.3" fill-opacity="0.16"/>
+  <rect class="heatfill" x="100" y="231.7" width="440" height="156.5" fill-opacity="0.16"/>
+  <line class="spos" x1="100" y1="310.0" x2="540" y2="310.0" stroke-dasharray="5 4" stroke-width="1.5" opacity="0.8"/>
+  <line class="sheat" x1="100" y1="310.0" x2="540" y2="310.0" stroke-dasharray="5 4" stroke-width="1.5" opacity="0.8"/>
+  <polyline class="spos" fill="none" stroke-width="3" stroke-linejoin="round" points="130.0,318.8 250.0,301.2 370.0,313.5 490.0,306.5"/>
+  <circle class="pos" cx="130.0" cy="318.8" r="6"/>
+  <circle class="pos" cx="250.0" cy="301.2" r="6"/>
+  <circle class="pos" cx="370.0" cy="313.5" r="6"/>
+  <circle class="pos" cx="490.0" cy="306.5" r="6"/>
+  <polyline class="sheat" fill="none" stroke-width="3" stroke-linejoin="round" points="130.0,275.0 250.0,415.0 370.0,205.0 490.0,345.0"/>
+  <circle class="heatfill" cx="130.0" cy="275.0" r="6"/>
+  <circle class="heatfill" cx="250.0" cy="415.0" r="6"/>
+  <circle class="heatfill" cx="370.0" cy="205.0" r="6"/>
+  <circle class="heatfill" cx="490.0" cy="345.0" r="6"/>
+  <text x="700.0" y="154.0" text-anchor="start" class="muted mono" font-size="11.5" font-weight="700">AFTER: − AVERAGE, ÷ SPREAD</text>
+  <line class="thin" x1="720" y1="450.0" x2="1160" y2="450.0"/>
+  <text x="712.0" y="454.0" text-anchor="end" class="muted mono" font-size="11">−2</text>
+  <line class="thin" x1="720" y1="380.0" x2="1160" y2="380.0"/>
+  <text x="712.0" y="384.0" text-anchor="end" class="muted mono" font-size="11">−1</text>
+  <line class="thin" x1="720" y1="310.0" x2="1160" y2="310.0"/>
+  <text x="712.0" y="314.0" text-anchor="end" class="muted mono" font-size="11">0</text>
+  <line class="thin" x1="720" y1="240.0" x2="1160" y2="240.0"/>
+  <text x="712.0" y="244.0" text-anchor="end" class="muted mono" font-size="11">1</text>
+  <line class="thin" x1="720" y1="170.0" x2="1160" y2="170.0"/>
+  <text x="712.0" y="174.0" text-anchor="end" class="muted mono" font-size="11">2</text>
+  <text x="750.0" y="474.0" text-anchor="middle" class="muted mono" font-size="12" font-weight="600">n1</text>
+  <text x="870.0" y="474.0" text-anchor="middle" class="muted mono" font-size="12" font-weight="600">n2</text>
+  <text x="990.0" y="474.0" text-anchor="middle" class="muted mono" font-size="12" font-weight="600">n3</text>
+  <text x="1110.0" y="474.0" text-anchor="middle" class="muted mono" font-size="12" font-weight="600">n4</text>
+  <rect class="pos" x="720" y="240.1" width="440" height="139.9" fill-opacity="0.16"/>
+  <rect class="heatfill" x="720" y="240.0" width="440" height="139.9" fill-opacity="0.16"/>
+  <line class="spos" x1="720" y1="310.0" x2="1160" y2="310.0" stroke-dasharray="5 4" stroke-width="1.5" opacity="0.8"/>
+  <line class="sheat" x1="720" y1="310.0" x2="1160" y2="310.0" stroke-dasharray="5 4" stroke-width="1.5" opacity="0.8"/>
+  <polyline class="spos" fill="none" stroke-width="3" stroke-linejoin="round" points="750.0,401.7 870.0,218.3 990.0,347.1 1110.0,272.9"/>
+  <circle class="pos" cx="750.0" cy="401.7" r="6"/>
+  <circle class="pos" cx="870.0" cy="218.3" r="6"/>
+  <circle class="pos" cx="990.0" cy="347.1" r="6"/>
+  <circle class="pos" cx="1110.0" cy="272.9" r="6"/>
+  <polyline class="sheat" fill="none" stroke-width="3" stroke-linejoin="round" points="750.0,278.5 870.0,403.8 990.0,216.2 1110.0,341.5"/>
+  <circle class="heatfill" cx="750.0" cy="278.5" r="6"/>
+  <circle class="heatfill" cx="870.0" cy="403.8" r="6"/>
+  <circle class="heatfill" cx="990.0" cy="216.2" r="6"/>
+  <circle class="heatfill" cx="1110.0" cy="341.5" r="6"/>
+  <line class="line" x1="570" y1="310.0" x2="660" y2="310.0" marker-end="url(#a)"/>
+  <text x="615.0" y="298.0" text-anchor="middle" class="ink mono" font-size="12" font-weight="700">layer norm</text>
+  <text x="310.0" y="506.0" text-anchor="middle" class="muted" font-size="13.5">The bunched line looks almost flat: a thin strip.</text>
+  <text x="930.0" y="506.0" text-anchor="middle" class="muted" font-size="13.5">Both strips now run from −1 to 1. Same zigzags, same size.</text>
+</svg>
