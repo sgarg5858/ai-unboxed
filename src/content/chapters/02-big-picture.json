@@ -608,7 +608,7 @@
             {
               "label": "<b>Hallucination</b>",
               "sub": "Fluent, confident text that isn't true.",
-              "value": "2.7 →",
+              "value": "→",
               "goto": {
                 "chapter": "hallucination",
                 "slide": 1

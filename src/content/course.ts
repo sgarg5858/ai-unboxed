@@ -49,11 +49,6 @@ export const SECTIONS: readonly SectionContent[] = [
         load: () => json(import('./chapters/12-transformer-architecture.json')),
       },
       {
-        id: 'walkthrough',
-        name: 'End to end: one sentence',
-        load: () => json(import('./chapters/14-end-to-end.json')),
-      },
-      {
         id: 'attention',
         name: 'Attention',
         load: () => json(import('./chapters/05-attention.json')),
@@ -62,6 +57,11 @@ export const SECTIONS: readonly SectionContent[] = [
         id: 'block',
         name: 'The transformer block',
         load: () => json(import('./chapters/06-transformer-block.json')),
+      },
+      {
+        id: 'walkthrough',
+        name: 'End to end: one sentence',
+        load: () => json(import('./chapters/14-end-to-end.json')),
       },
       {
         id: 'output',
