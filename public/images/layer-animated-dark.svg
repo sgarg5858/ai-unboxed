@@ -1,0 +1,274 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1080" role="img" aria-labelledby="t d" font-family="'Schibsted Grotesk', ui-sans-serif, system-ui, sans-serif">
+  <title id="t">Transformer layer, in motion</title>
+  <desc id="d">An animation of one transformer layer, GPT-2 sizes, on the text “The cat sat on the mat because it”, following the token “it”. 1, input: the 8 tokens become 8 columns of 768 numbers each, the input matrix. 2, multi-head causal self-attention: “it” looks back at every earlier word (never ahead). Its query is compared with each word’s key to give a score, and softmax turns the scores into weights that add up to 1: cat 0.62, mat 0.14, because 0.07, it 0.05, sat 0.04, The 0.03, the 0.03, on 0.02. The new “it” is the weighted mix of the words’ values, mostly “cat”. 12 heads do this in parallel, each looking for something different (head 1: who is “it”, cat; head 2: where, mat), 64 numbers each, joined back into 768. The result is added back to the main line. 3, MLP, drawn as an hourglass: “it”’s 768 numbers fan out into 3,072 detectors, 4 times wider; some detectors fire and are kept, the others stay off and are set to 0; only the firing ones feed back into 768 numbers, an update that is added back again. 4, out: 8 tokens by 768 numbers, the same shape as the input; “it” now carries “the cat”. GPT-2 repeats this layer 12 times. Weights are illustrative.</desc>
+  <style>
+    .bg{fill:#0f1413}.card{fill:#171e1c;stroke:#2c3835}.sunk{fill:#1f2826}
+    .ink{fill:#e4ece9}.muted{fill:#9aa9a4}.onacc{fill:#0f1413}
+    .acc{fill:#4db3d1}.accink{fill:#8fd3e6}.accsoft{fill:#163742}
+    .pos{fill:#3fc4a3}.posink{fill:#3fc4a3}.possoft{fill:#123a30;stroke:#3fc4a3}
+    .neg{fill:#f07d60}.negink{fill:#f07d60}.negsoft{fill:#42221a;stroke:#f07d60}
+    .heat{fill:#3d2e14;stroke:#f0ac40}.heatink{fill:#f0ac40}.heatfill{fill:#f0ac40}
+    .line{stroke:#9aa9a4;fill:none;stroke-width:2}.thin{stroke:#2c3835;fill:none;stroke-width:1.5}
+    .dash{stroke:#4db3d1;fill:none;stroke-width:2;stroke-dasharray:6 5}
+    .sacc{stroke:#4db3d1;fill:none;stroke-width:2.5}.sheat{stroke:#f0ac40;fill:none;stroke-width:2.5}
+    .spos{stroke:#3fc4a3;fill:none;stroke-width:2.5}.sneg{stroke:#f07d60;fill:none;stroke-width:2.5}
+    .edge{stroke:#4db3d1;fill:none;stroke-width:1;opacity:.45}
+    .stream{stroke:#4db3d1;fill:none;stroke-width:14;stroke-linecap:round;opacity:.35}
+    .row{fill:#1f2826}.hit{fill:#163742;stroke:#4db3d1}
+    .mono{font-family:'JetBrains Mono',ui-monospace,Menlo,monospace}
+    .head{font-size:13px;font-weight:700;letter-spacing:.08em}
+    .arrowhead{fill:#9aa9a4}.arrowacc{fill:#4db3d1}
+  </style>
+  <style>@keyframes dimA{0%{opacity:1}14%{opacity:1}15.5%{opacity:.3}100%{opacity:.3}}@keyframes hlA{0%{opacity:1}14%{opacity:1}15.5%{opacity:0}100%{opacity:0}}.gA{animation:dimA 22s infinite}.hlA{opacity:0;animation:hlA 22s infinite}@keyframes dimB{0%{opacity:.3}12.5%{opacity:.3}14%{opacity:1}56%{opacity:1}57.5%{opacity:.3}100%{opacity:.3}}@keyframes hlB{0%{opacity:0}12.5%{opacity:0}14%{opacity:1}56%{opacity:1}57.5%{opacity:0}100%{opacity:0}}.gB{animation:dimB 22s infinite}.hlB{opacity:0;animation:hlB 22s infinite}@keyframes dimP1{0%{opacity:.3}54.5%{opacity:.3}56%{opacity:1}60%{opacity:1}61.5%{opacity:.3}100%{opacity:.3}}@keyframes hlP1{0%{opacity:0}54.5%{opacity:0}56%{opacity:1}60%{opacity:1}61.5%{opacity:0}100%{opacity:0}}.gP1{animation:dimP1 22s infinite}.hlP1{opacity:0;animation:hlP1 22s infinite}@keyframes dimC{0%{opacity:.3}58.5%{opacity:.3}60%{opacity:1}86%{opacity:1}87.5%{opacity:.3}100%{opacity:.3}}@keyframes hlC{0%{opacity:0}58.5%{opacity:0}60%{opacity:1}86%{opacity:1}87.5%{opacity:0}100%{opacity:0}}.gC{animation:dimC 22s infinite}.hlC{opacity:0;animation:hlC 22s infinite}@keyframes dimP2{0%{opacity:.3}84.5%{opacity:.3}86%{opacity:1}90%{opacity:1}91.5%{opacity:.3}100%{opacity:.3}}@keyframes hlP2{0%{opacity:0}84.5%{opacity:0}86%{opacity:1}90%{opacity:1}91.5%{opacity:0}100%{opacity:0}}.gP2{animation:dimP2 22s infinite}.hlP2{opacity:0;animation:hlP2 22s infinite}@keyframes dimD{0%{opacity:.3}88.5%{opacity:.3}90%{opacity:1}100%{opacity:1}}@keyframes hlD{0%{opacity:0}88.5%{opacity:0}90%{opacity:1}100%{opacity:1}}.gD{animation:dimD 22s infinite}.hlD{opacity:0;animation:hlD 22s infinite}@keyframes arc0{0%{stroke-dashoffset:1200}16%{stroke-dashoffset:1200}20%{stroke-dashoffset:0}100%{stroke-dashoffset:0}}.arc0{animation:arc0 22s infinite}@keyframes arc1{0%{stroke-dashoffset:1200}17%{stroke-dashoffset:1200}21%{stroke-dashoffset:0}100%{stroke-dashoffset:0}}.arc1{animation:arc1 22s infinite}@keyframes arc2{0%{stroke-dashoffset:1200}18%{stroke-dashoffset:1200}22%{stroke-dashoffset:0}100%{stroke-dashoffset:0}}.arc2{animation:arc2 22s infinite}@keyframes arc3{0%{stroke-dashoffset:1200}19%{stroke-dashoffset:1200}23%{stroke-dashoffset:0}100%{stroke-dashoffset:0}}.arc3{animation:arc3 22s infinite}@keyframes arc4{0%{stroke-dashoffset:1200}20%{stroke-dashoffset:1200}24%{stroke-dashoffset:0}100%{stroke-dashoffset:0}}.arc4{animation:arc4 22s infinite}@keyframes arc5{0%{stroke-dashoffset:1200}21%{stroke-dashoffset:1200}25%{stroke-dashoffset:0}100%{stroke-dashoffset:0}}.arc5{animation:arc5 22s infinite}@keyframes arc6{0%{stroke-dashoffset:1200}22%{stroke-dashoffset:1200}26%{stroke-dashoffset:0}100%{stroke-dashoffset:0}}.arc6{animation:arc6 22s infinite}@keyframes bar{0%{transform:scaleY(0)}26%{transform:scaleY(0)}31%{transform:scaleY(1)}100%{transform:scaleY(1)}}.bar{animation:bar 22s infinite}@keyframes wts{0%{opacity:0}31%{opacity:0}34%{opacity:1}100%{opacity:1}}.wts{animation:wts 22s infinite}@keyframes mix{0%{opacity:0}36%{opacity:0}39%{opacity:1}100%{opacity:1}}.mix{animation:mix 22s infinite}@keyframes hd0{0%{opacity:0}41%{opacity:0}44%{opacity:1}100%{opacity:1}}.hd0{animation:hd0 22s infinite}@keyframes hd1{0%{opacity:0}43.5%{opacity:0}46.5%{opacity:1}100%{opacity:1}}.hd1{animation:hd1 22s infinite}@keyframes hd2{0%{opacity:0}46%{opacity:0}49%{opacity:1}100%{opacity:1}}.hd2{animation:hd2 22s infinite}@keyframes fo{0%{opacity:0}61%{opacity:0}64%{opacity:1}100%{opacity:1}}.fo{animation:fo 22s infinite}@keyframes fun1{0%{opacity:0}61%{opacity:0}64%{opacity:1}100%{opacity:1}}.fun1{animation:fun1 22s infinite}@keyframes hid{0%{opacity:0}64%{opacity:0}67%{opacity:1}100%{opacity:1}}.hid{animation:hid 22s infinite}@keyframes off{0%{opacity:0}64%{opacity:0}67%{opacity:1}70%{opacity:1}73%{opacity:.35}100%{opacity:.35}}.off{opacity:.35;animation:off 22s infinite}@keyframes fire{0%{opacity:0}70%{opacity:0}73%{opacity:1}100%{opacity:1}}.fire{animation:fire 22s infinite}@keyframes l2{0%{opacity:0}70%{opacity:0}73%{opacity:1}100%{opacity:1}}.l2{animation:l2 22s infinite}@keyframes cv{0%{opacity:0}75%{opacity:0}78%{opacity:1}100%{opacity:1}}.cv{animation:cv 22s infinite}@keyframes fun2{0%{opacity:0}75%{opacity:0}78%{opacity:1}100%{opacity:1}}.fun2{animation:fun2 22s infinite}@keyframes outp{0%{opacity:0}78%{opacity:0}81%{opacity:1}100%{opacity:1}}.outp{animation:outp 22s infinite}@keyframes l3{0%{opacity:0}75%{opacity:0}78%{opacity:1}100%{opacity:1}}.l3{animation:l3 22s infinite}@keyframes pulse{0%{transform:translateY(205px)}12%{transform:translateY(300px)}15%{transform:translateY(352px)}54%{transform:translateY(560px)}58%{transform:translateY(687px)}61%{transform:translateY(732px)}84%{transform:translateY(900px)}88%{transform:translateY(975px)}100%{transform:translateY(1027px)}}.pulse{transform:translateY(1027px);animation:pulse 22s infinite linear}.paused *{animation-play-state:paused!important}@media (prefers-reduced-motion: reduce){svg:not(.play) *{animation:none!important}}</style>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arrowhead"/></marker>
+  </defs>
+  <rect class="bg" width="1200" height="1080" rx="18"/>
+  <text x="40.0" y="46.0" text-anchor="start" class="ink" font-size="26" font-weight="700">Transformer layer, in motion</text>
+  <text x="40.0" y="72.0" text-anchor="start" class="muted" font-size="15">Input: “The cat sat on the mat because it”. Follow “it”. Sizes are GPT-2’s.</text>
+  <line class="stream" x1="70" y1="205" x2="70" y2="1027"/>
+<g class="gA">
+  <rect class="card" x="110.0" y="100.0" width="1050.0" height="210.0" rx="14" stroke-width="1.4"/>
+  <rect class="sacc hlA" x="110.0" y="100.0" width="1050.0" height="210.0" rx="14" stroke-width="3"/>
+  <text x="130.0" y="126.0" text-anchor="start" class="accink mono" font-size="12" font-weight="700">1 · INPUT TEXT → MATRIX</text>
+  <rect class="card" x="174.5" y="140.0" width="51.0" height="32.0" rx="8" stroke-width="1.2"/>
+  <text x="200.0" y="161.0" text-anchor="middle" class="ink" font-size="14" font-weight="700">The</text>
+  <rect class="row" x="183.0" y="186.0" width="34.0" height="11.0" rx="3"/>
+  <rect class="row" x="183.0" y="200.0" width="34.0" height="11.0" rx="3"/>
+  <rect class="row" x="183.0" y="214.0" width="34.0" height="11.0" rx="3"/>
+  <rect class="row" x="183.0" y="228.0" width="34.0" height="11.0" rx="3"/>
+  <rect class="row" x="183.0" y="242.0" width="34.0" height="11.0" rx="3"/>
+  <rect class="row" x="183.0" y="256.0" width="34.0" height="11.0" rx="3"/>
+  <rect class="card" x="299.5" y="140.0" width="51.0" height="32.0" rx="8" stroke-width="1.2"/>
+  <text x="325.0" y="161.0" text-anchor="middle" class="ink" font-size="14" font-weight="700">cat</text>
+  <rect class="row" x="308.0" y="186.0" width="34.0" height="11.0" rx="3"/>
+  <rect class="row" x="308.0" y="200.0" width="34.0" height="11.0" rx="3"/>
+  <rect class="row" x="308.0" y="214.0" width="34.0" height="11.0" rx="3"/>
+  <rect class="row" x="308.0" y="228.0" width="34.0" height="11.0" rx="3"/>
+  <rect class="row" x="308.0" y="242.0" width="34.0" height="11.0" rx="3"/>
+  <rect class="row" x="308.0" y="256.0" width="34.0" height="11.0" rx="3"/>
+  <rect class="card" x="424.5" y="140.0" width="51.0" height="32.0" rx="8" stroke-width="1.2"/>
+  <text x="450.0" y="161.0" text-anchor="middle" class="ink" font-size="14" font-weight="700">sat</text>
+  <rect class="row" x="433.0" y="186.0" width="34.0" height="11.0" rx="3"/>
+  <rect class="row" x="433.0" y="200.0" width="34.0" height="11.0" rx="3"/>
+  <rect class="row" x="433.0" y="214.0" width="34.0" height="11.0" rx="3"/>
+  <rect class="row" x="433.0" y="228.0" width="34.0" height="11.0" rx="3"/>
+  <rect class="row" x="433.0" y="242.0" width="34.0" height="11.0" rx="3"/>
+  <rect class="row" x="433.0" y="256.0" width="34.0" height="11.0" rx="3"/>
+  <rect class="card" x="554.0" y="140.0" width="42.0" height="32.0" rx="8" stroke-width="1.2"/>
+  <text x="575.0" y="161.0" text-anchor="middle" class="ink" font-size="14" font-weight="700">on</text>
+  <rect class="row" x="558.0" y="186.0" width="34.0" height="11.0" rx="3"/>
+  <rect class="row" x="558.0" y="200.0" width="34.0" height="11.0" rx="3"/>
+  <rect class="row" x="558.0" y="214.0" width="34.0" height="11.0" rx="3"/>
+  <rect class="row" x="558.0" y="228.0" width="34.0" height="11.0" rx="3"/>
+  <rect class="row" x="558.0" y="242.0" width="34.0" height="11.0" rx="3"/>
+  <rect class="row" x="558.0" y="256.0" width="34.0" height="11.0" rx="3"/>
+  <rect class="card" x="674.5" y="140.0" width="51.0" height="32.0" rx="8" stroke-width="1.2"/>
+  <text x="700.0" y="161.0" text-anchor="middle" class="ink" font-size="14" font-weight="700">the</text>
+  <rect class="row" x="683.0" y="186.0" width="34.0" height="11.0" rx="3"/>
+  <rect class="row" x="683.0" y="200.0" width="34.0" height="11.0" rx="3"/>
+  <rect class="row" x="683.0" y="214.0" width="34.0" height="11.0" rx="3"/>
+  <rect class="row" x="683.0" y="228.0" width="34.0" height="11.0" rx="3"/>
+  <rect class="row" x="683.0" y="242.0" width="34.0" height="11.0" rx="3"/>
+  <rect class="row" x="683.0" y="256.0" width="34.0" height="11.0" rx="3"/>
+  <rect class="card" x="799.5" y="140.0" width="51.0" height="32.0" rx="8" stroke-width="1.2"/>
+  <text x="825.0" y="161.0" text-anchor="middle" class="ink" font-size="14" font-weight="700">mat</text>
+  <rect class="row" x="808.0" y="186.0" width="34.0" height="11.0" rx="3"/>
+  <rect class="row" x="808.0" y="200.0" width="34.0" height="11.0" rx="3"/>
+  <rect class="row" x="808.0" y="214.0" width="34.0" height="11.0" rx="3"/>
+  <rect class="row" x="808.0" y="228.0" width="34.0" height="11.0" rx="3"/>
+  <rect class="row" x="808.0" y="242.0" width="34.0" height="11.0" rx="3"/>
+  <rect class="row" x="808.0" y="256.0" width="34.0" height="11.0" rx="3"/>
+  <rect class="card" x="906.5" y="140.0" width="87.0" height="32.0" rx="8" stroke-width="1.2"/>
+  <text x="950.0" y="161.0" text-anchor="middle" class="ink" font-size="14" font-weight="700">because</text>
+  <rect class="row" x="933.0" y="186.0" width="34.0" height="11.0" rx="3"/>
+  <rect class="row" x="933.0" y="200.0" width="34.0" height="11.0" rx="3"/>
+  <rect class="row" x="933.0" y="214.0" width="34.0" height="11.0" rx="3"/>
+  <rect class="row" x="933.0" y="228.0" width="34.0" height="11.0" rx="3"/>
+  <rect class="row" x="933.0" y="242.0" width="34.0" height="11.0" rx="3"/>
+  <rect class="row" x="933.0" y="256.0" width="34.0" height="11.0" rx="3"/>
+  <rect class="hit" x="1054.0" y="140.0" width="42.0" height="32.0" rx="8" stroke-width="1.6"/>
+  <text x="1075.0" y="161.0" text-anchor="middle" class="accink" font-size="14" font-weight="700">it</text>
+  <rect class="acc" x="1058.0" y="186.0" width="34.0" height="11.0" rx="3" fill-opacity="0.75"/>
+  <rect class="acc" x="1058.0" y="200.0" width="34.0" height="11.0" rx="3" fill-opacity="0.75"/>
+  <rect class="acc" x="1058.0" y="214.0" width="34.0" height="11.0" rx="3" fill-opacity="0.75"/>
+  <rect class="acc" x="1058.0" y="228.0" width="34.0" height="11.0" rx="3" fill-opacity="0.75"/>
+  <rect class="acc" x="1058.0" y="242.0" width="34.0" height="11.0" rx="3" fill-opacity="0.75"/>
+  <rect class="acc" x="1058.0" y="256.0" width="34.0" height="11.0" rx="3" fill-opacity="0.75"/>
+  <text x="1140.0" y="296.0" text-anchor="end" class="ink" font-size="13.5" font-weight="700">8 tokens × 768 numbers each (d = 768): the input matrix</text>
+  <text x="130.0" y="296.0" text-anchor="start" class="muted" font-size="12.5">each column = one token’s vector</text>
+</g>
+<g class="gB">
+  <rect class="card" x="110.0" y="330.0" width="1050.0" height="332.0" rx="14" stroke-width="1.4"/>
+  <rect class="sacc hlB" x="110.0" y="330.0" width="1050.0" height="332.0" rx="14" stroke-width="3"/>
+  <text x="130.0" y="356.0" text-anchor="start" class="accink mono" font-size="12" font-weight="700">2 · MULTI-HEAD CAUSAL SELF-ATTENTION</text>
+  <line class="line" x1="70" y1="352" x2="106" y2="352" marker-end="url(#a)"/>
+  <text x="200.0" y="440.0" text-anchor="middle" class="ink" font-size="13.5" font-weight="700">The</text>
+  <text x="325.0" y="440.0" text-anchor="middle" class="ink" font-size="13.5" font-weight="700">cat</text>
+  <text x="450.0" y="440.0" text-anchor="middle" class="ink" font-size="13.5" font-weight="700">sat</text>
+  <text x="575.0" y="440.0" text-anchor="middle" class="ink" font-size="13.5" font-weight="700">on</text>
+  <text x="700.0" y="440.0" text-anchor="middle" class="ink" font-size="13.5" font-weight="700">the</text>
+  <text x="825.0" y="440.0" text-anchor="middle" class="ink" font-size="13.5" font-weight="700">mat</text>
+  <text x="950.0" y="440.0" text-anchor="middle" class="ink" font-size="13.5" font-weight="700">because</text>
+  <text x="1075.0" y="440.0" text-anchor="middle" class="accink" font-size="13.5" font-weight="700">it</text>
+  <path class="sacc arc0" d="M1075 422 Q637.5 357.5 200 422" stroke-width="1.8" stroke-dasharray="1200" fill="none" opacity="0.38"/>
+  <path class="sacc arc1" d="M1075 422 Q700.0 365.0 325 422" stroke-width="7.1" stroke-dasharray="1200" fill="none" opacity="0.97"/>
+  <path class="sacc arc2" d="M1075 422 Q762.5 372.5 450 422" stroke-width="1.9" stroke-dasharray="1200" fill="none" opacity="0.39"/>
+  <path class="sacc arc3" d="M1075 422 Q825.0 380.0 575 422" stroke-width="1.7" stroke-dasharray="1200" fill="none" opacity="0.37"/>
+  <path class="sacc arc4" d="M1075 422 Q887.5 387.5 700 422" stroke-width="1.8" stroke-dasharray="1200" fill="none" opacity="0.38"/>
+  <path class="sacc arc5" d="M1075 422 Q950.0 395.0 825 422" stroke-width="2.8" stroke-dasharray="1200" fill="none" opacity="0.49"/>
+  <path class="sacc arc6" d="M1075 422 Q1012.5 402.5 950 422" stroke-width="2.1" stroke-dasharray="1200" fill="none" opacity="0.42"/>
+  <text x="130.0" y="378.0" text-anchor="start" class="muted" font-size="12">“it” asks a question (query);</text>
+  <text x="130.0" y="393.0" text-anchor="start" class="muted" font-size="12">each word offers a label (key)</text>
+  <rect class="heatfill bar" x="184.0" y="536.4" width="32.0" height="3.6" rx="3" style="transform-box:fill-box;transform-origin:bottom" data-b=""/>
+  <text x="200.0" y="558.0" text-anchor="middle" class="ink mono wts" font-size="12.5" font-weight="700">0.03</text>
+  <rect class="acc bar" x="309.0" y="465.6" width="32.0" height="74.4" rx="3" style="transform-box:fill-box;transform-origin:bottom" data-b=""/>
+  <text x="325.0" y="558.0" text-anchor="middle" class="ink mono wts" font-size="12.5" font-weight="700">0.62</text>
+  <rect class="heatfill bar" x="434.0" y="535.2" width="32.0" height="4.8" rx="3" style="transform-box:fill-box;transform-origin:bottom" data-b=""/>
+  <text x="450.0" y="558.0" text-anchor="middle" class="ink mono wts" font-size="12.5" font-weight="700">0.04</text>
+  <rect class="heatfill bar" x="559.0" y="537.6" width="32.0" height="2.4" rx="3" style="transform-box:fill-box;transform-origin:bottom" data-b=""/>
+  <text x="575.0" y="558.0" text-anchor="middle" class="ink mono wts" font-size="12.5" font-weight="700">0.02</text>
+  <rect class="heatfill bar" x="684.0" y="536.4" width="32.0" height="3.6" rx="3" style="transform-box:fill-box;transform-origin:bottom" data-b=""/>
+  <text x="700.0" y="558.0" text-anchor="middle" class="ink mono wts" font-size="12.5" font-weight="700">0.03</text>
+  <rect class="heatfill bar" x="809.0" y="523.2" width="32.0" height="16.8" rx="3" style="transform-box:fill-box;transform-origin:bottom" data-b=""/>
+  <text x="825.0" y="558.0" text-anchor="middle" class="ink mono wts" font-size="12.5" font-weight="700">0.14</text>
+  <rect class="heatfill bar" x="934.0" y="531.6" width="32.0" height="8.4" rx="3" style="transform-box:fill-box;transform-origin:bottom" data-b=""/>
+  <text x="950.0" y="558.0" text-anchor="middle" class="ink mono wts" font-size="12.5" font-weight="700">0.07</text>
+  <rect class="heatfill bar" x="1059.0" y="534.0" width="32.0" height="6.0" rx="3" style="transform-box:fill-box;transform-origin:bottom" data-b=""/>
+  <text x="1075.0" y="558.0" text-anchor="middle" class="ink mono wts" font-size="12.5" font-weight="700">0.05</text>
+  <line class="thin" x1="150" y1="540" x2="1120" y2="540"/>
+  <text x="130.0" y="488.0" text-anchor="start" class="muted" font-size="12">score →</text>
+  <text x="130.0" y="503.0" text-anchor="start" class="muted" font-size="12">softmax →</text>
+  <text x="130.0" y="518.0" text-anchor="start" class="muted" font-size="12">weights</text>
+  <text x="130.0" y="558.0" text-anchor="start" class="muted mono" font-size="11.5">sum = 1</text>
+  <text x="635.0" y="588.0" text-anchor="middle" class="accink mix" font-size="14" font-weight="700">New “it” = 0.62 × cat + 0.14 × mat + 0.07 × because + … (a weighted mix of the words’ values)</text>
+  <text x="1140.0" y="356.0" text-anchor="end" class="muted" font-size="12.5">Causal: “it” looks only back. Words after it aren’t written yet.</text>
+  <rect class="row hd0" x="150.0" y="600.0" width="232.0" height="44.0" rx="8"/>
+  <circle class="acc hd0" cx="166" cy="622" r="5"/>
+  <text x="178.0" y="618.0" text-anchor="start" class="ink mono hd0" font-size="11.5" font-weight="700">head 1</text>
+  <text x="178.0" y="635.0" text-anchor="start" class="muted hd0" font-size="12.5">who is “it”? → cat</text>
+  <rect class="row hd1" x="400.0" y="600.0" width="232.0" height="44.0" rx="8"/>
+  <circle class="heatfill hd1" cx="416" cy="622" r="5"/>
+  <text x="428.0" y="618.0" text-anchor="start" class="ink mono hd1" font-size="11.5" font-weight="700">head 2</text>
+  <text x="428.0" y="635.0" text-anchor="start" class="muted hd1" font-size="12.5">where? → mat</text>
+  <rect class="row hd2" x="650.0" y="600.0" width="232.0" height="44.0" rx="8"/>
+  <circle class="pos hd2" cx="666" cy="622" r="5"/>
+  <text x="678.0" y="618.0" text-anchor="start" class="ink mono hd2" font-size="11.5" font-weight="700">head 3 … 12</text>
+  <text x="678.0" y="635.0" text-anchor="start" class="muted hd2" font-size="12.5">other patterns</text>
+  <text x="1140.0" y="618.0" text-anchor="end" class="ink" font-size="13" font-weight="700">12 heads in parallel, 64 numbers each</text>
+  <text x="1140.0" y="636.0" text-anchor="end" class="accink mono" font-size="13" font-weight="700">joined: 12 × 64 = 768</text>
+</g>
+<g class="gP1">
+  <path class="line" d="M110 645 H92 Q84 645 82 673" marker-end="url(#a)"/>
+  <circle class="card" cx="70" cy="687" r="15" stroke-width="2"/>
+  <text x="70.0" y="694.0" text-anchor="middle" class="ink" font-size="20" font-weight="700">+</text>
+  <circle class="sacc hlP1" cx="70" cy="687" r="19" stroke-width="3" fill="none"/>
+  <text x="96.0" y="692.0" text-anchor="start" class="muted" font-size="12.5">add back to the main line (residual)</text>
+</g>
+<g class="gC">
+  <rect class="card" x="110.0" y="710.0" width="1050.0" height="240.0" rx="14" stroke-width="1.4"/>
+  <rect class="sacc hlC" x="110.0" y="710.0" width="1050.0" height="240.0" rx="14" stroke-width="3"/>
+  <text x="130.0" y="736.0" text-anchor="start" class="accink mono" font-size="12" font-weight="700">3 · MLP (FEED-FORWARD), ON EACH TOKEN ALONE</text>
+  <line class="line" x1="70" y1="732" x2="106" y2="732" marker-end="url(#a)"/>
+  <polygon class="acc fun1" fill-opacity="0.08" points="538.5,782 661.5,782 850.5,836 349.5,836"/>
+  <polygon class="heatfill fun2" fill-opacity="0.08" points="349.5,858 850.5,858 661.5,906 538.5,906"/>
+  <line class="edge fo" x1="547.5" y1="782" x2="358.5" y2="836"/>
+  <line class="edge fo" x1="547.5" y1="782" x2="379.5" y2="836"/>
+  <line class="edge fo" x1="547.5" y1="782" x2="400.5" y2="836"/>
+  <line class="edge fo" x1="547.5" y1="782" x2="421.5" y2="836"/>
+  <line class="edge fo" x1="568.5" y1="782" x2="442.5" y2="836"/>
+  <line class="edge fo" x1="568.5" y1="782" x2="463.5" y2="836"/>
+  <line class="edge fo" x1="568.5" y1="782" x2="484.5" y2="836"/>
+  <line class="edge fo" x1="568.5" y1="782" x2="505.5" y2="836"/>
+  <line class="edge fo" x1="589.5" y1="782" x2="526.5" y2="836"/>
+  <line class="edge fo" x1="589.5" y1="782" x2="547.5" y2="836"/>
+  <line class="edge fo" x1="589.5" y1="782" x2="568.5" y2="836"/>
+  <line class="edge fo" x1="589.5" y1="782" x2="589.5" y2="836"/>
+  <line class="edge fo" x1="610.5" y1="782" x2="610.5" y2="836"/>
+  <line class="edge fo" x1="610.5" y1="782" x2="631.5" y2="836"/>
+  <line class="edge fo" x1="610.5" y1="782" x2="652.5" y2="836"/>
+  <line class="edge fo" x1="610.5" y1="782" x2="673.5" y2="836"/>
+  <line class="edge fo" x1="631.5" y1="782" x2="694.5" y2="836"/>
+  <line class="edge fo" x1="631.5" y1="782" x2="715.5" y2="836"/>
+  <line class="edge fo" x1="631.5" y1="782" x2="736.5" y2="836"/>
+  <line class="edge fo" x1="631.5" y1="782" x2="757.5" y2="836"/>
+  <line class="edge fo" x1="652.5" y1="782" x2="778.5" y2="836"/>
+  <line class="edge fo" x1="652.5" y1="782" x2="799.5" y2="836"/>
+  <line class="edge fo" x1="652.5" y1="782" x2="820.5" y2="836"/>
+  <line class="edge fo" x1="652.5" y1="782" x2="841.5" y2="836"/>
+  <line class="sheat cv" stroke-width="1.5" x1="379.5" y1="858" x2="547.5" y2="906"/>
+  <line class="sheat cv" stroke-width="1.5" x1="442.5" y1="858" x2="568.5" y2="906"/>
+  <line class="sheat cv" stroke-width="1.5" x1="463.5" y1="858" x2="568.5" y2="906"/>
+  <line class="sheat cv" stroke-width="1.5" x1="547.5" y1="858" x2="589.5" y2="906"/>
+  <line class="sheat cv" stroke-width="1.5" x1="610.5" y1="858" x2="610.5" y2="906"/>
+  <line class="sheat cv" stroke-width="1.5" x1="631.5" y1="858" x2="610.5" y2="906"/>
+  <line class="sheat cv" stroke-width="1.5" x1="715.5" y1="858" x2="631.5" y2="906"/>
+  <line class="sheat cv" stroke-width="1.5" x1="778.5" y1="858" x2="652.5" y2="906"/>
+  <line class="sheat cv" stroke-width="1.5" x1="820.5" y1="858" x2="652.5" y2="906"/>
+  <rect class="acc" x="538.5" y="766.0" width="18.0" height="16.0" rx="3"/>
+  <rect class="acc" x="559.5" y="766.0" width="18.0" height="16.0" rx="3"/>
+  <rect class="acc" x="580.5" y="766.0" width="18.0" height="16.0" rx="3"/>
+  <rect class="acc" x="601.5" y="766.0" width="18.0" height="16.0" rx="3"/>
+  <rect class="acc" x="622.5" y="766.0" width="18.0" height="16.0" rx="3"/>
+  <rect class="acc" x="643.5" y="766.0" width="18.0" height="16.0" rx="3"/>
+  <rect class="heat off" x="349.5" y="836.0" width="18.0" height="22.0" rx="3" stroke-width="1.2"/>
+  <rect class="heat hid" x="370.5" y="836.0" width="18.0" height="22.0" rx="3" stroke-width="1.2"/>
+  <rect class="heatfill fire" x="370.5" y="836.0" width="18.0" height="22.0" rx="3"/>
+  <rect class="heat off" x="391.5" y="836.0" width="18.0" height="22.0" rx="3" stroke-width="1.2"/>
+  <rect class="heat off" x="412.5" y="836.0" width="18.0" height="22.0" rx="3" stroke-width="1.2"/>
+  <rect class="heat hid" x="433.5" y="836.0" width="18.0" height="22.0" rx="3" stroke-width="1.2"/>
+  <rect class="heatfill fire" x="433.5" y="836.0" width="18.0" height="22.0" rx="3"/>
+  <rect class="heat hid" x="454.5" y="836.0" width="18.0" height="22.0" rx="3" stroke-width="1.2"/>
+  <rect class="heatfill fire" x="454.5" y="836.0" width="18.0" height="22.0" rx="3"/>
+  <rect class="heat off" x="475.5" y="836.0" width="18.0" height="22.0" rx="3" stroke-width="1.2"/>
+  <rect class="heat off" x="496.5" y="836.0" width="18.0" height="22.0" rx="3" stroke-width="1.2"/>
+  <rect class="heat off" x="517.5" y="836.0" width="18.0" height="22.0" rx="3" stroke-width="1.2"/>
+  <rect class="heat hid" x="538.5" y="836.0" width="18.0" height="22.0" rx="3" stroke-width="1.2"/>
+  <rect class="heatfill fire" x="538.5" y="836.0" width="18.0" height="22.0" rx="3"/>
+  <rect class="heat off" x="559.5" y="836.0" width="18.0" height="22.0" rx="3" stroke-width="1.2"/>
+  <rect class="heat off" x="580.5" y="836.0" width="18.0" height="22.0" rx="3" stroke-width="1.2"/>
+  <rect class="heat hid" x="601.5" y="836.0" width="18.0" height="22.0" rx="3" stroke-width="1.2"/>
+  <rect class="heatfill fire" x="601.5" y="836.0" width="18.0" height="22.0" rx="3"/>
+  <rect class="heat hid" x="622.5" y="836.0" width="18.0" height="22.0" rx="3" stroke-width="1.2"/>
+  <rect class="heatfill fire" x="622.5" y="836.0" width="18.0" height="22.0" rx="3"/>
+  <rect class="heat off" x="643.5" y="836.0" width="18.0" height="22.0" rx="3" stroke-width="1.2"/>
+  <rect class="heat off" x="664.5" y="836.0" width="18.0" height="22.0" rx="3" stroke-width="1.2"/>
+  <rect class="heat off" x="685.5" y="836.0" width="18.0" height="22.0" rx="3" stroke-width="1.2"/>
+  <rect class="heat hid" x="706.5" y="836.0" width="18.0" height="22.0" rx="3" stroke-width="1.2"/>
+  <rect class="heatfill fire" x="706.5" y="836.0" width="18.0" height="22.0" rx="3"/>
+  <rect class="heat off" x="727.5" y="836.0" width="18.0" height="22.0" rx="3" stroke-width="1.2"/>
+  <rect class="heat off" x="748.5" y="836.0" width="18.0" height="22.0" rx="3" stroke-width="1.2"/>
+  <rect class="heat hid" x="769.5" y="836.0" width="18.0" height="22.0" rx="3" stroke-width="1.2"/>
+  <rect class="heatfill fire" x="769.5" y="836.0" width="18.0" height="22.0" rx="3"/>
+  <rect class="heat off" x="790.5" y="836.0" width="18.0" height="22.0" rx="3" stroke-width="1.2"/>
+  <rect class="heat hid" x="811.5" y="836.0" width="18.0" height="22.0" rx="3" stroke-width="1.2"/>
+  <rect class="heatfill fire" x="811.5" y="836.0" width="18.0" height="22.0" rx="3"/>
+  <rect class="heat off" x="832.5" y="836.0" width="18.0" height="22.0" rx="3" stroke-width="1.2"/>
+  <rect class="acc outp" x="538.5" y="906.0" width="18.0" height="16.0" rx="3"/>
+  <rect class="acc outp" x="559.5" y="906.0" width="18.0" height="16.0" rx="3"/>
+  <rect class="acc outp" x="580.5" y="906.0" width="18.0" height="16.0" rx="3"/>
+  <rect class="acc outp" x="601.5" y="906.0" width="18.0" height="16.0" rx="3"/>
+  <rect class="acc outp" x="622.5" y="906.0" width="18.0" height="16.0" rx="3"/>
+  <rect class="acc outp" x="643.5" y="906.0" width="18.0" height="16.0" rx="3"/>
+  <text x="130.0" y="779.0" text-anchor="start" class="accink mono" font-size="13" font-weight="700">“it”: 768</text>
+  <text x="130.0" y="852.0" text-anchor="start" class="ink mono" font-size="13" font-weight="700">3,072 detectors</text>
+  <text x="130.0" y="919.0" text-anchor="start" class="accink mono" font-size="13" font-weight="700">768: an update</text>
+  <text x="1140.0" y="779.0" text-anchor="end" class="ink" font-size="13.5" font-weight="700">1 · Expand: 4 × wider</text>
+  <text x="1140.0" y="852.0" text-anchor="end" class="ink l2" font-size="13.5" font-weight="700">2 · Fire (kept) or off (set to 0)</text>
+  <text x="1140.0" y="919.0" text-anchor="end" class="ink l3" font-size="13.5" font-weight="700">3 · Shrink back to 768</text>
+</g>
+<g class="gP2">
+  <path class="line" d="M110 935 H92 Q84 935 82 961" marker-end="url(#a)"/>
+  <circle class="card" cx="70" cy="975" r="15" stroke-width="2"/>
+  <text x="70.0" y="982.0" text-anchor="middle" class="ink" font-size="20" font-weight="700">+</text>
+  <circle class="sacc hlP2" cx="70" cy="975" r="19" stroke-width="3" fill="none"/>
+  <text x="96.0" y="980.0" text-anchor="start" class="muted" font-size="12.5">add back to the main line (residual)</text>
+</g>
+<g class="gD">
+  <rect class="card" x="110.0" y="1000.0" width="1050.0" height="54.0" rx="14" stroke-width="1.4"/>
+  <rect class="sacc hlD" x="110.0" y="1000.0" width="1050.0" height="54.0" rx="14" stroke-width="3"/>
+  <text x="130.0" y="1033.0" text-anchor="start" class="ink" font-size="14" font-weight="700">4 · OUT: 8 tokens × 768 numbers, the same shape as the input. “it” now carries “the cat”.</text>
+  <text x="1140.0" y="1033.0" text-anchor="end" class="accink mono" font-size="12.5" font-weight="700">GPT-2 repeats this layer 12 times</text>
+</g>
+  <circle class="acc pulse" cx="70" cy="0" r="8"/>
+</svg>

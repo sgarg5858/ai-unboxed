@@ -1230,6 +1230,30 @@
         "height": 600,
         "caption": "Inside every transformer block: two residual lines copy the input around each step and add it back."
       }
+    },
+    {
+      "title": "Transformer layer, in motion",
+      "summary": "Watch “it” go through one transformer layer: attention looks back, the MLP refines, and each result is added back.",
+      "body": [
+        {
+          "ul": [
+            "<b>1 · Input:</b> each token is a column of 768 numbers.",
+            "<b>2 · Self-attention:</b> “it” scores every earlier word, softmax turns the scores into weights, and “it” takes a weighted mix of them, mostly “cat”. 12 heads do this at once.",
+            "<b>3 · MLP:</b> each token, on its own, fans out into 3,072 detectors (768 → 3,072). Some fire, the rest switch off, and the firing ones shrink back into 768 numbers.",
+            "<b>4 · Out:</b> the same shape as the input. GPT-2 stacks 12 of these layers."
+          ]
+        },
+        "<mark>Attention lets tokens share information; the MLP then works on each token alone. Both add their result back to the main line.</mark>"
+      ],
+      "figure": {
+        "src": "images/layer-animated-light.svg",
+        "darkSrc": "images/layer-animated-dark.svg",
+        "alt": "An animation of one transformer layer, GPT-2 sizes, on “The cat sat on the mat because it”, following “it”. 1, input: 8 tokens become 8 columns of 768 numbers, the input matrix. 2, multi-head causal self-attention: “it” looks back at every earlier word, never ahead; its query is compared with each word’s key, and softmax turns the scores into weights that add up to 1: cat 0.62, mat 0.14, because 0.07, it 0.05, sat 0.04, The 0.03, the 0.03, on 0.02. The new “it” is a weighted mix, mostly “cat”. 12 heads do this in parallel, 64 numbers each, joined back into 768, and the result is added to the main line. 3, MLP, drawn as an hourglass: “it”’s 768 numbers fan out into 3,072 detectors, 4 times wider; some fire and are kept, the rest stay off and are set to 0; only the firing ones feed back into 768 numbers, an update that is added back again. 4, out: 8 tokens by 768 numbers, the same shape; “it” now carries “the cat”. GPT-2 repeats this layer 12 times.",
+        "width": 1200,
+        "height": 1080,
+        "caption": "The animation loops every 22 seconds. Weights are illustrative.",
+        "animated": true
+      }
     }
   ]
 }

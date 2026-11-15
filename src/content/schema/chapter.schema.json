@@ -762,6 +762,10 @@
         "placement": {
           "enum": ["top", "bottom"],
           "description": "top: under the slide title, before the text (good for a short 'where it sits' strip). Default bottom: under both columns."
+        },
+        "animated": {
+          "type": "boolean",
+          "description": "The SVG has CSS animations: embed it as a live document with a Play/Pause button (an <img> may not animate). It starts paused when the reader's system asks for reduced motion."
         }
       }
     }

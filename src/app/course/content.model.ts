@@ -110,6 +110,8 @@ export interface Figure {
   caption?: string;
   /** "top" shows it under the title, before the text; default is under both columns. */
   placement?: 'top' | 'bottom';
+  /** CSS-animated SVG: embedded live, with a Play/Pause button. */
+  animated?: boolean;
 }
 
 export interface SlideContent {
