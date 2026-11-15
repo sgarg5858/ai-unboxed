@@ -763,6 +763,13 @@
         {
           "type": "caption",
           "html": "Click a part to jump to it."
+        },
+        {
+          "type": "embed",
+          "src": "https://bbycroft.net/llm",
+          "title": "Explore it in 3D: LLM Visualization",
+          "description": "Brendan Bycroft's interactive 3D walkthrough of a tiny GPT. Step through every stage on this map (embeddings, layer norm, self-attention, MLP, softmax) and see the actual numbers flow, then compare with GPT-2 and GPT-3 at full size. It's heavy 3D, so it works best on a desktop or in a new tab.",
+          "height": 640
         }
       ],
       "figure": {
