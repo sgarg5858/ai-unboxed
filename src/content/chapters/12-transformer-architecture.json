@@ -530,6 +530,10 @@
         {
           "more": "Why do the pairs turn at different speeds?",
           "text": "Fast pairs make nearby positions look clearly different. Slow pairs change gradually over long distances. Together they tell the model how far apart words are, both close up and across a long text."
+        },
+        {
+          "more": "Deep dive: positional embeddings",
+          "text": "For a closer look at how models encode position, from the original fixed patterns to RoPE, read <a href=\"https://magazine.sebastianraschka.com/p/understanding-positional-embeddings\" target=\"_blank\" rel=\"noopener noreferrer\">Understanding positional embeddings, by Sebastian Raschka</a>."
         }
       ],
       "viz": [

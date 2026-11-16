@@ -25,7 +25,11 @@
           "note": "A database lookup returns the one row whose key equals your query. Attention returns a mix of <i>every</i> row, weighted by how well each key matches. Because nothing is all-or-nothing, the model can learn it by making small adjustments.",
           "kind": "analogy"
         },
-        "The next four slides work through this step by step on \"I am learning artificial\", with real numbers."
+        "The next four slides work through this step by step on \"I am learning artificial\", with real numbers.",
+        {
+          "more": "Deep dive: attention",
+          "text": "For a longer, step-by-step walkthrough of how attention works, read <a href=\"https://learn.ratishfolio.com/llms/attention/\" target=\"_blank\" rel=\"noopener noreferrer\">Attention, on learn.ratishfolio.com</a>."
+        }
       ],
       "viz": [
         {
@@ -188,6 +192,10 @@
         {
           "note": "<mark>This is why long prompts are expensive.</mark> Even with these tricks, a 200,000-token prompt needs far more computing and memory than a 2,000-token one.",
           "kind": "key"
+        },
+        {
+          "more": "Deep dive: the KV cache",
+          "text": "For a closer look at how the KV cache works and what it costs, read <a href=\"https://learn.ratishfolio.com/llms/kv-cache/\" target=\"_blank\" rel=\"noopener noreferrer\">KV cache, on learn.ratishfolio.com</a>."
         }
       ],
       "code": [

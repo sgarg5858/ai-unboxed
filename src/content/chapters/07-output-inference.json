@@ -14,6 +14,10 @@
         {
           "note": "<mark>This list of 100,000+ scores is everything the model outputs.</mark> Picking a token from it is done by normal code outside the model, and you control how. That's the next two slides.",
           "kind": "key"
+        },
+        {
+          "more": "Deep dive: how LLM inference works",
+          "text": "For an end-to-end look at inference, from your prompt to the streamed answer, read <a href=\"https://arpitbhayani.me/blogs/how-llm-inference-works/\" target=\"_blank\" rel=\"noopener noreferrer\">How LLM inference works, by Arpit Bhayani</a>."
         }
       ],
       "code": [
