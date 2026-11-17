@@ -23,6 +23,11 @@
               {
                 "glob": "**/*",
                 "input": "public"
+              },
+              {
+                "glob": "**/*.{mp4,webm,vtt,jpg,png,webp}",
+                "input": "src/content/videos",
+                "output": "videos"
               }
             ],
             "styles": [

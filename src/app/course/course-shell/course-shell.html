@@ -27,7 +27,10 @@
         <path d="M11 8l2.2 2-2.2 2" stroke-linecap="round" stroke-linejoin="round" />
       </svg>
     </button>
-    <h1>AI, <span>Unboxed</span></h1>
+    <div class="brand">
+      <h1>AI, <span>Unboxed</span></h1>
+      <app-mode-switch />
+    </div>
     <div class="tools">
       <button
         type="button"
@@ -43,10 +46,6 @@
       </button>
       <app-theme-switch />
     </div>
-    <p class="sub">
-      how modern AI works, one layer at a time · <span class="kbd">←</span>
-      <span class="kbd">→</span> to move · <span class="kbd">?</span> shortcuts
-    </p>
   </header>
 
   <app-section-tabs class="tabs" />
@@ -79,35 +78,46 @@
           @if (nav.section().chapters.length > 1) {
             {{ nav.section().name }} ·
           }
-          slide {{ nav.position().slide + 1 }} of {{ nav.chapter().slides.length }}
+          @if (watching()) {
+            video
+          } @else {
+            slide {{ nav.position().slide + 1 }} of {{ nav.chapter().slides.length }}
+          }
         </span>
       </div>
 
       <div #stage>
-        <!-- track by slide identity so widget state resets when the slide changes -->
-        @for (s of [nav.slide()]; track s) {
-          <app-slide-view [content]="s" />
+        @if (watching()) {
+          <app-watch-view />
+        } @else {
+          <!-- track by slide identity so widget state resets when the slide changes -->
+          @for (s of [nav.slide()]; track s) {
+            <app-slide-view [content]="s" />
+          }
         }
       </div>
 
       <p class="sr-only" aria-live="polite">{{ announcement() }}</p>
 
-      <nav class="foot" aria-label="Previous and next slide">
+      <nav
+        class="foot"
+        [attr.aria-label]="watching() ? 'Previous and next chapter' : 'Previous and next slide'"
+      >
         <button
           type="button"
           class="btn"
-          [disabled]="nav.isFirst()"
-          aria-keyshortcuts="ArrowLeft"
+          [disabled]="isFirst()"
+          [attr.aria-keyshortcuts]="watching() ? null : 'ArrowLeft'"
           (click)="move(-1)"
         >
           ← Back
         </button>
-        <span class="cnt">{{ nav.position().slide + 1 }} / {{ nav.chapter().slides.length }}</span>
+        <span class="cnt">{{ counter() }}</span>
         <button
           type="button"
           class="btn next"
-          [attr.aria-label]="nav.nextLabel() + ': ' + nav.nextHint()"
-          aria-keyshortcuts="ArrowRight"
+          [attr.aria-label]="nextAria()"
+          [attr.aria-keyshortcuts]="watching() ? null : 'ArrowRight'"
           (click)="move(1)"
         >
           {{ nextText() }}

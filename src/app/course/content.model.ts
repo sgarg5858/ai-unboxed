@@ -142,8 +142,19 @@ export interface SectionContent {
   chapters: ChapterRef[];
 }
 
+/** One video covering a whole chapter, shown in Watch mode. Files live in src/content/videos/. */
+export interface ChapterVideo {
+  /** e.g. "videos/tokens.mp4", no leading slash (the base href varies). */
+  src: string;
+  title: string;
+  /** Inline HTML allowed, as in prose. */
+  description?: string;
+  poster?: string;
+}
+
 export interface ChapterContent {
   id: string;
   name: string;
+  video?: ChapterVideo;
   slides: SlideContent[];
 }

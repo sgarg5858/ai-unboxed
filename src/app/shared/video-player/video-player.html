@@ -1,0 +1,203 @@
+<div
+  #frame
+  class="player"
+  role="region"
+  [attr.aria-label]="'Video: ' + label()"
+  [class.idle]="idle()"
+  [class.playing]="playing()"
+  [class.fs]="fullscreen()"
+  (pointermove)="wake()"
+  (pointerdown)="wake()"
+>
+  <video
+    #video
+    [src]="src()"
+    [attr.poster]="poster() ?? null"
+    preload="metadata"
+    playsinline
+    (click)="toggle()"
+    (dblclick)="onDouble($event)"
+    (loadedmetadata)="onMeta()"
+    (durationchange)="onMeta()"
+    (play)="onPlay()"
+    (pause)="onPause()"
+    (timeupdate)="onTime()"
+    (progress)="onProgress()"
+    (waiting)="waiting.set(true)"
+    (playing)="waiting.set(false)"
+    (canplay)="waiting.set(false)"
+    (ended)="onEnded()"
+    (volumechange)="onVolume()"
+    (ratechange)="rate.set($any($event.target).playbackRate)"
+    (error)="failed.set(true)"
+  ></video>
+
+  <!-- ±5 s bubble, recreated on every press so its animation replays -->
+  @for (f of flash() ? [flash()!] : []; track f.key) {
+    <div class="flash" [class.right]="f.dir > 0" aria-hidden="true">
+      <span class="chev">{{ f.dir > 0 ? '›››' : '‹‹‹' }}</span>
+      {{ f.amount }} seconds
+    </div>
+  }
+
+  @if (failed()) {
+    <div class="cover">
+      <p class="msg">This video couldn’t be loaded. Check your connection and try again.</p>
+      <button type="button" class="replay" (click)="retry()">Try again</button>
+    </div>
+  } @else if (ended()) {
+    <div class="cover end">
+      <button type="button" class="replay" (click)="restart()">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 12a8 8 0 1 0 2.4-5.7" />
+          <path d="M4 4v4.5h4.5" />
+        </svg>
+        Watch again
+      </button>
+      <ng-content select="[end]" />
+    </div>
+  } @else if (!playing() && !waiting()) {
+    <button
+      type="button"
+      class="big"
+      [class.intro]="!started()"
+      [attr.aria-label]="started() ? 'Play' : 'Play video: ' + label()"
+      (click)="toggle()"
+    >
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z" /></svg>
+      @if (!started() && duration()) {
+        <span class="len">{{ clock(duration()) }}</span>
+      }
+    </button>
+  }
+
+  @if (waiting() && playing()) {
+    <span class="spin" role="status" aria-label="Loading"></span>
+  }
+
+  @if (resumedFrom(); as at) {
+    <div class="toast" role="status">
+      Picking up at {{ clock(at) }}
+      <button type="button" (click)="restart()">Start over</button>
+    </div>
+  }
+
+  <div class="ctl" [class.hide]="ended() || failed() || !started()">
+    <app-video-range
+      class="scrub"
+      [value]="current()"
+      [max]="duration()"
+      [buffer]="bufferPct()"
+      [seekBar]="true"
+      label="Seek"
+      [valueText]="timeText()"
+      (changed)="seekTo($event)"
+      (nudge)="skip($event)"
+    />
+
+    <div class="ctl-row">
+      <button
+        type="button"
+        class="ib"
+        [attr.aria-label]="playing() ? 'Pause' : 'Play'"
+        [title]="playing() ? 'Pause (K)' : 'Play (K)'"
+        (click)="toggle()"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true" class="solid">
+          @if (playing()) {
+            <path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z" />
+          } @else {
+            <path d="M8 5.5v13l10.5-6.5z" />
+          }
+        </svg>
+      </button>
+      <button
+        type="button"
+        class="ib"
+        aria-label="Back 5 seconds"
+        title="Back 5 s (←)"
+        (click)="skip(-1)"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M5 12a7 7 0 1 0 2.1-5" />
+          <path d="M5 3.5V7h3.5" />
+          <text x="12.3" y="15.6">5</text>
+        </svg>
+      </button>
+      <button
+        type="button"
+        class="ib"
+        aria-label="Forward 5 seconds"
+        title="Forward 5 s (→)"
+        (click)="skip(1)"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M19 12a7 7 0 1 1-2.1-5" />
+          <path d="M19 3.5V7h-3.5" />
+          <text x="11.7" y="15.6">5</text>
+        </svg>
+      </button>
+
+      <div class="vol">
+        <button
+          type="button"
+          class="ib"
+          [attr.aria-label]="muted() ? 'Unmute' : 'Mute'"
+          [title]="muted() ? 'Unmute (M)' : 'Mute (M)'"
+          (click)="toggleMute()"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 9.5v5h3.5L12 18V6L7.5 9.5z" class="fill" />
+            @if (muted()) {
+              <path d="M16 9.5l5 5M21 9.5l-5 5" />
+            } @else {
+              <path d="M15.5 9a4 4 0 0 1 0 6" />
+              @if (volume() > 0.5) {
+                <path d="M18 6.5a7.5 7.5 0 0 1 0 11" />
+              }
+            }
+          </svg>
+        </button>
+        <app-video-range
+          class="vr"
+          [value]="volumeShown()"
+          [max]="1"
+          [step]="0.05"
+          label="Volume"
+          (changed)="setVolume($event)"
+        />
+      </div>
+
+      <span class="time">
+        <span>{{ clock(current()) }}</span> / {{ clock(duration()) }}
+      </span>
+
+      <span class="gap"></span>
+
+      <button
+        type="button"
+        class="ib rate"
+        [attr.aria-label]="'Playback speed ' + rate() + 'x. Change speed'"
+        title="Speed (&lt; &gt;)"
+        (click)="cycleRate()"
+      >
+        {{ rate() }}×
+      </button>
+      <button
+        type="button"
+        class="ib"
+        [attr.aria-label]="fullscreen() ? 'Exit full screen' : 'Full screen'"
+        [title]="fullscreen() ? 'Exit full screen (F)' : 'Full screen (F)'"
+        (click)="toggleFullscreen()"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          @if (fullscreen()) {
+            <path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5" />
+          } @else {
+            <path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" />
+          }
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>

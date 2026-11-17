@@ -24,6 +24,32 @@
       "items": {
         "$ref": "#/definitions/slide"
       }
+    },
+    "video": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["src", "title"],
+      "description": "Optional video for the whole chapter, shown in Watch mode. Put the file in src/content/videos/.",
+      "properties": {
+        "src": {
+          "type": "string",
+          "pattern": "^videos/[^/]+\\.(mp4|webm)$",
+          "description": "e.g. videos/tokens.mp4 (no leading slash)"
+        },
+        "title": {
+          "type": "string",
+          "description": "Heading above the player"
+        },
+        "description": {
+          "type": "string",
+          "description": "One or two sentences under the heading. Inline HTML allowed, as in prose."
+        },
+        "poster": {
+          "type": "string",
+          "pattern": "^videos/[^/]+\\.(jpg|png|webp)$",
+          "description": "Optional still shown before playing"
+        }
+      }
     }
   },
   "definitions": {

@@ -11,6 +11,7 @@ import { ChapterStore } from '../chapter-store';
 import { CourseNav } from '../course-nav';
 import { chapterNumber } from '../course-position';
 import { ReadingProgress } from '../reading-progress';
+import { ViewModeState } from '../view-mode';
 
 /**
  * Chapters with expandable slide lists and reading progress. The sidebar shows only the current
@@ -28,7 +29,15 @@ import { ReadingProgress } from '../reading-progress';
           <div class="sechead">
             <p class="eyebrow">Section {{ sec.num }}</p>
             <h2>{{ sec.name }}</h2>
-            @if (sec.total) {
+            @if (watching()) {
+              <p class="secprog">
+                @if (sec.videos) {
+                  ▶ {{ sec.videos }} of {{ sec.chapters.length }} chapters have a video
+                } @else {
+                  No videos in this section yet
+                }
+              </p>
+            } @else if (sec.total) {
               <p class="secprog">
                 <span class="bar" aria-hidden="true"
                   ><i [style.width.%]="(sec.read / sec.total) * 100"></i
@@ -45,8 +54,9 @@ import { ReadingProgress } from '../reading-progress';
         }
         <ol class="chapters">
           @for (c of sec.chapters; track c.id) {
-            @let open = isOpen(c.id);
-            <li [class.current]="c.current">
+            <!-- Watch mode is one video per chapter, so the slide lists are hidden. -->
+            @let open = isOpen(c.id) && !watching();
+            <li [class.current]="c.current" [class.novid]="watching() && !c.video">
               <div class="row">
                 <button
                   type="button"
@@ -56,7 +66,12 @@ import { ReadingProgress } from '../reading-progress';
                 >
                   <span class="num">{{ c.number }}</span>
                   <span class="name">{{ c.name }}</span>
-                  @if (c.soon) {
+                  @if (watching()) {
+                    <span class="count" [class.vid]="c.video">
+                      <span aria-hidden="true">{{ c.video ? '▶ video' : 'slides only' }}</span>
+                      <span class="sr">, {{ c.video ? 'has a video' : 'no video yet' }}</span>
+                    </span>
+                  } @else if (c.soon) {
                     <span class="count soon">soon</span>
                   } @else if (c.total) {
                     <span class="count" [class.done]="c.read >= c.total">
@@ -67,17 +82,19 @@ import { ReadingProgress } from '../reading-progress';
                     </span>
                   }
                 </button>
-                <button
-                  type="button"
-                  class="chev"
-                  [class.up]="open"
-                  [attr.aria-expanded]="open"
-                  [attr.aria-controls]="'slides-' + c.id"
-                  [attr.aria-label]="(open ? 'Hide' : 'Show') + ' slides in ' + c.name"
-                  (click)="toggle(c.id)"
-                >
-                  <span aria-hidden="true">›</span>
-                </button>
+                @if (!watching()) {
+                  <button
+                    type="button"
+                    class="chev"
+                    [class.up]="open"
+                    [attr.aria-expanded]="open"
+                    [attr.aria-controls]="'slides-' + c.id"
+                    [attr.aria-label]="(open ? 'Hide' : 'Show') + ' slides in ' + c.name"
+                    (click)="toggle(c.id)"
+                  >
+                    <span aria-hidden="true">›</span>
+                  </button>
+                }
               </div>
               @if (open) {
                 <ol class="slides" [id]="'slides-' + c.id">
@@ -128,6 +145,8 @@ export class CourseOutline {
   protected readonly nav = inject(CourseNav);
   protected readonly progress = inject(ReadingProgress);
   private readonly store = inject(ChapterStore);
+  private readonly mode = inject(ViewModeState);
+  protected readonly watching = computed(() => this.mode.mode() === 'watch');
   /** "section": only the current section (sidebar). "all": every section (Contents drawer). */
   readonly scope = input<'section' | 'all'>('all');
   /** Fires after any jump, so a drawer can close itself. */
@@ -149,6 +168,7 @@ export class CourseOutline {
         number: chapterNumber(this.nav.sections, si, ci),
         current: c.id === here,
         soon: !!c.soon,
+        video: !!loaded.get(c.id)?.video,
         total: c.soon ? 0 : (loaded.get(c.id)?.slides.length ?? 0),
         read: this.progress.count(c.id),
       }));
@@ -159,6 +179,7 @@ export class CourseOutline {
         chapters,
         total: chapters.reduce((n, c) => n + c.total, 0),
         read: chapters.reduce((n, c) => n + Math.min(c.read, c.total), 0),
+        videos: chapters.filter((c) => c.video).length,
       };
     });
     return this.scope() === 'section' ? [all[this.nav.sectionIndex()]] : all;
@@ -188,6 +209,8 @@ export class CourseOutline {
   }
 
   protected openSlide(chapterId: string, i: number) {
+    // Picking one slide means reading it, even from Watch mode.
+    this.mode.mode.set('read');
     this.nav.goto(chapterId, i).then(() => window.scrollTo?.({ top: 0 }));
     this.navigated.emit();
   }

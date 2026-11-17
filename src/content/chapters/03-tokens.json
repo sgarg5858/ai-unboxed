@@ -2,6 +2,11 @@
   "$schema": "../schema/chapter.schema.json",
   "id": "tokens",
   "name": "Tokens",
+  "video": {
+    "src": "videos/tokenizers_explained.mp4",
+    "title": "Tokenizers, explained",
+    "description": "How text becomes the tokens a model actually reads: why words get split into pieces, how the vocabulary is built, and why it matters for cost and quirks."
+  },
   "slides": [
     {
       "title": "Why we need tokens",

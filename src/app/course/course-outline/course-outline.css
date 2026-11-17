@@ -89,6 +89,13 @@ button:focus-visible {
 .ch .name {
   flex: 1;
 }
+.count.vid {
+  color: var(--neg-ink);
+  font-weight: 700;
+}
+.novid .ch {
+  opacity: 0.6;
+}
 .count.soon {
   color: var(--heat-ink);
   font-weight: 700;

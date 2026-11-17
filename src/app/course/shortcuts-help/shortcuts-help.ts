@@ -27,6 +27,14 @@ import { ChangeDetectionStrategy, Component, ElementRef, viewChild } from '@angu
       margin: 0;
       font-size: 18px;
     }
+    h3 {
+      margin: 0;
+      padding: 4px 16px 0;
+      font: 600 12px var(--f-mono);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+    }
     dl {
       display: grid;
       grid-template-columns: max-content minmax(0, 1fr);
@@ -76,6 +84,19 @@ import { ChangeDetectionStrategy, Component, ElementRef, viewChild } from '@angu
         <dd>This list</dd>
         <dt><kbd>Esc</kbd></dt>
         <dd>Close any dialog</dd>
+      </dl>
+      <h3>Watching a video</h3>
+      <dl>
+        <dt><kbd>Space</kbd> <kbd>K</kbd></dt>
+        <dd>Play or pause</dd>
+        <dt><kbd>←</kbd> <kbd>→</kbd></dt>
+        <dd>Back or forward 5 seconds (press again for more)</dd>
+        <dt><kbd>F</kbd> <kbd>M</kbd></dt>
+        <dd>Full screen, mute</dd>
+        <dt><kbd>&lt;</kbd> <kbd>&gt;</kbd></dt>
+        <dd>Slower, faster</dd>
+        <dt><kbd>0</kbd>–<kbd>9</kbd></dt>
+        <dd>Jump to 0%–90%</dd>
       </dl>
     </dialog>
   `,

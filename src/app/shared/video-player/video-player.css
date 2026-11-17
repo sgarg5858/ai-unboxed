@@ -1,0 +1,304 @@
+:host {
+  display: block;
+}
+.player {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  background: var(--player-bg);
+  border-radius: 16px;
+  overflow: hidden;
+  color: var(--player-ink);
+  box-shadow: var(--shadow);
+  isolation: isolate;
+}
+.player.fs {
+  border-radius: 0;
+  aspect-ratio: auto;
+}
+.player.idle {
+  cursor: none;
+}
+video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  cursor: pointer;
+}
+svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+svg.solid,
+svg .fill {
+  fill: currentColor;
+  stroke: none;
+}
+svg text {
+  font: 700 7.5px var(--f-mono);
+  fill: currentColor;
+  stroke: none;
+  text-anchor: middle;
+}
+button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  border: 0;
+  background: none;
+}
+button:focus-visible {
+  outline: 2px solid var(--player-accent);
+  outline-offset: 2px;
+}
+
+/* Big play button, with the length before the first play */
+.big {
+  position: absolute;
+  inset: 50% auto auto 50%;
+  translate: -50% -50%;
+  display: grid;
+  place-items: center;
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  background: var(--player-glass);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 0 0 1px var(--player-track);
+  transition: scale 0.18s;
+}
+.big:hover {
+  scale: 1.07;
+}
+.big svg {
+  width: 38px;
+  height: 38px;
+  fill: currentColor;
+  stroke: none;
+  margin-left: 4px;
+}
+.big.intro {
+  background: var(--player-accent);
+  color: var(--player-bg);
+  box-shadow: 0 0 0 10px var(--player-glass);
+}
+.len {
+  position: absolute;
+  top: calc(100% + 18px);
+  font: 600 13px var(--f-mono);
+  color: var(--player-ink);
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--player-glass);
+}
+
+/* Covers: ended and error */
+.cover {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 24px;
+  background: var(--player-scrim);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  text-align: center;
+}
+.msg {
+  flex-basis: 100%;
+  margin: 0;
+}
+.replay,
+.toast button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: 999px;
+  font-weight: 600;
+  background: var(--player-glass);
+  box-shadow: inset 0 0 0 1px var(--player-buffer);
+}
+.replay:hover,
+.toast button:hover {
+  background: var(--player-track);
+}
+
+/* ±5 s bubble */
+.flash {
+  position: absolute;
+  top: 50%;
+  left: 12%;
+  translate: 0 -50%;
+  display: grid;
+  place-items: center;
+  width: 112px;
+  height: 112px;
+  border-radius: 50%;
+  background: var(--player-scrim);
+  color: var(--player-ink);
+  font: 600 13px var(--f-body);
+  pointer-events: none;
+  animation: pop 0.65s ease-out forwards;
+}
+.flash.right {
+  left: auto;
+  right: 12%;
+}
+.flash .chev {
+  font-size: 22px;
+  letter-spacing: -3px;
+  line-height: 1;
+}
+@keyframes pop {
+  from {
+    opacity: 0;
+    scale: 0.8;
+  }
+  20% {
+    opacity: 1;
+    scale: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+.spin {
+  position: absolute;
+  inset: 50% auto auto 50%;
+  width: 48px;
+  height: 48px;
+  margin: -24px;
+  border-radius: 50%;
+  border: 3px solid var(--player-track);
+  border-top-color: var(--player-ink);
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin {
+  to {
+    rotate: 1turn;
+  }
+}
+
+.toast {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 6px 6px 14px;
+  border-radius: 999px;
+  background: var(--player-glass);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  font-size: 13.5px;
+}
+.toast button {
+  padding: 5px 12px;
+  font-size: 13px;
+}
+
+/* Control bar */
+.ctl {
+  position: absolute;
+  inset: auto 0 0;
+  padding: 36px 14px 8px;
+  background: linear-gradient(transparent, var(--player-scrim));
+  transition: opacity 0.25s;
+}
+.idle .ctl:not(:focus-within),
+.ctl.hide {
+  opacity: 0;
+  pointer-events: none;
+}
+.ctl-row {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+.ib {
+  display: grid;
+  place-items: center;
+  min-width: 44px;
+  height: 44px;
+  border-radius: 10px;
+}
+.ib:hover {
+  background: var(--player-track);
+}
+.rate {
+  font: 700 13px var(--f-mono);
+}
+.gap {
+  flex: 1;
+}
+.time {
+  margin-left: 8px;
+  font: 500 13px var(--f-mono);
+  color: var(--player-dim);
+  white-space: nowrap;
+}
+.time span {
+  color: var(--player-ink);
+}
+.vol {
+  display: flex;
+  align-items: center;
+}
+
+.scrub {
+  margin-bottom: 2px;
+}
+.vr {
+  width: 0;
+  opacity: 0;
+  transition:
+    width 0.2s,
+    opacity 0.2s;
+}
+.vol:hover .vr,
+.vol:focus-within .vr {
+  width: 80px;
+  opacity: 1;
+  margin: 0 8px 0 2px;
+}
+
+@media (max-width: 600px) {
+  .player {
+    border-radius: 12px;
+  }
+  .vol,
+  .len {
+    display: none;
+  }
+  .ctl {
+    padding: 28px 6px 2px;
+  }
+  .ib {
+    min-width: 38px;
+  }
+  .big {
+    width: 64px;
+    height: 64px;
+  }
+  .flash {
+    width: 84px;
+    height: 84px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .flash {
+    animation-duration: 0.01s;
+  }
+}

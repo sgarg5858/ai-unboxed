@@ -72,6 +72,18 @@ export class CourseNav {
     return this.isLast() ? this.chapters[0].name : this.chapters[p.chapter + 1].name;
   });
 
+  /** Watch mode moves a chapter at a time: one video per chapter. */
+  readonly prevChapterName = computed(() => this.chapters[this.position().chapter - 1]?.name);
+  readonly nextChapterName = computed(() => this.chapters[this.position().chapter + 1]?.name);
+
+  /** Go to slide 1 of the previous or next chapter; past the last one, back to the start. */
+  stepChapter(dir: 1 | -1) {
+    const n = this.chapters.length;
+    const c = Math.min(n - 1, Math.max(0, this.position().chapter + dir));
+    const target = dir > 0 && this.position().chapter === n - 1 ? 0 : c;
+    return this.router.navigate(toPath(this.chapters, { chapter: target, slide: 0 }));
+  }
+
   goto(chapterId: string, slideIndex = 0) {
     const c = Math.max(
       0,

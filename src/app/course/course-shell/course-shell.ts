@@ -16,11 +16,14 @@ import { CommandPalette } from '../command-palette/command-palette';
 import { ContentsDrawer } from '../contents-drawer/contents-drawer';
 import { CourseNav } from '../course-nav';
 import { CourseOutline } from '../course-outline/course-outline';
+import { ModeSwitch } from '../mode-switch/mode-switch';
 import { SectionTabs } from '../section-tabs/section-tabs';
 import { SidebarState } from '../sidebar-state';
 import { ShortcutsHelp } from '../shortcuts-help/shortcuts-help';
 import { SidebarToggle } from '../sidebar-toggle/sidebar-toggle';
 import { SlideView } from '../slide-view/slide-view';
+import { ViewModeState } from '../view-mode';
+import { WatchView } from '../watch-view/watch-view';
 
 @Component({
   selector: 'app-course-shell',
@@ -29,11 +32,13 @@ import { SlideView } from '../slide-view/slide-view';
     CommandPalette,
     ContentsDrawer,
     CourseOutline,
+    ModeSwitch,
     SectionTabs,
     ShortcutsHelp,
     SidebarToggle,
     SlideView,
     ThemeSwitch,
+    WatchView,
   ],
   host: { '(document:keydown)': 'onKey($event)' },
   templateUrl: './course-shell.html',
@@ -42,6 +47,9 @@ import { SlideView } from '../slide-view/slide-view';
 export class CourseShell {
   protected readonly nav = inject(CourseNav);
   protected readonly sidebar = inject(SidebarState);
+  private readonly mode = inject(ViewModeState);
+  protected readonly watching = computed(() => this.mode.mode() === 'watch');
+  private readonly watchView = viewChild(WatchView);
   private readonly store = inject(ChapterStore);
   private readonly stage = viewChild.required<ElementRef<HTMLElement>>('stage');
   private readonly palette = viewChild.required(CommandPalette);
@@ -50,13 +58,37 @@ export class CourseShell {
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
 
   /** Read out after each move, instead of the whole slide. */
-  protected readonly announcement = computed(
-    () =>
-      `Slide ${this.nav.position().slide + 1} of ${this.nav.chapter().slides.length}: ${this.nav.slide().title}`,
+  protected readonly announcement = computed(() =>
+    this.watching()
+      ? `Video: ${this.nav.chapter().video?.title ?? `no video for ${this.nav.chapter().name} yet`}`
+      : `Slide ${this.nav.position().slide + 1} of ${this.nav.chapter().slides.length}: ${this.nav.slide().title}`,
+  );
+
+  /** Watch mode moves a chapter at a time (one video each), so Back, Next and the count follow. */
+  protected readonly isFirst = computed(() =>
+    this.watching() ? this.nav.position().chapter === 0 : this.nav.isFirst(),
+  );
+  private readonly lastChapter = computed(
+    () => this.nav.position().chapter === this.nav.chapters.length - 1,
+  );
+  protected readonly counter = computed(() =>
+    this.watching()
+      ? `ch. ${this.nav.position().chapter + 1} / ${this.nav.chapters.length}`
+      : `${this.nav.position().slide + 1} / ${this.nav.chapter().slides.length}`,
+  );
+  protected readonly nextAria = computed(() =>
+    this.watching()
+      ? this.lastChapter()
+        ? 'Back to start'
+        : `Next chapter: ${this.nav.nextChapterName()}`
+      : `${this.nav.nextLabel()}: ${this.nav.nextHint()}`,
   );
 
   /** "Next →" inside a chapter, "Next: Attention →" at its end, "Back to start ↺" at the very end. */
   protected readonly nextText = computed(() => {
+    if (this.watching()) {
+      return this.lastChapter() ? 'Back to start ↺' : `Next: ${this.nav.nextChapterName()} →`;
+    }
     const label = this.nav.nextLabel();
     if (label === 'Next') return 'Next →';
     return this.nav.isLast() ? 'Back to start ↺' : `Next: ${this.nav.nextHint()} →`;
@@ -69,9 +101,12 @@ export class CourseShell {
     let first = true;
     afterRenderEffect(() => {
       const slide = this.nav.slide();
-      const chapter = this.nav.chapter().name;
-      // The browser tab names the slide, so history and tab lists make sense.
-      this.title.setTitle(`${slide.title} · ${chapter} · AI, Unboxed`);
+      const chapter = this.nav.chapter();
+      // The browser tab names the slide (or video), so history and tab lists make sense.
+      const what = this.watching()
+        ? `${chapter.video?.title ?? chapter.name} (video)`
+        : slide.title;
+      this.title.setTitle(`${what} · ${chapter.name} · AI, Unboxed`);
       if (first) {
         first = false;
         return;
@@ -97,9 +132,9 @@ export class CourseShell {
   }
 
   protected move(dir: 1 | -1) {
-    this.nav
-      .step(dir)
-      .then(() => this.stage().nativeElement.scrollIntoView?.({ block: 'nearest' }));
+    (this.watching() ? this.nav.stepChapter(dir) : this.nav.step(dir)).then(() =>
+      this.stage().nativeElement.scrollIntoView?.({ block: 'nearest' }),
+    );
   }
 
   protected onKey(e: KeyboardEvent) {
@@ -117,7 +152,12 @@ export class CourseShell {
       return;
     }
     if (e.key === '[' && this.sidebar.wide()) this.sidebar.open.update((o) => !o);
+    // Watching a video: the player takes Space, ←/→ (±5 s), F, M and friends.
+    if (this.watchView()?.handleKey(e)) {
+      e.preventDefault();
+      return;
+    }
     if (e.key === 'ArrowRight') this.move(1);
-    if (e.key === 'ArrowLeft' && !this.nav.isFirst()) this.move(-1);
+    if (e.key === 'ArrowLeft' && !this.isFirst()) this.move(-1);
   }
 }

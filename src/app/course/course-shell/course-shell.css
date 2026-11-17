@@ -81,7 +81,7 @@
     margin: -4px -4px 0 0;
   }
 }
-/* Contents button | title | theme switch; the subtitle sits under the title, not the button. */
+/* Contents button | title with the Read/Watch switch | search and theme. */
 header.top {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
@@ -89,8 +89,12 @@ header.top {
   gap: 8px 14px;
   margin-bottom: 18px;
 }
-header.top .sub {
-  grid-column: 2 / -1;
+.brand {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  min-width: 0;
 }
 h1 {
   font-family: var(--f-display);
@@ -128,17 +132,7 @@ h1 span {
   width: 20px;
   height: 20px;
 }
-.sub {
-  font-family: var(--f-mono);
-  font-size: 12.5px;
-  color: var(--muted);
-  margin: 0;
-}
-/* Phones: the tagline and arrow-key hint just take space (there's no keyboard). */
 @media (max-width: 600px) {
-  .sub {
-    display: none;
-  }
   header.top {
     gap: 8px;
   }
@@ -230,9 +224,6 @@ h1 span {
   }
   .toc-btn {
     display: none;
-  }
-  header.top .sub {
-    grid-column: 1 / -1;
   }
 }
 main:focus,

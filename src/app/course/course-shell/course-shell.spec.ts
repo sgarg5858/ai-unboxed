@@ -4,6 +4,7 @@ import { RouterTestingHarness } from '@angular/router/testing';
 import { CHAPTERS, SECTIONS } from '../../../content/course';
 import { ChapterStore } from '../chapter-store';
 import { routes } from '../../app.routes';
+import { VIEW_MODE_KEY } from '../view-mode';
 import { CourseShell } from './course-shell';
 
 // The app loads chapters on demand; the tests load them all up front to know every slide.
@@ -138,5 +139,60 @@ describe('CourseShell', () => {
   it('opens old single-segment links like #assistant at slide 1', async () => {
     const { router } = await open(`/${COURSE[1].id}`);
     expect(router.url).toBe(`/${COURSE[1].id}/1`);
+  });
+
+  describe('watch mode', () => {
+    const withVideo = COURSE.find((c) => c.video)!;
+    const withoutVideo = COURSE.find((c) => !c.video)!;
+    beforeEach(() => localStorage.setItem(VIEW_MODE_KEY, 'watch'));
+    afterEach(() => localStorage.removeItem(VIEW_MODE_KEY));
+
+    it("shows the chapter's video and moves a chapter at a time", async () => {
+      const { el, router, settle } = await open(`/${withVideo.id}/3`);
+      expect(el.querySelector('article h2')?.textContent).toBe(withVideo.video!.title);
+      expect(el.querySelector('app-video-player video')?.getAttribute('src')).toBe(
+        withVideo.video!.src,
+      );
+      expect(el.querySelector('.chapter-bar .of')?.textContent).toContain('video');
+      const i = COURSE.indexOf(withVideo);
+      expect(el.querySelector('.foot .next')?.textContent).toContain(COURSE[i + 1].name);
+      (el.querySelector('.foot .next') as HTMLButtonElement).click();
+      await settle();
+      expect(router.url).toBe(`/${COURSE[i + 1].id}/1`);
+    });
+
+    it('skips 5 seconds with the arrow keys instead of changing slide', async () => {
+      const { el, router, settle } = await open(`/${withVideo.id}/1`);
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight' }));
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight' }));
+      await settle();
+      expect(router.url).toBe(`/${withVideo.id}/1`);
+      expect(el.querySelector('.flash')?.textContent).toContain('10 seconds');
+    });
+
+    it('offers the slides when a chapter has no video yet', async () => {
+      const { el, settle } = await open(`/${withoutVideo.id}/1`);
+      expect(el.querySelector('article h2')?.textContent).toContain('No video');
+      (el.querySelector('.empty .btn.on') as HTMLButtonElement).click();
+      await settle();
+      expect(el.querySelector('article h2')?.textContent).toBe(withoutVideo.slides[0].title);
+      expect(localStorage.getItem(VIEW_MODE_KEY)).toBeNull();
+    });
+
+    it('shows only chapters in the outline, without slide lists', async () => {
+      const { el } = await open(`/${withVideo.id}/1`);
+      expect(el.querySelector('aside .ch[aria-current="page"]')).not.toBeNull();
+      expect(el.querySelector('aside .slides')).toBeNull();
+      expect(el.querySelector('aside .chev')).toBeNull();
+    });
+
+    it('is a course-wide switch in the header', async () => {
+      const { el, settle } = await open(`/${withVideo.id}/1`);
+      const read = el.querySelector('header app-mode-switch button') as HTMLButtonElement;
+      read.click();
+      await settle();
+      expect(el.querySelector('article h2')?.textContent).toBe(withVideo.slides[0].title);
+      expect(el.querySelector('aside .slides')).not.toBeNull();
+    });
   });
 });

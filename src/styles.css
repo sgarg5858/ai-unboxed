@@ -58,6 +58,15 @@ img {
   --code-ink: #e8e6ef;
   --code-dim: #9a97a8;
   --code-key: #a9c1ff;
+  /* Video player chrome: always dark, over the picture. */
+  --player-bg: #0b0d10;
+  --player-ink: #f5f7fa;
+  --player-dim: rgb(245 247 250 / 0.72);
+  --player-scrim: rgb(5 7 10 / 0.72);
+  --player-glass: rgb(20 24 30 / 0.55);
+  --player-track: rgb(245 247 250 / 0.22);
+  --player-buffer: rgb(245 247 250 / 0.42);
+  --player-accent: #7aa2ff;
   /* Glass surfaces: solid in light and dark, frosted in the glass theme. */
   --glass-bg: var(--surface);
   --glass-fx: none;
@@ -91,6 +100,15 @@ img {
     --code-ink: #dde6e2;
     --code-dim: #7c8f89;
     --code-key: #7fc8dd;
+    /* Video player chrome: always dark, over the picture. */
+    --player-bg: #0b0d10;
+    --player-ink: #f5f7fa;
+    --player-dim: rgb(245 247 250 / 0.72);
+    --player-scrim: rgb(5 7 10 / 0.72);
+    --player-glass: rgb(20 24 30 / 0.55);
+    --player-track: rgb(245 247 250 / 0.22);
+    --player-buffer: rgb(245 247 250 / 0.42);
+    --player-accent: #7aa2ff;
     color-scheme: dark;
     --pos-ink: #3fc4a3;
     --neg-ink: #f07d60;
@@ -124,6 +142,15 @@ img {
   --code-ink: #dde6e2;
   --code-dim: #7c8f89;
   --code-key: #7fc8dd;
+  /* Video player chrome: always dark, over the picture. */
+  --player-bg: #0b0d10;
+  --player-ink: #f5f7fa;
+  --player-dim: rgb(245 247 250 / 0.72);
+  --player-scrim: rgb(5 7 10 / 0.72);
+  --player-glass: rgb(20 24 30 / 0.55);
+  --player-track: rgb(245 247 250 / 0.22);
+  --player-buffer: rgb(245 247 250 / 0.42);
+  --player-accent: #7aa2ff;
   color-scheme: dark;
   --pos-ink: #3fc4a3;
   --neg-ink: #f07d60;
