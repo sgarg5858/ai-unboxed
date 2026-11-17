@@ -23,7 +23,7 @@ import { ViewModeState } from '../view-mode';
             d="M12 6.5C10 5 7 4.5 3.5 5v13c3.5-.5 6.5 0 8.5 1.5 2-1.5 5-2 8.5-1.5V5C17 4.5 14 5 12 6.5zM12 6.5v13"
           />
         </svg>
-        <span class="label">Read</span>
+        Read
       </button>
       <button
         type="button"
@@ -35,12 +35,36 @@ import { ViewModeState } from '../view-mode';
         <svg viewBox="0 0 24 24" aria-hidden="true" class="solid">
           <path d="M8 5.5v13l10.5-6.5z" />
         </svg>
-        <span class="label">Watch</span>
+        Watch
         @if (hasVideo()) {
           <span class="dot" aria-hidden="true"></span>
         }
       </button>
     </div>
+    <!-- Phones: one button showing the current mode; a tap switches to the other. -->
+    @let watching = state.mode() === 'watch';
+    <button
+      type="button"
+      class="cycle"
+      [attr.aria-label]="watching ? 'Mode: Watch. Switch to Read' : 'Mode: Read. Switch to Watch'"
+      [attr.title]="watching ? 'Watching. Tap to read' : 'Reading. Tap to watch'"
+      (click)="state.mode.set(watching ? 'read' : 'watch')"
+    >
+      @if (watching) {
+        <svg viewBox="0 0 24 24" aria-hidden="true" class="solid">
+          <path d="M8 5.5v13l10.5-6.5z" />
+        </svg>
+      } @else {
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path
+            d="M12 6.5C10 5 7 4.5 3.5 5v13c3.5-.5 6.5 0 8.5 1.5 2-1.5 5-2 8.5-1.5V5C17 4.5 14 5 12 6.5zM12 6.5v13"
+          />
+        </svg>
+      }
+      @if (hasVideo()) {
+        <span class="dot" aria-hidden="true"></span>
+      }
+    </button>
   `,
   styles: `
     .seg {
@@ -101,22 +125,28 @@ import { ViewModeState } from '../view-mode';
       border-radius: 50%;
       background: var(--neg);
     }
-    .label {
-      display: contents;
+    .cycle {
+      display: none;
     }
     @media (max-width: 600px) {
-      .label {
+      .seg {
         display: none;
       }
-      .seg {
-        padding: 2px;
-        border-radius: 12px;
-      }
-      button {
-        min-height: 40px;
-        min-width: 40px;
-        padding: 0 10px;
+      .cycle {
+        display: grid;
+        place-items: center;
+        width: 44px;
+        height: 44px;
+        padding: 0;
+        border: 1px solid var(--line);
         border-radius: 10px;
+        background: var(--surface);
+        color: var(--ink);
+      }
+      .cycle .dot {
+        position: absolute;
+        top: 8px;
+        right: 8px;
       }
     }
   `,

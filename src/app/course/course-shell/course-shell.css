@@ -140,6 +140,10 @@ h1 span {
     font-size: 24px;
     white-space: nowrap;
   }
+  .brand {
+    flex-wrap: nowrap;
+    gap: 8px;
+  }
   .toc-btn {
     width: 44px;
     height: 44px;
