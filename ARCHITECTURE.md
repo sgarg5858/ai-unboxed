@@ -99,10 +99,11 @@ Slides link to other chapters with `goto: { chapter: "<id>", slide: n }` and ref
 
 A chapter can list a few videos (`videos` in its JSON). Each covers a range of slides (`slides: [first, last]`) plus any slide listed in `at` (where each slide's topic starts), so one video can cover slides that aren't next to each other; it also has timestamps (`marks`). The URL still decides everything:
 
-- **Switching to Watch:** the mode switch (`ModeSwitch`) calls `ViewModeState.watchAt(seconds)` with the current slide's `at` time, so the video starts where that slide's topic begins. Reading slides show no video controls.
+- **Mode in the URL:** Read or Watch is `?mode=read|watch` on the slide URL (`CourseNav.mode`, set through `ViewModeState.set`), so a reload or a shared link opens the same view. Every `CourseNav` move keeps it. With no `?mode=`, a chapter with a video opens in Watch and one without opens in Read. Search hits and slides picked in the outline open with `mode=read`.
+- **Starting point:** when `WatchView` opens on a slide (from the switch, a reload or a shared link), the video starts at that slide's `at` time, where its topic begins. Reading slides show no video controls.
 - **Watch mode:** `CourseNav.video()` is the video that covers the current slide (`videoIndexAt` in `course/chapter-videos.ts`, a pure, unit-tested helper). `WatchView` shows it, its timestamps (`marks`) as a clickable list, and a playlist when the chapter has more than one. Back/Next and "Up next" step video by video (`CourseNav.stepVideo`), then move to the next chapter; opening a video navigates to the first slide it covers, so links and reloads land on the same video.
 - **Player:** `shared/video-player` takes `src`, `start` (applied once, then reported with `startApplied`) and `marks`, drawn as ticks on the seek bar (`video-range`); hovering names the section. It remembers where each video was stopped.
-- **Files:** `src/content/videos/` is copied to `videos/` by an `assets` glob in `angular.json`. The same file can be listed in more than one chapter. Keep files small (GitHub rejects files over 100 MB); a `src` can later point to a CDN.
+- **Files:** one folder per chapter, `src/content/videos/<chapter-id>/`, copied to `videos/` by an `assets` glob in `angular.json`. The same file can be listed in more than one chapter; it lives in the folder of the chapter it was made for (e.g. `output/kv_cache.mp4`, also used by `transformer`). `course.spec.ts` checks every `src` exists. Keep files small (GitHub rejects files over 100 MB); a `src` can later point to a CDN.
 
 **Making a video: one at a time, in sequence.** Voice generation and rendering each load a model or a browser and use a lot of memory, so run them strictly one after another, never in parallel. Running several at once ran a laptop out of memory. For each video, finish every step before starting the next video:
 
@@ -110,7 +111,7 @@ A chapter can list a few videos (`videos` in its JSON). Each covers a range of s
 2. **Voice:** generate one clip per sentence (the course uses Kokoro's "Heart" voice), then join them with short pauses into one track. The join step records when each sentence starts, which drives the animation timing and the `marks`.
 3. **Visuals:** build the animated page for the timeline, render a still at the end of every sentence, and check them for overlaps and wrong numbers before rendering.
 4. **Render:** capture every frame (1920×1080, 30 fps) and encode it with the voice track to MP4. Restart the browser every ~1,500 frames and retry slow frames.
-5. **Ship:** check a frame or two from the MP4 against its subtitles, copy it to `src/content/videos/`, add it to the chapter's `videos` with `slides`, `at` and `marks` taken from the timeline, then run the tests.
+5. **Ship:** check a frame or two from the MP4 against its subtitles, copy it to `src/content/videos/<chapter-id>/`, add it to the chapter's `videos` with `slides`, `at` and `marks` taken from the timeline, then run the tests.
 
 ## Request → render walkthrough
 
@@ -143,6 +144,6 @@ A chapter can list a few videos (`videos` in its JSON). Each covers a range of s
 | Add a section (RAG, Agents, …) | Add `{ id, name, chapters }` to `SECTIONS` in `course.ts`. The rail picks it up automatically.                                                                                                        |
 | Add a widget                   | Write the component in `widgets/<topic>.widgets.ts`, register a lazy loader for it in `registry.ts`, and add its name to the widget `enum` in `chapter.schema.json`. Tests fail if you forget either. |
 | Add a generic block type       | Add it to the `Block` union in `content.model.ts`, add a renderer in `blocks/`, add a `@case` in `BlockList`, and add it to the schema.                                                               |
-| Add a video                    | Put the MP4 in `src/content/videos/` and add it to the chapter's `videos` list with `slides`, `at` and `marks` (timestamps). See CLAUDE.md.                                                           |
+| Add a video                    | Put the MP4 in `src/content/videos/<chapter-id>/` and add it to the chapter's `videos` list with `slides`, `at` and `marks` (timestamps). See CLAUDE.md.                                              |
 | Add a diagram or image         | Put light and dark files in `public/images/` and add `figure` to the slide. It renders full width under both columns (`shared/slide-figure`).                                                         |
 | Add a colour                   | Add the token to both the light and dark blocks in `styles.css`. Add an `-ink` variant if it will colour text.                                                                                        |

@@ -4,7 +4,7 @@
   "name": "Transformer architecture",
   "videos": [
     {
-      "src": "videos/transformer_big_picture.mp4",
+      "src": "videos/transformer/transformer_big_picture.mp4",
       "title": "Part 1 · The big picture",
       "description": "How a model writes one token at a time, what GPT stands for and why transformers replaced older models, then a step-by-step walk through the whole-transformer picture for “The cat sat”.",
       "slides": [1, 2],
@@ -61,7 +61,7 @@
       ]
     },
     {
-      "src": "videos/word_order_and_rope.mp4",
+      "src": "videos/embeddings/word_order_and_rope.mp4",
       "title": "Word order and RoPE",
       "description": "Why a transformer can't see word order on its own, how GPT-2 adds a position vector, how the input becomes a matrix, and how RoPE turns vectors instead, explained simply.",
       "slides": [4, 5],
@@ -109,7 +109,7 @@
       ]
     },
     {
-      "src": "videos/layer_normalization.mp4",
+      "src": "videos/transformer/layer_normalization.mp4",
       "title": "Part 2 · Layer normalization",
       "description": "Why the numbers drift through many layers, the three steps of layer norm on a real token, why the pattern (and the meaning) is kept, and where it sits in the block.",
       "slides": [7, 7],
@@ -144,7 +144,7 @@
       ]
     },
     {
-      "src": "videos/self_attention.mp4",
+      "src": "videos/transformer/self_attention.mp4",
       "title": "Part 3 · Multi-head causal self-attention",
       "description": "Why words need attention, how a token scores the others with queries, keys and values, why the model may only look back (and why models that peek can't write), and why it uses many heads.",
       "slides": [8, 8],
@@ -188,7 +188,7 @@
       ]
     },
     {
-      "src": "videos/mlp_layer.mp4",
+      "src": "videos/transformer/mlp_layer.mp4",
       "title": "Part 4 · The MLP (feed-forward)",
       "description": "After attention, each token thinks it over on its own: expand 4× wider, keep the strong signals, shrink back and add. Why the wide middle works like thousands of detectors, and where a model's knowledge lives.",
       "slides": [9, 9],
@@ -219,7 +219,7 @@
       ]
     },
     {
-      "src": "videos/residual_connections.mp4",
+      "src": "videos/transformer/residual_connections.mp4",
       "title": "Part 5 · Residual connections",
       "description": "Why every step adds its result to the token's vector instead of replacing it, with real numbers through both plus signs, and why this lets deep models train: the residual stream.",
       "slides": [10, 10],
@@ -254,7 +254,7 @@
       ]
     },
     {
-      "src": "videos/kv_cache.mp4",
+      "src": "videos/output/kv_cache.mp4",
       "title": "The KV cache",
       "description": "Why writing each token would mean re-reading the whole text, how saving keys and values fixes it, prefill vs decode, what the cache costs in memory, and how models shrink it.",
       "marks": [
@@ -290,7 +290,7 @@
       "slides": [12, 12]
     },
     {
-      "src": "videos/linear_softmax.mp4",
+      "src": "videos/transformer/linear_softmax.mp4",
       "title": "Part 6 · Linear & softmax",
       "description": "How the last token's vector becomes a score for every word in the vocabulary, how softmax turns scores into probabilities, and how one token is picked and the loop runs again.",
       "slides": [13, 13],

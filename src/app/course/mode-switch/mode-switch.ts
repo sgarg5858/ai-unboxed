@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
-import { startFor, videoCovering } from '../chapter-videos';
 import { CourseNav } from '../course-nav';
 import { ViewModeState } from '../view-mode';
 
@@ -17,7 +16,7 @@ import { ViewModeState } from '../view-mode';
         aria-label="Read"
         title="Read the slides"
         [attr.aria-pressed]="state.mode() === 'read'"
-        (click)="state.mode.set('read')"
+        (click)="state.set('read')"
       >
         <svg viewBox="0 0 24 24" aria-hidden="true">
           <path
@@ -31,7 +30,7 @@ import { ViewModeState } from '../view-mode';
         [attr.aria-label]="hasVideo() ? 'Watch (this chapter has a video)' : 'Watch'"
         [attr.aria-pressed]="state.mode() === 'watch'"
         [attr.title]="hasVideo() ? 'Watch this chapter’s video' : 'No video for this chapter yet'"
-        (click)="watch()"
+        (click)="state.set('watch')"
       >
         <svg viewBox="0 0 24 24" aria-hidden="true" class="solid">
           <path d="M8 5.5v13l10.5-6.5z" />
@@ -49,7 +48,7 @@ import { ViewModeState } from '../view-mode';
       class="cycle"
       [attr.aria-label]="watching ? 'Mode: Watch. Switch to Read' : 'Mode: Read. Switch to Watch'"
       [attr.title]="watching ? 'Watching. Tap to read' : 'Reading. Tap to watch'"
-      (click)="watching ? state.mode.set('read') : watch()"
+      (click)="state.set(watching ? 'read' : 'watch')"
     >
       @if (watching) {
         <svg viewBox="0 0 24 24" aria-hidden="true" class="solid">
@@ -156,14 +155,4 @@ export class ModeSwitch {
   protected readonly state = inject(ViewModeState);
   private readonly nav = inject(CourseNav);
   protected readonly hasVideo = computed(() => this.nav.videos().length > 0);
-
-  /** Switch to Watch, starting the video where the current slide's topic begins (if known). */
-  protected watch() {
-    if (this.state.mode() === 'watch') return;
-    const v = this.nav.video();
-    const slide = this.nav.position().slide;
-    if (v && videoCovering([v], slide, this.nav.chapter().slides.length))
-      this.state.watchAt(startFor(v, slide));
-    else this.state.mode.set('watch');
-  }
 }

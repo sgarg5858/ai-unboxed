@@ -8,9 +8,12 @@ import { coveredSlides, videoIndexAt } from './chapter-videos';
 import { ChapterContent, SectionContent } from './content.model';
 import { Position, chapterNumber, resolvePosition, step, toPath } from './course-position';
 
+export type ViewMode = 'read' | 'watch';
+
 /**
- * The URL is the single source of truth for which slide is showing. The route resolver has
- * loaded the current chapter before NavigationEnd, so its content is always available here.
+ * The URL is the single source of truth for which slide is showing, and whether it is read or
+ * watched (`?mode=read|watch`), so a reload or a shared link opens the same view. The route
+ * resolver has loaded the current chapter before NavigationEnd, so its content is always here.
  */
 @Injectable({ providedIn: 'root' })
 export class CourseNav {
@@ -64,6 +67,24 @@ export class CourseNav {
   readonly nextVideo = computed(() =>
     this.videoIndex() >= 0 ? (this.videos()[this.videoIndex() + 1] ?? null) : null,
   );
+  /** `?mode=` in the URL, once the reader has picked Read or Watch (or followed a link with it). */
+  private readonly modeParam = computed<ViewMode | null>(() => {
+    const m = this.router.parseUrl(this.url()).queryParams['mode'];
+    return m === 'read' || m === 'watch' ? m : null;
+  });
+  /** Read or Watch. Until the reader picks one: Watch if the chapter has a video, else Read. */
+  readonly mode = computed<ViewMode>(
+    () => this.modeParam() ?? (this.videos().length ? 'watch' : 'read'),
+  );
+
+  /** Switch Read/Watch on the current slide, replacing the history entry. */
+  setMode(mode: ViewMode) {
+    return this.go(toPath(this.chapters, this.position()), {
+      queryParams: { mode },
+      replaceUrl: true,
+    });
+  }
+
   readonly isFirst = computed(() => this.position().chapter === 0 && this.position().slide === 0);
   readonly isLast = computed(
     () =>
@@ -108,23 +129,21 @@ export class CourseNav {
     const n = this.chapters.length;
     const c = Math.min(n - 1, Math.max(0, this.position().chapter + dir));
     const target = dir > 0 && this.position().chapter === n - 1 ? 0 : c;
-    return this.router.navigate(toPath(this.chapters, { chapter: target, slide: 0 }));
+    return this.go(toPath(this.chapters, { chapter: target, slide: 0 }));
   }
 
-  goto(chapterId: string, slideIndex = 0) {
+  /** Pass { queryParams: { mode: 'read' } } to open the slide in Read mode. */
+  goto(chapterId: string, slideIndex = 0, extras?: NavigationExtras) {
     const c = Math.max(
       0,
       this.chapters.findIndex((ch) => ch.id === chapterId),
     );
-    return this.router.navigate(toPath(this.chapters, { chapter: c, slide: slideIndex }));
+    return this.go(toPath(this.chapters, { chapter: c, slide: slideIndex }), extras);
   }
 
   /** Pass { replaceUrl: true } to follow the reader's scrolling without filling the history. */
   gotoSlide(slideIndex: number, extras?: NavigationExtras) {
-    return this.router.navigate(
-      toPath(this.chapters, { ...this.position(), slide: slideIndex }),
-      extras,
-    );
+    return this.go(toPath(this.chapters, { ...this.position(), slide: slideIndex }), extras);
   }
 
   async step(dir: 1 | -1) {
@@ -133,6 +152,15 @@ export class CourseNav {
     if (dir < 0 && p.slide === 0 && p.chapter > 0) {
       await this.store.load(this.chapters[p.chapter - 1].id);
     }
-    return this.router.navigate(toPath(this.chapters, step(this.chapters, p, dir, this.count)));
+    return this.go(toPath(this.chapters, step(this.chapters, p, dir, this.count)));
+  }
+
+  /** Every move keeps the picked mode in the URL, unless `extras` sets another. */
+  private go(commands: unknown[], extras?: NavigationExtras) {
+    const mode = this.modeParam();
+    return this.router.navigate(commands, {
+      ...extras,
+      queryParams: { ...(mode && { mode }), ...extras?.queryParams },
+    });
   }
 }

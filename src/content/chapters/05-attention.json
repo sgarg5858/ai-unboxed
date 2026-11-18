@@ -4,7 +4,7 @@
   "name": "Attention",
   "videos": [
     {
-      "src": "videos/attention_why.mp4",
+      "src": "videos/attention/attention_why.mp4",
       "title": "Attention 1 · Why attention",
       "description": "Why RNNs, LSTMs and CNNs struggled with long text, how attention lets any word reach any other in one step, and why multi-head causal self-attention works so well.",
       "slides": [1, 1],
@@ -55,7 +55,7 @@
       ]
     },
     {
-      "src": "videos/attention_step_by_step.mp4",
+      "src": "videos/attention/attention_step_by_step.mp4",
       "title": "Attention 2 · Step by step",
       "description": "Attention computed by hand on “I am learning artificial”, with the slides' real numbers: queries, keys and values, scores and √d, the causal mask, softmax, and mixing the values.",
       "slides": [2, 5],
@@ -97,7 +97,7 @@
       ]
     },
     {
-      "src": "videos/attention_heads_cost_position.mp4",
+      "src": "videos/attention/attention_heads_cost_position.mp4",
       "title": "Attention 3 · Heads, cost and position",
       "description": "Why models run many attention heads, how they split the width and what they specialise in; why attention costs n² and the fixes (FlashAttention, GQA, sliding windows); and how waves give attention a sense of word order.",
       "slides": [6, 8],

@@ -4,7 +4,7 @@
   "name": "Output & inference",
   "videos": [
     {
-      "src": "videos/kv_cache.mp4",
+      "src": "videos/output/kv_cache.mp4",
       "title": "The KV cache",
       "description": "Why writing each token would mean re-reading the whole text, how saving keys and values fixes it, prefill vs decode, what the cache costs in memory, and how models shrink it.",
       "marks": [

@@ -4,7 +4,6 @@ import { RouterTestingHarness } from '@angular/router/testing';
 import { CHAPTERS, SECTIONS } from '../../../content/course';
 import { ChapterStore } from '../chapter-store';
 import { routes } from '../../app.routes';
-import { VIEW_MODE_KEY } from '../view-mode';
 import { CourseShell } from './course-shell';
 
 // The app loads chapters on demand; the tests load them all up front to know every slide.
@@ -14,9 +13,11 @@ const COURSE = await Promise.all(CHAPTERS.map((c) => c.load()));
  * Render the shell through the router, exactly as the app does: the route resolver loads the
  * chapter first, then the shell appears. (Creating the shell directly would render it before any
  * chapter has loaded, which can't happen in the real app.) Only one harness per test.
+ * Opens in Read mode unless the URL says otherwise (`?mode=watch`, or `?` for the default).
  */
 async function open(url: string) {
   const harness = await RouterTestingHarness.create();
+  if (!url.includes('?')) url += '?mode=read';
   await harness.navigateByUrl(url, CourseShell);
   await harness.fixture.whenStable();
   return {
@@ -96,7 +97,7 @@ describe('CourseShell', () => {
     expect(tabs.length).toBe(SECTIONS.length);
     (tabs[1] as HTMLButtonElement).click();
     await settle();
-    expect(router.url).toBe(`/${SECTIONS[1].chapters[0].id}/1`);
+    expect(router.url.split('?')[0]).toBe(`/${SECTIONS[1].chapters[0].id}/1`);
     expect(tabs[1].getAttribute('aria-current')).toBe('page');
   });
 
@@ -104,17 +105,17 @@ describe('CourseShell', () => {
     const { el, router, settle } = await open(`/${SECTIONS[1].chapters[0].id}/1`);
     (el.querySelectorAll('aside .ch')[1] as HTMLButtonElement).click();
     await settle();
-    expect(router.url).toBe('/' + SECTIONS[1].chapters[1].id + '/1');
+    expect(router.url.split('?')[0]).toBe('/' + SECTIONS[1].chapters[1].id + '/1');
     (el.querySelectorAll('aside .slides .sbtn')[2] as HTMLButtonElement).click();
     await settle();
-    expect(router.url).toBe('/' + SECTIONS[1].chapters[1].id + '/3');
+    expect(router.url.split('?')[0]).toBe('/' + SECTIONS[1].chapters[1].id + '/3');
   });
 
   it('moves to the next slide and across chapters', async () => {
     const { el, router, settle } = await open(`/${COURSE[0].id}/${COURSE[0].slides.length}`);
     (el.querySelector('.foot .next') as HTMLButtonElement).click();
     await settle();
-    expect(router.url).toBe(`/${COURSE[1].id}/1`);
+    expect(router.url.split('?')[0]).toBe(`/${COURSE[1].id}/1`);
   });
 
   it('opens search with / and finds slides in any chapter', async () => {
@@ -133,22 +134,20 @@ describe('CourseShell', () => {
 
   it('sends unknown chapters to the start', async () => {
     const { router } = await open('/nope/3');
-    expect(router.url).toBe(`/${COURSE[0].id}/1`);
+    expect(router.url.split('?')[0]).toBe(`/${COURSE[0].id}/1`);
   });
 
   it('opens old single-segment links like #assistant at slide 1', async () => {
     const { router } = await open(`/${COURSE[1].id}`);
-    expect(router.url).toBe(`/${COURSE[1].id}/1`);
+    expect(router.url.split('?')[0]).toBe(`/${COURSE[1].id}/1`);
   });
 
   describe('watch mode', () => {
     const withVideo = COURSE.find((c) => c.videos?.length)!;
     const withoutVideo = COURSE.find((c) => !c.videos?.length)!;
-    beforeEach(() => localStorage.setItem(VIEW_MODE_KEY, 'watch'));
-    afterEach(() => localStorage.removeItem(VIEW_MODE_KEY));
 
     it("shows the slide's video, then steps video by video and on to the next chapter", async () => {
-      const { el, router, settle } = await open(`/${withVideo.id}/3`);
+      const { el, router, settle } = await open(`/${withVideo.id}/3?mode=watch`);
       const vids = withVideo.videos!;
       expect(el.querySelector('article h2')?.textContent).toBe(vids[0].title);
       expect(el.querySelector('app-video-player video')?.getAttribute('src')).toBe(vids[0].src);
@@ -159,53 +158,71 @@ describe('CourseShell', () => {
         next().click();
         await settle();
         expect(el.querySelector('article h2')?.textContent).toBe(v.title);
-        expect(router.url).toBe(`/${withVideo.id}/${v.slides?.[0] ?? 1}`);
+        expect(router.url).toBe(`/${withVideo.id}/${v.slides?.[0] ?? 1}?mode=watch`);
       }
       const i = COURSE.indexOf(withVideo);
       expect(next().textContent).toContain(COURSE[i + 1].name);
       next().click();
       await settle();
-      expect(router.url).toBe(`/${COURSE[i + 1].id}/1`);
+      expect(router.url).toBe(`/${COURSE[i + 1].id}/1?mode=watch`);
     });
 
     it("lists the chapter's videos when there is more than one", async () => {
-      const { el } = await open(`/${withVideo.id}/1`);
+      const { el } = await open(`/${withVideo.id}/1?mode=watch`);
       const items = el.querySelectorAll('.playlist li');
       expect(items.length).toBe(withVideo.videos!.length > 1 ? withVideo.videos!.length : 0);
     });
 
     it('skips 5 seconds with the arrow keys instead of changing slide', async () => {
-      const { el, router, settle } = await open(`/${withVideo.id}/1`);
+      const { el, router, settle } = await open(`/${withVideo.id}/1?mode=watch`);
       document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight' }));
       document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight' }));
       await settle();
-      expect(router.url).toBe(`/${withVideo.id}/1`);
+      expect(router.url).toBe(`/${withVideo.id}/1?mode=watch`);
       expect(el.querySelector('.flash')?.textContent).toContain('10 seconds');
     });
 
     it('offers the slides when a chapter has no video yet', async () => {
-      const { el, settle } = await open(`/${withoutVideo.id}/1`);
+      const { el, router, settle } = await open(`/${withoutVideo.id}/1?mode=watch`);
       expect(el.querySelector('article h2')?.textContent).toContain('No video');
       (el.querySelector('.empty .btn.on') as HTMLButtonElement).click();
       await settle();
       expect(el.querySelector('article h2')?.textContent).toBe(withoutVideo.slides[0].title);
-      expect(localStorage.getItem(VIEW_MODE_KEY)).toBeNull();
+      expect(router.url).toBe(`/${withoutVideo.id}/1?mode=read`);
     });
 
     it('shows only chapters in the outline, without slide lists', async () => {
-      const { el } = await open(`/${withVideo.id}/1`);
+      const { el } = await open(`/${withVideo.id}/1?mode=watch`);
       expect(el.querySelector('aside .ch[aria-current="page"]')).not.toBeNull();
       expect(el.querySelector('aside .slides')).toBeNull();
       expect(el.querySelector('aside .chev')).toBeNull();
     });
 
     it('is a course-wide switch in the header', async () => {
-      const { el, settle } = await open(`/${withVideo.id}/1`);
+      const { el, settle } = await open(`/${withVideo.id}/1?mode=watch`);
       const read = el.querySelector('header app-mode-switch button') as HTMLButtonElement;
       read.click();
       await settle();
       expect(el.querySelector('article h2')?.textContent).toBe(withVideo.slides[0].title);
       expect(el.querySelector('aside .slides')).not.toBeNull();
+    });
+
+    it('keeps the chosen mode in the URL, so a reload or a shared link opens the same view', async () => {
+      const { el, router, settle } = await open(`/${withVideo.id}/1?mode=watch`);
+      (el.querySelector('header app-mode-switch button') as HTMLButtonElement).click();
+      await settle();
+      expect(router.url).toBe(`/${withVideo.id}/1?mode=read`);
+      (el.querySelector('.foot .next') as HTMLButtonElement).click();
+      await settle();
+      expect(router.url).toBe(`/${withVideo.id}/2?mode=read`);
+    });
+
+    it('opens Watch by default when the chapter has a video, Read when it has none', async () => {
+      const { el, router, settle } = await open(`/${withVideo.id}/1?`);
+      expect(el.querySelector('app-video-player')).not.toBeNull();
+      await router.navigateByUrl(`/${withoutVideo.id}/1`);
+      await settle();
+      expect(el.querySelector('article h2')?.textContent).toBe(withoutVideo.slides[0].title);
     });
   });
 });

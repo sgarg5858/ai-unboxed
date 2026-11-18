@@ -4,7 +4,7 @@
   "name": "Embeddings",
   "videos": [
     {
-      "src": "videos/token_embeddings.mp4",
+      "src": "videos/embeddings/token_embeddings.mp4",
       "title": "Token embeddings",
       "description": "How a token ID becomes a list of numbers: the embedding table, what the numbers represent, how they're learned, and why the width d is a design choice.",
       "slides": [1, 4],
@@ -46,7 +46,7 @@
       ]
     },
     {
-      "src": "videos/word_order_and_rope.mp4",
+      "src": "videos/embeddings/word_order_and_rope.mp4",
       "title": "Word order and RoPE",
       "description": "Why a transformer can't see word order on its own, how GPT-2 adds a position vector, how the input becomes a matrix, and how RoPE turns vectors instead, explained simply.",
       "slides": [8, 9],

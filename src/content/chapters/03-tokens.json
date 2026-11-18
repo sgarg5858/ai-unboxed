@@ -4,7 +4,7 @@
   "name": "Tokens",
   "videos": [
     {
-      "src": "videos/tokenizers_explained.mp4",
+      "src": "videos/tokens/tokenizers_explained.mp4",
       "title": "Tokenizers, explained",
       "description": "How text becomes the tokens a model actually reads: why words get split into pieces, how the vocabulary is built, and why it matters for cost and quirks.",
       "slides": [1, 5],
@@ -55,7 +55,7 @@
       ]
     },
     {
-      "src": "videos/tokens_in_practice.mp4",
+      "src": "videos/tokens/tokens_in_practice.mp4",
       "title": "Context window and special tokens",
       "description": "Follow one message from Send to answer: the special tokens and chat template the model actually sees, why it all has to fit in the context window, and why every token costs money.",
       "slides": [6, 8],

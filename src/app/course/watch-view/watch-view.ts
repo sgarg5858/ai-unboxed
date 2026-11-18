@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, viewChild } from '@angular/core';
 import { VideoPlayer } from '../../shared/video-player/video-player';
 import { clock } from '../../shared/lib/video';
-import { slidesLabel } from '../chapter-videos';
+import { slidesLabel, startFor, videoCovering } from '../chapter-videos';
 import { ChapterVideo } from '../content.model';
 import { ChapterStore } from '../chapter-store';
 import { CourseNav } from '../course-nav';
@@ -90,7 +90,7 @@ import { ViewModeState } from '../view-mode';
         }
         <p class="alt">
           Prefer to read?
-          <button type="button" class="link" (click)="mode.mode.set('read')">
+          <button type="button" class="link" (click)="mode.set('read')">
             Read {{ v.slides ? label(v) : 'the ' + chapter.slides.length + ' slides' }} instead
           </button>
         </p>
@@ -102,7 +102,7 @@ import { ViewModeState } from '../view-mode';
           <h2 tabindex="-1">No video for {{ chapter.name }} yet</h2>
           <p>This chapter is slides only for now. Read it, or watch a chapter that has one.</p>
           <div class="acts">
-            <button type="button" class="btn on" (click)="mode.mode.set('read')">
+            <button type="button" class="btn on" (click)="mode.set('read')">
               Read this chapter
             </button>
             @for (c of withVideo(); track c.id) {
@@ -128,6 +128,19 @@ export class WatchView {
     const loaded = this.store.loaded();
     return this.nav.chapters.filter((c) => loaded.get(c.id)?.videos?.length).slice(0, 4);
   });
+
+  constructor() {
+    // Opened on a slide (switching from Read, a reload or a shared link): start the video where
+    // that slide's topic begins.
+    const v = this.nav.video();
+    const slide = this.nav.position().slide;
+    if (
+      this.mode.seekTo() === null &&
+      v &&
+      videoCovering([v], slide, this.nav.chapter().slides.length)
+    )
+      this.mode.seekTo.set(startFor(v, slide) || null);
+  }
 
   /** Keys pressed anywhere on the page; true if the player used it. */
   handleKey(e: KeyboardEvent): boolean {

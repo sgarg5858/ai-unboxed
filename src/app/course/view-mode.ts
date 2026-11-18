@@ -1,38 +1,20 @@
-import { Injectable, effect, signal } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
+import { CourseNav, ViewMode } from './course-nav';
 
-export const VIEW_MODE_KEY = 'ai-unboxed:mode';
-export type ViewMode = 'read' | 'watch';
+export type { ViewMode };
 
-/** Read the slides or watch the chapter's video. Remembered between visits. */
+/**
+ * Read the slides or watch the chapter's video. The choice lives in the URL (`?mode=`, see
+ * CourseNav), so a reload or a shared link opens the same view.
+ */
 @Injectable({ providedIn: 'root' })
 export class ViewModeState {
-  readonly mode = signal<ViewMode>(this.read());
-  /** Where the video should start when Watch mode opens from a slide's Watch switch. */
+  private readonly nav = inject(CourseNav);
+  readonly mode = this.nav.mode;
+  /** Where the video should start when Watch mode opens (see WatchView). */
   readonly seekTo = signal<number | null>(null);
 
-  /** Switch to Watch mode, starting the video at `seconds`. */
-  watchAt(seconds: number) {
-    this.seekTo.set(seconds);
-    this.mode.set('watch');
-  }
-
-  constructor() {
-    effect(() => {
-      const mode = this.mode();
-      try {
-        if (mode === 'read') localStorage.removeItem(VIEW_MODE_KEY);
-        else localStorage.setItem(VIEW_MODE_KEY, mode);
-      } catch {
-        // Storage can be blocked; the choice still applies for this visit.
-      }
-    });
-  }
-
-  private read(): ViewMode {
-    try {
-      return localStorage.getItem(VIEW_MODE_KEY) === 'watch' ? 'watch' : 'read';
-    } catch {
-      return 'read';
-    }
+  set(mode: ViewMode) {
+    return this.nav.setMode(mode);
   }
 }

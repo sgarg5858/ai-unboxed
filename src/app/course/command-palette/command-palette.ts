@@ -13,7 +13,6 @@ import { CourseNav } from '../course-nav';
 import { chapterNumber } from '../course-position';
 import { SearchEntry, plain, searchSlides } from '../course-search';
 import { ReadingProgress } from '../reading-progress';
-import { ViewModeState } from '../view-mode';
 
 type Item = {
   id: string;
@@ -95,7 +94,6 @@ export class CommandPalette {
   private readonly nav = inject(CourseNav);
   private readonly store = inject(ChapterStore);
   private readonly progress = inject(ReadingProgress);
-  private readonly mode = inject(ViewModeState);
   private readonly dialog = viewChild.required<ElementRef<HTMLDialogElement>>('dialog');
   private readonly input = viewChild.required<ElementRef<HTMLInputElement>>('input');
 
@@ -192,8 +190,9 @@ export class CommandPalette {
     if (!it) return;
     this.close();
     // A search hit is a slide, so show it as one.
-    this.mode.mode.set('read');
-    this.nav.goto(it.chapterId, it.slide).then(() => window.scrollTo?.({ top: 0 }));
+    this.nav
+      .goto(it.chapterId, it.slide, { queryParams: { mode: 'read' } })
+      .then(() => window.scrollTo?.({ top: 0 }));
   }
 
   /** A click on the dimmed backdrop lands on the <dialog> itself. */
