@@ -6,11 +6,11 @@
     {
       "src": "videos/word_order_and_rope.mp4",
       "title": "Word order and RoPE",
-      "description": "Why a transformer can't see word order on its own, how GPT-2 adds a position vector, and how RoPE turns vectors instead, explained simply.",
+      "description": "Why a transformer can't see word order on its own, how GPT-2 adds a position vector, how the input becomes a matrix, and how RoPE turns vectors instead, explained simply.",
       "slides": [4, 5],
       "at": {
         "4": 44,
-        "5": 90
+        "5": 137
       },
       "marks": [
         {
@@ -27,22 +27,26 @@
         },
         {
           "at": 90,
+          "label": "The input is now a matrix"
+        },
+        {
+          "at": 137,
           "label": "Fix two: RoPE, turn don't add"
         },
         {
-          "at": 123,
+          "at": 170,
           "label": "Why only the distance matters"
         },
         {
-          "at": 147,
+          "at": 194,
           "label": "The merry-go-round"
         },
         {
-          "at": 156,
+          "at": 203,
           "label": "How position reaches the model"
         },
         {
-          "at": 198,
+          "at": 245,
           "label": "Fast and slow pairs"
         }
       ]
