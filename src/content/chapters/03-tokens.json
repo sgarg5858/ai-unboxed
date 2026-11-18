@@ -7,7 +7,52 @@
       "src": "videos/tokenizers_explained.mp4",
       "title": "Tokenizers, explained",
       "description": "How text becomes the tokens a model actually reads: why words get split into pieces, how the vocabulary is built, and why it matters for cost and quirks.",
-      "slides": [1, 5]
+      "slides": [1, 5],
+      "at": {
+        "1": 0,
+        "2": 90,
+        "3": 248,
+        "4": 206,
+        "5": 300
+      },
+      "marks": [
+        {
+          "at": 0,
+          "label": "What is a tokenizer?"
+        },
+        {
+          "at": 10,
+          "label": "Computers only understand numbers"
+        },
+        {
+          "at": 26,
+          "label": "What a tokenizer does"
+        },
+        {
+          "at": 58,
+          "label": "The vocabulary"
+        },
+        {
+          "at": 90,
+          "label": "How big should a token be?"
+        },
+        {
+          "at": 168,
+          "label": "The vocabulary is fixed before training"
+        },
+        {
+          "at": 206,
+          "label": "Byte-level tokenizers: every character is bytes"
+        },
+        {
+          "at": 248,
+          "label": "How BPE builds the vocabulary"
+        },
+        {
+          "at": 300,
+          "label": "One tokenizer, every language"
+        }
+      ]
     },
     {
       "src": "videos/tokens_in_practice.mp4",

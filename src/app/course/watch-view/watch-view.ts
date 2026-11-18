@@ -57,17 +57,19 @@ import { ViewModeState } from '../view-mode';
           </app-video-player>
         }
         @if (v.marks?.length) {
-          <h3 class="sub">In this video</h3>
-          <ol class="marks">
-            @for (m of v.marks; track m.at) {
-              <li>
-                <button type="button" (click)="player()?.jumpTo(m.at)">
-                  <span class="at">{{ clock(m.at) }}</span
-                  >{{ m.label }}
-                </button>
-              </li>
-            }
-          </ol>
+          <details class="chapters">
+            <summary class="sub">In this video · {{ v.marks!.length }} timestamps</summary>
+            <ol class="marks">
+              @for (m of v.marks; track m.at) {
+                <li>
+                  <button type="button" (click)="player()?.jumpTo(m.at)">
+                    <span class="at">{{ clock(m.at) }}</span
+                    >{{ m.label }}
+                  </button>
+                </li>
+              }
+            </ol>
+          </details>
         }
         @if (count > 1) {
           <h3 class="sub">Videos in this chapter</h3>

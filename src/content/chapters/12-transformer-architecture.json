@@ -2,6 +2,52 @@
   "$schema": "../schema/chapter.schema.json",
   "id": "transformer",
   "name": "Transformer architecture",
+  "videos": [
+    {
+      "src": "videos/word_order_and_rope.mp4",
+      "title": "Word order and RoPE",
+      "description": "Why a transformer can't see word order on its own, how GPT-2 adds a position vector, and how RoPE turns vectors instead, explained simply.",
+      "slides": [4, 5],
+      "at": {
+        "4": 44,
+        "5": 90
+      },
+      "marks": [
+        {
+          "at": 0,
+          "label": "Dog bites man, man bites dog"
+        },
+        {
+          "at": 15,
+          "label": "Why word order gets lost"
+        },
+        {
+          "at": 44,
+          "label": "Fix one: add a position vector"
+        },
+        {
+          "at": 90,
+          "label": "Fix two: RoPE, turn don't add"
+        },
+        {
+          "at": 123,
+          "label": "Why only the distance matters"
+        },
+        {
+          "at": 147,
+          "label": "The merry-go-round"
+        },
+        {
+          "at": 156,
+          "label": "How position reaches the model"
+        },
+        {
+          "at": 198,
+          "label": "Fast and slow pairs"
+        }
+      ]
+    }
+  ],
   "slides": [
     {
       "title": "The loop: how a model writes an answer",

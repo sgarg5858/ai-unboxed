@@ -179,3 +179,14 @@ h2 {
   font: 600 13px var(--f-mono);
   color: var(--accent-ink);
 }
+/* "In this video": collapsed by default; the summary is the click target. */
+.chapters > summary {
+  cursor: pointer;
+  width: fit-content;
+}
+.chapters > summary:hover {
+  color: var(--accent-ink);
+}
+.chapters[open] > summary {
+  margin-bottom: 8px;
+}

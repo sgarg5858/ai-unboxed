@@ -49,6 +49,23 @@ describe('course content', () => {
     expect([...(block ?? [])].sort()).toEqual(Object.keys(WIDGETS).sort());
   });
 
+  it('gives every video timestamps and a slide range inside its chapter', () => {
+    for (const c of COURSE)
+      for (const v of c.videos ?? []) {
+        const where = `${c.id}: ${v.src}`;
+        const marks = v.marks ?? [];
+        expect(marks.length, `${where} has no timestamps`).toBeGreaterThan(0);
+        expect(marks[0].at, `${where} timestamps start at 0`).toBe(0);
+        marks.forEach((m, i) => i && expect(m.at, where).toBeGreaterThan(marks[i - 1].at));
+        const [first, last] = v.slides ?? [1, c.slides.length];
+        expect(first >= 1 && first <= last && last <= c.slides.length, where).toBe(true);
+        for (const k of Object.keys(v.at ?? {}))
+          expect(+k >= first && +k <= last, `${where}: "at" slide ${k} is outside its range`).toBe(
+            true,
+          );
+      }
+  });
+
   it('has goto links that point at real slides', () => {
     const broken: string[] = [];
     for (const c of COURSE)

@@ -95,6 +95,15 @@ Every component therefore uses `OnPush` and keeps template state in signals:
 
 Slides link to other chapters with `goto: { chapter: "<id>", slide: n }` and refer to them by name in prose, never by number. Chapters can therefore be reordered or inserted without breaking links.
 
+### 8. Videos: a few per chapter, each covering a range of slides
+
+A chapter can list a few videos (`videos` in its JSON). Each covers a range of slides (`slides: [first, last]`), says where each slide's topic starts (`at`), and has timestamps (`marks`). The URL still decides everything:
+
+- **Read mode:** a slide inside a video's range shows a "Watch this part" button (`SlideView`). It calls `ViewModeState.watchAt(seconds)`, which switches to Watch mode and asks the player to start at that slide's timestamp.
+- **Watch mode:** `CourseNav.video()` is the video that covers the current slide (`videoIndexAt` in `course/chapter-videos.ts`, a pure, unit-tested helper). `WatchView` shows it, its timestamps (`marks`) as a clickable list, and a playlist when the chapter has more than one. Back/Next and "Up next" step video by video (`CourseNav.stepVideo`), then move to the next chapter; opening a video navigates to the first slide it covers, so links and reloads land on the same video.
+- **Player:** `shared/video-player` takes `src`, `start` (applied once, then reported with `startApplied`) and `marks`, drawn as ticks on the seek bar (`video-range`); hovering names the section. It remembers where each video was stopped.
+- **Files:** `src/content/videos/` is copied to `videos/` by an `assets` glob in `angular.json`. The same file can be listed in more than one chapter. Keep files small (GitHub rejects files over 100 MB); a `src` can later point to a CDN.
+
 ## Request → render walkthrough
 
 1. A user opens `https://sgarg5858.github.io/ai-unboxed/#/attention/3`.
@@ -126,5 +135,6 @@ Slides link to other chapters with `goto: { chapter: "<id>", slide: n }` and ref
 | Add a section (RAG, Agents, …) | Add `{ id, name, chapters }` to `SECTIONS` in `course.ts`. The rail picks it up automatically.                                                                                                        |
 | Add a widget                   | Write the component in `widgets/<topic>.widgets.ts`, register a lazy loader for it in `registry.ts`, and add its name to the widget `enum` in `chapter.schema.json`. Tests fail if you forget either. |
 | Add a generic block type       | Add it to the `Block` union in `content.model.ts`, add a renderer in `blocks/`, add a `@case` in `BlockList`, and add it to the schema.                                                               |
+| Add a video                    | Put the MP4 in `src/content/videos/` and add it to the chapter's `videos` list with `slides`, `at` and `marks` (timestamps). See CLAUDE.md.                                                           |
 | Add a diagram or image         | Put light and dark files in `public/images/` and add `figure` to the slide. It renders full width under both columns (`shared/slide-figure`).                                                         |
 | Add a colour                   | Add the token to both the light and dark blocks in `styles.css`. Add an `-ink` variant if it will colour text.                                                                                        |
