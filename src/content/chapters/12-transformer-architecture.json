@@ -254,6 +254,42 @@
       ]
     },
     {
+      "src": "videos/kv_cache.mp4",
+      "title": "The KV cache",
+      "description": "Why writing each token would mean re-reading the whole text, how saving keys and values fixes it, prefill vs decode, what the cache costs in memory, and how models shrink it.",
+      "marks": [
+        {
+          "at": 0,
+          "label": "Why generation would be slow"
+        },
+        {
+          "at": 11,
+          "label": "The waste: recomputing K and V"
+        },
+        {
+          "at": 56,
+          "label": "Save it: the KV cache"
+        },
+        {
+          "at": 95,
+          "label": "Prefill and decode"
+        },
+        {
+          "at": 117,
+          "label": "The price: memory"
+        },
+        {
+          "at": 172,
+          "label": "Shrinking the cache: GQA, quantization, paging"
+        },
+        {
+          "at": 210,
+          "label": "Prompt caching"
+        }
+      ],
+      "slides": [12, 12]
+    },
+    {
       "src": "videos/linear_softmax.mp4",
       "title": "Part 6 · Linear & softmax",
       "description": "How the last token's vector becomes a score for every word in the vocabulary, how softmax turns scores into probabilities, and how one token is picked and the loop runs again.",

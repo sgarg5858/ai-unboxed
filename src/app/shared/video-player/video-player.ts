@@ -97,7 +97,7 @@ export class VideoPlayer {
   private lastSaved = 0;
 
   constructor() {
-    // A new start time for a video that's already loaded (e.g. "Watch this part" on another slide).
+    // A new start time for a video that's already loaded (e.g. switching to Watch from another slidehis part" on another slide).
     afterRenderEffect(() => {
       const t = this.start();
       if (t != null && this.video.readyState >= 1) this.applyStart(t);

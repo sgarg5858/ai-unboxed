@@ -2,6 +2,146 @@
   "$schema": "../schema/chapter.schema.json",
   "id": "attention",
   "name": "Attention",
+  "videos": [
+    {
+      "src": "videos/attention_why.mp4",
+      "title": "Attention 1 · Why attention",
+      "description": "Why RNNs, LSTMs and CNNs struggled with long text, how attention lets any word reach any other in one step, and why multi-head causal self-attention works so well.",
+      "slides": [1, 1],
+      "at": {
+        "1": 0
+      },
+      "marks": [
+        {
+          "at": 0,
+          "label": "Intro"
+        },
+        {
+          "at": 11,
+          "label": "The job: “it” must reach “cat”"
+        },
+        {
+          "at": 35,
+          "label": "RNNs: one word at a time"
+        },
+        {
+          "at": 60,
+          "label": "Vanishing gradients"
+        },
+        {
+          "at": 83,
+          "label": "LSTMs: memory with gates"
+        },
+        {
+          "at": 115,
+          "label": "CNNs: small windows"
+        },
+        {
+          "at": 146,
+          "label": "Attention: one step to any word"
+        },
+        {
+          "at": 191,
+          "label": "The price: n²"
+        },
+        {
+          "at": 202,
+          "label": "Why multi-head causal self-attention works"
+        },
+        {
+          "at": 240,
+          "label": "Query, key, value"
+        }
+      ]
+    },
+    {
+      "src": "videos/attention_step_by_step.mp4",
+      "title": "Attention 2 · Step by step",
+      "description": "Attention computed by hand on “I am learning artificial”, with the slides' real numbers: queries, keys and values, scores and √d, the causal mask, softmax, and mixing the values.",
+      "slides": [2, 5],
+      "at": {
+        "2": 14,
+        "3": 58,
+        "4": 117,
+        "5": 161
+      },
+      "marks": [
+        {
+          "at": 0,
+          "label": "Intro"
+        },
+        {
+          "at": 14,
+          "label": "1 · Make Q, K and V"
+        },
+        {
+          "at": 58,
+          "label": "2 · Score every pair"
+        },
+        {
+          "at": 85,
+          "label": "Why divide by √d"
+        },
+        {
+          "at": 117,
+          "label": "3 · No peeking ahead"
+        },
+        {
+          "at": 161,
+          "label": "4 · Softmax: scores → weights"
+        },
+        {
+          "at": 205,
+          "label": "5 · Mix the values"
+        }
+      ]
+    },
+    {
+      "src": "videos/attention_heads_cost_position.mp4",
+      "title": "Attention 3 · Heads, cost and position",
+      "description": "Why models run many attention heads, how they split the width and what they specialise in; why attention costs n² and the fixes (FlashAttention, GQA, sliding windows); and how waves give attention a sense of word order.",
+      "slides": [6, 8],
+      "at": {
+        "6": 12,
+        "7": 80,
+        "8": 145
+      },
+      "marks": [
+        {
+          "at": 0,
+          "label": "Intro"
+        },
+        {
+          "at": 12,
+          "label": "Multi-head attention"
+        },
+        {
+          "at": 62,
+          "label": "What heads specialise in"
+        },
+        {
+          "at": 80,
+          "label": "The cost: n²"
+        },
+        {
+          "at": 98,
+          "label": "FlashAttention, GQA, sliding windows"
+        },
+        {
+          "at": 145,
+          "label": "Attention ignores word order"
+        },
+        {
+          "at": 166,
+          "label": "Position from waves"
+        },
+        {
+          "at": 205,
+          "label": "Why not just add 5? RoPE"
+        }
+      ]
+    }
+  ],
   "slides": [
     {
       "title": "The big idea: tokens read each other",

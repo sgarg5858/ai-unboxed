@@ -46,7 +46,7 @@ export function videoIndexAt(videos: readonly ChapterVideo[], slide: number, sli
   return before;
 }
 
-/** The video covering exactly this slide, or null (for the "Watch this part" pill). */
+/** The video covering exactly this slide, or null. */
 export function videoCovering(videos: readonly ChapterVideo[], slide: number, slideCount: number) {
   return videos[coveringIndex(videos, slide, slideCount)] ?? null;
 }

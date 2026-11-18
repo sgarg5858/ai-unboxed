@@ -33,7 +33,7 @@
         "type": "object",
         "additionalProperties": false,
         "required": ["src", "title"],
-        "description": "One video: shown in Watch mode, and as a \"Watch this part\" button on the slides it covers.",
+        "description": "One video: shown in Watch mode for the slides it covers; switching to Watch from one of them starts at that slide's moment.",
         "properties": {
           "src": {
             "type": "string",

@@ -2,6 +2,94 @@
   "$schema": "../schema/chapter.schema.json",
   "id": "block",
   "name": "The transformer block",
+  "videos": [
+    {
+      "src": "videos/block_stream_norm_mlp.mp4",
+      "title": "Block 1 · Stream, normalization and the MLP",
+      "description": "The residual stream (x = x + f(x)) and why it helps training and thinking, pre-norm with LayerNorm and RMSNorm, the MLP's expand, bend and shrink, and why the curve matters.",
+      "slides": [1, 3],
+      "at": {
+        "1": 11,
+        "2": 69,
+        "3": 122
+      },
+      "marks": [
+        {
+          "at": 0,
+          "label": "Intro"
+        },
+        {
+          "at": 11,
+          "label": "The residual stream"
+        },
+        {
+          "at": 32,
+          "label": "Why it helps training and thinking"
+        },
+        {
+          "at": 69,
+          "label": "Normalization (pre-norm)"
+        },
+        {
+          "at": 94,
+          "label": "LayerNorm vs RMSNorm"
+        },
+        {
+          "at": 122,
+          "label": "The MLP: expand, bend, shrink"
+        },
+        {
+          "at": 148,
+          "label": "Where facts live"
+        },
+        {
+          "at": 165,
+          "label": "Why the curve matters"
+        }
+      ]
+    },
+    {
+      "src": "videos/block_params_depth_experts.mp4",
+      "title": "Block 2 · Parameters, depth and experts",
+      "description": "Estimate a model's size from three numbers (12·N·d²), turn parameters into memory (bf16 vs 4-bit), stack N blocks, and see how mixture-of-experts models grow huge while staying cheap per token.",
+      "slides": [4, 6],
+      "at": {
+        "4": 10,
+        "5": 107,
+        "6": 155
+      },
+      "marks": [
+        {
+          "at": 0,
+          "label": "Intro"
+        },
+        {
+          "at": 10,
+          "label": "Count the parameters"
+        },
+        {
+          "at": 47,
+          "label": "A 7B model, worked out"
+        },
+        {
+          "at": 71,
+          "label": "From parameters to memory"
+        },
+        {
+          "at": 107,
+          "label": "Stack it N times"
+        },
+        {
+          "at": 155,
+          "label": "Mixture of experts"
+        },
+        {
+          "at": 201,
+          "label": "Why “expert” is misleading"
+        }
+      ]
+    }
+  ],
   "slides": [
     {
       "title": "The residual stream",

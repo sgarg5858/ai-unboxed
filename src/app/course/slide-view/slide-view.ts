@@ -4,9 +4,7 @@ import { BlockList } from '../../blocks/block-list';
 import { CodeBlock } from '../../shared/code-block/code-block';
 import { SlideFigure } from '../../shared/slide-figure/slide-figure';
 import { Figure, Goto, NoteKind, Prose, SlideContent } from '../content.model';
-import { slidesLabel, startFor, videoCovering } from '../chapter-videos';
 import { CourseNav } from '../course-nav';
-import { ViewModeState } from '../view-mode';
 
 /** One slide: text on the left, interactive blocks on the right, wide figures underneath (or under the title). */
 @Component({
@@ -18,16 +16,7 @@ import { ViewModeState } from '../view-mode';
 })
 export class SlideView {
   private readonly nav = inject(CourseNav);
-  protected readonly mode = inject(ViewModeState);
   readonly content = input.required<SlideContent>();
-
-  /** The video that covers this slide, for the "Watch this part" button. */
-  protected readonly watchHere = computed(() => {
-    const slide = this.nav.position().slide;
-    const count = this.nav.chapter().slides.length;
-    const v = videoCovering(this.nav.videos(), slide, count);
-    return v ? { title: v.title, slides: slidesLabel(v, count), start: startFor(v, slide) } : null;
-  });
 
   protected readonly kindOf = (p: Prose) =>
     typeof p === 'string' ? 'p' : 'ul' in p ? 'ul' : 'h' in p ? 'h' : 'more' in p ? 'more' : 'note';

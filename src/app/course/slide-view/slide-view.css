@@ -141,32 +141,3 @@
   padding: 0 12px 10px;
 }
 /* Theme switch */
-/* "Watch this part": the chapter video that covers this slide. */
-.watch-part {
-  display: inline-flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 4px 8px;
-  margin: -4px 0 14px;
-  padding: 6px 14px 6px 8px;
-  border: 1px solid var(--accent);
-  border-radius: 999px;
-  background: var(--accent-soft);
-  color: var(--accent-ink);
-  font: 700 13.5px var(--f-ui, inherit);
-  cursor: pointer;
-}
-.watch-part .play {
-  display: grid;
-  place-items: center;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background: var(--accent);
-  color: var(--surface);
-  font-size: 10px;
-}
-.watch-part .meta {
-  font-weight: 500;
-  color: var(--muted);
-}

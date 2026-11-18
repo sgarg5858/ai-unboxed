@@ -2,12 +2,6 @@
 @let tops = topFigures();
 <ng-template #head>
   <h2 tabindex="-1">{{ slide.title }}</h2>
-  @if (watchHere(); as w) {
-    <button type="button" class="watch-part" (click)="mode.watchAt(w.start)">
-      <span class="play" aria-hidden="true">▶</span> Watch this part
-      <span class="meta">{{ w.title }} · {{ w.slides }}</span>
-    </button>
-  }
   @if (slide.summary) {
     <p class="lead" [innerHTML]="slide.summary"></p>
   }
