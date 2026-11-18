@@ -2,6 +2,109 @@
   "$schema": "../schema/chapter.schema.json",
   "id": "assistant",
   "name": "Assistant architecture",
+  "videos": [
+    {
+      "src": "videos/assistant/assistant_system.mp4",
+      "title": "Part 1 · The system around the model",
+      "description": "Follow one message through an AI assistant: the parts around the model, defense in depth, sign-in (the model never sees your key) and how the prompt is built.",
+      "slides": [1, 4],
+      "at": {
+        "1": 13,
+        "2": 51,
+        "3": 86,
+        "4": 149
+      },
+      "marks": [
+        {
+          "at": 0,
+          "label": "A whole system, not just a model"
+        },
+        {
+          "at": 13,
+          "label": "One message, start to finish"
+        },
+        {
+          "at": 51,
+          "label": "Defense in depth"
+        },
+        {
+          "at": 86,
+          "label": "Sign-in: the model never sees your key"
+        },
+        {
+          "at": 149,
+          "label": "Building the prompt"
+        }
+      ]
+    },
+    {
+      "src": "videos/assistant/assistant_rules_safety.mp4",
+      "title": "Part 2 · Rules and safety",
+      "description": "Whose instructions win when they clash, the values trained into the model, and the safety checkers that give a second opinion on every message.",
+      "slides": [5, 7],
+      "at": {
+        "5": 11,
+        "6": 86,
+        "7": 148
+      },
+      "marks": [
+        {
+          "at": 0,
+          "label": "When instructions clash"
+        },
+        {
+          "at": 11,
+          "label": "Who's in charge"
+        },
+        {
+          "at": 86,
+          "label": "Values are built in"
+        },
+        {
+          "at": 148,
+          "label": "Safety checkers"
+        },
+        {
+          "at": 220,
+          "label": "Choosing the cut-off"
+        }
+      ]
+    },
+    {
+      "src": "videos/assistant/assistant_tools_attacks.mp4",
+      "title": "Part 3 · Tools, search and attacks",
+      "description": "How tools work (the model asks, the software acts), web search with citations, prompt injection and its defenses, and the safeguards that look across all chats.",
+      "slides": [8, 11],
+      "at": {
+        "8": 9,
+        "9": 79,
+        "10": 130,
+        "11": 207
+      },
+      "marks": [
+        {
+          "at": 0,
+          "label": "Tools make it a target"
+        },
+        {
+          "at": 9,
+          "label": "The model asks, the software acts"
+        },
+        {
+          "at": 79,
+          "label": "Web search: answers with sources"
+        },
+        {
+          "at": 130,
+          "label": "Prompt injection"
+        },
+        {
+          "at": 207,
+          "label": "The bigger picture"
+        }
+      ]
+    }
+  ],
   "slides": [
     {
       "title": "An AI assistant, on one diagram",
