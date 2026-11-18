@@ -7,6 +7,14 @@ export type ViewMode = 'read' | 'watch';
 @Injectable({ providedIn: 'root' })
 export class ViewModeState {
   readonly mode = signal<ViewMode>(this.read());
+  /** Where the video should start when Watch mode opens from a slide's "Watch this part". */
+  readonly seekTo = signal<number | null>(null);
+
+  /** Switch to Watch mode, starting the video at `seconds`. */
+  watchAt(seconds: number) {
+    this.seekTo.set(seconds);
+    this.mode.set('watch');
+  }
 
   constructor() {
     effect(() => {

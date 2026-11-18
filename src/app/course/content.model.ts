@@ -142,7 +142,10 @@ export interface SectionContent {
   chapters: ChapterRef[];
 }
 
-/** One video covering a whole chapter, shown in Watch mode. Files live in src/content/videos/. */
+/**
+ * One of a chapter's videos, shown in Watch mode. Files live in src/content/videos/.
+ * A video covers a range of slides; `at` gives where each slide's topic starts in it.
+ */
 export interface ChapterVideo {
   /** e.g. "videos/tokens.mp4", no leading slash (the base href varies). */
   src: string;
@@ -150,11 +153,24 @@ export interface ChapterVideo {
   /** Inline HTML allowed, as in prose. */
   description?: string;
   poster?: string;
+  /** First and last slide it covers, 1-based and inclusive. Omitted: the whole chapter. */
+  slides?: [number, number];
+  /** Seconds into the video where a slide's topic starts, keyed by 1-based slide number. */
+  at?: Record<string, number>;
+  /** Timestamps: ticks on the seek bar and a clickable list under the player. */
+  marks?: VideoMark[];
+}
+
+/** A named point in a video, e.g. { at: 85, label: "The context window" }. */
+export interface VideoMark {
+  at: number;
+  label: string;
 }
 
 export interface ChapterContent {
   id: string;
   name: string;
-  video?: ChapterVideo;
+  /** Up to a few videos, each covering a range of slides. */
+  videos?: ChapterVideo[];
   slides: SlideContent[];
 }

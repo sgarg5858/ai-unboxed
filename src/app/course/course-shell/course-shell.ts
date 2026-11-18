@@ -60,33 +60,41 @@ export class CourseShell {
   /** Read out after each move, instead of the whole slide. */
   protected readonly announcement = computed(() =>
     this.watching()
-      ? `Video: ${this.nav.chapter().video?.title ?? `no video for ${this.nav.chapter().name} yet`}`
+      ? `Video: ${this.nav.video()?.title ?? `no video for ${this.nav.chapter().name} yet`}`
       : `Slide ${this.nav.position().slide + 1} of ${this.nav.chapter().slides.length}: ${this.nav.slide().title}`,
   );
 
-  /** Watch mode moves a chapter at a time (one video each), so Back, Next and the count follow. */
+  /** Watch mode moves a video at a time (then a chapter), so Back, Next and the count follow. */
   protected readonly isFirst = computed(() =>
-    this.watching() ? this.nav.position().chapter === 0 : this.nav.isFirst(),
+    this.watching()
+      ? this.nav.position().chapter === 0 && this.nav.videoIndex() <= 0
+      : this.nav.isFirst(),
   );
   private readonly lastChapter = computed(
     () => this.nav.position().chapter === this.nav.chapters.length - 1,
   );
   protected readonly counter = computed(() =>
     this.watching()
-      ? `ch. ${this.nav.position().chapter + 1} / ${this.nav.chapters.length}`
+      ? (this.nav.videos().length > 1
+          ? `video ${this.nav.videoIndex() + 1} / ${this.nav.videos().length} · `
+          : '') + `ch. ${this.nav.position().chapter + 1} / ${this.nav.chapters.length}`
       : `${this.nav.position().slide + 1} / ${this.nav.chapter().slides.length}`,
   );
   protected readonly nextAria = computed(() =>
     this.watching()
-      ? this.lastChapter()
-        ? 'Back to start'
-        : `Next chapter: ${this.nav.nextChapterName()}`
+      ? this.nav.nextVideo()
+        ? `Next video: ${this.nav.nextVideo()!.title}`
+        : this.lastChapter()
+          ? 'Back to start'
+          : `Next chapter: ${this.nav.nextChapterName()}`
       : `${this.nav.nextLabel()}: ${this.nav.nextHint()}`,
   );
 
   /** "Next →" inside a chapter, "Next: Attention →" at its end, "Back to start ↺" at the very end. */
   protected readonly nextText = computed(() => {
     if (this.watching()) {
+      const nv = this.nav.nextVideo();
+      if (nv) return `Next video: ${nv.title} →`;
       return this.lastChapter() ? 'Back to start ↺' : `Next: ${this.nav.nextChapterName()} →`;
     }
     const label = this.nav.nextLabel();
@@ -104,7 +112,7 @@ export class CourseShell {
       const chapter = this.nav.chapter();
       // The browser tab names the slide (or video), so history and tab lists make sense.
       const what = this.watching()
-        ? `${chapter.video?.title ?? chapter.name} (video)`
+        ? `${this.nav.video()?.title ?? chapter.name} (video)`
         : slide.title;
       this.title.setTitle(`${what} · ${chapter.name} · AI, Unboxed`);
       if (first) {
@@ -132,7 +140,7 @@ export class CourseShell {
   }
 
   protected move(dir: 1 | -1) {
-    (this.watching() ? this.nav.stepChapter(dir) : this.nav.step(dir)).then(() =>
+    (this.watching() ? this.nav.stepVideo(dir) : this.nav.step(dir)).then(() =>
       this.stage().nativeElement.scrollIntoView?.({ block: 'nearest' }),
     );
   }

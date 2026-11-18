@@ -142,23 +142,36 @@ describe('CourseShell', () => {
   });
 
   describe('watch mode', () => {
-    const withVideo = COURSE.find((c) => c.video)!;
-    const withoutVideo = COURSE.find((c) => !c.video)!;
+    const withVideo = COURSE.find((c) => c.videos?.length)!;
+    const withoutVideo = COURSE.find((c) => !c.videos?.length)!;
     beforeEach(() => localStorage.setItem(VIEW_MODE_KEY, 'watch'));
     afterEach(() => localStorage.removeItem(VIEW_MODE_KEY));
 
-    it("shows the chapter's video and moves a chapter at a time", async () => {
+    it("shows the slide's video, then steps video by video and on to the next chapter", async () => {
       const { el, router, settle } = await open(`/${withVideo.id}/3`);
-      expect(el.querySelector('article h2')?.textContent).toBe(withVideo.video!.title);
-      expect(el.querySelector('app-video-player video')?.getAttribute('src')).toBe(
-        withVideo.video!.src,
-      );
+      const vids = withVideo.videos!;
+      expect(el.querySelector('article h2')?.textContent).toBe(vids[0].title);
+      expect(el.querySelector('app-video-player video')?.getAttribute('src')).toBe(vids[0].src);
       expect(el.querySelector('.chapter-bar .of')?.textContent).toContain('video');
+      const next = () => el.querySelector('.foot .next') as HTMLButtonElement;
+      for (const v of vids.slice(1)) {
+        expect(next().textContent).toContain(v.title);
+        next().click();
+        await settle();
+        expect(el.querySelector('article h2')?.textContent).toBe(v.title);
+        expect(router.url).toBe(`/${withVideo.id}/${v.slides?.[0] ?? 1}`);
+      }
       const i = COURSE.indexOf(withVideo);
-      expect(el.querySelector('.foot .next')?.textContent).toContain(COURSE[i + 1].name);
-      (el.querySelector('.foot .next') as HTMLButtonElement).click();
+      expect(next().textContent).toContain(COURSE[i + 1].name);
+      next().click();
       await settle();
       expect(router.url).toBe(`/${COURSE[i + 1].id}/1`);
+    });
+
+    it("lists the chapter's videos when there is more than one", async () => {
+      const { el } = await open(`/${withVideo.id}/1`);
+      const items = el.querySelectorAll('.playlist li');
+      expect(items.length).toBe(withVideo.videos!.length > 1 ? withVideo.videos!.length : 0);
     });
 
     it('skips 5 seconds with the arrow keys instead of changing slide', async () => {

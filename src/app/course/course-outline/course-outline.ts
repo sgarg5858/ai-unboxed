@@ -54,9 +54,9 @@ import { ViewModeState } from '../view-mode';
         }
         <ol class="chapters">
           @for (c of sec.chapters; track c.id) {
-            <!-- Watch mode is one video per chapter, so the slide lists are hidden. -->
+            <!-- Watch mode lists videos, not slides, so the slide lists are hidden. -->
             @let open = isOpen(c.id) && !watching();
-            <li [class.current]="c.current" [class.novid]="watching() && !c.video">
+            <li [class.current]="c.current" [class.novid]="watching() && !c.videos">
               <div class="row">
                 <button
                   type="button"
@@ -67,9 +67,14 @@ import { ViewModeState } from '../view-mode';
                   <span class="num">{{ c.number }}</span>
                   <span class="name">{{ c.name }}</span>
                   @if (watching()) {
-                    <span class="count" [class.vid]="c.video">
-                      <span aria-hidden="true">{{ c.video ? '▶ video' : 'slides only' }}</span>
-                      <span class="sr">, {{ c.video ? 'has a video' : 'no video yet' }}</span>
+                    @let n = c.videos;
+                    <span class="count" [class.vid]="n">
+                      <span aria-hidden="true">{{
+                        n ? '▶ ' + n + (n > 1 ? ' videos' : ' video') : 'slides only'
+                      }}</span>
+                      <span class="sr"
+                        >, {{ n ? n + (n > 1 ? ' videos' : ' video') : 'no video yet' }}</span
+                      >
                     </span>
                   } @else if (c.soon) {
                     <span class="count soon">soon</span>
@@ -168,7 +173,7 @@ export class CourseOutline {
         number: chapterNumber(this.nav.sections, si, ci),
         current: c.id === here,
         soon: !!c.soon,
-        video: !!loaded.get(c.id)?.video,
+        videos: loaded.get(c.id)?.videos?.length ?? 0,
         total: c.soon ? 0 : (loaded.get(c.id)?.slides.length ?? 0),
         read: this.progress.count(c.id),
       }));
@@ -179,7 +184,7 @@ export class CourseOutline {
         chapters,
         total: chapters.reduce((n, c) => n + c.total, 0),
         read: chapters.reduce((n, c) => n + Math.min(c.read, c.total), 0),
-        videos: chapters.filter((c) => c.video).length,
+        videos: chapters.filter((c) => c.videos > 0).length,
       };
     });
     return this.scope() === 'section' ? [all[this.nav.sectionIndex()]] : all;

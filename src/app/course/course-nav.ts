@@ -4,6 +4,7 @@ import { NavigationEnd, NavigationExtras, Router } from '@angular/router';
 import { filter, map } from 'rxjs';
 import { SECTIONS } from '../../content/course';
 import { COURSE_CHAPTERS, ChapterStore } from './chapter-store';
+import { rangeOf, videoIndexAt } from './chapter-videos';
 import { ChapterContent, SectionContent } from './content.model';
 import { Position, chapterNumber, resolvePosition, step, toPath } from './course-position';
 
@@ -53,6 +54,16 @@ export class CourseNav {
     ),
   );
   readonly slide = computed(() => this.chapter().slides[this.position().slide]);
+  /** The chapter's videos, and (in Watch mode) the one that goes with the current slide. */
+  readonly videos = computed(() => this.chapter().videos ?? []);
+  readonly videoIndex = computed(() =>
+    videoIndexAt(this.videos(), this.position().slide, this.chapter().slides.length),
+  );
+  readonly video = computed(() => this.videos()[this.videoIndex()] ?? null);
+  /** The next video in this chapter, if there is one. */
+  readonly nextVideo = computed(() =>
+    this.videoIndex() >= 0 ? (this.videos()[this.videoIndex() + 1] ?? null) : null,
+  );
   readonly isFirst = computed(() => this.position().chapter === 0 && this.position().slide === 0);
   readonly isLast = computed(
     () =>
@@ -75,6 +86,20 @@ export class CourseNav {
   /** Watch mode moves a chapter at a time: one video per chapter. */
   readonly prevChapterName = computed(() => this.chapters[this.position().chapter - 1]?.name);
   readonly nextChapterName = computed(() => this.chapters[this.position().chapter + 1]?.name);
+
+  /** Watch mode: the next or previous video in this chapter, else the next or previous chapter. */
+  stepVideo(dir: 1 | -1) {
+    const i = this.videoIndex();
+    const target = i >= 0 ? this.videos()[i + dir] : undefined;
+    if (target) return this.gotoSlide(rangeOf(target, this.chapter().slides.length)[0]);
+    return this.stepChapter(dir);
+  }
+
+  /** Open a video of this chapter: go to the first slide it covers. */
+  gotoVideo(i: number) {
+    const v = this.videos()[i];
+    return v ? this.gotoSlide(rangeOf(v, this.chapter().slides.length)[0]) : Promise.resolve(false);
+  }
 
   /** Go to slide 1 of the previous or next chapter; past the last one, back to the start. */
   stepChapter(dir: 1 | -1) {

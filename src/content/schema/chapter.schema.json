@@ -25,29 +25,68 @@
         "$ref": "#/definitions/slide"
       }
     },
-    "video": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["src", "title"],
-      "description": "Optional video for the whole chapter, shown in Watch mode. Put the file in src/content/videos/.",
-      "properties": {
-        "src": {
-          "type": "string",
-          "pattern": "^videos/[^/]+\\.(mp4|webm)$",
-          "description": "e.g. videos/tokens.mp4 (no leading slash)"
-        },
-        "title": {
-          "type": "string",
-          "description": "Heading above the player"
-        },
-        "description": {
-          "type": "string",
-          "description": "One or two sentences under the heading. Inline HTML allowed, as in prose."
-        },
-        "poster": {
-          "type": "string",
-          "pattern": "^videos/[^/]+\\.(jpg|png|webp)$",
-          "description": "Optional still shown before playing"
+    "videos": {
+      "type": "array",
+      "minItems": 1,
+      "description": "A chapter's videos (3\u20134 at most), each covering a range of slides. Put the files in src/content/videos/.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["src", "title"],
+        "description": "One video: shown in Watch mode, and as a \"Watch this part\" button on the slides it covers.",
+        "properties": {
+          "src": {
+            "type": "string",
+            "pattern": "^videos/[^/]+\\.(mp4|webm)$",
+            "description": "e.g. videos/tokens.mp4 (no leading slash)"
+          },
+          "title": {
+            "type": "string",
+            "description": "Heading above the player"
+          },
+          "description": {
+            "type": "string",
+            "description": "One or two sentences under the heading. Inline HTML allowed, as in prose."
+          },
+          "poster": {
+            "type": "string",
+            "pattern": "^videos/[^/]+\\.(jpg|png|webp)$",
+            "description": "Optional still shown before playing"
+          },
+          "slides": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "minItems": 2,
+            "maxItems": 2,
+            "description": "First and last slide it covers, 1-based and inclusive, e.g. [6, 8]. Omit for the whole chapter."
+          },
+          "at": {
+            "type": "object",
+            "propertyNames": {
+              "pattern": "^[1-9][0-9]*$"
+            },
+            "additionalProperties": {
+              "type": "number",
+              "minimum": 0
+            },
+            "description": "Seconds into the video where a slide's topic starts, keyed by slide number, e.g. { \"7\": 157 }."
+          },
+          "marks": {
+            "type": "array",
+            "description": "Timestamps: ticks on the seek bar and a clickable list under the player.",
+            "items": {
+              "type": "object",
+              "required": ["at", "label"],
+              "additionalProperties": false,
+              "properties": {
+                "at": { "type": "number", "minimum": 0, "description": "Seconds from the start" },
+                "label": { "type": "string" }
+              }
+            }
+          }
         }
       }
     }

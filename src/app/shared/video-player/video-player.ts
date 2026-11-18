@@ -3,9 +3,11 @@ import {
   Component,
   DestroyRef,
   ElementRef,
+  afterRenderEffect,
   computed,
   inject,
   input,
+  output,
   signal,
   viewChild,
 } from '@angular/core';
@@ -18,6 +20,7 @@ import {
   spokenClock,
   stepRate,
 } from '../lib/video';
+import { VideoMark } from '../../course/content.model';
 import { VideoRange } from './video-range';
 
 const SKIP = 5;
@@ -46,6 +49,12 @@ export class VideoPlayer {
   readonly src = input.required<string>();
   readonly label = input.required<string>();
   readonly poster = input<string>();
+  /** Seconds to start at (e.g. a slide's topic), instead of resuming. Applied once. */
+  readonly start = input<number | null>(null);
+  /** Timestamps shown as ticks on the seek bar. */
+  readonly marks = input<readonly VideoMark[]>([]);
+  /** Fired once `start` has been applied, so the page can clear it. */
+  readonly startApplied = output<void>();
 
   protected readonly frame = viewChild.required<ElementRef<HTMLElement>>('frame');
   private readonly videoRef = viewChild.required<ElementRef<HTMLVideoElement>>('video');
@@ -88,6 +97,11 @@ export class VideoPlayer {
   private lastSaved = 0;
 
   constructor() {
+    // A new start time for a video that's already loaded (e.g. "Watch this part" on another slide).
+    afterRenderEffect(() => {
+      const t = this.start();
+      if (t != null && this.video.readyState >= 1) this.applyStart(t);
+    });
     inject(DestroyRef).onDestroy(() => {
       this.save();
       clearTimeout(this.wakeTimer);
@@ -105,6 +119,13 @@ export class VideoPlayer {
     } else {
       this.video.pause();
     }
+  }
+
+  /** Jump to a timestamp and play from there. */
+  jumpTo(t: number) {
+    this.resumedFrom.set(null);
+    this.seekTo(t);
+    this.video.play()?.catch?.(() => this.playing.set(false));
   }
 
   skip(dir: 1 | -1) {
@@ -219,9 +240,21 @@ export class VideoPlayer {
 
   // ---- media events --------------------------------------------------------------------------
 
+  /** Jump to `start`: on load, or straight away if the video is already loaded. */
+  private applyStart(t: number) {
+    this.resumedFrom.set(null);
+    this.seekTo(t);
+    this.startApplied.emit();
+  }
+
   protected onMeta() {
     const d = this.video.duration;
     this.duration.set(Number.isFinite(d) ? d : 0);
+    const start = this.start();
+    if (start != null) {
+      this.applyStart(start);
+      return;
+    }
     const at = resumeAt(this.readSaved(), this.duration());
     if (at != null) {
       this.video.currentTime = at;

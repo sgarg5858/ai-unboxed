@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, input, output, signal } from '@angular/core';
+import { VideoMark } from '../../course/content.model';
 import { clock } from '../lib/video';
 
 /**
@@ -25,10 +26,20 @@ import { clock } from '../lib/video';
       (pointermove)="onHover($event)"
       (pointerleave)="hoverAt.set(null)"
     />
+    @if (max() > 0) {
+      @for (m of marks(); track m.at) {
+        @if (m.at > 0) {
+          <span class="tick" [style.left.%]="(m.at / max()) * 100" aria-hidden="true"></span>
+        }
+      }
+    }
     @if (seekBar() && hoverAt() !== null) {
-      <span class="tip" [style.left.%]="hoverAt()! * 100" aria-hidden="true">{{
-        clock(hoverAt()! * max())
-      }}</span>
+      <span class="tip" [style.left.%]="hoverAt()! * 100" aria-hidden="true"
+        >{{ clock(hoverAt()! * max()) }}
+        @if (markAt(hoverAt()! * max()); as m) {
+          · {{ m.label }}
+        }
+      </span>
     }
   `,
   styles: `
@@ -48,6 +59,16 @@ import { clock } from '../lib/video';
       background: none;
       appearance: none;
       cursor: pointer;
+    }
+    .tick {
+      position: absolute;
+      top: 50%;
+      width: 3px;
+      height: calc(var(--t) + 4px);
+      transform: translate(-50%, -50%);
+      border-radius: 2px;
+      background: rgba(0, 0, 0, 0.55);
+      pointer-events: none;
     }
     input:focus-visible {
       outline: 2px solid var(--player-accent);
@@ -103,6 +124,10 @@ import { clock } from '../lib/video';
   `,
 })
 export class VideoRange {
+  /** Timestamps, drawn as ticks; the hover tip names the section under the pointer. */
+  readonly marks = input<readonly VideoMark[]>([]);
+  protected readonly markAt = (t: number) =>
+    this.marks().reduce<VideoMark | null>((hit, m) => (m.at <= t ? m : hit), null);
   readonly value = input.required<number>();
   readonly max = input.required<number>();
   readonly label = input.required<string>();

@@ -154,5 +154,5 @@ import { ViewModeState } from '../view-mode';
 export class ModeSwitch {
   protected readonly state = inject(ViewModeState);
   private readonly nav = inject(CourseNav);
-  protected readonly hasVideo = computed(() => !!this.nav.chapter().video);
+  protected readonly hasVideo = computed(() => this.nav.videos().length > 0);
 }
