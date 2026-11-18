@@ -60,7 +60,7 @@ describe('course content', () => {
         const [first, last] = v.slides ?? [1, c.slides.length];
         expect(first >= 1 && first <= last && last <= c.slides.length, where).toBe(true);
         for (const k of Object.keys(v.at ?? {}))
-          expect(+k >= first && +k <= last, `${where}: "at" slide ${k} is outside its range`).toBe(
+          expect(+k >= 1 && +k <= c.slides.length, `${where}: "at" slide ${k} doesn't exist`).toBe(
             true,
           );
       }

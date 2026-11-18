@@ -72,7 +72,7 @@
               "type": "number",
               "minimum": 0
             },
-            "description": "Seconds into the video where a slide's topic starts, keyed by slide number, e.g. { \"7\": 157 }."
+            "description": "Seconds into the video where a slide's topic starts, keyed by slide number, e.g. { \"7\": 157 }. A slide listed here is covered even outside the slides range (so a video can cover slides 1, 2 and 6), and goes with this video first."
           },
           "marks": {
             "type": "array",

@@ -4,7 +4,7 @@ import { NavigationEnd, NavigationExtras, Router } from '@angular/router';
 import { filter, map } from 'rxjs';
 import { SECTIONS } from '../../content/course';
 import { COURSE_CHAPTERS, ChapterStore } from './chapter-store';
-import { rangeOf, videoIndexAt } from './chapter-videos';
+import { coveredSlides, videoIndexAt } from './chapter-videos';
 import { ChapterContent, SectionContent } from './content.model';
 import { Position, chapterNumber, resolvePosition, step, toPath } from './course-position';
 
@@ -91,14 +91,16 @@ export class CourseNav {
   stepVideo(dir: 1 | -1) {
     const i = this.videoIndex();
     const target = i >= 0 ? this.videos()[i + dir] : undefined;
-    if (target) return this.gotoSlide(rangeOf(target, this.chapter().slides.length)[0]);
+    if (target) return this.gotoSlide(coveredSlides(target, this.chapter().slides.length)[0]);
     return this.stepChapter(dir);
   }
 
   /** Open a video of this chapter: go to the first slide it covers. */
   gotoVideo(i: number) {
     const v = this.videos()[i];
-    return v ? this.gotoSlide(rangeOf(v, this.chapter().slides.length)[0]) : Promise.resolve(false);
+    return v
+      ? this.gotoSlide(coveredSlides(v, this.chapter().slides.length)[0])
+      : Promise.resolve(false);
   }
 
   /** Go to slide 1 of the previous or next chapter; past the last one, back to the start. */

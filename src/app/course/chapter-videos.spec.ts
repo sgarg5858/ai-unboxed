@@ -1,5 +1,11 @@
 import { ChapterVideo } from './content.model';
-import { slidesLabel, startFor, videoCovering, videoIndexAt } from './chapter-videos';
+import {
+  coveredSlides,
+  slidesLabel,
+  startFor,
+  videoCovering,
+  videoIndexAt,
+} from './chapter-videos';
 
 const A: ChapterVideo = { src: 'videos/a.mp4', title: 'A', slides: [1, 5] };
 const B: ChapterVideo = {
@@ -33,5 +39,19 @@ describe('chapter videos', () => {
   it('labels the range', () => {
     expect(slidesLabel(B, 10)).toBe('slides 6–8');
     expect(slidesLabel({ ...A, slides: [4, 4] }, 10)).toBe('slide 4');
+  });
+
+  it('covers slides listed in "at" outside its range, and prefers them', () => {
+    const big: ChapterVideo = {
+      src: 'videos/big.mp4',
+      title: 'Big',
+      slides: [1, 2],
+      at: { '6': 99 },
+    };
+    const wide: ChapterVideo = { src: 'videos/w.mp4', title: 'Wide', slides: [4, 8] };
+    expect(coveredSlides(big, 10)).toEqual([0, 1, 5]);
+    expect(videoCovering([wide, big], 5, 10)?.title).toBe('Big');
+    expect(videoCovering([wide, big], 6, 10)?.title).toBe('Wide');
+    expect(slidesLabel(big, 10)).toBe('slides 1, 2, 6');
   });
 });
