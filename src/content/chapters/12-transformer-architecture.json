@@ -379,6 +379,10 @@
             "slide": 8
           },
           "link": "Special tokens in Tokens"
+        },
+        {
+          "more": "Deep dive: try it live",
+          "text": "<a href=\"https://poloclub.github.io/transformer-explainer/\" target=\"_blank\" rel=\"noopener noreferrer\">Transformer Explainer, by Georgia Tech's Polo Club</a> runs a real GPT-2 model in your browser. Type your own text and watch each run: embeddings, attention, the MLP, then the next-token probabilities. Good to keep open alongside this chapter."
         }
       ],
       "viz": [
