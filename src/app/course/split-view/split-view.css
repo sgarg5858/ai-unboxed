@@ -118,6 +118,14 @@
   background: var(--accent-soft);
   font-weight: 700;
 }
+.sub {
+  display: none;
+  margin: 14px 0 0;
+  font: 600 12px var(--f-mono);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
 .marks .at {
   min-width: 40px;
   font: 600 13px var(--f-mono);
@@ -137,6 +145,9 @@
   }
   .marks {
     display: grid;
+  }
+  .sub {
+    display: block;
   }
 }
 /* Short phones in landscape: a sticky video would cover the text. */

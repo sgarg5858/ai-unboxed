@@ -77,6 +77,9 @@ export class CourseNav {
     () => this.modeParam() ?? (this.videos().length ? 'watch' : 'read'),
   );
 
+  /** The mode to open a picked slide in: Combined stays Combined, Watch becomes Read. */
+  readonly slideMode = computed<ViewMode>(() => (this.mode() === 'combined' ? 'combined' : 'read'));
+
   /** Switch Read/Watch/Combined on the current slide, replacing the history entry. */
   setMode(mode: ViewMode) {
     return this.go(toPath(this.chapters, this.position()), {

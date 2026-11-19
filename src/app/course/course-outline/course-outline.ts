@@ -214,9 +214,9 @@ export class CourseOutline {
   }
 
   protected openSlide(chapterId: string, i: number) {
-    // Picking one slide means reading it, even from Watch mode.
+    // Picking one slide means reading it: in Read, or beside its video in Combined.
     this.nav
-      .goto(chapterId, i, { queryParams: { mode: 'read' } })
+      .goto(chapterId, i, { queryParams: { mode: this.nav.slideMode() } })
       .then(() => window.scrollTo?.({ top: 0 }));
     this.navigated.emit();
   }
