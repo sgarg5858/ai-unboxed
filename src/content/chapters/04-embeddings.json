@@ -1067,7 +1067,7 @@
           ],
           "goto": {
             "chapter": "assistant",
-            "slide": 6
+            "slide": 7
           },
           "link": "Values are built into the model, in Assistant architecture"
         }

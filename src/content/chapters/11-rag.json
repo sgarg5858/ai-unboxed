@@ -30,7 +30,7 @@
           "text": "Yes, it's one kind of RAG where the documents are web pages. This chapter covers the general pattern, usually built over your own documents.",
           "goto": {
             "chapter": "assistant",
-            "slide": 9
+            "slide": 10
           },
           "link": "Web search in Assistant architecture"
         }
@@ -557,7 +557,7 @@
           "text": "In a real assistant, the retrieved sources sit alongside the system prompt, tool descriptions and conversation history.",
           "goto": {
             "chapter": "assistant",
-            "slide": 4
+            "slide": 5
           },
           "link": "Building the prompt in Assistant architecture"
         }
@@ -636,7 +636,7 @@
           "text": "It doesn't run the search itself. It writes a request for a search, the software runs it, and the results are added to the conversation.",
           "goto": {
             "chapter": "assistant",
-            "slide": 8
+            "slide": 9
           },
           "link": "Tools in Assistant architecture"
         },
@@ -868,7 +868,7 @@
           "text": "Mark retrieved text clearly as untrusted, limit which tools the model can call after reading it, and check outputs before acting on them.",
           "goto": {
             "chapter": "assistant",
-            "slide": 10
+            "slide": 11
           },
           "link": "Prompt injection in Assistant architecture"
         }

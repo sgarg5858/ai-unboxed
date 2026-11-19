@@ -611,7 +611,7 @@
               "value": "Web search →",
               "goto": {
                 "chapter": "assistant",
-                "slide": 9
+                "slide": 10
               }
             },
             {
@@ -620,7 +620,7 @@
               "value": "Tool loop →",
               "goto": {
                 "chapter": "assistant",
-                "slide": 8
+                "slide": 9
               }
             },
             {
@@ -629,7 +629,7 @@
               "value": "Classifiers →",
               "goto": {
                 "chapter": "assistant",
-                "slide": 7
+                "slide": 8
               }
             },
             {

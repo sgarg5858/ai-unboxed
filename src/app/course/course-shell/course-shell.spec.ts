@@ -147,7 +147,9 @@ describe('CourseShell', () => {
     const withoutVideo = COURSE.find((c) => !c.videos?.length)!;
 
     it("shows the slide's video, then steps video by video and on to the next chapter", async () => {
-      const { el, router, settle } = await open(`/${withVideo.id}/3?mode=watch`);
+      const { el, router, settle } = await open(
+        `/${withVideo.id}/${withVideo.videos![0].slides?.[0] ?? 1}?mode=watch`,
+      );
       const vids = withVideo.videos!;
       expect(el.querySelector('article h2')?.textContent).toBe(vids[0].title);
       expect(el.querySelector('app-video-player video')?.getAttribute('src')).toBe(vids[0].src);

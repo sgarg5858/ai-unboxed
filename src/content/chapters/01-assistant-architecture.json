@@ -4,15 +4,46 @@
   "name": "Assistant architecture",
   "videos": [
     {
+      "src": "videos/assistant/search_vs_llm.mp4",
+      "title": "Search engine vs LLM",
+      "description": "Before opening up an assistant: how a search engine finds pages that already exist, how an LLM generates new text, and why assistants use both.",
+      "slides": [1, 1],
+      "at": {
+        "1": 0
+      },
+      "marks": [
+        {
+          "at": 0,
+          "label": "Finding vs generating"
+        },
+        {
+          "at": 13,
+          "label": "A search engine finds"
+        },
+        {
+          "at": 51,
+          "label": "An LLM generates"
+        },
+        {
+          "at": 95,
+          "label": "Same question, both machines"
+        },
+        {
+          "at": 130,
+          "label": "AI assistants use both"
+        }
+      ]
+    },
+    {
       "src": "videos/assistant/assistant_system.mp4",
       "title": "Part 1 · The system around the model",
       "description": "Follow one message through an AI assistant: the parts around the model, defense in depth, sign-in (the model never sees your key) and how the prompt is built.",
-      "slides": [1, 4],
+      "slides": [2, 5],
       "at": {
-        "1": 13,
-        "2": 51,
-        "3": 86,
-        "4": 149
+        "2": 13,
+        "3": 51,
+        "4": 86,
+        "5": 149
       },
       "marks": [
         {
@@ -41,11 +72,11 @@
       "src": "videos/assistant/assistant_rules_safety.mp4",
       "title": "Part 2 · Rules and safety",
       "description": "Whose instructions win when they clash, the values trained into the model, and the safety checkers that give a second opinion on every message.",
-      "slides": [5, 7],
+      "slides": [6, 8],
       "at": {
-        "5": 11,
-        "6": 86,
-        "7": 148
+        "6": 11,
+        "7": 86,
+        "8": 148
       },
       "marks": [
         {
@@ -74,12 +105,12 @@
       "src": "videos/assistant/assistant_tools_attacks.mp4",
       "title": "Part 3 · Tools, search and attacks",
       "description": "How tools work (the model asks, the software acts), web search with citations, prompt injection and its defenses, and the safeguards that look across all chats.",
-      "slides": [8, 11],
+      "slides": [9, 12],
       "at": {
-        "8": 9,
-        "9": 79,
-        "10": 130,
-        "11": 207
+        "9": 9,
+        "10": 79,
+        "11": 130,
+        "12": 207
       },
       "marks": [
         {
@@ -106,6 +137,104 @@
     }
   ],
   "slides": [
+    {
+      "title": "Search engine vs LLM: finding vs generating",
+      "summary": "A search engine finds pages that already exist. An LLM writes new text, one token at a time. AI assistants use both.",
+      "body": [
+        "Before opening up an AI assistant, it helps to see how it differs from the tool most people already know: a search engine. You can type the same question into both, but they work in opposite ways.",
+        {
+          "ul": [
+            "<b>A search engine finds.</b> Programs called crawlers visit web pages ahead of time and build an <b>index</b>, like the index at the back of a book: each word, and the pages it appears on. Google's index covers hundreds of billions of pages. Your query is matched against it and the best pages come back, ranked, as links.",
+            "<b>An LLM generates.</b> Training turns a huge amount of text into billions of numbers called <b>weights</b>. No copy of the pages is kept to look up. To answer, the model predicts the next small piece of text (a <b>token</b>), adds it, and repeats until the reply is done."
+          ]
+        },
+        {
+          "note": "<mark>A search engine shows you where an answer is. An LLM writes an answer, and it can sound right and still be wrong.</mark>",
+          "kind": "key"
+        },
+        "That's why AI assistants combine the two. Search finds fresh sources, then the model reads them and writes the reply, with citations. The <i>Web search</i> slide later in this chapter shows how.",
+        {
+          "more": "How does a search engine stay up to date, and decide which pages rank first?",
+          "text": "<b>Crawling.</b> Bots such as Googlebot start from pages they know, follow links to find new ones, and read the <b>sitemaps</b> that sites publish. A site's <code>robots.txt</code> file says what bots may visit. <b>Recrawling.</b> Popular pages and pages that change often are revisited more often, so a news homepage is checked far more than an old blog post. Sites can also flag changes: a sitemap lists when each page last changed, and Bing and some other engines accept instant pings through <b>IndexNow</b>. <b>Ranking.</b> Many signals are combined: how well the words match, links from other pages (Google's <b>PageRank</b> treats each link as a vote), quality, freshness and your location. <b>Domain authority</b> is a score made by SEO tools such as Moz to estimate this. Google doesn't use it, and says it judges quality page by page."
+        },
+        {
+          "more": "Why can't the model just remember every page?",
+          "text": "There's far too much text. Meta's Llama 3 (405B) was trained on about 15.6 trillion tokens, roughly 60 TB of text, but its weights take about 0.8 TB. Training keeps the patterns, not the pages, so rare facts get blurred. That's one reason models make things up.",
+          "goto": {
+            "chapter": "hallucination",
+            "slide": 1
+          },
+          "link": "Why LLMs hallucinate"
+        }
+      ],
+      "viz": [
+        {
+          "type": "table",
+          "rows": [
+            {
+              "head": "",
+              "cells": [
+                {
+                  "text": "Search engine"
+                },
+                {
+                  "text": "LLM on its own"
+                }
+              ]
+            },
+            {
+              "head": "Trains today?",
+              "cells": [
+                {
+                  "text": "Links to rail status pages. You read them."
+                },
+                {
+                  "text": "Can't know: its training stopped at a fixed date.",
+                  "tone": "heat"
+                }
+              ]
+            },
+            {
+              "head": "Sky, for a child",
+              "cells": [
+                {
+                  "text": "Pages, mostly written for adults."
+                },
+                {
+                  "text": "A short answer written for a 7-year-old.",
+                  "tone": "accent"
+                }
+              ]
+            },
+            {
+              "head": "Passport form",
+              "cells": [
+                {
+                  "text": "The official page, usually first.",
+                  "tone": "accent"
+                },
+                {
+                  "text": "Describes the steps, but may give a wrong link.",
+                  "tone": "heat"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "caption",
+          "html": "Three questions: are trains running between Leeds and York today, why is the sky blue (for a 7-year-old), and where to renew a UK passport. Search is good at <b>where</b>; the LLM is good at <b>what it means for you</b>. Assistants use both."
+        }
+      ],
+      "figure": {
+        "src": "images/search-vs-llm-light.svg",
+        "darkSrc": "images/search-vs-llm-dark.svg",
+        "alt": "Two ways to answer “Why is the sky blue?”. A search engine finds: crawlers visit pages ahead of time, an index maps each word to the pages it appears on, and ranking picks the matching pages, best first. It returns links to pages that already exist, so it is up to date and every source can be opened, but you read and combine them yourself. An LLM generates: it is trained once on trillions of tokens, stores patterns as numbers called weights rather than pages, and predicts the next token again and again. It returns new text, “Air scatters blue light more than red, so blue reaches your eyes from every part of the sky.” It can explain, summarise and write, but it can be fluent and still wrong. An assistant does both: search finds fresh sources, then the LLM reads them and writes the answer with citations.",
+        "width": 1200,
+        "height": 600,
+        "caption": "Same question, two machines. Search returns pages that exist; the LLM writes new text."
+      }
+    },
     {
       "title": "An AI assistant, on one diagram",
       "summary": "Claude, ChatGPT and Gemini are more than a model. They're whole systems. This map shows every part, and the rest of the course explains each one.",
@@ -146,7 +275,7 @@
                 "detail": "Ordinary server code that runs before any GPU work. It authenticates the caller (API key or OAuth session), loads the organisation's policy (allowed models and tools, spend limits, data retention) and enforces rate limits. Credentials stop here; they never become tokens the model could leak.",
                 "link": {
                   "chapter": "assistant",
-                  "slide": 3
+                  "slide": 4
                 }
               },
               "input": {
@@ -154,7 +283,7 @@
                 "detail": "Small, fast classifier models score the conversation for harmful content and jailbreak attempts, and can block it before the main model runs. They check the assembled context, not just the newest message, because many jailbreaks are spread across several turns or hidden in documents. Some products run this check alongside the model to save time, cancelling the reply if it fires. Examples: Anthropic's Constitutional Classifiers, Meta's Llama Guard and Prompt Guard, and Gemini's per-category safety settings.",
                 "link": {
                   "chapter": "assistant",
-                  "slide": 7
+                  "slide": 8
                 }
               },
               "convo": {
@@ -162,7 +291,7 @@
                 "detail": "The model is stateless, so this layer rebuilds the whole context on every turn: platform system prompt, operator instructions, tool definitions, relevant memories, retrieved documents, the conversation history and the new message, in that order. When the history outgrows the context window, it trims or summarises older turns. The assembled context is what the input guardrails then check.",
                 "link": {
                   "chapter": "assistant",
-                  "slide": 4
+                  "slide": 5
                 }
               },
               "memory": {
@@ -178,7 +307,7 @@
                 "detail": "Runs the forward pass over the assembled prompt and streams tokens back, one at a time. Its values come from safety training, and it follows a chain of command: provider rules, then operator, then user. Text that arrives in tool results is treated as data, not as instructions.",
                 "link": {
                   "chapter": "assistant",
-                  "slide": 5
+                  "slide": 6
                 }
               },
               "runtime": {
@@ -186,7 +315,7 @@
                 "detail": "When the model emits a tool call (a tool name plus JSON arguments), this code decides whether to run it: auto-approve safe reads, ask the user before writes, deny the rest. It runs the tool, often in a sandbox, and appends the result to the context for the model's next pass. Results are untrusted text, since a web page or file can contain hidden instructions, so they can be scanned for prompt injection (for example Azure Prompt Shields, Prompt Guard 2 or Anthropic's browser classifiers) before the model reads them.",
                 "link": {
                   "chapter": "assistant",
-                  "slide": 8
+                  "slide": 9
                 }
               },
               "web": {
@@ -194,7 +323,7 @@
                 "detail": "A server-side tool. The provider runs the query and inserts page text with source URLs, so answers can cite information newer than the training cutoff. Organisations can allow or block specific domains, or turn search off.",
                 "link": {
                   "chapter": "assistant",
-                  "slide": 9
+                  "slide": 10
                 }
               },
               "files": {
@@ -202,7 +331,7 @@
                 "detail": "Uploaded documents plus a sandboxed code-execution environment. The model can read files, run code to analyse data, and produce new files, without touching the host system.",
                 "link": {
                   "chapter": "assistant",
-                  "slide": 8
+                  "slide": 9
                 }
               },
               "retrieval": {
@@ -210,7 +339,7 @@
                 "detail": "Searches a private knowledge base. The question is turned into an embedding vector, the most similar document chunks are fetched from a vector database, and they're added to the context with their sources.",
                 "link": {
                   "chapter": "assistant",
-                  "slide": 9
+                  "slide": 10
                 }
               },
               "mcp": {
@@ -218,7 +347,7 @@
                 "detail": "Connectors to outside systems such as calendars, ticketing tools and databases, through the Model Context Protocol or custom APIs. Each runs with the user's own scoped OAuth credentials, which are held by the runtime, never by the model.",
                 "link": {
                   "chapter": "assistant",
-                  "slide": 8
+                  "slide": 9
                 }
               },
               "output": {
@@ -226,7 +355,7 @@
                 "detail": "Classifiers watch the reply as it streams and can halt it mid-sentence if it crosses a line. This catches harm that slipped past the input check, or that only emerged as the conversation went on.",
                 "link": {
                   "chapter": "assistant",
-                  "slide": 7
+                  "slide": 8
                 }
               },
               "reply": {
@@ -238,7 +367,7 @@
                 "detail": "Looks across many conversations for patterns no single request reveals: coordinated abuse, new jailbreak techniques, policy violations. Findings feed back at different speeds: account bans are enforced at Security & auth almost immediately, classifier updates ship in days, and training data for the next model takes months. Which conversations can be used for training depends on the provider's data policy and the user's settings; Anthropic and OpenAI, for example, don't train on API traffic by default. Anthropic's Clio analyses aggregate usage with privacy protections.",
                 "link": {
                   "chapter": "assistant",
-                  "slide": 11
+                  "slide": 12
                 }
               },
               "feedback": {
@@ -254,7 +383,7 @@
                 "detail": "A model's weights start from pretraining on huge amounts of text. Post-training then shapes its behaviour: supervised fine-tuning, preference tuning (RLHF, RLAIF, DPO) and training on a written constitution or model spec. Safety training is part of this stage. It's the slowest layer to change, since it needs a new model release, but the most general: it covers situations no filter anticipated.",
                 "link": {
                   "chapter": "assistant",
-                  "slide": 6
+                  "slide": 7
                 }
               }
             }
@@ -301,7 +430,7 @@
               "value": "sign-in · usage limits · company rules",
               "goto": {
                 "chapter": "assistant",
-                "slide": 3
+                "slide": 4
               }
             },
             {
@@ -309,7 +438,7 @@
               "value": "instructions + memory + chat history",
               "goto": {
                 "chapter": "assistant",
-                "slide": 4
+                "slide": 5
               }
             },
             {
@@ -317,7 +446,7 @@
               "value": "whose instructions win",
               "goto": {
                 "chapter": "assistant",
-                "slide": 5
+                "slide": 6
               }
             },
             {
@@ -325,7 +454,7 @@
               "value": "values learned in training",
               "goto": {
                 "chapter": "assistant",
-                "slide": 6
+                "slide": 7
               }
             },
             {
@@ -333,7 +462,7 @@
               "value": "small models that can block a message",
               "goto": {
                 "chapter": "assistant",
-                "slide": 7
+                "slide": 8
               }
             },
             {
@@ -341,7 +470,7 @@
               "value": "the model asks, the software acts",
               "goto": {
                 "chapter": "assistant",
-                "slide": 8
+                "slide": 9
               }
             },
             {
@@ -349,7 +478,7 @@
               "value": "fresh facts with sources",
               "goto": {
                 "chapter": "assistant",
-                "slide": 9
+                "slide": 10
               }
             },
             {
@@ -357,7 +486,7 @@
               "value": "text from outside can't give orders",
               "goto": {
                 "chapter": "assistant",
-                "slide": 10
+                "slide": 11
               }
             },
             {
@@ -365,7 +494,7 @@
               "value": "spotting misuse, testing for weak spots",
               "goto": {
                 "chapter": "assistant",
-                "slide": 11
+                "slide": 12
               }
             }
           ]
