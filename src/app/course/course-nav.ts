@@ -8,7 +8,7 @@ import { coveredSlides, videoIndexAt } from './chapter-videos';
 import { ChapterContent, SectionContent } from './content.model';
 import { Position, chapterNumber, resolvePosition, step, toPath } from './course-position';
 
-export type ViewMode = 'read' | 'watch';
+export type ViewMode = 'read' | 'watch' | 'combined';
 
 /**
  * The URL is the single source of truth for which slide is showing, and whether it is read or
@@ -67,17 +67,17 @@ export class CourseNav {
   readonly nextVideo = computed(() =>
     this.videoIndex() >= 0 ? (this.videos()[this.videoIndex() + 1] ?? null) : null,
   );
-  /** `?mode=` in the URL, once the reader has picked Read or Watch (or followed a link with it). */
+  /** `?mode=` in the URL, once the reader has picked Read, Watch or Combined (or followed a link with it). */
   private readonly modeParam = computed<ViewMode | null>(() => {
     const m = this.router.parseUrl(this.url()).queryParams['mode'];
-    return m === 'read' || m === 'watch' ? m : null;
+    return m === 'read' || m === 'watch' || m === 'combined' ? m : null;
   });
-  /** Read or Watch. Until the reader picks one: Watch if the chapter has a video, else Read. */
+  /** Read, Watch or Combined (video and slide side by side). Until the reader picks one: Watch if the chapter has a video, else Read. */
   readonly mode = computed<ViewMode>(
     () => this.modeParam() ?? (this.videos().length ? 'watch' : 'read'),
   );
 
-  /** Switch Read/Watch on the current slide, replacing the history entry. */
+  /** Switch Read/Watch/Combined on the current slide, replacing the history entry. */
   setMode(mode: ViewMode) {
     return this.go(toPath(this.chapters, this.position()), {
       queryParams: { mode },

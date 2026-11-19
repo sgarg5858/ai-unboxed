@@ -22,6 +22,7 @@ import { SidebarState } from '../sidebar-state';
 import { ShortcutsHelp } from '../shortcuts-help/shortcuts-help';
 import { SidebarToggle } from '../sidebar-toggle/sidebar-toggle';
 import { SlideView } from '../slide-view/slide-view';
+import { SplitView } from '../split-view/split-view';
 import { ViewModeState } from '../view-mode';
 import { WatchView } from '../watch-view/watch-view';
 
@@ -37,6 +38,7 @@ import { WatchView } from '../watch-view/watch-view';
     ShortcutsHelp,
     SidebarToggle,
     SlideView,
+    SplitView,
     ThemeSwitch,
     WatchView,
   ],
@@ -49,7 +51,10 @@ export class CourseShell {
   protected readonly sidebar = inject(SidebarState);
   private readonly mode = inject(ViewModeState);
   protected readonly watching = computed(() => this.mode.mode() === 'watch');
+  /** Video and slide side by side; Back and Next still move a slide at a time. */
+  protected readonly combined = computed(() => this.mode.mode() === 'combined');
   private readonly watchView = viewChild(WatchView);
+  private readonly splitView = viewChild(SplitView);
   private readonly store = inject(ChapterStore);
   private readonly stage = viewChild.required<ElementRef<HTMLElement>>('stage');
   private readonly palette = viewChild.required(CommandPalette);
@@ -123,7 +128,7 @@ export class CourseShell {
       // heading. Back and Next keep focus, so they can be pressed again.
       untracked(() => {
         const active = document.activeElement as HTMLElement | null;
-        if (active?.closest('.foot')) return;
+        if (active?.closest('.foot, app-video-player')) return;
         this.host.nativeElement
           .querySelector<HTMLElement>('article h2')
           ?.focus({ preventScroll: true });
@@ -160,8 +165,9 @@ export class CourseShell {
       return;
     }
     if (e.key === '[' && this.sidebar.wide()) this.sidebar.open.update((o) => !o);
-    // Watching a video: the player takes Space, ←/→ (±5 s), F, M and friends.
-    if (this.watchView()?.handleKey(e)) {
+    // Watching a video: the player takes Space, ←/→ (±5 s), F, M and friends. Side by side,
+    // ←/→ still move between slides.
+    if ((this.watchView() ?? this.splitView())?.handleKey(e)) {
       e.preventDefault();
       return;
     }

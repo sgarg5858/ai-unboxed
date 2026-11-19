@@ -1,6 +1,7 @@
 import { ChapterVideo } from './content.model';
 import {
   coveredSlides,
+  slideAtTime,
   slidesLabel,
   startFor,
   videoCovering,
@@ -53,5 +54,14 @@ describe('chapter videos', () => {
     expect(videoCovering([wide, big], 5, 10)?.title).toBe('Big');
     expect(videoCovering([wide, big], 6, 10)?.title).toBe('Wide');
     expect(slidesLabel(big, 10)).toBe('slides 1, 2, 6');
+  });
+
+  it('finds the slide whose topic is playing at a given time', () => {
+    // B lists slide 8 at 16 s and slide 6 at 85 s (0-based 7 and 5).
+    expect(slideAtTime(B, 0, 10)).toBe(7);
+    expect(slideAtTime(B, 16, 10)).toBe(7);
+    expect(slideAtTime(B, 84.9, 10)).toBe(7);
+    expect(slideAtTime(B, 85, 10)).toBe(5);
+    expect(slideAtTime(A, 30, 10)).toBeNull();
   });
 });

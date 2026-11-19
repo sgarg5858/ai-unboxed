@@ -63,3 +63,17 @@ export function slidesLabel(v: ChapterVideo, slideCount: number): string {
   const contiguous = s.every((n, i) => i === 0 || n === s[i - 1] + 1);
   return contiguous ? `slides ${s[0]}–${s[s.length - 1]}` : `slides ${s.join(', ')}`;
 }
+
+/**
+ * The 0-based slide whose topic is playing at `t` seconds: the last slide listed in `at` that
+ * starts at or before `t` (the first listed one before that). Null if the video lists none.
+ */
+export function slideAtTime(v: ChapterVideo, t: number, slideCount: number): number | null {
+  const listedSlides = coveredSlides(v, slideCount)
+    .filter((s) => listed(v, s))
+    .sort((a, b) => startFor(v, a) - startFor(v, b));
+  if (!listedSlides.length) return null;
+  let current = listedSlides[0];
+  for (const s of listedSlides) if (startFor(v, s) <= t) current = s;
+  return current;
+}

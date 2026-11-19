@@ -1,16 +1,23 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { CourseNav } from '../course-nav';
-import { ViewModeState } from '../view-mode';
+import { ViewMode, ViewModeState } from '../view-mode';
+
+/** Phones cycle Read → Watch → Combined. */
+const NEXT: Record<ViewMode, ViewMode> = { read: 'watch', watch: 'combined', combined: 'read' };
 
 /**
- * Course-wide: read the slides or watch each chapter's video. Lives in the header next to the
+ * Course-wide: read the slides, watch each chapter's video, or both side by side (Combined). Lives in the header next to the
  * theme switch. A dot on Watch marks that the current chapter has a video.
  */
 @Component({
   selector: 'app-mode-switch',
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="seg" role="group" aria-label="Learn the course by reading or watching">
+    <div
+      class="seg"
+      role="group"
+      aria-label="Learn the course by reading, watching, or both side by side"
+    >
       <button
         type="button"
         aria-label="Read"
@@ -40,26 +47,46 @@ import { ViewModeState } from '../view-mode';
           <span class="dot" aria-hidden="true"></span>
         }
       </button>
+      <button
+        type="button"
+        aria-label="Combined: video and slides side by side"
+        title="Video and slides side by side"
+        [attr.aria-pressed]="state.mode() === 'combined'"
+        (click)="state.set('combined')"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M3.5 5.5h17v13h-17zM12 5.5v13M6 9.5l3 2-3 2z" />
+        </svg>
+        Combined
+      </button>
     </div>
-    <!-- Phones: one button showing the current mode; a tap switches to the other. -->
-    @let watching = state.mode() === 'watch';
+    <!-- Phones: one button showing the current mode; a tap moves to the next one. -->
+    @let m = state.mode();
     <button
       type="button"
       class="cycle"
-      [attr.aria-label]="watching ? 'Mode: Watch. Switch to Read' : 'Mode: Read. Switch to Watch'"
-      [attr.title]="watching ? 'Watching. Tap to read' : 'Reading. Tap to watch'"
-      (click)="state.set(watching ? 'read' : 'watch')"
+      [attr.aria-label]="'Mode: ' + names[m] + '. Switch to ' + names[nextMode()]"
+      [attr.title]="names[m] + '. Tap for ' + names[nextMode()]"
+      (click)="state.set(nextMode())"
     >
-      @if (watching) {
-        <svg viewBox="0 0 24 24" aria-hidden="true" class="solid">
-          <path d="M8 5.5v13l10.5-6.5z" />
-        </svg>
-      } @else {
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path
-            d="M12 6.5C10 5 7 4.5 3.5 5v13c3.5-.5 6.5 0 8.5 1.5 2-1.5 5-2 8.5-1.5V5C17 4.5 14 5 12 6.5zM12 6.5v13"
-          />
-        </svg>
+      @switch (m) {
+        @case ('watch') {
+          <svg viewBox="0 0 24 24" aria-hidden="true" class="solid">
+            <path d="M8 5.5v13l10.5-6.5z" />
+          </svg>
+        }
+        @case ('combined') {
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M3.5 5.5h17v13h-17zM12 5.5v13M6 9.5l3 2-3 2z" />
+          </svg>
+        }
+        @default {
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M12 6.5C10 5 7 4.5 3.5 5v13c3.5-.5 6.5 0 8.5 1.5 2-1.5 5-2 8.5-1.5V5C17 4.5 14 5 12 6.5zM12 6.5v13"
+            />
+          </svg>
+        }
       }
       @if (hasVideo()) {
         <span class="dot" aria-hidden="true"></span>
@@ -155,4 +182,10 @@ export class ModeSwitch {
   protected readonly state = inject(ViewModeState);
   private readonly nav = inject(CourseNav);
   protected readonly hasVideo = computed(() => this.nav.videos().length > 0);
+  protected readonly names: Record<ViewMode, string> = {
+    read: 'Read',
+    watch: 'Watch',
+    combined: 'Combined',
+  };
+  protected readonly nextMode = computed(() => NEXT[this.state.mode()]);
 }

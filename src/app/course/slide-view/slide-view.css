@@ -1,5 +1,7 @@
 :host {
   display: block;
+  /* The layout follows the space the slide gets, not the window, so it also fits beside a video. */
+  container-type: inline-size;
 }
 .slide {
   display: grid;
@@ -13,7 +15,7 @@
   padding: 22px;
   box-shadow: var(--shadow);
 }
-@media (min-width: 940px) {
+@container (min-width: 900px) {
   .slide {
     grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
     gap: 32px;

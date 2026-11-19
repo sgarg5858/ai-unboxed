@@ -89,6 +89,8 @@
       <div #stage>
         @if (watching()) {
           <app-watch-view />
+        } @else if (combined()) {
+          <app-split-view />
         } @else {
           <!-- track by slide identity so widget state resets when the slide changes -->
           @for (s of [nav.slide()]; track s) {

@@ -79,6 +79,8 @@ export class VideoPlayer {
   /** The "−10 s" bubble; `key` restarts its animation on every press. */
   protected readonly flash = signal<{ dir: 1 | -1; amount: number; key: number } | null>(null);
   protected readonly resumedFrom = signal<number | null>(null);
+  /** Read-only views for pages that follow the video (see SplitView). */
+  readonly time = this.current.asReadonly();
 
   protected readonly clock = clock;
   protected readonly idle = computed(() => this.playing() && !this.active());
@@ -126,6 +128,16 @@ export class VideoPlayer {
     this.resumedFrom.set(null);
     this.seekTo(t);
     this.video.play()?.catch?.(() => this.playing.set(false));
+  }
+
+  pause() {
+    this.video.pause();
+  }
+
+  /** Move to a time without changing play/pause. */
+  seek(t: number) {
+    this.resumedFrom.set(null);
+    this.seekTo(t);
   }
 
   skip(dir: 1 | -1) {

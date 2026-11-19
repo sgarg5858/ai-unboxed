@@ -1,0 +1,147 @@
+:host {
+  display: block;
+}
+.split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 18px;
+}
+.media {
+  display: grid;
+  gap: 8px;
+  align-content: start;
+  /* Phones and tablets: the video stays at the top while the text scrolls under it. */
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  padding-block: 8px;
+  background: var(--bg);
+}
+.media.off {
+  display: none;
+}
+.top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.hide,
+.show {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex: none;
+  min-height: 30px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--muted);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.hide:hover,
+.show:hover {
+  color: var(--ink);
+  border-color: var(--accent);
+}
+.hide:focus-visible,
+.show:focus-visible {
+  outline: 2px solid var(--accent-ink);
+  outline-offset: 2px;
+}
+.show {
+  margin-bottom: 12px;
+  color: var(--accent-ink);
+}
+.show svg {
+  width: 14px;
+  height: 14px;
+  fill: currentColor;
+}
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font: 600 12.5px var(--f-mono);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--accent-ink);
+}
+.dot {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--neg);
+  box-shadow: 0 0 0 4px var(--accent-soft);
+}
+.hint,
+.none {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13.5px;
+}
+.none {
+  margin-bottom: 12px;
+}
+/* Timestamps: only beside the slide on wide screens; on small ones the video stays compact. */
+.marks {
+  display: none;
+  gap: 2px;
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.marks button {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  padding: 6px 10px;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  font-size: 14.5px;
+  text-align: left;
+  cursor: pointer;
+}
+.marks button:hover {
+  background: var(--sunk);
+}
+.marks button[aria-current] {
+  background: var(--accent-soft);
+  font-weight: 700;
+}
+.marks .at {
+  min-width: 40px;
+  font: 600 13px var(--f-mono);
+  color: var(--accent-ink);
+}
+/* Wide screens: video on the left, the slide on the right. */
+@media (min-width: 1100px) {
+  .split:not(.solo) {
+    grid-template-columns: minmax(0, 11fr) minmax(0, 10fr);
+    gap: 24px;
+    align-items: start;
+  }
+  .media {
+    top: 16px;
+    padding: 0;
+    background: none;
+  }
+  .marks {
+    display: grid;
+  }
+}
+/* Short phones in landscape: a sticky video would cover the text. */
+@media (max-height: 520px) {
+  .media {
+    position: static;
+  }
+}
