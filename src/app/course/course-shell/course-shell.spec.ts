@@ -260,5 +260,21 @@ describe('CourseShell', () => {
       await settle();
       expect(el.querySelector('app-split-view .split.large')).toBeNull();
     });
+
+    it('hides the video in Combined mode and brings it back', async () => {
+      const v = withVideo.videos![0];
+      const { el, settle } = await open(`/${withVideo.id}/${v.slides?.[0] ?? 1}?mode=combined`);
+      const btn = (label: string) =>
+        Array.from(el.querySelectorAll<HTMLButtonElement>('app-split-view .seg button')).find((b) =>
+          b.textContent?.includes(label),
+        )!;
+      btn('Hide video').click();
+      await settle();
+      expect(el.querySelector('app-split-view .media.off')).not.toBeNull();
+      expect(el.querySelector('app-split-view .tucked .seg')).not.toBeNull();
+      btn('Side by side').click();
+      await settle();
+      expect(el.querySelector('app-split-view .media.off')).toBeNull();
+    });
   });
 });

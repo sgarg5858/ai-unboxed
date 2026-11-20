@@ -207,7 +207,7 @@
           "text": "Words get their meaning from context. Attention is how one token pulls in information from the others.",
           "goto": {
             "chapter": "transformer",
-            "slide": 3
+            "slide": 5
           },
           "link": "Why transformers need attention"
         }

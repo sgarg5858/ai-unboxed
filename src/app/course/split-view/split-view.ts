@@ -10,13 +10,14 @@ import {
   untracked,
   viewChild,
 } from '@angular/core';
+import { NgTemplateOutlet } from '@angular/common';
 import { VideoPlayer } from '../../shared/video-player/video-player';
 import { clock } from '../../shared/lib/video';
 import { slideAtTime, startFor, videoCovering } from '../chapter-videos';
 import { CourseNav } from '../course-nav';
 import { SlideView } from '../slide-view/slide-view';
 
-type Layout = 'side' | 'large';
+type Layout = 'side' | 'large' | 'hidden';
 const LAYOUTS: readonly { id: Layout; label: string; title: string; icon: string }[] = [
   {
     id: 'side',
@@ -30,6 +31,12 @@ const LAYOUTS: readonly { id: Layout; label: string; title: string; icon: string
     title: 'Video across the page, text below',
     icon: 'M3.5 4.5h17v10h-17zM3.5 18.5h17',
   },
+  {
+    id: 'hidden',
+    label: 'Hide video',
+    title: 'Pause and hide the video; the text takes the full width',
+    icon: 'M3.5 5.5h17v13h-17zM4 4l16 16',
+  },
 ];
 
 /**
@@ -40,18 +47,48 @@ const LAYOUTS: readonly { id: Layout; label: string; title: string; icon: string
 @Component({
   selector: 'app-split-view',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [SlideView, VideoPlayer],
+  imports: [NgTemplateOutlet, SlideView, VideoPlayer],
   styleUrl: './split-view.css',
   template: `
-    @let large = layout() === 'large';
-    <div class="split" [class.solo]="!video()" [class.large]="large">
+    <ng-template #bar>
+      <div class="bar">
+        <div class="seg" role="group" aria-label="Video layout">
+          @for (o of layouts; track o.id) {
+            <button
+              type="button"
+              [attr.aria-pressed]="layout() === o.id"
+              [title]="o.title"
+              (click)="setLayout(o.id)"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path [attr.d]="o.icon" /></svg>
+              {{ o.label }}
+            </button>
+          }
+        </div>
+        @if (!hidden()) {
+          <button
+            type="button"
+            class="fs"
+            title="Full screen (F). The slide keeps following the video."
+            aria-label="Full screen"
+            (click)="player()?.toggleFullscreen()"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5" />
+            </svg>
+          </button>
+        }
+      </div>
+    </ng-template>
+    <div class="split" [class.solo]="!video() || hidden()" [class.large]="layout() === 'large'">
       @if (video(); as v) {
-        <section class="media" aria-label="Video for this slide">
+        <section class="media" [class.off]="hidden()" aria-label="Video for this slide">
           <p class="eyebrow">
             <span class="dot" aria-hidden="true"></span>
             {{ count() > 1 ? 'Video ' + (index() + 1) + ' of ' + count() + ' · ' : ''
             }}{{ v.title }}
           </p>
+          <ng-container [ngTemplateOutlet]="bar" />
           <!-- keyed by file, so another video gets a fresh player -->
           @for (src of [v.src]; track src) {
             <app-video-player
@@ -63,32 +100,6 @@ const LAYOUTS: readonly { id: Layout; label: string; title: string; icon: string
               (startApplied)="start.set(null)"
             />
           }
-          <div class="bar">
-            <div class="seg" role="group" aria-label="Video layout">
-              @for (o of layouts; track o.id) {
-                <button
-                  type="button"
-                  [attr.aria-pressed]="layout() === o.id"
-                  [title]="o.title"
-                  (click)="layout.set(o.id)"
-                >
-                  <svg viewBox="0 0 24 24" aria-hidden="true"><path [attr.d]="o.icon" /></svg>
-                  {{ o.label }}
-                </button>
-              }
-            </div>
-            <button
-              type="button"
-              class="fs"
-              title="Full screen (F). The slide keeps following the video."
-              aria-label="Full screen"
-              (click)="player()?.toggleFullscreen()"
-            >
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5" />
-              </svg>
-            </button>
-          </div>
           <details class="how">
             <summary>How Combined works</summary>
             <p>The slide follows the video. Change slide and the video jumps to it.</p>
@@ -136,6 +147,10 @@ const LAYOUTS: readonly { id: Layout; label: string; title: string; icon: string
       <div class="text">
         @if (!video()) {
           <p class="none">No video covers this slide, so here's the text on its own.</p>
+        } @else if (hidden()) {
+          <div class="tucked">
+            <ng-container [ngTemplateOutlet]="bar" />
+          </div>
         }
         <!-- track by slide identity so widget state resets when the slide changes -->
         @for (s of [nav.slide()]; track s) {
@@ -156,8 +171,9 @@ export class SplitView {
   protected readonly video = computed(() =>
     videoCovering(this.nav.videos(), this.nav.position().slide, this.slideCount()),
   );
-  /** Side by side, or a large video across the page with the text below. */
+  /** Side by side, a large video with the text below, or hidden (paused; the text gets the width). */
   protected readonly layout = signal<Layout>('side');
+  protected readonly hidden = computed(() => this.layout() === 'hidden');
   protected readonly layouts = LAYOUTS;
   protected readonly count = computed(() => this.nav.videos().length);
   protected readonly index = computed(() => this.nav.videos().indexOf(this.video()!));
@@ -212,9 +228,14 @@ export class SplitView {
     });
   }
 
+  protected setLayout(l: Layout) {
+    if (l === 'hidden') this.player()?.pause();
+    this.layout.set(l);
+  }
+
   /** Keys pressed anywhere on the page; true if the player used it. ←/→ stay for slides. */
   handleKey(e: KeyboardEvent): boolean {
-    if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') return false;
+    if (this.hidden() || e.key === 'ArrowLeft' || e.key === 'ArrowRight') return false;
     return this.player()?.handleKey(e) ?? false;
   }
 

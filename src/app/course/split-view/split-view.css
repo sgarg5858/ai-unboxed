@@ -18,6 +18,16 @@
   background: var(--bg);
 }
 /* Layout switch and full screen, just under the video. */
+.media.off {
+  display: none;
+}
+.tucked {
+  margin-bottom: 14px;
+}
+/* With the video hidden, the switch is the way back, so it shows on every screen size. */
+.tucked .seg {
+  display: inline-flex;
+}
 .bar {
   display: flex;
   align-items: center;

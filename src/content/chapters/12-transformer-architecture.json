@@ -11,7 +11,7 @@
       "at": {
         "1": 11,
         "2": 55,
-        "4": 116
+        "3": 116
       },
       "marks": [
         {
@@ -64,9 +64,9 @@
       "src": "videos/transformer/layer_normalization.mp4",
       "title": "Part 2 · Layer normalization",
       "description": "Why the numbers drift through many layers, the three steps of layer norm on a real token, why the pattern (and the meaning) is kept, and where it sits in the block.",
-      "slides": [5, 5],
+      "slides": [4, 4],
       "at": {
-        "5": 0
+        "4": 0
       },
       "marks": [
         {
@@ -98,10 +98,10 @@
     {
       "src": "videos/transformer/self_attention.mp4",
       "title": "Part 3 · Multi-head causal self-attention",
-      "description": "Why words need attention, how a token scores the others with queries, keys and values, why the model may only look back (and why models that peek can't write), and why it uses many heads.",
+      "description": "Why words need attention, how a token scores the others with queries, keys and values, why the model may only look back (and why models that peek can't write), when “it” actually gets resolved, and why it uses many heads.",
       "slides": [6, 6],
       "at": {
-        "3": 8,
+        "5": 8,
         "6": 32
       },
       "marks": [
@@ -130,11 +130,15 @@
           "label": "Why models that peek can't write"
         },
         {
-          "at": 126,
+          "at": 125,
+          "label": "When is “it” resolved?"
+        },
+        {
+          "at": 151,
           "label": "Multi-head"
         },
         {
-          "at": 154,
+          "at": 179,
           "label": "12 heads × 64 = 768"
         }
       ]
@@ -440,45 +444,6 @@
       ]
     },
     {
-      "title": "Why transformers need attention",
-      "summary": "A word's meaning depends on the words around it. Attention lets each word look at the others and decide which ones matter.",
-      "body": [
-        "For every word, attention answers one question: <b>which other words should I focus on right now, and how much?</b>",
-        {
-          "ul": [
-            "“The cat sat on the mat, because <b>it</b> was <b>tired</b>.” Here “it” is the cat.",
-            "“…because <b>it</b> was <b>cozy</b>.” Now “it” is the mat.",
-            "“…because <b>it</b> was <b>cold weather</b>.” Now “it” is the weather."
-          ]
-        },
-        "<b>Self-attention</b> means attention between tokens of the same text: each token looks at the other tokens around it and works out how they relate.",
-        "<mark>Without attention, a word looks the same wherever it appears. With it, the surrounding words decide what it means.</mark>",
-        {
-          "ul": [
-            "I went to the <b>bank</b> to deposit <b>money</b>. → a place for money",
-            "I sat on the <b>bank</b> of the <b>river</b>. → the side of a river"
-          ]
-        },
-        {
-          "more": "How does attention actually work?",
-          "text": "Each token makes a query, a key and a value, scores every pair and blends the values by those scores. The Attention chapter walks through it step by step.",
-          "goto": {
-            "chapter": "attention",
-            "slide": 1
-          },
-          "link": "Go to Attention"
-        }
-      ],
-      "figure": {
-        "src": "images/why-attention-light.svg",
-        "darkSrc": "images/why-attention-dark.svg",
-        "alt": "Attention lets a word look at the other words in its sentence; thicker lines mean more attention. In \"The cat sat on the mat, because it was tired\", \"it\" attends most to \"cat\" (0.71), so it means the cat. With \"cozy\", \"it\" attends most to \"mat\" (0.66). With \"cold weather\", \"it\" attends most to \"weather\" (0.58). In \"I went to the bank to deposit money\", \"bank\" attends to \"money\" and \"deposit\": a place for money. In \"I sat on the bank of the river\", \"bank\" attends to \"river\": the side of a river. Weights are illustrative.",
-        "width": 1200,
-        "height": 720,
-        "caption": "The highlighted word decides what “it” and “bank” mean. Attention is how the model finds that word."
-      }
-    },
-    {
       "title": "The whole transformer, in one picture",
       "summary": "Text goes in, one block repeats many times, and out comes a probability for every possible next token.",
       "body": [
@@ -518,7 +483,7 @@
               "value": "slide 7",
               "goto": {
                 "chapter": "transformer",
-                "slide": 5
+                "slide": 4
               }
             },
             {
@@ -774,6 +739,52 @@
           "caption": "A small spread means the numbers are bunched together; a large one means they're scattered. Dividing by it gives every token a spread of 1."
         }
       ]
+    },
+    {
+      "title": "Why transformers need attention",
+      "summary": "A word's meaning depends on the words around it. Attention lets each word look at the others and decide which ones matter.",
+      "body": [
+        "For every word, attention answers one question: <b>which other words should I focus on right now, and how much?</b>",
+        {
+          "ul": [
+            "“The cat sat on the mat, because <b>it</b> was <b>tired</b>.” Here “it” is the cat.",
+            "“…because <b>it</b> was <b>cozy</b>.” Now “it” is the mat.",
+            "“…because <b>it</b> was <b>cold weather</b>.” Now “it” is the weather."
+          ]
+        },
+        "<b>Self-attention</b> means attention between tokens of the same text: each token looks back at the tokens before it and works out how they relate.",
+        "<mark>Without attention, a word looks the same wherever it appears. With it, the surrounding words decide what it means.</mark>",
+        {
+          "ul": [
+            "I went to the <b>bank</b> to deposit <b>money</b>. → a place for money",
+            "I sat on the <b>bank</b> of the <b>river</b>. → the side of a river"
+          ]
+        },
+        {
+          "more": "But “it” comes before “tired”. How does the model know?",
+          "text": [
+            "A GPT-style model only looks back, so when it reads “it”, the word “tired” isn't there yet and “it” stays undecided.",
+            "The answer is built later. At <b>“tired”</b>, attention looks back at “it”, “cat” and “mat”, and layer by layer that position works out that the one who's tired is the cat. The meaning moves forward to the newest words, which is what the next word is predicted from."
+          ]
+        },
+        {
+          "more": "How does attention actually work?",
+          "text": "Each token makes a query, a key and a value, scores every pair and blends the values by those scores. The Attention chapter walks through it step by step.",
+          "goto": {
+            "chapter": "attention",
+            "slide": 1
+          },
+          "link": "Go to Attention"
+        }
+      ],
+      "figure": {
+        "src": "images/why-attention-light.svg",
+        "darkSrc": "images/why-attention-dark.svg",
+        "alt": "Attention lets a word look at the other words in its sentence; thicker lines mean more attention. In \"The cat sat on the mat, because it was tired\", \"it\" attends most to \"cat\" (0.71), so it means the cat. With \"cozy\", \"it\" attends most to \"mat\" (0.66). With \"cold weather\", \"it\" attends most to \"weather\" (0.58). In \"I went to the bank to deposit money\", \"bank\" attends to \"money\" and \"deposit\": a place for money. In \"I sat on the bank of the river\", \"bank\" attends to \"river\": the side of a river. Weights are illustrative.",
+        "width": 1200,
+        "height": 720,
+        "caption": "The highlighted word decides what “it” and “bank” mean. Attention is how the model finds that word."
+      }
     },
     {
       "title": "Multi-head causal self-attention",

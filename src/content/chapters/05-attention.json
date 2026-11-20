@@ -249,7 +249,14 @@
         "GPT, Claude, Llama and other chat models are <b>decoder-only</b> models, trained to predict the next token. If a token could see the one after it, predicting it would be too easy: <mark>the model would just copy the answer.</mark>",
         "So every score above the diagonal, where a token would look at a later token, is set to <code>−∞</code> (minus infinity). In the next step those become exactly 0: no attention to the future. This is called the <b>causal mask</b>.",
         "There's a big bonus. Since no token can see ahead, one pass over a training sentence trains every position at once: position 1 predicts token 2, position 2 predicts token 3, and so on, all at the same time.",
-        "<b>Encoder</b> models like BERT, used for sorting text into categories and for search, skip the mask and look both ways. That's great for understanding a finished sentence, but they can't write text one token at a time. Switch the mask on and off to compare."
+        "<b>Encoder</b> models like BERT, used for sorting text into categories and for search, skip the mask and look both ways. That's great for understanding a finished sentence, but they can't write text one token at a time. Switch the mask on and off to compare.",
+        {
+          "more": "If “it” can't see “tired”, when is “it” resolved?",
+          "text": [
+            "In “The cat sat on the mat, because it was tired”, “it” is processed before “tired” exists, so its own vector can't settle on the cat or the mat, and the mask means it never changes later.",
+            "The later words do the work instead. At <b>“tired”</b>, attention looks back at “it”, “cat” and “mat”, and layer by layer that position works out that the one who's tired is the cat. Every word after it can use that. In a look-both-ways model like BERT, “it” would see “tired” directly."
+          ]
+        }
       ],
       "code": [
         "mask = torch.triu(torch.ones(n, n), diagonal=1).bool()",
