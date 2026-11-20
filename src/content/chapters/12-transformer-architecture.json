@@ -212,10 +212,11 @@
     {
       "src": "videos/transformer/linear_softmax.mp4",
       "title": "Part 6 · Linear & softmax",
-      "description": "How the last token's vector becomes a score for every word in the vocabulary, how softmax turns scores into probabilities, and how one token is picked and the loop runs again.",
-      "slides": [10, 10],
+      "description": "How the last token's vector becomes a score for every word in the vocabulary, how softmax turns scores into probabilities, how one token is picked, and what a word's score actually looks for.",
+      "slides": [10, 11],
       "at": {
-        "10": 0
+        "10": 0,
+        "11": 111
       },
       "marks": [
         {
@@ -241,6 +242,18 @@
         {
           "at": 91,
           "label": "Pick, append, repeat"
+        },
+        {
+          "at": 111,
+          "label": "What does the score look for?"
+        },
+        {
+          "at": 132,
+          "label": "Checking each word against the clues"
+        },
+        {
+          "at": 144,
+          "label": "Where the clues come from"
         }
       ]
     }
@@ -846,19 +859,19 @@
           "more": "Why expand and then shrink?",
           "text": "The wider middle gives room to detect thousands of patterns at once: each middle number acts like a detector for something, such as a topic, a grammar rule or a fact. Shrinking back keeps the vector the same size for the next layer.",
           "goto": {
-            "chapter": "block",
-            "slide": 3
+            "chapter": "mlp",
+            "slide": 2
           },
-          "link": "The MLP in depth, in The transformer block"
+          "link": "Step by step, in The MLP layer"
         },
         {
           "more": "What do modern models use?",
           "text": "Llama and most new models use <b>SwiGLU</b>, a version with a gate that decides how much of each signal to let through. <b>Mixture-of-experts</b> models keep many feed-forward networks and send each token to just a few of them.",
           "goto": {
-            "chapter": "block",
+            "chapter": "mlp",
             "slide": 6
           },
-          "link": "Mixture of experts"
+          "link": "SwiGLU, in The MLP layer"
         }
       ],
       "viz": [
@@ -1191,6 +1204,122 @@
         "alt": "The output head of a GPT-style model, for “The cat sat” with GPT-2 sizes. 1: only the last token, “sat”, is used: its 768 numbers after the final norm. 2: a linear layer, a table of 768 by 50,257 numbers, takes one dot product per vocabulary word. 3: the result is 50,257 scores, called logits, for example on 6.0, down 4.9, in 4.0, there 3.3, and banana −2.1. 4: softmax turns the scores into shares of 100%. 5: probabilities: on 61%, down 20%, in 8%, there 4%, all others together 7%, banana 0.02%. Next, a sampling step picks one token, usually a likely one such as “on”; it is appended, giving “The cat sat on”, and the whole model runs again. Values are illustrative.",
         "width": 1200,
         "height": 540
+      }
+    },
+    {
+      "title": "What does the score look for?",
+      "summary": "The last vector holds clues about the next word, and each word scores by how well it fits those clues.",
+      "body": [
+        "For “The cat sat”, how does “on” end up with the top score? By the last layer, the vector at “sat” no longer just means “sat”. <mark>It has become a list of clues about the word that should come next.</mark>",
+        {
+          "ul": [
+            "<b>The clues:</b> a place or direction comes next, a short linking word fits, and the sentence isn't over yet.",
+            "<b>The score:</b> every word in the vocabulary is checked against those clues. The more clues a word fits, the higher it scores."
+          ]
+        },
+        "“on” fits all three, so it wins. “down” fits two, but it could also end the sentence, so it comes second. “banana” fits none.",
+        {
+          "note": "Like a detective with a list of clues, checking every suspect: the one who matches the most clues tops the list.",
+          "kind": "analogy"
+        },
+        {
+          "more": "Where do the clues come from?",
+          "text": [
+            "Attention brings in the earlier words (“cat” is the one sitting), and the MLP layers add what usually follows a word like “sat”.",
+            "Training set each word's side of the match. Every time the training text said “sat on”, the model was nudged so the two would match a little better next time."
+          ]
+        },
+        {
+          "more": "Are the clues really written out like this?",
+          "text": "No. Nobody labels them. Each clue is a pattern spread across many of the 768 numbers, and the model learns thousands of them. The three here are a simplified picture of the kind of thing those patterns capture."
+        }
+      ],
+      "viz": [
+        {
+          "type": "table",
+          "rows": [
+            {
+              "head": "Word",
+              "cells": [
+                {
+                  "text": "A · place next"
+                },
+                {
+                  "text": "B · linking word"
+                },
+                {
+                  "text": "C · not over"
+                },
+                {
+                  "text": "score"
+                }
+              ]
+            },
+            {
+              "head": "on",
+              "cells": [
+                {
+                  "text": "✓"
+                },
+                {
+                  "text": "✓"
+                },
+                {
+                  "text": "✓"
+                },
+                {
+                  "text": "6.0",
+                  "tone": "accent"
+                }
+              ]
+            },
+            {
+              "head": "down",
+              "cells": [
+                {
+                  "text": "✓"
+                },
+                {
+                  "text": "✓"
+                },
+                {
+                  "text": "✗"
+                },
+                {
+                  "text": "4.9"
+                }
+              ]
+            },
+            {
+              "head": "banana",
+              "cells": [
+                {
+                  "text": "✗"
+                },
+                {
+                  "text": "✗"
+                },
+                {
+                  "text": "✗"
+                },
+                {
+                  "text": "−2.1"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "caption",
+          "html": "Same scores as the previous slide. The clues are simplified and the values are illustrative."
+        }
+      ],
+      "figure": {
+        "src": "images/score-matching-light.svg",
+        "darkSrc": "images/score-matching-dark.svg",
+        "alt": "For “The cat sat”, the last vector after all the layers holds clues about the next word: A, a place or direction comes next; B, a short linking word fits; C, the sentence isn't over. Each vocabulary word is scored by how well it fits those clues. “on” fits all three and scores 6.0, the highest. “down” fits A and B but could end the sentence, and scores 4.9. “banana” fits none and scores −2.1. The clues come from attention and the MLP layers; each word's fit was learned in training. Values are illustrative.",
+        "width": 1200,
+        "height": 520
       }
     }
   ]

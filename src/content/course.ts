@@ -54,6 +54,11 @@ export const SECTIONS: readonly SectionContent[] = [
         load: () => json(import('./chapters/05-attention.json')),
       },
       {
+        id: 'mlp',
+        name: 'The MLP layer',
+        load: () => json(import('./chapters/22-mlp.json')),
+      },
+      {
         id: 'block',
         name: 'The transformer block',
         load: () => json(import('./chapters/06-transformer-block.json')),

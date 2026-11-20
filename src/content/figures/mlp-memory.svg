@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 560" role="img" aria-labelledby="t d" font-family="'Schibsted Grotesk', ui-sans-serif, system-ui, sans-serif">
+  <title id="t">What the MLP stores</title>
+  <desc id="d">Left: the MLP as a key-value memory, for the text “The Eiffel Tower is in”. Each detector in the wide middle is a key: one that matches “Eiffel Tower” fires strongly, while unrelated ones such as “a fruit” or “a verb in the past” stay near zero. Each detector also has a value, the vector it writes back when it fires. The Eiffel Tower detector writes a direction that pushes “Paris” up, so the next token is likely to be “Paris”. Studies found facts like this in the MLPs of middle layers, and could even edit one. Right: where the parameters are, per layer. GPT-2 small: attention 2.4 million, MLP 4.7 million, two thirds in the MLP. Llama 3 8B: attention 41.9 million, MLP 176.2 million, about 81% in the MLP.</desc>
+  <!--theme-->
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arrowhead"/></marker>
+    <marker id="aa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arrowacc"/></marker>
+  </defs>
+  <rect class="bg" width="1200" height="560" rx="18"/>
+  <text x="40" y="52" text-anchor="start" class="ink" font-size="26" font-weight="700">What the MLP stores</text>
+  <text x="40" y="78" text-anchor="start" class="muted" font-size="15">Detectors are keys. What each writes back is its value. Together they act like a memory.</text>
+  <rect class="card" x="40" y="100" width="700" height="420" rx="10"/>
+  <text x="60" y="130" text-anchor="start" class="accink head" font-size="12">A KEY–VALUE MEMORY</text>
+  <rect class="hit" x="70" y="148" width="640" height="40" rx="10" stroke-width="1.5"/>
+  <text x="390" y="174" text-anchor="middle" class="accink" font-size="15" font-weight="700">“The Eiffel Tower is in …”</text>
+  <path class="line" d="M390 188 V 210" fill="none" marker-end="url(#a)"/>
+  <text x="90" y="232" text-anchor="start" class="muted" font-size="12.5">key: does the pattern match?</text>
+  <text x="470" y="232" text-anchor="start" class="muted" font-size="12.5">value: what it writes back</text>
+  <rect class="possoft spos" x="90" y="248" width="340" height="40" rx="8" stroke-width="1.5"/>
+  <text x="106" y="273" text-anchor="start" class="ink" font-size="14" font-weight="700">Eiffel Tower</text>
+  <rect class="card" x="262" y="262" width="150" height="12" rx="6" stroke-width="1"/>
+  <rect class="pos" x="262" y="262" width="141" height="12" rx="6"/>
+  <path class="line" d="M430 268 H 462" fill="none" marker-end="url(#a)"/>
+  <text x="472" y="273" text-anchor="start" class="posink" font-size="14" font-weight="700">→ “Paris” ↑</text>
+  <rect class="sunk" x="90" y="302" width="340" height="40" rx="8"/>
+  <text x="106" y="327" text-anchor="start" class="ink" font-size="14" font-weight="700">a city name</text>
+  <rect class="card" x="262" y="316" width="150" height="12" rx="6" stroke-width="1"/>
+  <rect class="pos" x="262" y="316" width="57" height="12" rx="6"/>
+  <path class="line" d="M430 322 H 462" fill="none" marker-end="url(#a)"/>
+  <text x="472" y="327" text-anchor="start" class="posink" font-size="14" font-weight="700">→ place names ↑</text>
+  <rect class="sunk" x="90" y="356" width="340" height="40" rx="8"/>
+  <text x="106" y="381" text-anchor="start" class="muted" font-size="14" font-weight="500">a fruit</text>
+  <rect class="card" x="262" y="370" width="150" height="12" rx="6" stroke-width="1"/>
+  <rect class="thin" x="262" y="370" width="3" height="12" rx="6"/>
+  <path class="thin" d="M430 376 H 462" fill="none" marker-end="url(#a)"/>
+  <text x="472" y="381" text-anchor="start" class="muted" font-size="14" font-weight="500">(silent)</text>
+  <rect class="sunk" x="90" y="410" width="340" height="40" rx="8"/>
+  <text x="106" y="435" text-anchor="start" class="muted" font-size="14" font-weight="500">a past action</text>
+  <rect class="card" x="262" y="424" width="150" height="12" rx="6" stroke-width="1"/>
+  <path class="thin" d="M430 430 H 462" fill="none" marker-end="url(#a)"/>
+  <text x="472" y="435" text-anchor="start" class="muted" font-size="14" font-weight="500">(silent)</text>
+  <rect class="accsoft" x="90" y="470" width="620" height="36" rx="8" stroke-width="1.5"/>
+  <text x="400" y="493" text-anchor="middle" class="accink" font-size="13" font-weight="700">next token: “Paris” (studies found facts like this in mid-layer MLPs)</text>
+  <rect class="card" x="770" y="100" width="390" height="420" rx="10"/>
+  <text x="790" y="130" text-anchor="start" class="muted head" font-size="12">WHERE THE PARAMETERS ARE · PER LAYER</text>
+  <text x="790" y="170" text-anchor="start" class="ink" font-size="15" font-weight="700">GPT-2 small</text>
+  <text x="790" y="196" text-anchor="start" class="muted" font-size="12.5">attention</text>
+  <text x="1140" y="196" text-anchor="end" class="ink" font-size="12.5" font-weight="600">2.4M</text>
+  <rect class="acc" x="790" y="204" width="168.51063829787233" height="14" rx="4"/>
+  <text x="790" y="242" text-anchor="start" class="muted" font-size="12.5">MLP</text>
+  <text x="1140" y="242" text-anchor="end" class="ink" font-size="12.5" font-weight="600">4.7M</text>
+  <rect class="pos" x="790" y="250" width="330.0" height="14" rx="4"/>
+  <text x="1140" y="170" text-anchor="end" class="posink" font-size="14" font-weight="700">67% in the MLP</text>
+  <text x="790" y="292" text-anchor="start" class="muted" font-size="12">width 768 · MLP 3,072</text>
+  <text x="790" y="330" text-anchor="start" class="ink" font-size="15" font-weight="700">Llama 3 8B</text>
+  <text x="790" y="356" text-anchor="start" class="muted" font-size="12.5">attention</text>
+  <text x="1140" y="356" text-anchor="end" class="ink" font-size="12.5" font-weight="600">41.9M</text>
+  <rect class="acc" x="790" y="364" width="78.47332576617481" height="14" rx="4"/>
+  <text x="790" y="402" text-anchor="start" class="muted" font-size="12.5">MLP</text>
+  <text x="1140" y="402" text-anchor="end" class="ink" font-size="12.5" font-weight="600">176.2M</text>
+  <rect class="pos" x="790" y="410" width="330.0" height="14" rx="4"/>
+  <text x="1140" y="330" text-anchor="end" class="posink" font-size="14" font-weight="700">81% in the MLP</text>
+  <text x="790" y="452" text-anchor="start" class="muted" font-size="12">width 4,096 · MLP 14,336</text>
+  <text x="790" y="494" text-anchor="start" class="muted" font-size="11.5">Weights only; biases and norms are tiny.</text>
+  <text x="40" y="546" text-anchor="start" class="muted" font-size="11.5">Detector strengths on the left are illustrative. Parameter counts are exact for these two models.</text>
+</svg>

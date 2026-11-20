@@ -30,6 +30,8 @@ export const WIDGETS: Record<string, () => Promise<Type<unknown>>> = {
   activations: () => import('./block.widgets').then((m) => m.ActivationsWidget),
   'param-counter': () => import('./block.widgets').then((m) => m.ParamCounterWidget),
   'moe-router': () => import('./block.widgets').then((m) => m.MoeRouterWidget),
+  'mlp-steps': () => import('./mlp.widgets').then((m) => m.MlpStepsWidget),
+  'activation-probe': () => import('./mlp.widgets').then((m) => m.ActivationProbeWidget),
   temperature: () => import('./output.widgets').then((m) => m.TemperatureWidget),
   sampling: () => import('./output.widgets').then((m) => m.SamplingWidget),
   'kv-cache': () => import('./output.widgets').then((m) => m.KvCacheWidget),

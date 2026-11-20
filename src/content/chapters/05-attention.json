@@ -399,7 +399,6 @@
       "title": "Many layers, many heads, one KV cache each",
       "summary": "Every layer runs many attention heads, and keeps a cache of past keys and values so each new token only does its own work.",
       "body": [
-        "Each attention head turns every token into three vectors: a <b>Q</b> (query: what am I looking for?), a <b>K</b> (key: what do I offer?) and a <b>V</b> (value: what do I pass on?). The new token compares its Q with every K and takes in the matching Vs.",
         {
           "h": "Why a cache?"
         },

@@ -1,0 +1,537 @@
+{
+  "$schema": "../schema/chapter.schema.json",
+  "id": "mlp",
+  "name": "The MLP layer",
+  "videos": [
+    {
+      "src": "videos/mlp/mlp_step_by_step.mp4",
+      "title": "MLP 1 · Step by step",
+      "description": "What the MLP does for each token after attention, then its three steps for “it”: expand into detectors, bend with GELU, shrink back and add.",
+      "slides": [1, 4],
+      "at": {
+        "1": 12,
+        "2": 44,
+        "3": 96,
+        "4": 131
+      },
+      "marks": [
+        {
+          "at": 0,
+          "label": "The MLP, step by step"
+        },
+        {
+          "at": 12,
+          "label": "Each token, on its own"
+        },
+        {
+          "at": 44,
+          "label": "Step 1: expand into detectors"
+        },
+        {
+          "at": 68,
+          "label": "Six detectors for “it”"
+        },
+        {
+          "at": 96,
+          "label": "Step 2: bend with GELU"
+        },
+        {
+          "at": 116,
+          "label": "Why the bend matters"
+        },
+        {
+          "at": 131,
+          "label": "Step 3: shrink back"
+        },
+        {
+          "at": 150,
+          "label": "Add it to the token"
+        }
+      ]
+    },
+    {
+      "src": "videos/mlp/mlp_gelu_swiglu_memory.mp4",
+      "title": "MLP 2 · GELU, SwiGLU and memory",
+      "description": "ReLU, GELU and SiLU side by side, the gate in SwiGLU, what the MLP stores as keys and values, where the parameters are, and mixture of experts.",
+      "slides": [5, 7],
+      "at": {
+        "5": 11,
+        "6": 54,
+        "7": 97
+      },
+      "marks": [
+        {
+          "at": 0,
+          "label": "GELU, SwiGLU and memory"
+        },
+        {
+          "at": 11,
+          "label": "ReLU, GELU and SiLU"
+        },
+        {
+          "at": 20,
+          "label": "ReLU and dead neurons"
+        },
+        {
+          "at": 54,
+          "label": "SwiGLU: a gate"
+        },
+        {
+          "at": 82,
+          "label": "Why the middle is narrower"
+        },
+        {
+          "at": 97,
+          "label": "Keys and values"
+        },
+        {
+          "at": 126,
+          "label": "Where the parameters are"
+        },
+        {
+          "at": 138,
+          "label": "Mixture of experts"
+        }
+      ]
+    }
+  ],
+  "slides": [
+    {
+      "title": "The big idea: each token thinks on its own",
+      "summary": "After attention, every token goes through the same small network, by itself. Most of the model's parameters, and much of what it knows, live here.",
+      "body": [
+        "Every transformer layer has two parts. <b>Attention</b> moves information between tokens. The <b>MLP</b> (multi-layer perceptron, also called the <b>feed-forward</b> layer) then works on each token's vector <i>on its own</i>.",
+        {
+          "ul": [
+            "<b>Same network, every token.</b> One set of weights per layer, applied to each token separately, so all tokens can run at once.",
+            "<b>No mixing.</b> The MLP never looks at other tokens. Anything it needs from them, attention brought in first.",
+            "<b>Three steps:</b> expand into thousands of detectors, bend them with an activation, shrink back and add. The next three slides take them one at a time."
+          ]
+        },
+        "<mark>Attention gathers context from other tokens. The MLP works out what that context means for this token.</mark>",
+        {
+          "note": "Attention is the group discussion. The MLP is each person thinking it over alone.",
+          "kind": "analogy"
+        },
+        {
+          "more": "Why is it called a multi-layer perceptron?",
+          "text": "A perceptron is the classic artificial neuron: weigh the inputs, add them up, decide. Two layers of them with a bend in between make an MLP. Transformers use exactly this shape, just very wide."
+        }
+      ],
+      "viz": [
+        {
+          "type": "table",
+          "rows": [
+            {
+              "head": "",
+              "cells": [
+                {
+                  "text": "GPT-2 small"
+                },
+                {
+                  "text": "Llama 3 8B"
+                }
+              ]
+            },
+            {
+              "head": "Token width",
+              "cells": [
+                {
+                  "text": "768"
+                },
+                {
+                  "text": "4,096"
+                }
+              ]
+            },
+            {
+              "head": "MLP middle",
+              "cells": [
+                {
+                  "text": "3,072 (4×)"
+                },
+                {
+                  "text": "14,336 (3.5×)"
+                }
+              ]
+            },
+            {
+              "head": "Activation",
+              "cells": [
+                {
+                  "text": "GELU"
+                },
+                {
+                  "text": "SwiGLU",
+                  "tone": "accent"
+                }
+              ]
+            },
+            {
+              "head": "Layers",
+              "cells": [
+                {
+                  "text": "12"
+                },
+                {
+                  "text": "32"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "caption",
+          "html": "The same design at two sizes. The MLP's middle is always several times wider than the token."
+        }
+      ],
+      "figure": {
+        "src": "images/mlp-in-one-picture-light.svg",
+        "darkSrc": "images/mlp-in-one-picture-dark.svg",
+        "alt": "One transformer layer for “The cat sat on the mat because it”. First, attention moves information between tokens: “it” takes in some of “cat”. Then the same small MLP runs on every token separately, with no mixing between tokens. Each MLP's output is added back to its token. The three steps inside: expand 768 numbers to 3,072 detector scores, bend them with GELU so only the detectors that fired stay strong, then shrink back to 768 and add to the token.",
+        "width": 1200,
+        "height": 560,
+        "caption": "Attention mixes between tokens; the MLP runs on each token separately, then adds its result back."
+      }
+    },
+    {
+      "title": "Step 1: expand into detectors",
+      "summary": "A matrix turns each token's vector into thousands of scores, one per detector.",
+      "body": [
+        "The first matrix multiplies the token's vector up to a much wider one: from 768 numbers to 3,072 in GPT-2. Each of those numbers is a <b>detector</b> (often called a <b>neuron</b>): one row of the matrix, scoring how strongly one pattern is present.",
+        {
+          "ul": [
+            "<b>A high score:</b> the pattern is there.",
+            "<b>Below zero:</b> it isn't.",
+            "<b>Nobody picks the patterns.</b> Training finds useful ones: a topic, a grammar rule, a kind of word, a fact."
+          ]
+        },
+        "<mark>Going wider gives the model room to check for thousands of patterns at once.</mark>",
+        {
+          "note": "In the toy on the right, each token has 4 numbers and there are 6 named detectors. For “it”, which already took in some “cat” through attention, “a pronoun for an animal” scores 1.52 and “a living thing” 0.34. The others score below −1.",
+          "kind": "example"
+        },
+        {
+          "more": "Are real detectors this tidy?",
+          "text": "No. Real neurons often respond to several unrelated things at once, because a model packs in more patterns than it has neurons. Researchers call this <b>superposition</b>, and build tools to pull clean features back out. The labels here are for teaching."
+        }
+      ],
+      "viz": [
+        {
+          "type": "widget",
+          "name": "mlp-steps",
+          "props": {
+            "step": "expand"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Step 2: bend, with an activation function",
+      "summary": "Each score goes through a curve that keeps the detectors that fired and quietens the rest.",
+      "body": [
+        "Next, every score passes through the same simple curve, the <b>activation function</b>. GPT-2 uses <b>GELU</b>: strong positive scores pass almost unchanged, negative ones are squashed close to 0.",
+        {
+          "h": "Why the bend matters"
+        },
+        "Two matrix multiplications in a row are the same as one. Without a bend between them, the MLP, and the whole stack of layers, would collapse into one straight-line function, however many layers it had.",
+        "<mark>The bend lets the model make decisions, like “only if this pattern is here”, and so learn complicated things.</mark>",
+        {
+          "note": "Switch between GELU and ReLU on the right. ReLU cuts every negative score to exactly 0. GELU lets a little through: for “it”, “a pronoun for an object” scores −1.00 and comes out as −0.16.",
+          "kind": "example"
+        }
+      ],
+      "viz": [
+        {
+          "type": "widget",
+          "name": "mlp-steps",
+          "props": {
+            "step": "bend"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Step 3: shrink back, and add",
+      "summary": "A second matrix turns the detectors that fired into a small change, which is added to the token's vector.",
+      "body": [
+        "The second matrix shrinks the wide vector back to the model's width (3,072 → 768 in GPT-2). Each detector has its own row in it: a small vector it writes back when it fires, scaled by how strongly it fired.",
+        "That result doesn't replace the token's vector. It's <b>added</b> to it, through the residual connection, so the token keeps what it had and gains what the MLP worked out.",
+        "<mark>The MLP's output is a small edit to each token's vector, not a new vector.</mark>",
+        {
+          "note": "Run “it” on the right. “A pronoun for an animal” fires and writes “animal”, so the MLP adds +0.77 to the animal number: 0.60 becomes 1.37. With attention's help, “it” now reads as the cat.",
+          "kind": "example"
+        },
+        {
+          "more": "Why add, instead of replace?",
+          "text": "Adding keeps every earlier layer's work in the vector, and gives training an easy path back to the early layers.",
+          "goto": {
+            "chapter": "transformer",
+            "slide": 8
+          },
+          "link": "Residual connections, in Transformer architecture"
+        }
+      ],
+      "viz": [
+        {
+          "type": "widget",
+          "name": "mlp-steps",
+          "props": {
+            "step": "shrink"
+          }
+        }
+      ]
+    },
+    {
+      "title": "ReLU, GELU and SiLU",
+      "summary": "Three popular curves. They agree on big positive numbers and differ just below zero.",
+      "body": [
+        "Every activation keeps strong positive signals and weakens negative ones. They differ in how:",
+        {
+          "ul": [
+            "<b>ReLU:</b> anything below 0 becomes exactly 0. Simple and fast, but a detector stuck below zero gets no learning signal and can stay off for good (a “dead neuron”).",
+            "<b>GELU</b> (GPT-2, BERT): smooth. It scales each number by a factor that goes gently from 0, for big negatives, to 1, for big positives. Small negatives leak through a little.",
+            "<b>SiLU</b>, also called Swish: the same idea with a slightly different curve. It's the one inside SwiGLU, on the next slide."
+          ]
+        },
+        "<mark>Smooth curves keep a small learning signal below zero, and in practice train a little better than ReLU.</mark>",
+        {
+          "note": "Drag the slider on the right. At −1, ReLU gives 0, GELU −0.159 and SiLU −0.269. At 2, they give 2, 1.954 and 1.762.",
+          "kind": "example"
+        }
+      ],
+      "viz": [
+        {
+          "type": "widget",
+          "name": "activation-probe"
+        },
+        {
+          "type": "table",
+          "rows": [
+            {
+              "head": "input",
+              "cells": [
+                {
+                  "text": "−2"
+                },
+                {
+                  "text": "−1"
+                },
+                {
+                  "text": "−0.5"
+                },
+                {
+                  "text": "0.5"
+                },
+                {
+                  "text": "1"
+                },
+                {
+                  "text": "2"
+                }
+              ]
+            },
+            {
+              "head": "ReLU",
+              "cells": [
+                {
+                  "text": "0"
+                },
+                {
+                  "text": "0"
+                },
+                {
+                  "text": "0"
+                },
+                {
+                  "text": "0.5"
+                },
+                {
+                  "text": "1"
+                },
+                {
+                  "text": "2"
+                }
+              ]
+            },
+            {
+              "head": "GELU",
+              "cells": [
+                {
+                  "text": "−0.046",
+                  "tone": "accent"
+                },
+                {
+                  "text": "−0.159",
+                  "tone": "accent"
+                },
+                {
+                  "text": "−0.154",
+                  "tone": "accent"
+                },
+                {
+                  "text": "0.346"
+                },
+                {
+                  "text": "0.841"
+                },
+                {
+                  "text": "1.954"
+                }
+              ]
+            },
+            {
+              "head": "SiLU",
+              "cells": [
+                {
+                  "text": "−0.238",
+                  "tone": "heat"
+                },
+                {
+                  "text": "−0.269",
+                  "tone": "heat"
+                },
+                {
+                  "text": "−0.189",
+                  "tone": "heat"
+                },
+                {
+                  "text": "0.311"
+                },
+                {
+                  "text": "0.731"
+                },
+                {
+                  "text": "1.762"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "SwiGLU: a gate on every detector",
+      "summary": "Most modern models expand each token twice: one copy, passed through SiLU, decides how much of the other gets through.",
+      "body": [
+        "Llama, Mistral, Qwen, DeepSeek and most open models today use <b>SwiGLU</b>, an MLP with a <b>gate</b>:",
+        {
+          "ul": [
+            "<b>Two expansions</b> of the same token vector, side by side.",
+            "One goes through SiLU and becomes the <b>gate</b>. The other is the <b>value</b>.",
+            "They're <b>multiplied</b> number by number, so each gate sets how much of its value passes, from off to fully on. Then the result shrinks back as before."
+          ]
+        },
+        "<mark>With a gate, the model can control each signal precisely instead of just switching it on or off. In tests, this trains better than a plain MLP of the same size.</mark>",
+        "Three matrices instead of two means more weights, so the middle is made narrower to compensate. Llama 3 8B goes from 4,096 to 14,336 and back: 3.5× wide instead of 4×.",
+        {
+          "more": "Where did SwiGLU come from?",
+          "text": "Noam Shazeer's 2020 paper “GLU Variants Improve Transformer” tried several gated versions, and SwiGLU and GeGLU did best. Google's PaLM and Meta's Llama adopted SwiGLU, and most open models followed. Gemma uses GeGLU: the same gate with GELU."
+        }
+      ],
+      "viz": [
+        {
+          "type": "table",
+          "rows": [
+            {
+              "head": "",
+              "cells": [
+                {
+                  "text": "MLP type"
+                },
+                {
+                  "text": "Width → middle"
+                }
+              ]
+            },
+            {
+              "head": "GPT-2 small",
+              "cells": [
+                {
+                  "text": "GELU"
+                },
+                {
+                  "text": "768 → 3,072"
+                }
+              ]
+            },
+            {
+              "head": "Llama 3 8B",
+              "cells": [
+                {
+                  "text": "SwiGLU",
+                  "tone": "accent"
+                },
+                {
+                  "text": "4,096 → 14,336"
+                }
+              ]
+            },
+            {
+              "head": "Mixtral 8x7B",
+              "cells": [
+                {
+                  "text": "SwiGLU, 8 experts",
+                  "tone": "accent"
+                },
+                {
+                  "text": "4,096 → 14,336 each"
+                }
+              ]
+            },
+            {
+              "head": "Gemma",
+              "cells": [
+                {
+                  "text": "GeGLU",
+                  "tone": "accent"
+                },
+                {
+                  "text": "varies by size"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "figure": {
+        "src": "images/swiglu-light.svg",
+        "darkSrc": "images/swiglu-dark.svg",
+        "alt": "Two versions of the MLP. A plain MLP, as in GPT-2: expand the token's 768 numbers to 3,072, pass every number through GELU, then shrink back. SwiGLU, as in Llama, Mistral and Qwen: expand the token's vector twice, side by side. One copy goes through SiLU and becomes a gate; the other is the value. They are multiplied number by number, so each gate decides how much of its value passes, then the result shrinks back. SwiGLU has three matrices instead of two, so its middle is narrower: Llama 3 8B goes from 4,096 to 14,336, 3.5 times wider. GELU is used by GPT-2 and BERT, SwiGLU by Llama, Mistral and Qwen, and GeGLU, the same gate with GELU, by Gemma.",
+        "width": 1200,
+        "height": 560,
+        "caption": "A plain MLP bends every number; SwiGLU lets a second copy of the expansion act as a gate."
+      }
+    },
+    {
+      "title": "What the MLP stores",
+      "summary": "Research suggests the MLP works like a huge key–value memory. It also holds most of a model's parameters.",
+      "body": [
+        "A 2021 study (Geva and colleagues) found a neat way to read the MLP. Each detector's row in the first matrix is a <b>key</b> that matches a pattern in the text. Its row in the second matrix is a <b>value</b>: what to add when that pattern shows up. Values often push up words likely to come next.",
+        "A 2022 study (Meng and colleagues) traced facts like “the Eiffel Tower is in Paris” to the MLPs of middle layers, and changed a fact by editing a single MLP's weights.",
+        "<mark>Much of what a model knows, from facts to word associations, is stored in its MLP weights.</mark>",
+        {
+          "h": "Where the parameters are"
+        },
+        "The MLP has two or three big matrices; attention has four smaller ones. Per layer, the MLP holds two thirds of the weights in GPT-2 small, and about 81% in Llama 3 8B.",
+        {
+          "more": "Mixture of experts: many MLPs, a few at a time",
+          "text": "Mixture-of-experts models replace each MLP with many smaller ones, the experts, and a router sends each token to just a few. Mixtral 8x7B has 8 experts per layer and uses 2 per token, so it holds about 47 billion parameters but uses about 13 billion for each token.",
+          "goto": {
+            "chapter": "block",
+            "slide": 6
+          },
+          "link": "Mixture of experts, in The transformer block"
+        }
+      ],
+      "figure": {
+        "src": "images/mlp-memory-light.svg",
+        "darkSrc": "images/mlp-memory-dark.svg",
+        "alt": "Left: the MLP as a key–value memory, for the text “The Eiffel Tower is in”. Each detector is a key: the one matching “Eiffel Tower” fires strongly, “a city name” fires a little, and unrelated ones such as “a fruit” and “a past action” stay silent. Each detector also has a value, what it writes back when it fires: the Eiffel Tower detector pushes “Paris” up, so the next token is likely “Paris”. Studies found facts like this in the MLPs of middle layers. Right: parameters per layer. GPT-2 small: attention 2.4 million, MLP 4.7 million, 67% in the MLP. Llama 3 8B: attention 41.9 million, MLP 176.2 million, 81% in the MLP. Detector strengths are illustrative; parameter counts are exact.",
+        "width": 1200,
+        "height": 560,
+        "caption": "Detectors are keys, what they write back are values. And the MLP is where most of the weights are."
+      }
+    }
+  ]
+}

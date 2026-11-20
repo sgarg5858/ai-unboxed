@@ -733,6 +733,8 @@
                   "activations",
                   "param-counter",
                   "moe-router",
+                  "mlp-steps",
+                  "activation-probe",
                   "temperature",
                   "sampling",
                   "kv-cache",

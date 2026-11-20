@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 560" role="img" aria-labelledby="t d" font-family="'Schibsted Grotesk', ui-sans-serif, system-ui, sans-serif">
+  <title id="t">The MLP in one picture</title>
+  <desc id="d">One transformer layer for “The cat sat on the mat because it”. First, attention moves information between tokens: “it” looks back and takes in some of “cat”. Then the MLP runs on every token separately, the same small network for each, with no mixing between tokens. Inside it there are three steps: expand the 768 numbers to 3,072 detector scores, bend them with an activation such as GELU so only the detectors that fired stay strong, and shrink back to 768 numbers. The result is added to the token’s vector, and the layer repeats: 12 times in GPT-2. Attention moves information between tokens; the MLP works on each token by itself.</desc>
+  <!--theme-->
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arrowhead"/></marker>
+    <marker id="aa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arrowacc"/></marker>
+  </defs>
+  <rect class="bg" width="1200" height="560" rx="18"/>
+  <text x="40" y="52" text-anchor="start" class="ink" font-size="26" font-weight="700">The MLP in one picture</text>
+  <text x="40" y="78" text-anchor="start" class="muted" font-size="15">Attention moves information between tokens. Then the MLP works on each token by itself.</text>
+  <rect class="card" x="43" y="110" width="104" height="34" rx="8"/>
+  <text x="95" y="132" text-anchor="middle" class="ink" font-size="15" font-weight="700">The</text>
+  <rect class="card" x="183" y="110" width="104" height="34" rx="8"/>
+  <text x="235" y="132" text-anchor="middle" class="ink" font-size="15" font-weight="700">cat</text>
+  <rect class="card" x="323" y="110" width="104" height="34" rx="8"/>
+  <text x="375" y="132" text-anchor="middle" class="ink" font-size="15" font-weight="700">sat</text>
+  <rect class="card" x="463" y="110" width="104" height="34" rx="8"/>
+  <text x="515" y="132" text-anchor="middle" class="ink" font-size="15" font-weight="700">on</text>
+  <rect class="card" x="603" y="110" width="104" height="34" rx="8"/>
+  <text x="655" y="132" text-anchor="middle" class="ink" font-size="15" font-weight="700">the</text>
+  <rect class="card" x="743" y="110" width="104" height="34" rx="8"/>
+  <text x="795" y="132" text-anchor="middle" class="ink" font-size="15" font-weight="700">mat</text>
+  <rect class="card" x="883" y="110" width="104" height="34" rx="8"/>
+  <text x="935" y="132" text-anchor="middle" class="ink" font-size="15" font-weight="700">because</text>
+  <rect class="hit" x="1023" y="110" width="104" height="34" rx="8" stroke-width="1.5"/>
+  <text x="1075" y="132" text-anchor="middle" class="accink" font-size="15" font-weight="700">it</text>
+  <rect class="sunk" x="40" y="170" width="1120" height="92" rx="12"/>
+  <text x="60" y="194" text-anchor="start" class="accink head" font-size="12">1 · ATTENTION · between tokens</text>
+  <path d="M1075 250 C 1075 204, 235 204, 235 250" fill="none" class="sacc" stroke-width="3"/>
+  <path d="M1075 250 C 1075 220, 655 220, 655 250" fill="none" class="thin" stroke-width="1.5"/>
+  <path d="M1075 250 C 1075 220, 795 220, 795 250" fill="none" class="thin" stroke-width="1.5"/>
+  <text x="1140" y="194" text-anchor="end" class="muted" font-size="12.5">“it” takes in some of “cat”</text>
+  <text x="60" y="296" text-anchor="start" class="posink head" font-size="12">2 · THE MLP · each token on its own, the same network for every token</text>
+  <rect class="card" x="43" y="310" width="104" height="86" rx="10" stroke-width="1"/>
+  <text x="95" y="334" text-anchor="middle" class="muted" font-size="13" font-weight="700">MLP</text>
+  <path d="M65 372 L83 352 L107 352 L125 372" fill="none" class="thin" stroke-width="1.6"/>
+  <path class="line" d="M95 396 V 428" fill="none" marker-end="url(#a)"/>
+  <circle cx="95" cy="442" r="12" class="card" stroke-width="1.5"/>
+  <text x="95" y="447" text-anchor="middle" class="ink" font-size="16" font-weight="700">+</text>
+  <rect class="card" x="183" y="310" width="104" height="86" rx="10" stroke-width="1"/>
+  <text x="235" y="334" text-anchor="middle" class="muted" font-size="13" font-weight="700">MLP</text>
+  <path d="M205 372 L223 352 L247 352 L265 372" fill="none" class="thin" stroke-width="1.6"/>
+  <path class="line" d="M235 396 V 428" fill="none" marker-end="url(#a)"/>
+  <circle cx="235" cy="442" r="12" class="card" stroke-width="1.5"/>
+  <text x="235" y="447" text-anchor="middle" class="ink" font-size="16" font-weight="700">+</text>
+  <rect class="card" x="323" y="310" width="104" height="86" rx="10" stroke-width="1"/>
+  <text x="375" y="334" text-anchor="middle" class="muted" font-size="13" font-weight="700">MLP</text>
+  <path d="M345 372 L363 352 L387 352 L405 372" fill="none" class="thin" stroke-width="1.6"/>
+  <path class="line" d="M375 396 V 428" fill="none" marker-end="url(#a)"/>
+  <circle cx="375" cy="442" r="12" class="card" stroke-width="1.5"/>
+  <text x="375" y="447" text-anchor="middle" class="ink" font-size="16" font-weight="700">+</text>
+  <rect class="card" x="463" y="310" width="104" height="86" rx="10" stroke-width="1"/>
+  <text x="515" y="334" text-anchor="middle" class="muted" font-size="13" font-weight="700">MLP</text>
+  <path d="M485 372 L503 352 L527 352 L545 372" fill="none" class="thin" stroke-width="1.6"/>
+  <path class="line" d="M515 396 V 428" fill="none" marker-end="url(#a)"/>
+  <circle cx="515" cy="442" r="12" class="card" stroke-width="1.5"/>
+  <text x="515" y="447" text-anchor="middle" class="ink" font-size="16" font-weight="700">+</text>
+  <rect class="card" x="603" y="310" width="104" height="86" rx="10" stroke-width="1"/>
+  <text x="655" y="334" text-anchor="middle" class="muted" font-size="13" font-weight="700">MLP</text>
+  <path d="M625 372 L643 352 L667 352 L685 372" fill="none" class="thin" stroke-width="1.6"/>
+  <path class="line" d="M655 396 V 428" fill="none" marker-end="url(#a)"/>
+  <circle cx="655" cy="442" r="12" class="card" stroke-width="1.5"/>
+  <text x="655" y="447" text-anchor="middle" class="ink" font-size="16" font-weight="700">+</text>
+  <rect class="card" x="743" y="310" width="104" height="86" rx="10" stroke-width="1"/>
+  <text x="795" y="334" text-anchor="middle" class="muted" font-size="13" font-weight="700">MLP</text>
+  <path d="M765 372 L783 352 L807 352 L825 372" fill="none" class="thin" stroke-width="1.6"/>
+  <path class="line" d="M795 396 V 428" fill="none" marker-end="url(#a)"/>
+  <circle cx="795" cy="442" r="12" class="card" stroke-width="1.5"/>
+  <text x="795" y="447" text-anchor="middle" class="ink" font-size="16" font-weight="700">+</text>
+  <rect class="card" x="883" y="310" width="104" height="86" rx="10" stroke-width="1"/>
+  <text x="935" y="334" text-anchor="middle" class="muted" font-size="13" font-weight="700">MLP</text>
+  <path d="M905 372 L923 352 L947 352 L965 372" fill="none" class="thin" stroke-width="1.6"/>
+  <path class="line" d="M935 396 V 428" fill="none" marker-end="url(#a)"/>
+  <circle cx="935" cy="442" r="12" class="card" stroke-width="1.5"/>
+  <text x="935" y="447" text-anchor="middle" class="ink" font-size="16" font-weight="700">+</text>
+  <rect class="possoft spos" x="1023" y="310" width="104" height="86" rx="10" stroke-width="1.5"/>
+  <text x="1075" y="334" text-anchor="middle" class="posink" font-size="13" font-weight="700">MLP</text>
+  <path d="M1045 372 L1063 352 L1087 352 L1105 372" fill="none" class="spos" stroke-width="1.6"/>
+  <path class="line" d="M1075 396 V 428" fill="none" marker-end="url(#a)"/>
+  <circle cx="1075" cy="442" r="12" class="card" stroke-width="1.5"/>
+  <text x="1075" y="447" text-anchor="middle" class="ink" font-size="16" font-weight="700">+</text>
+  <rect class="accsoft" x="40" y="476" width="1120" height="62" rx="12" stroke-width="1.5"/>
+  <text x="60" y="503" text-anchor="start" class="accink" font-size="15" font-weight="700">1 · Expand</text>
+  <text x="60" y="525" text-anchor="start" class="ink" font-size="13.5">768 → 3,072 detector scores</text>
+  <text x="390" y="513" text-anchor="middle" class="accink" font-size="20" font-weight="700">→</text>
+  <text x="430" y="503" text-anchor="start" class="accink" font-size="15" font-weight="700">2 · Bend</text>
+  <text x="430" y="525" text-anchor="start" class="ink" font-size="13.5">GELU keeps the ones that fired</text>
+  <text x="760" y="513" text-anchor="middle" class="accink" font-size="20" font-weight="700">→</text>
+  <text x="800" y="503" text-anchor="start" class="accink" font-size="15" font-weight="700">3 · Shrink</text>
+  <text x="800" y="525" text-anchor="start" class="ink" font-size="13.5">3,072 → 768, then add to the token</text>
+</svg>

@@ -176,7 +176,16 @@
         {
           "h": "Why the curve matters"
         },
-        "Two matrix multiplications in a row are the same as one. Without a bend in between, the whole model would collapse into one simple straight-line function, however many layers it had. The curved <b>activation function</b> is what lets stacked layers learn complicated patterns. Modern models use smooth curves like GELU or SiLU, often in a form called <b>SwiGLU</b>."
+        "Two matrix multiplications in a row are the same as one. Without a bend in between, the whole model would collapse into one simple straight-line function, however many layers it had. The curved <b>activation function</b> is what lets stacked layers learn complicated patterns. Modern models use smooth curves like GELU or SiLU, often in a form called <b>SwiGLU</b>.",
+        {
+          "more": "Want the MLP in depth?",
+          "text": "The MLP layer chapter takes it step by step: expanding into detectors, the bend (ReLU, GELU, SiLU), SwiGLU's gate, and what the MLP stores.",
+          "goto": {
+            "chapter": "mlp",
+            "slide": 1
+          },
+          "link": "Go to The MLP layer"
+        }
       ],
       "code": [
         "class SwiGLU(nn.Module):        # Llama-style MLP",

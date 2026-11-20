@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 520" role="img" aria-labelledby="t d" font-family="'Schibsted Grotesk', ui-sans-serif, system-ui, sans-serif">
+  <title id="t">What a word's score looks for</title>
+  <desc id="d">For “The cat sat”, the last vector after all the layers holds clues about the next word: A, a place or direction comes next; B, a short linking word fits; C, the sentence isn't over. Each vocabulary word is scored by how well it fits those clues. “on” fits all three and scores 6.0, the highest. “down” fits A and B but could end the sentence, and scores 4.9. “banana” fits none and scores −2.1. The clues come from attention and the MLP layers; each word's fit was learned in training. Values are illustrative.</desc>
+  <style>
+    .bg{fill:#0f1413}.card{fill:#171e1c;stroke:#2c3835}.sunk{fill:#1f2826}
+    .ink{fill:#e4ece9}.muted{fill:#9aa9a4}.onacc{fill:#0f1413}
+    .acc{fill:#4db3d1}.accink{fill:#8fd3e6}.accsoft{fill:#163742}
+    .pos{fill:#3fc4a3}.posink{fill:#3fc4a3}.possoft{fill:#123a30;stroke:#3fc4a3}
+    .neg{fill:#f07d60}.negink{fill:#f07d60}.negsoft{fill:#42221a;stroke:#f07d60}
+    .heat{fill:#3d2e14;stroke:#f0ac40}.heatink{fill:#f0ac40}.heatfill{fill:#f0ac40}
+    .line{stroke:#9aa9a4;fill:none;stroke-width:2}.thin{stroke:#2c3835;fill:none;stroke-width:1.5}
+    .dash{stroke:#4db3d1;fill:none;stroke-width:2;stroke-dasharray:6 5}
+    .sacc{stroke:#4db3d1;fill:none;stroke-width:2.5}.sheat{stroke:#f0ac40;fill:none;stroke-width:2.5}
+    .spos{stroke:#3fc4a3;fill:none;stroke-width:2.5}.sneg{stroke:#f07d60;fill:none;stroke-width:2.5}
+    .edge{stroke:#4db3d1;fill:none;stroke-width:1;opacity:.45}
+    .stream{stroke:#4db3d1;fill:none;stroke-width:14;stroke-linecap:round;opacity:.35}
+    .row{fill:#1f2826}.hit{fill:#163742;stroke:#4db3d1}
+    .mono{font-family:'JetBrains Mono',ui-monospace,Menlo,monospace}
+    .head{font-size:13px;font-weight:700;letter-spacing:.08em}
+    .arrowhead{fill:#9aa9a4}.arrowacc{fill:#4db3d1}
+  </style>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arrowhead"/></marker>
+  </defs>
+  <rect class="bg" width="1200" height="520" rx="18"/>
+  <text x="40" y="50" class="ink" font-size="26" font-weight="700">What does the score look for?</text>
+  <text x="40" y="76" class="muted" font-size="15">The last vector carries clues about the next word. Every word is scored by how well it fits them.</text>
+
+  <!-- left: clues -->
+  <rect class="card" x="40" y="104" width="420" height="300" rx="14" stroke-width="1.4"/>
+  <text x="62" y="134" class="muted mono" font-size="11.5" font-weight="700">1 · CLUES IN “SAT”’S FINAL VECTOR</text>
+  <rect class="card" x="62" y="148" width="40" height="26" rx="7" stroke-width="1.2"/>
+  <text x="82" y="166" text-anchor="middle" class="muted" font-size="13" font-weight="700">The</text>
+  <rect class="card" x="106" y="148" width="40" height="26" rx="7" stroke-width="1.2"/>
+  <text x="126" y="166" text-anchor="middle" class="muted" font-size="13" font-weight="700">cat</text>
+  <rect class="hit" x="150" y="148" width="40" height="26" rx="7" stroke-width="1.2"/>
+  <text x="170" y="166" text-anchor="middle" class="accink" font-size="13" font-weight="700">sat</text>
+  <text x="200" y="166" class="muted" font-size="13">→ what comes next?</text>
+
+  <rect class="heat" x="62" y="196" width="376" height="54" rx="10" stroke-width="1.4"/>
+  <circle class="heatfill" cx="90" cy="223" r="14"/>
+  <text x="90" y="228" text-anchor="middle" class="onacc" font-size="14" font-weight="700">A</text>
+  <text x="116" y="229" class="ink" font-size="16" font-weight="600">a place or direction comes next</text>
+
+  <rect class="heat" x="62" y="262" width="376" height="54" rx="10" stroke-width="1.4"/>
+  <circle class="heatfill" cx="90" cy="289" r="14"/>
+  <text x="90" y="294" text-anchor="middle" class="onacc" font-size="14" font-weight="700">B</text>
+  <text x="116" y="295" class="ink" font-size="16" font-weight="600">a short linking word fits</text>
+
+  <rect class="heat" x="62" y="328" width="376" height="54" rx="10" stroke-width="1.4"/>
+  <circle class="heatfill" cx="90" cy="355" r="14"/>
+  <text x="90" y="360" text-anchor="middle" class="onacc" font-size="14" font-weight="700">C</text>
+  <text x="116" y="361" class="ink" font-size="16" font-weight="600">the sentence isn’t over yet</text>
+
+  <line class="line" x1="470" y1="254" x2="510" y2="254" marker-end="url(#a)"/>
+
+  <!-- right: fit per word -->
+  <rect class="card" x="520" y="104" width="640" height="300" rx="14" stroke-width="1.4"/>
+  <text x="542" y="134" class="muted mono" font-size="11.5" font-weight="700">2 · HOW WELL EACH WORD FITS</text>
+  <text x="712" y="170" text-anchor="middle" class="heatink" font-size="14" font-weight="700">A</text>
+  <text x="772" y="170" text-anchor="middle" class="heatink" font-size="14" font-weight="700">B</text>
+  <text x="832" y="170" text-anchor="middle" class="heatink" font-size="14" font-weight="700">C</text>
+  <text x="890" y="170" class="muted" font-size="13" font-weight="700">score</text>
+
+  <!-- on -->
+  <rect class="row" x="540" y="184" width="600" height="58" rx="10"/>
+  <rect class="hit" x="556" y="196" width="110" height="34" rx="8" stroke-width="1.4"/>
+  <text x="611" y="219" text-anchor="middle" class="accink" font-size="17" font-weight="700">on</text>
+  <circle class="possoft" cx="712" cy="213" r="14" stroke-width="1.4"/><text x="712" y="218" text-anchor="middle" class="posink" font-size="15" font-weight="700">✓</text>
+  <circle class="possoft" cx="772" cy="213" r="14" stroke-width="1.4"/><text x="772" y="218" text-anchor="middle" class="posink" font-size="15" font-weight="700">✓</text>
+  <circle class="possoft" cx="832" cy="213" r="14" stroke-width="1.4"/><text x="832" y="218" text-anchor="middle" class="posink" font-size="15" font-weight="700">✓</text>
+  <rect class="pos" x="890" y="204" width="180" height="18" rx="4"/>
+  <text x="1080" y="219" class="posink mono" font-size="15" font-weight="700">6.0</text>
+
+  <!-- down -->
+  <rect class="row" x="540" y="252" width="600" height="58" rx="10"/>
+  <rect class="card" x="556" y="264" width="110" height="34" rx="8" stroke-width="1.4"/>
+  <text x="611" y="287" text-anchor="middle" class="ink" font-size="17" font-weight="700">down</text>
+  <circle class="possoft" cx="712" cy="281" r="14" stroke-width="1.4"/><text x="712" y="286" text-anchor="middle" class="posink" font-size="15" font-weight="700">✓</text>
+  <circle class="possoft" cx="772" cy="281" r="14" stroke-width="1.4"/><text x="772" y="286" text-anchor="middle" class="posink" font-size="15" font-weight="700">✓</text>
+  <circle class="negsoft" cx="832" cy="281" r="14" stroke-width="1.4"/><text x="832" y="286" text-anchor="middle" class="negink" font-size="15" font-weight="700">✗</text>
+  <rect class="pos" x="890" y="272" width="147" height="18" rx="4" opacity=".6"/>
+  <text x="1047" y="287" class="ink mono" font-size="15" font-weight="700">4.9</text>
+
+  <!-- banana -->
+  <rect class="row" x="540" y="320" width="600" height="58" rx="10"/>
+  <rect class="card" x="556" y="332" width="110" height="34" rx="8" stroke-width="1.4"/>
+  <text x="611" y="355" text-anchor="middle" class="ink" font-size="17" font-weight="700">banana</text>
+  <circle class="negsoft" cx="712" cy="349" r="14" stroke-width="1.4"/><text x="712" y="354" text-anchor="middle" class="negink" font-size="15" font-weight="700">✗</text>
+  <circle class="negsoft" cx="772" cy="349" r="14" stroke-width="1.4"/><text x="772" y="354" text-anchor="middle" class="negink" font-size="15" font-weight="700">✗</text>
+  <circle class="negsoft" cx="832" cy="349" r="14" stroke-width="1.4"/><text x="832" y="354" text-anchor="middle" class="negink" font-size="15" font-weight="700">✗</text>
+  <rect class="neg" x="890" y="340" width="24" height="18" rx="4"/>
+  <text x="924" y="355" class="negink mono" font-size="15" font-weight="700">−2.1</text>
+
+  <!-- footer -->
+  <rect class="sunk" x="40" y="424" width="1120" height="72" rx="12"/>
+  <text x="62" y="453" class="ink" font-size="15"><tspan font-weight="700">Where the clues come from:</tspan> attention brings in “cat” and “sat”; the MLPs add what usually follows “sat”.</text>
+  <text x="62" y="479" class="ink" font-size="15"><tspan font-weight="700">Where each word’s fit comes from:</tspan> training. Every “sat on” in the training text made them match a little better.</text>
+</svg>
