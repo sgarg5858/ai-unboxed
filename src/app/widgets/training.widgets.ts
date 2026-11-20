@@ -152,7 +152,7 @@ export class GradientDescentWidget {
         <path [attr.d]="d" fill="none" stroke="var(--accent)" stroke-width="2" />
         <text x="44" y="16">loss</text>
         <text x="380" y="188" text-anchor="end">training tokens →</text>
-        <text [attr.x]="labelX" [attr.y]="labelY">≈ ln V at start</text>
+        <text [attr.x]="labelX" [attr.y]="labelY">≈ 10.8 at start: random guessing</text>
       </svg>
       <p class="cap">
         Illustrative shape: steep early drop, then a long slow grind. Scaling laws show loss falls
@@ -164,8 +164,8 @@ export class GradientDescentWidget {
 export class LossCurveWidget {
   private readonly sx = (t: number) => 40 + t * 340;
   private readonly sy = (l: number) => 170 - ((l - 1.6) / (10.8 - 1.6)) * 150;
-  protected readonly labelX = this.sx(0.02) + 6;
-  protected readonly labelY = this.sy(10.6);
+  protected readonly labelX = this.sx(0.04) + 6;
+  protected readonly labelY = this.sy(10.1);
   protected readonly d = Array.from({ length: 121 }, (_, i) => {
     const t = i / 120;
     const l =

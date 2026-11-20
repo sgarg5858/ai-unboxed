@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 430" role="img" aria-labelledby="t d" font-family="'Schibsted Grotesk', ui-sans-serif, system-ui, sans-serif">
+  <title id="t">The loss: one number for “how wrong”</title>
+  <desc id="d">Formula at the top: loss equals minus the log of the probability the model gave to the right answer. Left, a badly tuned model gives “blue” a probability of 0.05 after “The sky is”: loss 3.00, high. Right, a better tuned model gives “blue” 0.70: loss 0.36, low. Being confidently wrong costs the most: a probability of 0.0001 gives a loss of 9.2.</desc>
+  <!--theme-->
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arrowhead"/></marker>
+    <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="heatfill"/></marker>
+    <marker id="aa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arrowacc"/></marker>
+  </defs>
+  <rect class="bg" x="0" y="0" width="1200" height="430" rx="18"/>
+  <text x="40" y="52" text-anchor="start" class="ink" font-size="26" font-weight="700">The loss: one number for “how wrong”</text>
+  <text x="40" y="78" text-anchor="start" class="muted" font-size="15">Look at the probability the model gave the word that really came next. Low probability, high loss.</text>
+  <rect class="accsoft" x="40" y="100" width="1120" height="48" rx="8" stroke-width="1.5"/>
+  <text x="600" y="131" text-anchor="middle" class="accink" font-size="17" font-weight="700">loss = −log( probability the model gave to the right answer )</text>
+  <rect class="card" x="40" y="168" width="540" height="210" rx="10"/>
+  <text x="60" y="198" text-anchor="start" class="muted head" font-size="12">BADLY TUNED</text>
+  <text x="60" y="240" text-anchor="start" class="ink" font-size="18" font-weight="700">“The sky is …”   p(blue) = 0.05</text>
+  <text x="60" y="284" text-anchor="start" class="muted" font-size="13.5">loss</text>
+  <rect class="sunk" x="110" y="270" width="440" height="18" rx="6"/>
+  <rect class="neg" x="110" y="270" width="412.5" height="18" rx="6"/>
+  <text x="60" y="330" text-anchor="start" class="negink" font-size="30" font-weight="700">3.00</text>
+  <text x="150" y="328" text-anchor="start" class="negink" font-size="15" font-weight="600">high loss: very wrong</text>
+  <rect class="card" x="620" y="168" width="540" height="210" rx="10"/>
+  <text x="640" y="198" text-anchor="start" class="muted head" font-size="12">BETTER TUNED</text>
+  <text x="640" y="240" text-anchor="start" class="ink" font-size="18" font-weight="700">“The sky is …”   p(blue) = 0.70</text>
+  <text x="640" y="284" text-anchor="start" class="muted" font-size="13.5">loss</text>
+  <rect class="sunk" x="690" y="270" width="440" height="18" rx="6"/>
+  <rect class="pos" x="690" y="270" width="49.5" height="18" rx="6"/>
+  <text x="640" y="330" text-anchor="start" class="posink" font-size="30" font-weight="700">0.36</text>
+  <text x="730" y="328" text-anchor="start" class="posink" font-size="15" font-weight="600">low loss: nearly right</text>
+  <text x="600" y="408" text-anchor="middle" class="muted" font-size="14">Confidently wrong costs the most: if the right word gets p = 0.0001, the loss is 9.2.</text>
+</svg>

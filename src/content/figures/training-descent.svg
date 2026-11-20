@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 450" role="img" aria-labelledby="t d" font-family="'Schibsted Grotesk', ui-sans-serif, system-ui, sans-serif">
+  <title id="t">Gradient descent: step downhill</title>
+  <desc id="d">Left: a U-shaped curve of loss against one weight’s value. A ball starts high on the left and takes five steps, each smaller than the last, down to the lowest loss at the bottom. Right, one step with numbers: the weight is 0.50, its gradient is +2.0, meaning uphill is to the right, and the learning rate is 0.1. The step is 0.1 times 2.0, which is 0.2, to the left, so the new weight is 0.30. Every weight takes a step like this, millions of times.</desc>
+  <!--theme-->
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arrowhead"/></marker>
+    <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="heatfill"/></marker>
+    <marker id="aa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arrowacc"/></marker>
+  </defs>
+  <rect class="bg" x="0" y="0" width="1200" height="450" rx="18"/>
+  <text x="40" y="52" text-anchor="start" class="ink" font-size="26" font-weight="700">Gradient descent: step downhill</text>
+  <text x="40" y="78" text-anchor="start" class="muted" font-size="15">The gradient points uphill. The optimiser moves each weight a small step the other way.</text>
+  <rect class="card" x="40" y="100" width="640" height="330" rx="10"/>
+  <text x="60" y="130" text-anchor="start" class="muted head" font-size="12">THE LOSS VALLEY FOR ONE WEIGHT</text>
+  <polyline class="sacc" points="90.0,160.0 95.6,169.5 101.2,178.8 106.8,187.9 112.4,196.9 118.0,205.6 123.6,214.1 129.2,222.5 134.8,230.7 140.4,238.6 146.0,246.4 151.6,254.0 157.2,261.4 162.8,268.6 168.4,275.6 174.0,282.4 179.6,289.0 185.2,295.5 190.8,301.7 196.4,307.7 202.0,313.6 207.6,319.3 213.2,324.7 218.8,330.0 224.4,335.1 230.0,340.0 235.6,344.7 241.2,349.2 246.8,353.5 252.4,357.7 258.0,361.6 263.6,365.3 269.2,368.9 274.8,372.3 280.4,375.4 286.0,378.4 291.6,381.2 297.2,383.8 302.8,386.2 308.4,388.4 314.0,390.4 319.6,392.2 325.2,393.9 330.8,395.3 336.4,396.5 342.0,397.6 347.6,398.5 353.2,399.1 358.8,399.6 364.4,399.9 370.0,400.0 375.6,399.9 381.2,399.6 386.8,399.1 392.4,398.5 398.0,397.6 403.6,396.5 409.2,395.3 414.8,393.9 420.4,392.2 426.0,390.4 431.6,388.4 437.2,386.2 442.8,383.8 448.4,381.2 454.0,378.4 459.6,375.4 465.2,372.3 470.8,368.9 476.4,365.3 482.0,361.6 487.6,357.7 493.2,353.5 498.8,349.2 504.4,344.7 510.0,340.0 515.6,335.1 521.2,330.0 526.8,324.7 532.4,319.3 538.0,313.6 543.6,307.7 549.2,301.7 554.8,295.5 560.4,289.0 566.0,282.4 571.6,275.6 577.2,268.6 582.8,261.4 588.4,254.0 594.0,246.4 599.6,238.6 605.2,230.7 610.8,222.5 616.4,214.1 622.0,205.6 627.6,196.9 633.2,187.9 638.8,178.8 644.4,169.5 650.0,160.0" fill="none"/>
+  <line class="thin" x1="80" y1="404" x2="660" y2="404"/>
+  <text x="660" y="422" text-anchor="end" class="muted" font-size="12.5">the weight’s value →</text>
+  <text x="60" y="160" text-anchor="start" class="muted" font-size="12.5">loss ↑</text>
+  <path class="sheat" d="M125.0 204.2 Q 174.0 194.2 223.0 321.9" fill="none"/>
+  <path class="sheat" d="M223.0 321.9 Q 252.4 311.9 281.8 364.2" fill="none"/>
+  <path class="sheat" d="M281.8 364.2 Q 299.4 354.2 317.1 379.4" fill="none"/>
+  <path class="sheat" d="M317.1 379.4 Q 327.7 369.4 338.2 384.9" fill="none"/>
+  <circle class="heatfill" cx="125.0" cy="204.2" r="9"/>
+  <text x="125" y="208.25" text-anchor="middle" class="onacc" font-size="11" font-weight="700">1</text>
+  <circle class="heatfill" cx="223.0" cy="321.9" r="9"/>
+  <text x="223" y="325.85" text-anchor="middle" class="onacc" font-size="11" font-weight="700">2</text>
+  <circle class="heatfill" cx="281.8" cy="364.2" r="9"/>
+  <text x="281.8" y="368.186" text-anchor="middle" class="onacc" font-size="11" font-weight="700">3</text>
+  <circle class="heatfill" cx="317.1" cy="379.4" r="9"/>
+  <text x="317.08" y="383.427" text-anchor="middle" class="onacc" font-size="11" font-weight="700">4</text>
+  <circle class="heatfill" cx="338.2" cy="384.9" r="9"/>
+  <text x="338.248" y="388.914" text-anchor="middle" class="onacc" font-size="11" font-weight="700">5</text>
+  <circle class="pos" cx="370.0" cy="400.0" r="6"/>
+  <text x="370" y="422" text-anchor="middle" class="posink" font-size="13" font-weight="700">lowest loss</text>
+  <text x="111" y="210.25" text-anchor="end" class="muted" font-size="12.5">start</text>
+  <rect class="card" x="700" y="100" width="460" height="330" rx="10"/>
+  <text x="720" y="130" text-anchor="start" class="accink head" font-size="12">ONE STEP, WITH NUMBERS</text>
+  <rect class="sunk" x="720" y="150" width="420" height="38" rx="8"/>
+  <text x="736" y="175" text-anchor="start" class="muted" font-size="13.5">weight now</text>
+  <text x="880" y="175" text-anchor="start" class="ink" font-size="15" font-weight="700">w = 0.50</text>
+  <rect class="sunk" x="720" y="196" width="420" height="38" rx="8"/>
+  <text x="736" y="221" text-anchor="start" class="muted" font-size="13.5">gradient</text>
+  <text x="880" y="221" text-anchor="start" class="ink" font-size="15" font-weight="700">+2.0  (uphill is →)</text>
+  <rect class="sunk" x="720" y="242" width="420" height="38" rx="8"/>
+  <text x="736" y="267" text-anchor="start" class="muted" font-size="13.5">learning rate</text>
+  <text x="880" y="267" text-anchor="start" class="ink" font-size="15" font-weight="700">0.1</text>
+  <rect class="sunk" x="720" y="288" width="420" height="38" rx="8"/>
+  <text x="736" y="313" text-anchor="start" class="muted" font-size="13.5">step</text>
+  <text x="880" y="313" text-anchor="start" class="ink" font-size="15" font-weight="700">0.1 × 2.0 = 0.2, go ←</text>
+  <rect class="possoft" x="720" y="334" width="420" height="38" rx="8" stroke-width="1.5"/>
+  <text x="736" y="359" text-anchor="start" class="muted" font-size="13.5">new weight</text>
+  <text x="880" y="359" text-anchor="start" class="posink" font-size="15" font-weight="700">w = 0.50 − 0.2 = 0.30</text>
+  <text x="720" y="410" text-anchor="start" class="muted" font-size="13.5">Every weight takes a step like this, millions of times.</text>
+</svg>

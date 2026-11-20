@@ -4,21 +4,103 @@
   "name": "Training",
   "slides": [
     {
-      "title": "The goal: predict the next token",
-      "summary": "Pretraining teaches the model one thing: predicting the next token of real text, on a huge scale.",
+      "title": "What learning means: turning knobs",
+      "summary": "A model is a huge set of numbers called parameters. Training adjusts them until its guesses come out right.",
       "body": [
-        "Pretraining has one simple goal: take a piece of real text and, at every point, guess the token that comes next.",
-        "<mark>No one needs to label anything, because the text contains its own answers.</mark> The input is the text, and the answer is the same text moved along by one token. This is called <b>self-supervised</b> learning, and it's why training can use trillions of tokens from web pages, books and code.",
-        "Thanks to the causal mask, one pass over a 4,096-token text gives 4,096 guesses to learn from at once. On the right, one short sentence becomes four training examples.",
+        "Everything a model does is maths on its <b>parameters</b>: billions of numbers, set at random when the model is created. Think of them as knobs on a DJ's mixing desk.",
         {
-          "note": "Predicting the next token sounds simple, but doing it well takes a lot: grammar, facts, reasoning, a writer's style, how code works. The model learns all of that along the way, just by getting better at this one task.",
+          "ul": [
+            "<b>Untrained:</b> the knobs are random, so the guesses are nonsense.",
+            "<b>Training:</b> after every guess, check the mistake and turn each knob a tiny bit.",
+            "<b>Trained:</b> the knobs now hold settings that produce good guesses."
+          ]
+        },
+        "<mark>For a neural network, learning means adjusting its parameters so that future predictions get better.</mark> Nobody turns the knobs by hand; the training process does.",
+        {
+          "note": "Parameters come in two kinds. <b>Weights</b> decide how much each input counts, like volume dials. <b>Biases</b> are offsets that shift the result up or down. The token embeddings from the Embeddings chapter are parameters too.",
           "kind": "key"
+        },
+        {
+          "note": "In normal code, you write the rules. Here you write the model's shape and a scoring rule, and training finds the numbers. The trained parameters are just a file of floats: an 8B model in 16-bit numbers is about 16 GB.",
+          "kind": "dev"
+        },
+        {
+          "more": "Do parameters store knowledge?",
+          "text": "Not like a database. No single number holds a fact such as “the sky is blue”. Patterns are spread across millions of parameters, and the model rebuilds an answer from them each time."
         }
       ],
-      "code": [
-        "ids = tokenize(text)                    # [n+1]",
-        "inputs, targets = ids[:-1], ids[1:]     # shift by one",
-        "logits = model(inputs)                  # [n, V]"
+      "viz": [
+        {
+          "type": "table",
+          "rows": [
+            {
+              "head": "Model",
+              "cells": [
+                {
+                  "text": "Parameters"
+                }
+              ]
+            },
+            {
+              "head": "GPT-2 small",
+              "cells": [
+                {
+                  "text": "124 million"
+                }
+              ]
+            },
+            {
+              "head": "Llama 3 8B",
+              "cells": [
+                {
+                  "text": "8 billion"
+                }
+              ]
+            },
+            {
+              "head": "GPT-3",
+              "cells": [
+                {
+                  "text": "175 billion",
+                  "tone": "accent"
+                }
+              ]
+            },
+            {
+              "head": "Llama 3.1 405B",
+              "cells": [
+                {
+                  "text": "405 billion"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "caption",
+          "html": "Most labs no longer publish sizes for their biggest models; the largest are thought to reach trillions."
+        }
+      ],
+      "figure": {
+        "src": "images/training-knobs-light.svg",
+        "darkSrc": "images/training-knobs-dark.svg",
+        "alt": "Left, before training: six knobs pointing in random directions, and the model completes “The sky is …” with “banana”, which is wrong. An arrow labelled “training, many small turns” leads to the right: the same knobs, now set carefully, and the model answers “blue”, which is right. Each knob is one parameter, a weight or a bias. GPT-3 has 175 billion of them.",
+        "width": 1200,
+        "height": 450,
+        "caption": "Same model, same knobs. Training only changes where they point."
+      }
+    },
+    {
+      "title": "Training data: text is its own answer key",
+      "summary": "The model learns from raw text by guessing each next word. The text already contains the answers.",
+      "body": [
+        "<b>Training data</b> is the collection of examples the model learns from: web pages, books, code. If parameters are the brain, training data is its food.",
+        "To learn, the model needs questions with answers. Text provides both: hide the next word (strictly, the next <b>token</b>), ask the model to guess it, then reveal it.",
+        "<mark>No person has to label anything, because the next word is the answer.</mark> This is called <b>self-supervised learning</b>, and it is why models can train on trillions of words.",
+        {
+          "note": "One sentence, “The sky is blue today”, gives four practice questions at once. Thanks to the causal mask, a 4,096-token text gives 4,096 guesses in a single pass.",
+          "kind": "example"
+        }
       ],
       "viz": [
         {
@@ -28,43 +110,43 @@
               "type": "table",
               "rows": [
                 {
-                  "head": "input",
+                  "head": "model sees",
                   "cells": [
                     {
-                      "text": "I",
+                      "text": "The",
                       "tone": "accent"
                     },
                     {
-                      "text": "␣am",
+                      "text": "The sky",
                       "tone": "accent"
                     },
                     {
-                      "text": "␣learning",
+                      "text": "The sky is",
                       "tone": "accent"
                     },
                     {
-                      "text": "␣artificial",
+                      "text": "… is blue",
                       "tone": "accent"
                     }
                   ]
                 },
                 {
-                  "head": "target",
+                  "head": "must guess",
                   "cells": [
                     {
-                      "text": "␣am",
+                      "text": "sky",
                       "tone": "heat"
                     },
                     {
-                      "text": "␣learning",
+                      "text": "is",
                       "tone": "heat"
                     },
                     {
-                      "text": "␣artificial",
+                      "text": "blue",
                       "tone": "heat"
                     },
                     {
-                      "text": "␣intelligence",
+                      "text": "today",
                       "tone": "heat"
                     }
                   ]
@@ -73,124 +155,542 @@
             },
             {
               "type": "caption",
-              "html": "One sequence, four predictions, one pass."
+              "html": "The answer column is just the same text, moved along by one word."
             }
           ]
         }
-      ]
+      ],
+      "figure": {
+        "src": "images/training-self-supervised-light.svg",
+        "darkSrc": "images/training-self-supervised-dark.svg",
+        "alt": "Left: the sentence “The sky is blue today” becomes four practice questions. From “The”, guess “sky”. From “The sky”, guess “is”. From “The sky is”, guess “blue”. From “The sky is blue”, guess “today”. Right: labelled data needs a person to tag every example, which is slow and expensive. Self-supervised learning takes the answer from the text itself, the next word, so it is free and scales to trillions of words.",
+        "width": 1200,
+        "height": 460,
+        "caption": "Labelled data needs people. Self-supervised data only needs text."
+      }
     },
     {
-      "title": "Measuring mistakes: cross-entropy loss",
-      "summary": "The loss measures how surprised the model was by the right answer. Training tries to make that surprise smaller.",
+      "title": "The forward pass: make a guess",
+      "summary": "The prompt flows through the model once, front to back, and comes out as probabilities for the next word.",
       "body": [
-        "To learn, the model needs one number that says how wrong it was. At each position, take the probability it gave to the token that actually came next, and compute <code>loss = −log p(correct)</code>. Then average over all positions. This is called <b>cross-entropy loss</b>.",
+        "Every training step starts with a <b>forward pass</b>: the same journey the model makes when you chat with it.",
         {
           "ul": [
-            "The right token got 90%: loss 0.11. Small.",
-            "The right token got 1%: loss 4.6. Big.",
-            "The right token got 0.01%: loss 9.2. Huge. <mark>Being confidently wrong is punished the most.</mark>"
+            "<b>In:</b> the text “The sky is”, turned into token vectors.",
+            "<b>Through:</b> every layer, each multiplying by its weights.",
+            "<b>Out:</b> a probability for every possible next word."
           ]
         },
-        "For comparison: random guessing between 50,000 tokens scores ln(50,000) ≈ 10.8. Well-trained models get to about 2 or lower on typical web text.",
-        "<b>Perplexity</b> is <code>e^loss</code>. Think of it as how many tokens the model is stuck choosing between, on average. A loss of 2 means a perplexity of about 7.4, as if picking from seven equally likely options.",
-        "Drag the slider to see how loss and perplexity respond."
+        "With badly tuned knobs, the guess can be absurd. On the right, the model puts 85% on “banana” and only 5% on “blue”.",
+        "<mark>A wrong guess is useful: it tells training which way to turn the knobs.</mark>",
+        {
+          "more": "Would a brand-new model really say “banana”?",
+          "text": "Not quite. With random knobs, a new model spreads its guesses almost evenly across all ~50,000 tokens, about 0.002% each. “Banana at 85%” is a badly trained model: confident and wrong."
+        }
       ],
-      "code": ["loss = F.cross_entropy(logits.view(-1, V), targets.view(-1))"],
+      "viz": [
+        {
+          "type": "panel",
+          "blocks": [
+            {
+              "type": "bars",
+              "items": [
+                {
+                  "label": "banana",
+                  "value": 0.85,
+                  "display": "85%"
+                },
+                {
+                  "label": "blue",
+                  "value": 0.05,
+                  "display": "5%"
+                },
+                {
+                  "label": "dark",
+                  "value": 0.04,
+                  "display": "4%"
+                },
+                {
+                  "label": "cloudy",
+                  "value": 0.03,
+                  "display": "3%"
+                },
+                {
+                  "label": "everything else",
+                  "value": 0.03,
+                  "display": "3%"
+                }
+              ]
+            },
+            {
+              "type": "caption",
+              "html": "“The sky is …”: a badly tuned model's guesses."
+            }
+          ]
+        }
+      ],
+      "figure": {
+        "src": "images/training-forward-light.svg",
+        "darkSrc": "images/training-forward-dark.svg",
+        "alt": "Four boxes left to right. Words in: “The sky is”. Numbers: each token becomes a vector. Layers: the vectors are multiplied by the weights, layer after layer. Guess out: a badly tuned model gives “banana” 85% and “blue” only 5%. An arrow underneath shows the data flows one way, input to output.",
+        "width": 1200,
+        "height": 400,
+        "caption": "The forward pass only moves one way: input to output."
+      }
+    },
+    {
+      "title": "The loss: one number for how wrong",
+      "summary": "The loss turns the quality of a guess into a single number. Small means good, big means very wrong.",
+      "body": [
+        "To improve, the model needs a score. The <b>loss function</b> looks at the probability the model gave to the word that really came next, and takes <code>−log</code> of it. This is called <b>cross-entropy loss</b>.",
+        {
+          "ul": [
+            "<b>“blue” got 0.05:</b> loss 3.00. Big.",
+            "<b>“blue” got 0.70:</b> loss 0.36. Small.",
+            "<b>“blue” got 0.0001:</b> loss 9.2. Huge."
+          ]
+        },
+        "<mark>Training has one goal: make the average loss, over every position in every batch, as small as possible.</mark> Being confidently wrong is punished the most.",
+        "Only the right word's probability is scored. That is enough: the probabilities add up to 1, so pushing “blue” up pushes “banana” down.",
+        "Drag the slider to see the loss change.",
+        {
+          "more": "What is perplexity?",
+          "text": "Perplexity is <code>e^loss</code>: roughly how many words the model is torn between. A loss of 2 means a perplexity of about 7.4. Random guessing over 50,000 tokens gives a loss of about 10.8."
+        }
+      ],
       "viz": [
         {
           "type": "widget",
           "name": "cross-entropy"
         }
-      ]
+      ],
+      "figure": {
+        "src": "images/training-loss-light.svg",
+        "darkSrc": "images/training-loss-dark.svg",
+        "alt": "Formula at the top: loss equals minus the log of the probability the model gave to the right answer. Left, a badly tuned model gives “blue” a probability of 0.05 after “The sky is”: loss 3.00, high. Right, a better tuned model gives “blue” 0.70: loss 0.36, low. Being confidently wrong costs the most: a probability of 0.0001 gives a loss of 9.2.",
+        "width": 1200,
+        "height": 430,
+        "caption": "Same prompt, same right answer. Only the probability changes, and the loss follows."
+      }
     },
     {
-      "title": "How the model learns: backprop and gradient descent",
-      "summary": "Training nudges every weight a tiny step, over and over, in whichever direction lowers the loss.",
+      "title": "Backpropagation: who is to blame?",
+      "summary": "Starting from the loss, backpropagation works backwards through the layers and finds each weight's gradient.",
       "body": [
-        "Once we have the loss, we need to know how to change each weight to lower it. <b>Backpropagation</b> works that out. For every weight, it finds the <b>gradient</b>: if this weight goes up a little, does the loss go up or down, and by how much?",
-        "It uses the chain rule from calculus, working backwards through every step of the model. You never write it yourself; tools like PyTorch do it automatically.",
-        "<b>Gradient descent</b> <mark>then moves every weight a small step downhill: <code>w ← w − lr · gradient</code>.</mark> This is repeated millions of times.",
-        "The size of each step, the <b>learning rate</b> (lr), is the most important setting:",
+        "The loss says <i>how</i> wrong the guess was, not <i>which</i> knobs caused it. <b>Backpropagation</b> (the <b>backward pass</b>) finds out, starting at the last layer and moving back one layer at a time.",
+        "For every weight it computes a <b>gradient</b>: if this weight goes up a little, how much does the loss change?",
         {
           "ul": [
-            "<b>Too small</b>: training is very slow. Try 0.1.",
-            "<b>About right</b>: it quickly settles at the bottom. Try 0.5.",
-            "<b>Too big</b>: each step goes too far, bouncing from side to side or shooting off completely. Try 0.9, then 1.05."
+            "<b>Positive gradient:</b> raising it raises the loss, so turn it down.",
+            "<b>Negative gradient:</b> raising it lowers the loss, so turn it up.",
+            "<b>Bigger number:</b> more blame, so a bigger turn."
+          ]
+        },
+        "<mark>Backpropagation only measures. It does not change any weights; that is the next step.</mark>",
+        "The embedding table gets gradients too: the rows for “The”, “sky” and “is” are nudged like any other weight. That is how embeddings learn.",
+        {
+          "more": "How does it do this for billions of weights?",
+          "text": "It uses the chain rule from calculus, reusing each layer's result for the layer before it. One backward pass costs roughly twice a forward pass. You never write it yourself: in PyTorch, this whole slide is one call, <code>loss.backward()</code>."
+        }
+      ],
+      "viz": [
+        {
+          "type": "table",
+          "rows": [
+            {
+              "head": "Weight",
+              "cells": [
+                {
+                  "text": "Gradient"
+                },
+                {
+                  "text": "Meaning"
+                }
+              ]
+            },
+            {
+              "head": "C · w1",
+              "cells": [
+                {
+                  "text": "+2.0",
+                  "tone": "heat"
+                },
+                {
+                  "text": "turn down a lot"
+                }
+              ]
+            },
+            {
+              "head": "C · w2",
+              "cells": [
+                {
+                  "text": "−0.4",
+                  "tone": "heat"
+                },
+                {
+                  "text": "turn up a little"
+                }
+              ]
+            },
+            {
+              "head": "B · w2",
+              "cells": [
+                {
+                  "text": "−1.1",
+                  "tone": "heat"
+                },
+                {
+                  "text": "turn up"
+                }
+              ]
+            },
+            {
+              "head": "A · w1",
+              "cells": [
+                {
+                  "text": "+0.1",
+                  "tone": "heat"
+                },
+                {
+                  "text": "barely matters"
+                }
+              ]
+            }
           ]
         },
         {
-          "note": "Imagine walking down a hill in thick fog, feeling the slope under your feet. You can't see the valley, but stepping downhill each time gets you there, as long as your steps aren't so big that you jump right over it.",
-          "kind": "analogy"
+          "type": "caption",
+          "html": "Example gradients for “The sky is” → banana. Values are illustrative."
         }
       ],
-      "code": [
-        "loss.backward()                  # fills p.grad for every weight",
-        "with torch.no_grad():",
-        "    for p in model.parameters():",
-        "        p -= lr * p.grad         # real code: optimizer.step()",
-        "model.zero_grad()"
+      "figure": {
+        "src": "images/training-backprop-light.svg",
+        "darkSrc": "images/training-backprop-dark.svg",
+        "alt": "Top arrow, left to right: the forward pass takes “The sky is” through layers A, B and C and guesses “banana”, with loss 3.00. Bottom arrow, right to left: the backward pass goes from the loss back through layer C, then B, then A, and finds each weight’s gradient. In layer C, weight 1 has gradient +2.0, so turn it down, and weight 2 has −0.4, so turn it up. Layer B has +0.9 and −1.1; layer A has +0.1 and −0.3. A gradient of +2.0 means raising this weight raises the loss, so it should go down. A bigger number means more blame.",
+        "width": 1200,
+        "height": 440,
+        "caption": "Forward to guess, backward to assign blame."
+      }
+    },
+    {
+      "title": "Gradient descent: step downhill",
+      "summary": "An optimiser uses the gradients to move every weight a small step in the direction that lowers the loss.",
+      "body": [
+        "Picture walking down a foggy mountain. You can't see the valley, but you can feel the slope, so you step downhill. The loss is the height; the gradient is the slope.",
+        "<b>Gradient descent</b> moves each weight against its gradient: <code>new = old − learning rate × gradient</code>. With a weight of 0.50, a gradient of +2.0 and a learning rate of 0.1, the new weight is 0.30.",
+        "<mark>The learning rate sets the step size, and it is the most important setting.</mark>",
+        {
+          "ul": [
+            "<b>Too small</b> (try 0.1): very slow.",
+            "<b>About right</b> (try 0.5): settles quickly.",
+            "<b>Too big</b> (try 0.9, then 1.05): overshoots, bounces or blows up."
+          ]
+        },
+        {
+          "more": "What do real models use?",
+          "text": "Usually <b>AdamW</b>, a smarter gradient descent. It gives each weight its own step size based on its recent gradients, and slowly shrinks weights so they don't grow too large. In PyTorch, the update is <code>optimizer.step()</code>."
+        }
       ],
       "viz": [
         {
           "type": "widget",
           "name": "gradient-descent"
         }
-      ]
+      ],
+      "figure": {
+        "src": "images/training-descent-light.svg",
+        "darkSrc": "images/training-descent-dark.svg",
+        "alt": "Left: a U-shaped curve of loss against one weight’s value. A ball starts high on the left and takes five steps, each smaller than the last, down to the lowest loss at the bottom. Right, one step with numbers: the weight is 0.50, its gradient is +2.0, meaning uphill is to the right, and the learning rate is 0.1. The step is 0.1 times 2.0, which is 0.2, to the left, so the new weight is 0.30. Every weight takes a step like this, millions of times.",
+        "width": 1200,
+        "height": 450,
+        "caption": "Each step is smaller as the slope flattens near the bottom."
+      }
     },
     {
-      "title": "The real training loop",
-      "summary": "Real training is the same loop, plus engineering to keep it fast and stable across thousands of GPUs.",
+      "title": "How much data per step?",
+      "summary": "Each update can use all the data, one example, or a small batch. Small batches win.",
       "body": [
-        "The basic loop stays the same: run the model, measure the loss, backpropagate, update. But with billions of parameters and trillions of tokens, it needs extra help:",
+        "Before each update, the model averages the gradients over some examples. How many is a trade-off between speed and steadiness.",
         {
           "ul": [
-            "<b>AdamW optimiser</b>: instead of one step size for everything, it adjusts the step for each weight based on its recent gradients (momentum). It also slowly shrinks weights over time (weight decay), which helps the model handle new text well.",
-            "<b>Learning-rate schedule</b>: start with tiny steps and build up (warm-up), then slowly make them smaller, often along a cosine curve, so training settles down.",
-            "<b>Mixed precision</b>: do most of the maths with 16-bit numbers (bf16) for speed, while keeping a 32-bit copy of the weights for accuracy.",
-            "<b>Parallelism</b>: the model and everything training keeps track of are far too big for one GPU. So the work is split up in several ways at once: different data on different GPUs, each big matrix split across GPUs, different layers on different GPUs, and for MoE models, different experts on different GPUs.",
-            "<b>Gradient clipping</b>: if a gradient is suddenly huge (a loss spike), shrink it so one bad batch can't ruin the model."
+            "<b>Batch:</b> the whole dataset per update. Steady, but very slow and memory-hungry.",
+            "<b>Stochastic (SGD):</b> one random example per update. Fast, but the path jumps around.",
+            "<b>Mini-batch:</b> a small group, say 32. Fast and steady enough."
           ]
         },
-        "The curve on the right has the usual shape: a steep drop as the model learns the easy patterns, then a long, slow climb towards better.",
+        "<mark>Mini-batches are the standard, because GPUs process a whole batch in parallel.</mark>",
         {
-          "note": "<b>Scaling laws</b>: <mark>loss goes down smoothly and predictably as you add more parameters, data and computing.</mark> Because it's so predictable, AI companies are willing to spend huge sums on a single training run.",
-          "kind": "key"
+          "note": "Real LLM batches are far bigger than 32 sentences: GPT-3 used about 3.2 million tokens per update. And in practice “SGD”, as in PyTorch's <code>optim.SGD</code>, usually means mini-batch.",
+          "kind": "dev"
         }
       ],
-      "code": [
-        "opt = torch.optim.AdamW(model.parameters(), lr=3e-4, weight_decay=0.1)",
-        "for step, (x, y) in enumerate(loader):",
-        "    loss = F.cross_entropy(model(x).flatten(0, 1), y.flatten())",
-        "    loss.backward()",
-        "    torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)",
-        "    opt.step(); sched.step(); opt.zero_grad()"
+      "viz": [
+        {
+          "type": "table",
+          "rows": [
+            {
+              "head": "",
+              "cells": [
+                {
+                  "text": "Per update"
+                },
+                {
+                  "text": "Updates per pass"
+                }
+              ]
+            },
+            {
+              "head": "Batch",
+              "cells": [
+                {
+                  "text": "1,000,000"
+                },
+                {
+                  "text": "1"
+                }
+              ]
+            },
+            {
+              "head": "SGD",
+              "cells": [
+                {
+                  "text": "1"
+                },
+                {
+                  "text": "1,000,000"
+                }
+              ]
+            },
+            {
+              "head": "Mini-batch",
+              "cells": [
+                {
+                  "text": "32",
+                  "tone": "accent"
+                },
+                {
+                  "text": "31,250",
+                  "tone": "accent"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "caption",
+          "html": "For a dataset of 1,000,000 sentences."
+        }
+      ],
+      "figure": {
+        "src": "images/training-batches-light.svg",
+        "darkSrc": "images/training-batches-dark.svg",
+        "alt": "Three panels, each a valley seen from above with a path from a start point to the lowest point. Batch gradient descent looks at all 1,000,000 sentences before each update: one update per pass, a smooth path, but slow. Stochastic gradient descent looks at one random sentence per update: 1,000,000 updates per pass, a fast but zig-zagging path. Mini-batch looks at a group of 32: 31,250 updates per pass, a fairly smooth, fast path. This is the one used in practice.",
+        "width": 1200,
+        "height": 460,
+        "caption": "Same valley, three ways down."
+      }
+    },
+    {
+      "title": "The training loop",
+      "summary": "Forward pass, loss, backprop, update. Repeat millions of times, one batch at a time.",
+      "body": [
+        "Put the pieces together and you get one <b>training step</b>: guess, score, find the blame, update. Then the next batch arrives and it all happens again.",
+        {
+          "ul": [
+            "<b>Dataset:</b> all the training text.",
+            "<b>Batch:</b> the examples handled together in one step.",
+            "<b>Step:</b> one lap of the loop, one update.",
+            "<b>Epoch:</b> one full pass over the whole dataset."
+          ]
+        },
+        "The curve on the right is typical. It starts near 10.8, the score of random guessing, drops steeply as easy patterns are learned, then improves slowly for a long time.",
+        "<mark>Doing this over trillions of tokens is why training needs so many GPUs and so much money.</mark>",
+        {
+          "more": "How many epochs do LLMs train for?",
+          "text": "Small models on small datasets often train for many epochs. Big LLMs see most of their text only about once, with a few high-quality sources repeated a few times. There is so much text that repeating it is less useful than reading something new."
+        },
+        {
+          "more": "What else does a real training run add?",
+          "text": [
+            "The same loop, plus engineering to keep it fast and stable:",
+            "<b>Learning-rate schedule</b>: small steps at first (warm-up), then slowly smaller ones. <b>Mixed precision</b>: most maths in 16-bit numbers for speed. <b>Gradient clipping</b>: shrink a suddenly huge gradient so one bad batch can't wreck the model. <b>Checkpoints</b>: save the weights regularly, so a crashed GPU doesn't lose weeks of work."
+          ]
+        },
+        {
+          "more": "What are scaling laws?",
+          "text": "Loss falls smoothly and predictably as you add parameters, data and computing. Labs train small models first, fit the curve, and predict how a huge run will do before paying for it."
+        }
       ],
       "viz": [
         {
           "type": "widget",
           "name": "loss-curve"
         }
-      ]
+      ],
+      "figure": {
+        "src": "images/training-loop-light.svg",
+        "darkSrc": "images/training-loop-dark.svg",
+        "alt": "Left: a loop of four steps. 1, forward pass: guess the next words. 2, loss: score the guesses. 3, backprop: find every gradient. 4, update: step every weight. Then the next batch starts the loop again. Right, the words you will hear, with an example: dataset, all the training text, say 1,000,000 sentences. Batch, the examples handled together, 32 sentences. Step, one lap of the loop, one update. Epoch, one full pass over the dataset, 31,250 steps.",
+        "width": 1200,
+        "height": 460,
+        "caption": "One lap of the loop is one step. Enough steps to see every example once is one epoch."
+      }
     },
     {
-      "title": "From text predictor to assistant",
-      "summary": "A base model only continues text. More training stages turn it into a helpful assistant.",
+      "title": "Generalising vs overfitting",
+      "summary": "A good model learns patterns that work on new text. An overfit one memorises its training examples.",
       "body": [
-        "Pretraining produces a <b>base model</b>. It's amazing at continuing text, but it isn't an assistant. Ask it a question and it might reply with three more questions, as if it were continuing a list of exam questions.",
-        "Three more stages, together called <b>post-training</b>, turn it into an assistant:",
+        "<b>Generalisation</b> is doing well on examples the model never saw. That is the whole point of training.",
+        "<b>Overfitting</b> is the opposite: the model gets very good at its training examples by memorising them, and does badly on anything new.",
+        "It happens when a model sees the same examples too many times, or has far more parameters than its data needs.",
+        "To catch it, keep some text aside and never train on it (a <b>validation set</b>). If its loss starts rising while the training loss keeps falling, the model is memorising.",
+        "<mark>Good learning means finding patterns that stay useful beyond the exact training examples.</mark>",
         {
-          "ul": [
-            "<b>Supervised fine-tuning (SFT)</b>: train on example chats, written or picked to show good assistant behaviour, in the chat template. It's the same next-token loss, usually counted only on the assistant's replies. The model learns the format and its role.",
-            "<b>Preference tuning</b>: show pairs of answers where one was judged better, and push the model towards the better kind. <b>RLHF</b> uses human rankings to train a scoring model, then improves the assistant with reinforcement learning. <b>RLAIF</b> uses feedback from an AI instead, for example judging answers against a written set of principles, as in Anthropic's Constitutional AI. <b>DPO</b> skips the scoring model and learns from the pairs directly.",
-            "<b>Reinforcement learning on checkable tasks</b>: reward the model when it gets an answer right that can be checked, like a maths result or code that passes its tests. This has driven much of the recent progress in reasoning models."
+          "more": "Do LLMs overfit?",
+          "text": "Rarely in the classic sense, because they see most text only once. But they do memorise text repeated many times on the web, like software licences or famous quotes, and can recite it word for word."
+        }
+      ],
+      "viz": [
+        {
+          "type": "table",
+          "rows": [
+            {
+              "head": "Prompt",
+              "cells": [
+                {
+                  "text": "Memorised"
+                },
+                {
+                  "text": "Generalised"
+                }
+              ]
+            },
+            {
+              "head": "sunny day: “the sky is”",
+              "cells": [
+                {
+                  "text": "blue"
+                },
+                {
+                  "text": "blue"
+                }
+              ]
+            },
+            {
+              "head": "stormy night: “the sky is”",
+              "cells": [
+                {
+                  "text": "blue ✗",
+                  "tone": "heat"
+                },
+                {
+                  "text": "dark ✓",
+                  "tone": "accent"
+                }
+              ]
+            },
+            {
+              "head": "at sunset: “the sky is”",
+              "cells": [
+                {
+                  "text": "blue ✗",
+                  "tone": "heat"
+                },
+                {
+                  "text": "orange ✓",
+                  "tone": "accent"
+                }
+              ]
+            }
           ]
         },
         {
-          "note": "Post-training uses only a small part of the computing that pretraining does, but it changes behaviour hugely. <mark>Pretraining provides the knowledge; post-training shapes how it's used.</mark>",
-          "kind": "key"
+          "type": "caption",
+          "html": "Two models trained only on sunny days, tested on new scenes."
+        }
+      ],
+      "figure": {
+        "src": "images/training-overfitting-light.svg",
+        "darkSrc": "images/training-overfitting-dark.svg",
+        "alt": "Left, a chart of loss over training time. Loss on the training text keeps falling. Loss on new, held-back text falls at first, then starts rising again: that is where overfitting starts, so training should stop there. Right, a model trained only on sunny days is asked “On a stormy night, the sky is …”. The model that memorised says “blue”, which is wrong, because it learned that “the sky is” is always followed by “blue”. The model that generalised says “dark”, which is right, because it learned that the sky’s colour depends on the scene.",
+        "width": 1200,
+        "height": 460,
+        "caption": "Stop when the loss on new text stops falling."
+      }
+    },
+    {
+      "title": "Training vs inference",
+      "summary": "Training builds the model once, at huge cost. Inference uses the finished model for every request.",
+      "body": [
+        "<b>Training</b> runs forward, backward and update, changing the weights every step. <b>Inference</b> is what happens when you chat: only the forward pass, with the weights frozen.",
+        "<mark>Training is the expensive part: it needs thousands of GPUs working together for weeks or months.</mark>",
+        "One GPU is far too slow and too small, so training is <b>distributed</b>. Each GPU handles part of every batch, then they share and average their gradients so all copies make the same update. Big models are also split across GPUs, layer by layer.",
+        {
+          "note": "Like baking thousands of cookies for a party: alone it takes days; with ten friends and ten bowls, a few hours. The hard part is keeping everyone in step.",
+          "kind": "analogy"
         },
-        "The <i>Assistant architecture</i> section showed what happens next: how the trained model is wrapped in a full assistant system.",
-        "Reinforcement learning on checkable tasks is also what creates <i>Reasoning models</i>, the next chapter. After that, <i>Why LLMs hallucinate</i> covers one of the best-known problems with these models."
+        {
+          "more": "How expensive is one GPU?",
+          "text": "A single NVIDIA H100 costs tens of thousands of dollars (₹25–40 lakh), and frontier models train on thousands of them at once."
+        }
+      ],
+      "viz": [
+        {
+          "type": "stat",
+          "items": [
+            {
+              "value": "405B",
+              "label": "parameters"
+            },
+            {
+              "value": "15.6T",
+              "label": "training tokens"
+            },
+            {
+              "value": "16,384",
+              "label": "H100 GPUs"
+            }
+          ]
+        },
+        {
+          "type": "caption",
+          "html": "Llama 3.1 405B, from Meta's Llama 3 paper."
+        }
+      ],
+      "figure": {
+        "src": "images/training-vs-inference-light.svg",
+        "darkSrc": "images/training-vs-inference-dark.svg",
+        "alt": "Left, a comparison. Training runs the forward pass, the backward pass and the update; inference runs only the forward pass. In training the weights change every step; in inference they are frozen. Training takes weeks to months, once; inference takes a moment, for every request. Training needs thousands of GPUs working together; inference needs a few GPUs per reply. Right, distributed training: four GPUs each process part of the batch, then share and average their gradients, and every GPU applies the same update. Big models are also split across GPUs, layer by layer.",
+        "width": 1200,
+        "height": 460,
+        "caption": "Inference only ever runs the forward pass."
+      }
+    },
+    {
+      "title": "From text predictor to assistant",
+      "summary": "Pretraining gives a model that continues text. A few more training stages turn it into a helpful assistant.",
+      "body": [
+        "Everything so far is <b>pretraining</b>, and it produces a <b>base model</b>. It is great at continuing text, but it is not an assistant: ask it a question and it may reply with more questions, as if continuing a quiz.",
+        "<b>Post-training</b> fixes that, in three stages:",
+        {
+          "ul": [
+            "<b>Supervised fine-tuning (SFT):</b> train on example chats showing good answers. Same next-word loss, on far less data.",
+            "<b>Preference tuning:</b> show pairs of answers, one judged better, and push the model towards the better kind (RLHF, RLAIF, DPO).",
+            "<b>Reinforcement learning on checkable tasks:</b> reward answers that can be checked, like maths results or code that passes its tests."
+          ]
+        },
+        "<mark>Pretraining provides the knowledge; post-training shapes how it is used.</mark>",
+        {
+          "note": "Fine-tuning a model on your own examples, through an API or on an open model, is this same SFT step. On open models it often trains only a small add-on to the weights (<b>LoRA</b>) instead of all of them.",
+          "kind": "dev"
+        },
+        {
+          "more": "RLHF, RLAIF and DPO?",
+          "text": [
+            "<b>RLHF</b> uses human rankings to train a scoring model, then improves the assistant with reinforcement learning. <b>RLAIF</b> uses AI feedback instead, for example judging answers against written principles, as in Anthropic's Constitutional AI. <b>DPO</b> skips the scoring model and learns from the pairs directly.",
+            "Reinforcement learning on checkable tasks is also what creates <i>Reasoning models</i>, the next chapter."
+          ]
+        }
       ],
       "viz": [
         {
@@ -231,7 +731,15 @@
             }
           ]
         }
-      ]
+      ],
+      "figure": {
+        "src": "images/training-base-vs-assistant-light.svg",
+        "darkSrc": "images/training-base-vs-assistant-dark.svg",
+        "alt": "You ask “What colour is the sky?”. Left, a base model that has only been pretrained continues the text as if it were a quiz: “What colour is the grass? What colour is the sea? What colour is a banana?”. Right, an assistant after post-training answers: “Usually blue. Sunlight scatters off the air, and blue light scatters the most. At sunset it turns orange and red.” Both have the same knowledge; post-training changes how it is used.",
+        "width": 1200,
+        "height": 440,
+        "caption": "A base model completes the pattern it sees. An assistant answers the person."
+      }
     }
   ]
 }

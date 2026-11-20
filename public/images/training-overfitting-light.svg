@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 460" role="img" aria-labelledby="t d" font-family="'Schibsted Grotesk', ui-sans-serif, system-ui, sans-serif">
+  <title id="t">Generalising vs overfitting</title>
+  <desc id="d">Left, a chart of loss over training time. Loss on the training text keeps falling. Loss on new, held-back text falls at first, then starts rising again: that is where overfitting starts, so training should stop there. Right, a model trained only on sunny days is asked “On a stormy night, the sky is …”. The model that memorised says “blue”, which is wrong, because it learned that “the sky is” is always followed by “blue”. The model that generalised says “dark”, which is right, because it learned that the sky’s colour depends on the scene.</desc>
+  <style>
+    .bg{fill:#f6f4ef}.card{fill:#fffdf9;stroke:#e5e0d5}.sunk{fill:#f3f0e9}
+    .ink{fill:#1c1b22}.muted{fill:#5b5866}.onacc{fill:#ffffff}
+    .acc{fill:#2b5fd9}.accink{fill:#1d47ad}.accsoft{fill:#e6edfc}
+    .pos{fill:#168a64}.posink{fill:#0d6a4b}.possoft{fill:#dcf2e8;stroke:#168a64}
+    .neg{fill:#d24a2b}.negink{fill:#ad3417}.negsoft{fill:#fbe3da;stroke:#d24a2b}
+    .heat{fill:#fcefd2;stroke:#d08a0c}.heatink{fill:#875700}.heatfill{fill:#d08a0c}
+    .line{stroke:#5b5866;fill:none;stroke-width:2}.thin{stroke:#e5e0d5;fill:none;stroke-width:1.5}
+    .dash{stroke:#2b5fd9;fill:none;stroke-width:2;stroke-dasharray:6 5}
+    .sacc{stroke:#2b5fd9;fill:none;stroke-width:2.5}.sheat{stroke:#d08a0c;fill:none;stroke-width:2.5}
+    .spos{stroke:#168a64;fill:none;stroke-width:2.5}.sneg{stroke:#d24a2b;fill:none;stroke-width:2.5}
+    .edge{stroke:#2b5fd9;fill:none;stroke-width:1;opacity:.45}
+    .stream{stroke:#2b5fd9;fill:none;stroke-width:14;stroke-linecap:round;opacity:.35}
+    .row{fill:#f3f0e9}.hit{fill:#e6edfc;stroke:#2b5fd9}
+    .mono{font-family:'JetBrains Mono',ui-monospace,Menlo,monospace}
+    .head{font-size:13px;font-weight:700;letter-spacing:.08em}
+    .arrowhead{fill:#5b5866}.arrowacc{fill:#2b5fd9}
+  </style>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arrowhead"/></marker>
+    <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="heatfill"/></marker>
+    <marker id="aa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arrowacc"/></marker>
+  </defs>
+  <rect class="bg" x="0" y="0" width="1200" height="460" rx="18"/>
+  <text x="40" y="52" text-anchor="start" class="ink" font-size="26" font-weight="700">Generalising vs overfitting</text>
+  <text x="40" y="78" text-anchor="start" class="muted" font-size="15">The real test is text the model never saw. Keep some aside and watch its loss.</text>
+  <rect class="card" x="40" y="100" width="660" height="340" rx="10"/>
+  <text x="60" y="130" text-anchor="start" class="muted head" font-size="12">LOSS DURING TRAINING</text>
+  <line class="thin" x1="80" y1="404" x2="660" y2="404"/>
+  <line class="thin" x1="90" y1="160" x2="90" y2="404"/>
+  <text x="370" y="425" text-anchor="middle" class="muted" font-size="12.5">training time →</text>
+  <text x="98" y="172" text-anchor="start" class="muted" font-size="12.5">loss</text>
+  <polyline class="sacc" points="90.0,188.0 95.6,196.6 101.2,204.8 106.8,212.7 112.4,220.2 118.0,227.4 123.6,234.3 129.2,240.9 134.8,247.1 140.4,253.1 146.0,258.9 151.6,264.3 157.2,269.6 162.8,274.6 168.4,279.3 174.0,283.9 179.6,288.3 185.2,292.4 190.8,296.4 196.4,300.2 202.0,303.8 207.6,307.3 213.2,310.6 218.8,313.8 224.4,316.8 230.0,319.7 235.6,322.5 241.2,325.2 246.8,327.7 252.4,330.1 258.0,332.4 263.6,334.6 269.2,336.7 274.8,338.7 280.4,340.7 286.0,342.5 291.6,344.2 297.2,345.9 302.8,347.5 308.4,349.1 314.0,350.5 319.6,351.9 325.2,353.3 330.8,354.5 336.4,355.8 342.0,356.9 347.6,358.1 353.2,359.1 358.8,360.1 364.4,361.1 370.0,362.0 375.6,362.9 381.2,363.8 386.8,364.6 392.4,365.4 398.0,366.1 403.6,366.8 409.2,367.5 414.8,368.1 420.4,368.7 426.0,369.3 431.6,369.9 437.2,370.4 442.8,371.0 448.4,371.4 454.0,371.9 459.6,372.4 465.2,372.8 470.8,373.2 476.4,373.6 482.0,374.0 487.6,374.3 493.2,374.7 498.8,375.0 504.4,375.3 510.0,375.6 515.6,375.9 521.2,376.2 526.8,376.4 532.4,376.7 538.0,376.9 543.6,377.1 549.2,377.4 554.8,377.6 560.4,377.8 566.0,378.0 571.6,378.1 577.2,378.3 582.8,378.5 588.4,378.6 594.0,378.8 599.6,378.9 605.2,379.1 610.8,379.2 616.4,379.3 622.0,379.4 627.6,379.6 633.2,379.7 638.8,379.8 644.4,379.9 650.0,380.0" fill="none"/>
+  <polyline class="sheat" points="90.0,177.2 95.6,185.8 101.2,194.1 106.8,201.9 112.4,209.4 118.0,216.6 123.6,223.5 129.2,230.1 134.8,236.3 140.4,242.3 146.0,248.1 151.6,253.5 157.2,258.8 162.8,263.8 168.4,268.5 174.0,273.1 179.6,277.5 185.2,281.6 190.8,285.6 196.4,289.4 202.0,293.1 207.6,296.5 213.2,299.9 218.8,303.0 224.4,306.1 230.0,309.0 235.6,311.7 241.2,314.4 246.8,316.9 252.4,319.3 258.0,321.6 263.6,323.8 269.2,325.9 274.8,327.9 280.4,329.9 286.0,331.7 291.6,333.5 297.2,335.1 302.8,336.8 308.4,338.3 314.0,339.7 319.6,341.1 325.2,342.5 330.8,343.8 336.4,345.0 342.0,346.2 347.6,347.3 353.2,348.3 358.8,349.2 364.4,350.0 370.0,350.8 375.6,351.5 381.2,352.1 386.8,352.6 392.4,353.1 398.0,353.5 403.6,353.8 409.2,354.1 414.8,354.2 420.4,354.4 426.0,354.4 431.6,354.4 437.2,354.3 442.8,354.2 448.4,354.0 454.0,353.8 459.6,353.5 465.2,353.1 470.8,352.7 476.4,352.2 482.0,351.7 487.6,351.1 493.2,350.5 498.8,349.8 504.4,349.1 510.0,348.3 515.6,347.4 521.2,346.5 526.8,345.6 532.4,344.6 538.0,343.6 543.6,342.5 549.2,341.4 554.8,340.2 560.4,339.0 566.0,337.7 571.6,336.4 577.2,335.1 582.8,333.7 588.4,332.2 594.0,330.7 599.6,329.2 605.2,327.6 610.8,326.0 616.4,324.4 622.0,322.7 627.6,320.9 633.2,319.1 638.8,317.3 644.4,315.4 650.0,313.5" fill="none"/>
+  <line class="dash" x1="426.0" y1="165" x2="426.0" y2="404"/>
+  <text x="434" y="182" text-anchor="start" class="accink" font-size="13" font-weight="700">stop here</text>
+  <text x="434" y="200" text-anchor="start" class="muted" font-size="12.5">overfitting starts</text>
+  <text x="640" y="401.971" text-anchor="end" class="accink" font-size="13" font-weight="700">training text</text>
+  <text x="640" y="303.53" text-anchor="end" class="heatink" font-size="13" font-weight="700">new text</text>
+  <rect class="card" x="720" y="100" width="440" height="340" rx="10"/>
+  <text x="740" y="130" text-anchor="start" class="muted head" font-size="12">TRAINED ONLY ON SUNNY DAYS</text>
+  <rect class="accsoft" x="740" y="148" width="400" height="44" rx="8"/>
+  <text x="940" y="176" text-anchor="middle" class="accink" font-size="14.5" font-weight="700">New: “On a stormy night, the sky is …”</text>
+  <rect class="negsoft" x="740" y="210" width="400" height="100" rx="8" stroke-width="1.5"/>
+  <text x="760" y="238" text-anchor="start" class="ink" font-size="15" font-weight="700">Memorised</text>
+  <text x="1120" y="238" text-anchor="end" class="negink" font-size="16" font-weight="700">blue ✗</text>
+  <text x="760" y="264" text-anchor="start" class="muted" font-size="13">learned the exact sentences:</text>
+  <text x="760" y="284" text-anchor="start" class="muted" font-size="13">“the sky is” is always “blue”</text>
+  <rect class="possoft" x="740" y="324" width="400" height="100" rx="8" stroke-width="1.5"/>
+  <text x="760" y="352" text-anchor="start" class="ink" font-size="15" font-weight="700">Generalised</text>
+  <text x="1120" y="352" text-anchor="end" class="posink" font-size="16" font-weight="700">dark ✓</text>
+  <text x="760" y="378" text-anchor="start" class="muted" font-size="13">learned the pattern:</text>
+  <text x="760" y="398" text-anchor="start" class="muted" font-size="13">the sky’s colour depends on the scene</text>
+</svg>

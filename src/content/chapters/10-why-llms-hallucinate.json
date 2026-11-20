@@ -638,7 +638,7 @@
               "value": "Post-training →",
               "goto": {
                 "chapter": "training",
-                "slide": 5
+                "slide": 11
               }
             },
             {
