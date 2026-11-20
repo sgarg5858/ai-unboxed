@@ -2,6 +2,165 @@
   "$schema": "../schema/chapter.schema.json",
   "id": "training",
   "name": "Training",
+  "videos": [
+    {
+      "src": "videos/training/training_how_a_model_learns.mp4",
+      "title": "Training 1 · How a model learns",
+      "description": "Parameters as knobs, text as its own answer key, the forward pass on “The sky is”, and how the loss scores a guess.",
+      "slides": [1, 4],
+      "at": {
+        "1": 10,
+        "2": 57,
+        "3": 85,
+        "4": 109
+      },
+      "marks": [
+        {
+          "at": 0,
+          "label": "How a model learns"
+        },
+        {
+          "at": 10,
+          "label": "Parameters: the knobs"
+        },
+        {
+          "at": 46,
+          "label": "Rules vs learned numbers"
+        },
+        {
+          "at": 57,
+          "label": "Text is its own answer key"
+        },
+        {
+          "at": 85,
+          "label": "The forward pass"
+        },
+        {
+          "at": 109,
+          "label": "The loss"
+        },
+        {
+          "at": 140,
+          "label": "The goal: lower the loss"
+        }
+      ]
+    },
+    {
+      "src": "videos/training/training_backprop_gradient_descent.mp4",
+      "title": "Training 2 · Backprop and gradient descent",
+      "description": "How backpropagation finds each weight's gradient, how gradient descent steps downhill, batch vs SGD vs mini-batch, and the full training loop.",
+      "slides": [5, 8],
+      "at": {
+        "5": 12,
+        "6": 64,
+        "7": 108,
+        "8": 143
+      },
+      "marks": [
+        {
+          "at": 0,
+          "label": "Backprop and gradient descent"
+        },
+        {
+          "at": 12,
+          "label": "Backpropagation"
+        },
+        {
+          "at": 34,
+          "label": "Reading a gradient"
+        },
+        {
+          "at": 45,
+          "label": "Embeddings learn too"
+        },
+        {
+          "at": 53,
+          "label": "loss.backward()"
+        },
+        {
+          "at": 64,
+          "label": "Gradient descent"
+        },
+        {
+          "at": 80,
+          "label": "One step, with numbers"
+        },
+        {
+          "at": 96,
+          "label": "The learning rate"
+        },
+        {
+          "at": 108,
+          "label": "Batch, SGD and mini-batch"
+        },
+        {
+          "at": 143,
+          "label": "The training loop"
+        },
+        {
+          "at": 159,
+          "label": "Batches and epochs"
+        },
+        {
+          "at": 171,
+          "label": "The loss curve"
+        }
+      ]
+    },
+    {
+      "src": "videos/training/training_trained_model_to_assistant.mp4",
+      "title": "Training 3 · From trained model to assistant",
+      "description": "Generalising vs overfitting, training vs inference and distributed training, and how post-training turns a base model into an assistant.",
+      "slides": [9, 11],
+      "at": {
+        "9": 13,
+        "10": 52,
+        "11": 95
+      },
+      "marks": [
+        {
+          "at": 0,
+          "label": "From trained model to assistant"
+        },
+        {
+          "at": 13,
+          "label": "Generalising vs overfitting"
+        },
+        {
+          "at": 28,
+          "label": "The sunny-days test"
+        },
+        {
+          "at": 39,
+          "label": "Validation set: when to stop"
+        },
+        {
+          "at": 52,
+          "label": "Training vs inference"
+        },
+        {
+          "at": 68,
+          "label": "Distributed training"
+        },
+        {
+          "at": 81,
+          "label": "Llama 3.1 at scale"
+        },
+        {
+          "at": 95,
+          "label": "Base model vs assistant"
+        },
+        {
+          "at": 105,
+          "label": "Post-training stages"
+        },
+        {
+          "at": 128,
+          "label": "Knowledge vs behaviour"
+        }
+      ]
+    }
+  ],
   "slides": [
     {
       "title": "What learning means: turning knobs",
