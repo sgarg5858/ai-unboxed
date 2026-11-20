@@ -100,11 +100,11 @@
       "src": "videos/attention/attention_heads_cost_position.mp4",
       "title": "Attention 3 · Heads, cost and position",
       "description": "Why models run many attention heads, how they split the width and what they specialise in; why attention costs n² and the fixes (FlashAttention, GQA, sliding windows); and how waves give attention a sense of word order.",
-      "slides": [6, 8],
+      "slides": [6, 7],
       "at": {
         "6": 12,
         "7": 80,
-        "8": 145
+        "9": 145
       },
       "marks": [
         {
@@ -140,6 +140,45 @@
           "label": "Why not just add 5? RoPE"
         }
       ]
+    },
+    {
+      "src": "videos/output/kv_cache.mp4",
+      "title": "The KV cache",
+      "description": "Why writing each token would mean re-reading the whole text, how saving keys and values fixes it, prefill vs decode, what the cache costs in memory, and how models shrink it.",
+      "marks": [
+        {
+          "at": 0,
+          "label": "Why generation would be slow"
+        },
+        {
+          "at": 11,
+          "label": "The waste: recomputing K and V"
+        },
+        {
+          "at": 56,
+          "label": "Save it: the KV cache"
+        },
+        {
+          "at": 95,
+          "label": "Prefill and decode"
+        },
+        {
+          "at": 117,
+          "label": "The price: memory"
+        },
+        {
+          "at": 172,
+          "label": "Shrinking the cache: GQA, quantization, paging"
+        },
+        {
+          "at": 210,
+          "label": "Prompt caching"
+        }
+      ],
+      "slides": [8, 8],
+      "at": {
+        "8": 0
+      }
     }
   ],
   "slides": [
@@ -332,7 +371,7 @@
         {
           "ul": [
             "<b>FlashAttention</b> gets exactly the same result, but works in small chunks that fit in the GPU's fast built-in memory, so the full grid is never stored. Same maths, much less slow memory access. It's now the default in major frameworks.",
-            "<b>Grouped-query attention (GQA)</b>: several query heads share one set of key and value heads. Quality stays nearly the same, and the KV cache (see <i>Output & inference</i>) gets several times smaller.",
+            "<b>Grouped-query attention (GQA)</b>: several query heads share one set of key and value heads. Quality stays nearly the same, and the KV cache (next slide) gets several times smaller.",
             "<b>Sliding-window and sparse attention</b>: some layers only look back a fixed distance, or at chosen positions, instead of at everything."
           ]
         },
@@ -355,6 +394,95 @@
           "name": "attention-cost"
         }
       ]
+    },
+    {
+      "title": "Many layers, many heads, one KV cache each",
+      "summary": "Every layer runs many attention heads, and keeps a cache of past keys and values so each new token only does its own work.",
+      "body": [
+        "Each attention head turns every token into three vectors: a <b>Q</b> (query: what am I looking for?), a <b>K</b> (key: what do I offer?) and a <b>V</b> (value: what do I pass on?). The new token compares its Q with every K and takes in the matching Vs.",
+        {
+          "h": "Why a cache?"
+        },
+        {
+          "ul": [
+            "<b>Past tokens don't change.</b> A token can't look ahead, so the K and V of “cat” come out the same on every run.",
+            "<b>So every layer saves them</b> in its own <b>KV cache</b>: a K and a V for each earlier token, for every head.",
+            "<b>Each new token does only its own work:</b> it computes its Q, K and V, saves its K and V, and reuses everyone else's."
+          ]
+        },
+        "<mark>Thanks to the cache, each run after the first works on just one new token, which is why answers can stream out quickly.</mark>",
+        {
+          "note": "Q isn't cached: only the newest token is asking, and it asks once.",
+          "kind": "key"
+        },
+        {
+          "more": "What does the cache cost?",
+          "text": "Memory. It grows with every token, in every layer. The table shows GPT-2's numbers; big models with long texts can need gigabytes, more than the model itself.",
+          "goto": {
+            "chapter": "output",
+            "slide": 4
+          },
+          "link": "The KV cache, in Output & inference"
+        }
+      ],
+      "viz": [
+        {
+          "type": "table",
+          "rows": [
+            {
+              "head": "KV cache (GPT-2)",
+              "cells": [
+                {
+                  "text": "Size"
+                }
+              ]
+            },
+            {
+              "head": "One token, one layer",
+              "cells": [
+                {
+                  "text": "K 768 + V 768 = 1,536 numbers"
+                }
+              ]
+            },
+            {
+              "head": "× 12 layers",
+              "cells": [
+                {
+                  "text": "18,432 numbers",
+                  "tone": "heat"
+                }
+              ]
+            },
+            {
+              "head": "× 2 bytes each (16-bit)",
+              "cells": [
+                {
+                  "text": "≈ 37 KB per token",
+                  "tone": "heat"
+                }
+              ]
+            },
+            {
+              "head": "× 1,024 tokens (full context)",
+              "cells": [
+                {
+                  "text": "≈ 38 MB",
+                  "tone": "accent"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "figure": {
+        "src": "images/llm-layers-kv-cache-light.svg",
+        "darkSrc": "images/llm-layers-kv-cache-dark.svg",
+        "alt": "An LLM as a stack of identical transformer layers, layer 1 up to layer N (12 in GPT-2). The tokens “The cat sat on the” enter at the bottom. Inside every layer, multi-head attention runs heads 1 to 12 side by side, each making its own Q, K and V, then a feed-forward network works on each token alone. Beside every layer is its own KV cache: a K row and a V row for every earlier token. The new token saves its K and V into the cache and reuses the stored ones; Q isn't cached. At the top, linear and softmax pick the next token, “mat”. Values are illustrative.",
+        "width": 1200,
+        "height": 740,
+        "caption": "Many layers, many heads per layer, and a KV cache for each layer so past tokens are never worked out again."
+      }
     },
     {
       "title": "Position in depth: the wave pattern",

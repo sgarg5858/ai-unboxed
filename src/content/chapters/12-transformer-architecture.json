@@ -210,48 +210,12 @@
       ]
     },
     {
-      "src": "videos/output/kv_cache.mp4",
-      "title": "The KV cache",
-      "description": "Why writing each token would mean re-reading the whole text, how saving keys and values fixes it, prefill vs decode, what the cache costs in memory, and how models shrink it.",
-      "marks": [
-        {
-          "at": 0,
-          "label": "Why generation would be slow"
-        },
-        {
-          "at": 11,
-          "label": "The waste: recomputing K and V"
-        },
-        {
-          "at": 56,
-          "label": "Save it: the KV cache"
-        },
-        {
-          "at": 95,
-          "label": "Prefill and decode"
-        },
-        {
-          "at": 117,
-          "label": "The price: memory"
-        },
-        {
-          "at": 172,
-          "label": "Shrinking the cache: GQA, quantization, paging"
-        },
-        {
-          "at": 210,
-          "label": "Prompt caching"
-        }
-      ],
-      "slides": [10, 10]
-    },
-    {
       "src": "videos/transformer/linear_softmax.mp4",
       "title": "Part 6 · Linear & softmax",
       "description": "How the last token's vector becomes a score for every word in the vocabulary, how softmax turns scores into probabilities, and how one token is picked and the loop runs again.",
-      "slides": [11, 11],
+      "slides": [10, 10],
       "at": {
-        "11": 0
+        "10": 0
       },
       "marks": [
         {
@@ -519,7 +483,7 @@
               "value": "slide 13",
               "goto": {
                 "chapter": "transformer",
-                "slide": 11
+                "slide": 10
               }
             },
             {
@@ -1079,95 +1043,6 @@
         "height": 1080,
         "caption": "The animation loops every 22 seconds. Weights are illustrative.",
         "animated": true
-      }
-    },
-    {
-      "title": "Many layers, many heads, one KV cache each",
-      "summary": "Every layer runs many attention heads, and keeps a cache of past keys and values so each new token only does its own work.",
-      "body": [
-        "Each attention head turns every token into three vectors: a <b>Q</b> (query: what am I looking for?), a <b>K</b> (key: what do I offer?) and a <b>V</b> (value: what do I pass on?). The new token compares its Q with every K and takes in the matching Vs.",
-        {
-          "h": "Why a cache?"
-        },
-        {
-          "ul": [
-            "<b>Past tokens don't change.</b> A token can't look ahead, so the K and V of “cat” come out the same on every run.",
-            "<b>So every layer saves them</b> in its own <b>KV cache</b>: a K and a V for each earlier token, for every head.",
-            "<b>Each new token does only its own work:</b> it computes its Q, K and V, saves its K and V, and reuses everyone else's."
-          ]
-        },
-        "<mark>Thanks to the cache, each run after the first works on just one new token, which is why answers can stream out quickly.</mark>",
-        {
-          "note": "Q isn't cached: only the newest token is asking, and it asks once.",
-          "kind": "key"
-        },
-        {
-          "more": "What does the cache cost?",
-          "text": "Memory. It grows with every token, in every layer. The table shows GPT-2's numbers; big models with long texts can need gigabytes, more than the model itself.",
-          "goto": {
-            "chapter": "output",
-            "slide": 4
-          },
-          "link": "The KV cache, in Output & inference"
-        }
-      ],
-      "viz": [
-        {
-          "type": "table",
-          "rows": [
-            {
-              "head": "KV cache (GPT-2)",
-              "cells": [
-                {
-                  "text": "Size"
-                }
-              ]
-            },
-            {
-              "head": "One token, one layer",
-              "cells": [
-                {
-                  "text": "K 768 + V 768 = 1,536 numbers"
-                }
-              ]
-            },
-            {
-              "head": "× 12 layers",
-              "cells": [
-                {
-                  "text": "18,432 numbers",
-                  "tone": "heat"
-                }
-              ]
-            },
-            {
-              "head": "× 2 bytes each (16-bit)",
-              "cells": [
-                {
-                  "text": "≈ 37 KB per token",
-                  "tone": "heat"
-                }
-              ]
-            },
-            {
-              "head": "× 1,024 tokens (full context)",
-              "cells": [
-                {
-                  "text": "≈ 38 MB",
-                  "tone": "accent"
-                }
-              ]
-            }
-          ]
-        }
-      ],
-      "figure": {
-        "src": "images/llm-layers-kv-cache-light.svg",
-        "darkSrc": "images/llm-layers-kv-cache-dark.svg",
-        "alt": "An LLM as a stack of identical transformer layers, layer 1 up to layer N (12 in GPT-2). The tokens “The cat sat on the” enter at the bottom. Inside every layer, multi-head attention runs heads 1 to 12 side by side, each making its own Q, K and V, then a feed-forward network works on each token alone. Beside every layer is its own KV cache: a K row and a V row for every earlier token. The new token saves its K and V into the cache and reuses the stored ones; Q isn't cached. At the top, linear and softmax pick the next token, “mat”. Values are illustrative.",
-        "width": 1200,
-        "height": 740,
-        "caption": "Many layers, many heads per layer, and a KV cache for each layer so past tokens are never worked out again."
       }
     },
     {

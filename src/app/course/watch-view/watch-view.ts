@@ -89,9 +89,10 @@ import { ViewModeState } from '../view-mode';
           </ol>
         }
         <p class="alt">
-          Prefer to read?
-          <button type="button" class="link" (click)="mode.set('read')">
-            Read {{ v.slides ? label(v) : 'the ' + chapter.slides.length + ' slides' }} instead
+          Prefer the slides?
+          <button type="button" class="link" (click)="mode.set('combined')">
+            See {{ v.slides ? label(v) : 'the ' + chapter.slides.length + ' slides' }} beside the
+            video
           </button>
         </p>
       } @else {
@@ -100,10 +101,12 @@ import { ViewModeState } from '../view-mode';
             <svg viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z" /></svg>
           </span>
           <h2 tabindex="-1">No video for {{ chapter.name }} yet</h2>
-          <p>This chapter is slides only for now. Read it, or watch a chapter that has one.</p>
+          <p>
+            This chapter is slides only for now. Open the slides, or watch a chapter that has one.
+          </p>
           <div class="acts">
-            <button type="button" class="btn on" (click)="mode.set('read')">
-              Read this chapter
+            <button type="button" class="btn on" (click)="mode.set('combined')">
+              Open the slides
             </button>
             @for (c of withVideo(); track c.id) {
               <button type="button" class="btn" (click)="nav.goto(c.id)">▶ {{ c.name }}</button>
@@ -130,7 +133,7 @@ export class WatchView {
   });
 
   constructor() {
-    // Opened on a slide (switching from Read, a reload or a shared link): start the video where
+    // Opened on a slide (switching from Combined, a reload or a shared link): start the video where
     // that slide's topic begins.
     const v = this.nav.video();
     const slide = this.nav.position().slide;

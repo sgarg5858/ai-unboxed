@@ -17,16 +17,12 @@
   padding-block: 8px;
   background: var(--bg);
 }
-/* Layout switch and full screen, just under the video. */
+/* Layout switch and full screen, above the video. */
 .media.off {
   display: none;
 }
 .tucked {
   margin-bottom: 14px;
-}
-/* With the video hidden, the switch is the way back, so it shows on every screen size. */
-.tucked .seg {
-  display: inline-flex;
 }
 .bar {
   display: flex;
@@ -35,8 +31,7 @@
   gap: 8px;
 }
 .seg {
-  /* Phones stack the video above the text either way, so only wide screens get the switch. */
-  display: none;
+  display: inline-flex;
   margin-right: auto;
   padding: 3px;
   gap: 2px;
@@ -123,17 +118,6 @@
 .stamps {
   display: none;
 }
-.how p {
-  margin: 6px 0 0;
-}
-.none {
-  margin: 0;
-  color: var(--muted);
-  font-size: 13.5px;
-}
-.none {
-  margin-bottom: 12px;
-}
 /* Timestamps: only beside the slide on wide screens; on small ones the video stays compact. */
 .marks {
   display: none;
@@ -189,14 +173,17 @@
   .marks {
     display: grid;
   }
-  .seg {
-    display: inline-flex;
-  }
   .stamps {
     display: block;
   }
   .large .marks {
     grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  }
+}
+/* Phones and tablets stack the video above the text either way, so "Large video" adds nothing. */
+@media (max-width: 1099px) {
+  .seg .large {
+    display: none;
   }
 }
 /* Short phones in landscape: a sticky video would cover the text. */

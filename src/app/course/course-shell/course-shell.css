@@ -81,7 +81,7 @@
     margin: -4px -4px 0 0;
   }
 }
-/* Contents button | title with the Read/Watch switch | search and theme. */
+/* Contents button | title with the Watch/Combined switch | search and theme. */
 header.top {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;

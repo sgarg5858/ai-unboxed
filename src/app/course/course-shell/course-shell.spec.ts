@@ -13,11 +13,11 @@ const COURSE = await Promise.all(CHAPTERS.map((c) => c.load()));
  * Render the shell through the router, exactly as the app does: the route resolver loads the
  * chapter first, then the shell appears. (Creating the shell directly would render it before any
  * chapter has loaded, which can't happen in the real app.) Only one harness per test.
- * Opens in Read mode unless the URL says otherwise (`?mode=watch`, or `?` for the default).
+ * Opens in Combined unless the URL says otherwise (`?mode=watch`, or `?` for the default).
  */
 async function open(url: string) {
   const harness = await RouterTestingHarness.create();
-  if (!url.includes('?')) url += '?mode=read';
+  if (!url.includes('?')) url += '?mode=combined';
   await harness.navigateByUrl(url, CourseShell);
   await harness.fixture.whenStable();
   return {
@@ -30,6 +30,12 @@ async function open(url: string) {
 describe('CourseShell', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({ providers: [provideRouter(routes)] });
+    // The video layout (side by side, large, hidden) is remembered per browser.
+    try {
+      localStorage.removeItem('ai-unboxed:video-layout');
+    } catch {
+      // no storage in this environment
+    }
   });
 
   // Renders every slide in the course, so broken content or widgets fail CI.
@@ -190,7 +196,7 @@ describe('CourseShell', () => {
       (el.querySelector('.empty .btn.on') as HTMLButtonElement).click();
       await settle();
       expect(el.querySelector('article h2')?.textContent).toBe(withoutVideo.slides[0].title);
-      expect(router.url).toBe(`/${withoutVideo.id}/1?mode=read`);
+      expect(router.url).toBe(`/${withoutVideo.id}/1?mode=combined`);
     });
 
     it('shows only chapters in the outline, without slide lists', async () => {
@@ -200,10 +206,11 @@ describe('CourseShell', () => {
       expect(el.querySelector('aside .chev')).toBeNull();
     });
 
-    it('is a course-wide switch in the header', async () => {
+    it('is a course-wide switch in the header, with no Read mode', async () => {
       const { el, settle } = await open(`/${withVideo.id}/1?mode=watch`);
-      const read = el.querySelector('header app-mode-switch button') as HTMLButtonElement;
-      read.click();
+      const buttons = el.querySelectorAll<HTMLButtonElement>('header app-mode-switch .seg button');
+      expect(Array.from(buttons, (b) => b.textContent?.trim())).toEqual(['Watch', 'Combined']);
+      buttons[1].click();
       await settle();
       expect(el.querySelector('article h2')?.textContent).toBe(withVideo.slides[0].title);
       expect(el.querySelector('aside .slides')).not.toBeNull();
@@ -211,20 +218,24 @@ describe('CourseShell', () => {
 
     it('keeps the chosen mode in the URL, so a reload or a shared link opens the same view', async () => {
       const { el, router, settle } = await open(`/${withVideo.id}/1?mode=watch`);
-      (el.querySelector('header app-mode-switch button') as HTMLButtonElement).click();
+      (el.querySelectorAll('header app-mode-switch .seg button')[1] as HTMLButtonElement).click();
       await settle();
-      expect(router.url).toBe(`/${withVideo.id}/1?mode=read`);
+      expect(router.url).toBe(`/${withVideo.id}/1?mode=combined`);
       (el.querySelector('.foot .next') as HTMLButtonElement).click();
       await settle();
-      expect(router.url).toBe(`/${withVideo.id}/2?mode=read`);
+      expect(router.url).toBe(`/${withVideo.id}/2?mode=combined`);
     });
 
-    it('opens Watch by default when the chapter has a video, Read when it has none', async () => {
+    it('opens Combined by default, and old ?mode=read links too', async () => {
       const { el, router, settle } = await open(`/${withVideo.id}/1?`);
-      expect(el.querySelector('app-video-player')).not.toBeNull();
+      expect(el.querySelector('app-split-view')).not.toBeNull();
+      await router.navigateByUrl(`/${withVideo.id}/1?mode=read`);
+      await settle();
+      expect(el.querySelector('app-split-view')).not.toBeNull();
       await router.navigateByUrl(`/${withoutVideo.id}/1`);
       await settle();
       expect(el.querySelector('article h2')?.textContent).toBe(withoutVideo.slides[0].title);
+      expect(el.querySelector('app-video-player')).toBeNull();
     });
 
     it('shows the video beside the slide in Combined mode, and Next still moves a slide', async () => {

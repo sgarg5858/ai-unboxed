@@ -39,8 +39,19 @@ const LAYOUTS: readonly { id: Layout; label: string; title: string; icon: string
   },
 ];
 
+const LAYOUT_KEY = 'ai-unboxed:video-layout';
+/** The reader's last layout, so someone who hides the video keeps reading without it. */
+function readLayout(): Layout {
+  try {
+    const v = localStorage.getItem(LAYOUT_KEY);
+    return LAYOUTS.some((o) => o.id === v) ? (v as Layout) : 'side';
+  } catch {
+    return 'side';
+  }
+}
+
 /**
- * Combined mode: the video beside the slide it's talking about, kept in step both ways. As the video
+ * Every slide is shown here: beside the video that covers it, kept in step both ways. As the video
  * plays into the next slide's topic, the slide follows; moving to another slide jumps the video
  * to where that slide's topic starts. Slides that no video covers show the text alone.
  */
@@ -57,6 +68,7 @@ const LAYOUTS: readonly { id: Layout; label: string; title: string; icon: string
             <button
               type="button"
               [attr.aria-pressed]="layout() === o.id"
+              [class]="o.id"
               [title]="o.title"
               (click)="setLayout(o.id)"
             >
@@ -100,10 +112,6 @@ const LAYOUTS: readonly { id: Layout; label: string; title: string; icon: string
               (startApplied)="start.set(null)"
             />
           }
-          <details class="how">
-            <summary>How Combined works</summary>
-            <p>The slide follows the video. Change slide and the video jumps to it.</p>
-          </details>
           @if (v.marks?.length) {
             <details class="how stamps">
               <summary>In this video · {{ v.marks!.length }} timestamps</summary>
@@ -145,9 +153,7 @@ const LAYOUTS: readonly { id: Layout; label: string; title: string; icon: string
         </section>
       }
       <div class="text">
-        @if (!video()) {
-          <p class="none">No video covers this slide, so here's the text on its own.</p>
-        } @else if (hidden()) {
+        @if (video() && hidden()) {
           <div class="tucked">
             <ng-container [ngTemplateOutlet]="bar" />
           </div>
@@ -172,7 +178,7 @@ export class SplitView {
     videoCovering(this.nav.videos(), this.nav.position().slide, this.slideCount()),
   );
   /** Side by side, a large video with the text below, or hidden (paused; the text gets the width). */
-  protected readonly layout = signal<Layout>('side');
+  protected readonly layout = signal<Layout>(readLayout());
   protected readonly hidden = computed(() => this.layout() === 'hidden');
   protected readonly layouts = LAYOUTS;
   protected readonly count = computed(() => this.nav.videos().length);
@@ -231,6 +237,11 @@ export class SplitView {
   protected setLayout(l: Layout) {
     if (l === 'hidden') this.player()?.pause();
     this.layout.set(l);
+    try {
+      localStorage.setItem(LAYOUT_KEY, l);
+    } catch {
+      // Storage can be blocked; the layout then resets on reload.
+    }
   }
 
   /** Keys pressed anywhere on the page; true if the player used it. ←/→ stay for slides. */

@@ -21,7 +21,6 @@ import { SectionTabs } from '../section-tabs/section-tabs';
 import { SidebarState } from '../sidebar-state';
 import { ShortcutsHelp } from '../shortcuts-help/shortcuts-help';
 import { SidebarToggle } from '../sidebar-toggle/sidebar-toggle';
-import { SlideView } from '../slide-view/slide-view';
 import { SplitView } from '../split-view/split-view';
 import { ViewModeState } from '../view-mode';
 import { WatchView } from '../watch-view/watch-view';
@@ -37,7 +36,6 @@ import { WatchView } from '../watch-view/watch-view';
     SectionTabs,
     ShortcutsHelp,
     SidebarToggle,
-    SlideView,
     SplitView,
     ThemeSwitch,
     WatchView,
@@ -51,8 +49,6 @@ export class CourseShell {
   protected readonly sidebar = inject(SidebarState);
   private readonly mode = inject(ViewModeState);
   protected readonly watching = computed(() => this.mode.mode() === 'watch');
-  /** Video and slide side by side; Back and Next still move a slide at a time. */
-  protected readonly combined = computed(() => this.mode.mode() === 'combined');
   private readonly watchView = viewChild(WatchView);
   private readonly splitView = viewChild(SplitView);
   private readonly store = inject(ChapterStore);

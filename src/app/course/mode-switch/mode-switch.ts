@@ -2,36 +2,18 @@ import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/c
 import { CourseNav } from '../course-nav';
 import { ViewMode, ViewModeState } from '../view-mode';
 
-/** Phones cycle Read → Watch → Combined. */
-const NEXT: Record<ViewMode, ViewMode> = { read: 'watch', watch: 'combined', combined: 'read' };
+/** Phones toggle between the two. */
+const NEXT: Record<ViewMode, ViewMode> = { watch: 'combined', combined: 'watch' };
 
 /**
- * Course-wide: read the slides, watch each chapter's video, or both side by side (Combined). Lives in the header next to the
- * theme switch. A dot on Watch marks that the current chapter has a video.
+ * Course-wide: watch each chapter's video, or see each slide beside its video (Combined, where
+ * the video can also be hidden). Lives in the header next to the theme switch. A dot on Watch marks that the current chapter has a video.
  */
 @Component({
   selector: 'app-mode-switch',
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div
-      class="seg"
-      role="group"
-      aria-label="Learn the course by reading, watching, or both side by side"
-    >
-      <button
-        type="button"
-        aria-label="Read"
-        title="Read the slides"
-        [attr.aria-pressed]="state.mode() === 'read'"
-        (click)="state.set('read')"
-      >
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path
-            d="M12 6.5C10 5 7 4.5 3.5 5v13c3.5-.5 6.5 0 8.5 1.5 2-1.5 5-2 8.5-1.5V5C17 4.5 14 5 12 6.5zM12 6.5v13"
-          />
-        </svg>
-        Read
-      </button>
+    <div class="seg" role="group" aria-label="Watch the videos, or see slides and video together">
       <button
         type="button"
         [attr.aria-label]="hasVideo() ? 'Watch (this chapter has a video)' : 'Watch'"
@@ -78,13 +60,6 @@ const NEXT: Record<ViewMode, ViewMode> = { read: 'watch', watch: 'combined', com
         @case ('combined') {
           <svg viewBox="0 0 24 24" aria-hidden="true">
             <path d="M3.5 5.5h17v13h-17zM12 5.5v13M6 9.5l3 2-3 2z" />
-          </svg>
-        }
-        @default {
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path
-              d="M12 6.5C10 5 7 4.5 3.5 5v13c3.5-.5 6.5 0 8.5 1.5 2-1.5 5-2 8.5-1.5V5C17 4.5 14 5 12 6.5zM12 6.5v13"
-            />
           </svg>
         }
       }
@@ -183,7 +158,6 @@ export class ModeSwitch {
   private readonly nav = inject(CourseNav);
   protected readonly hasVideo = computed(() => this.nav.videos().length > 0);
   protected readonly names: Record<ViewMode, string> = {
-    read: 'Read',
     watch: 'Watch',
     combined: 'Combined',
   };

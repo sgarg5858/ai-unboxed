@@ -4,7 +4,7 @@ import { CourseNav, ViewMode } from './course-nav';
 export type { ViewMode };
 
 /**
- * Read the slides or watch the chapter's video. The choice lives in the URL (`?mode=`, see
+ * Watch the chapter's video, or see each slide beside it (Combined). The choice lives in the URL (`?mode=`, see
  * CourseNav), so a reload or a shared link opens the same view.
  */
 @Injectable({ providedIn: 'root' })

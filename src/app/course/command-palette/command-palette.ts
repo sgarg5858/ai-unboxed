@@ -189,9 +189,9 @@ export class CommandPalette {
   protected choose(it: Item | undefined) {
     if (!it) return;
     this.close();
-    // A search hit is a slide, so show it as one (beside its video in Combined).
+    // A search hit is a slide, so show it as one, beside its video.
     this.nav
-      .goto(it.chapterId, it.slide, { queryParams: { mode: this.nav.slideMode() } })
+      .goto(it.chapterId, it.slide, { queryParams: { mode: 'combined' } })
       .then(() => window.scrollTo?.({ top: 0 }));
   }
 
