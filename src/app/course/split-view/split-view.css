@@ -17,50 +17,67 @@
   padding-block: 8px;
   background: var(--bg);
 }
-.media.off {
-  display: none;
-}
-.top {
+/* Layout switch and full screen, just under the video. */
+.bar {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+  justify-content: flex-end;
+  gap: 8px;
 }
-.hide,
-.show {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  flex: none;
-  min-height: 30px;
-  padding: 0 12px;
+.seg {
+  /* Phones stack the video above the text either way, so only wide screens get the switch. */
+  display: none;
+  margin-right: auto;
+  padding: 3px;
+  gap: 2px;
   border: 1px solid var(--line);
   border-radius: 999px;
   background: var(--surface);
+}
+.seg button,
+.fs {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 32px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 999px;
+  background: none;
   color: var(--muted);
   font: inherit;
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
 }
-.hide:hover,
-.show:hover {
+.seg button:hover,
+.fs:hover {
   color: var(--ink);
-  border-color: var(--accent);
 }
-.hide:focus-visible,
-.show:focus-visible {
+.seg button[aria-pressed='true'] {
+  background: var(--pill-bg);
+  color: var(--pill-fg);
+}
+.fs {
+  width: 38px;
+  padding: 0;
+  justify-content: center;
+  border: 1px solid var(--line);
+  background: var(--surface);
+}
+.seg button:focus-visible,
+.fs:focus-visible {
   outline: 2px solid var(--accent-ink);
   outline-offset: 2px;
 }
-.show {
-  margin-bottom: 12px;
-  color: var(--accent-ink);
-}
-.show svg {
-  width: 14px;
-  height: 14px;
-  fill: currentColor;
+.bar svg {
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 .eyebrow {
   display: flex;
@@ -80,7 +97,21 @@
   background: var(--neg);
   box-shadow: 0 0 0 4px var(--accent-soft);
 }
-.hint,
+.how {
+  color: var(--muted);
+  font-size: 13.5px;
+}
+.how summary {
+  width: fit-content;
+  cursor: pointer;
+  font-weight: 600;
+}
+.how summary:hover {
+  color: var(--ink);
+}
+.how p {
+  margin: 6px 0 0;
+}
 .none {
   margin: 0;
   color: var(--muted);
@@ -131,9 +162,15 @@
   font: 600 13px var(--f-mono);
   color: var(--accent-ink);
 }
+/* Large video: across the page, not pinned, with the text below. */
+.large .media {
+  position: static;
+  padding: 0;
+  background: none;
+}
 /* Wide screens: video on the left, the slide on the right. */
 @media (min-width: 1100px) {
-  .split:not(.solo) {
+  .split:not(.solo):not(.large) {
     grid-template-columns: minmax(0, 11fr) minmax(0, 10fr);
     gap: 24px;
     align-items: start;
@@ -145,6 +182,12 @@
   }
   .marks {
     display: grid;
+  }
+  .seg {
+    display: inline-flex;
+  }
+  .large .marks {
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   }
   .sub {
     display: block;

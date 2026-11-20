@@ -245,16 +245,20 @@ describe('CourseShell', () => {
       );
     });
 
-    it('hides the video in Combined mode and brings it back', async () => {
+    it('switches Combined mode between side by side and a large video', async () => {
       const v = withVideo.videos![0];
       const { el, settle } = await open(`/${withVideo.id}/${v.slides?.[0] ?? 1}?mode=combined`);
-      (el.querySelector('app-split-view button.hide') as HTMLButtonElement).click();
+      const btn = (label: string) =>
+        Array.from(el.querySelectorAll<HTMLButtonElement>('app-split-view .seg button')).find((b) =>
+          b.textContent?.includes(label),
+        )!;
+      btn('Large video').click();
       await settle();
-      expect(el.querySelector('app-split-view .media.off')).not.toBeNull();
-      (el.querySelector('app-split-view button.show') as HTMLButtonElement).click();
+      expect(el.querySelector('app-split-view .split.large')).not.toBeNull();
+      expect(btn('Large video').getAttribute('aria-pressed')).toBe('true');
+      btn('Side by side').click();
       await settle();
-      expect(el.querySelector('app-split-view .media.off')).toBeNull();
-      expect(el.querySelector('app-split-view button.show')).toBeNull();
+      expect(el.querySelector('app-split-view .split.large')).toBeNull();
     });
   });
 });

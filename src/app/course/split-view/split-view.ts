@@ -16,6 +16,22 @@ import { slideAtTime, startFor, videoCovering } from '../chapter-videos';
 import { CourseNav } from '../course-nav';
 import { SlideView } from '../slide-view/slide-view';
 
+type Layout = 'side' | 'large';
+const LAYOUTS: readonly { id: Layout; label: string; title: string; icon: string }[] = [
+  {
+    id: 'side',
+    label: 'Side by side',
+    title: 'Video beside the text',
+    icon: 'M3.5 5.5h17v13h-17zM12 5.5v13',
+  },
+  {
+    id: 'large',
+    label: 'Large video',
+    title: 'Video across the page, text below',
+    icon: 'M3.5 4.5h17v10h-17zM3.5 18.5h17',
+  },
+];
+
 /**
  * Combined mode: the video beside the slide it's talking about, kept in step both ways. As the video
  * plays into the next slide's topic, the slide follows; moving to another slide jumps the video
@@ -27,24 +43,15 @@ import { SlideView } from '../slide-view/slide-view';
   imports: [SlideView, VideoPlayer],
   styleUrl: './split-view.css',
   template: `
-    <div class="split" [class.solo]="!video() || hidden()">
+    @let large = layout() === 'large';
+    <div class="split" [class.solo]="!video()" [class.large]="large">
       @if (video(); as v) {
-        <section class="media" [class.off]="hidden()" aria-label="Video for this slide">
-          <div class="top">
-            <p class="eyebrow">
-              <span class="dot" aria-hidden="true"></span>
-              {{ count() > 1 ? 'Video ' + (index() + 1) + ' of ' + count() + ' · ' : ''
-              }}{{ v.title }}
-            </p>
-            <button
-              type="button"
-              class="hide"
-              title="Hide the video and widen the text"
-              (click)="hide()"
-            >
-              Hide video
-            </button>
-          </div>
+        <section class="media" aria-label="Video for this slide">
+          <p class="eyebrow">
+            <span class="dot" aria-hidden="true"></span>
+            {{ count() > 1 ? 'Video ' + (index() + 1) + ' of ' + count() + ' · ' : ''
+            }}{{ v.title }}
+          </p>
           <!-- keyed by file, so another video gets a fresh player -->
           @for (src of [v.src]; track src) {
             <app-video-player
@@ -56,7 +63,36 @@ import { SlideView } from '../slide-view/slide-view';
               (startApplied)="start.set(null)"
             />
           }
-          <p class="hint">The slide follows the video. Change slide and the video jumps to it.</p>
+          <div class="bar">
+            <div class="seg" role="group" aria-label="Video layout">
+              @for (o of layouts; track o.id) {
+                <button
+                  type="button"
+                  [attr.aria-pressed]="layout() === o.id"
+                  [title]="o.title"
+                  (click)="layout.set(o.id)"
+                >
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path [attr.d]="o.icon" /></svg>
+                  {{ o.label }}
+                </button>
+              }
+            </div>
+            <button
+              type="button"
+              class="fs"
+              title="Full screen (F). The slide keeps following the video."
+              aria-label="Full screen"
+              (click)="player()?.toggleFullscreen()"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5" />
+              </svg>
+            </button>
+          </div>
+          <details class="how">
+            <summary>How Combined works</summary>
+            <p>The slide follows the video. Change slide and the video jumps to it.</p>
+          </details>
           @if (v.marks?.length) {
             <ol class="marks" aria-label="In this video">
               @for (m of v.marks; track m.at; let i = $index) {
@@ -95,11 +131,6 @@ import { SlideView } from '../slide-view/slide-view';
       <div class="text">
         @if (!video()) {
           <p class="none">No video covers this slide, so here's the text on its own.</p>
-        } @else if (hidden()) {
-          <button type="button" class="show" (click)="hidden.set(false)">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z" /></svg>
-            Show video · {{ video()!.title }}
-          </button>
         }
         <!-- track by slide identity so widget state resets when the slide changes -->
         @for (s of [nav.slide()]; track s) {
@@ -120,8 +151,9 @@ export class SplitView {
   protected readonly video = computed(() =>
     videoCovering(this.nav.videos(), this.nav.position().slide, this.slideCount()),
   );
-  /** Done watching: the video is paused and tucked away, and the text takes the full width. */
-  protected readonly hidden = signal(false);
+  /** Side by side, or a large video across the page with the text below. */
+  protected readonly layout = signal<Layout>('side');
+  protected readonly layouts = LAYOUTS;
   protected readonly count = computed(() => this.nav.videos().length);
   protected readonly index = computed(() => this.nav.videos().indexOf(this.video()!));
 
@@ -177,13 +209,8 @@ export class SplitView {
 
   /** Keys pressed anywhere on the page; true if the player used it. ←/→ stay for slides. */
   handleKey(e: KeyboardEvent): boolean {
-    if (this.hidden() || e.key === 'ArrowLeft' || e.key === 'ArrowRight') return false;
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') return false;
     return this.player()?.handleKey(e) ?? false;
-  }
-
-  protected hide() {
-    this.player()?.pause();
-    this.hidden.set(true);
   }
 
   /** After the video turns the slide, bring its top back into view if the reader scrolled past. */
