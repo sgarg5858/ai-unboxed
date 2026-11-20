@@ -328,20 +328,20 @@
   "slides": [
     {
       "title": "The loop: how a model writes an answer",
-      "summary": "The model predicts one token, adds it to the text, and runs again on the longer text. It stops when its best guess is the end token.",
+      "summary": "The model picks one token, adds it to the text, and runs again. It stops when it picks the end token.",
       "body": [
-        "Give the model “The pizza is ready” and ask what comes next. Each <b>run</b> of the model does the same job: turn the text into vectors, pass them through the transformer's layers, and score every possible next token. The second figure below shows one run in full.",
+        "Give the model “The pizza is ready”. It doesn't write the reply in one go. It writes it <b>one token at a time</b>, in a loop.",
         {
-          "h": "Append the prediction, run again"
+          "h": "One token per run"
         },
         {
           "ul": [
             "<b>Run 1</b> reads “The pizza is ready” and picks “ for”.",
-            "<b>Append it.</b> The input is now “The pizza is ready for”, one token longer.",
-            "<b>Run 2</b> reads all of that, including the word it just wrote, and picks “ you”. Then “!”, one token per run."
+            "That token is <b>added to the text</b>: “The pizza is ready for”.",
+            "<b>Run 2</b> reads the longer text and picks “ you”. Then “!”. One token each time."
           ]
         },
-        "<mark>The model never writes a whole answer at once. Every token comes from a full run over everything so far, including the tokens it has already written.</mark>",
+        "<mark>Each new token comes from a fresh run over all the text so far, including the words the model just wrote.</mark>",
         {
           "h": "How does it know it's finished?"
         },
@@ -353,90 +353,15 @@
             "<b>A stop sequence</b>: the app can also stop when a chosen piece of text appears."
           ]
         },
-        {
-          "more": "Where does attention fit in?",
-          "text": "Inside every run, attention lets the newest token look back at everything before it. That's what makes the model's guesses fit the context, and it's the subject of the next chapter.",
-          "goto": {
-            "chapter": "attention",
-            "slide": 1
-          },
-          "link": "Go to Attention"
-        },
-        {
-          "more": "Isn't re-reading the whole text every run slow?",
-          "text": "It would be. Models keep the work already done for earlier tokens in a <b>KV cache</b>, so each run only has to compute the newest token.",
-          "goto": {
-            "chapter": "output",
-            "slide": 4
-          },
-          "link": "The KV cache in Output & inference"
-        },
+        "Inside each run, the text becomes numbers, passes through the model's layers, and every possible next token gets a score. The second figure shows one run in full.",
         {
           "more": "What does the end token look like?",
-          "text": "It's one of the tokenizer's special tokens, such as <code>&lt;|endoftext|&gt;</code> in GPT-2. Chat models use an end-of-turn token from their chat template.",
+          "text": "It's a special token, like <code>&lt;|endoftext|&gt;</code> in GPT-2. Chat models use an end-of-turn token instead.",
           "goto": {
             "chapter": "tokens",
             "slide": 8
           },
           "link": "Special tokens in Tokens"
-        },
-        {
-          "more": "Deep dive: try it live",
-          "text": "<a href=\"https://poloclub.github.io/transformer-explainer/\" target=\"_blank\" rel=\"noopener noreferrer\">Transformer Explainer, by Georgia Tech's Polo Club</a> runs a real GPT-2 model in your browser. Type your own text and watch each run: embeddings, attention, the MLP, then the next-token probabilities. Good to keep open alongside this chapter."
-        }
-      ],
-      "viz": [
-        {
-          "type": "stepper",
-          "accumulate": true,
-          "nextLabel": "Next run",
-          "steps": [
-            {
-              "item": {
-                "label": "The pizza is ready",
-                "sub": "[791, 23317, 374, 5644]",
-                "value": "input",
-                "tone": "muted"
-              },
-              "caption": "The model gets the token IDs of the text so far."
-            },
-            {
-              "item": {
-                "label": "The pizza is ready <b>for</b>",
-                "sub": "run 1 read 4 tokens and picked “ for” (42%)",
-                "value": "+1",
-                "tone": "accent"
-              },
-              "caption": "The winner is appended. The input is now one token longer."
-            },
-            {
-              "item": {
-                "label": "The pizza is ready for <b>you</b>",
-                "sub": "run 2 read 5 tokens and picked “ you” (58%)",
-                "value": "+1",
-                "tone": "accent"
-              },
-              "caption": "The model runs again on everything, including its own last word."
-            },
-            {
-              "item": {
-                "label": "The pizza is ready for you<b>!</b>",
-                "sub": "run 3 read 6 tokens and picked “!” (47%)",
-                "value": "+1",
-                "tone": "accent"
-              },
-              "caption": "One token per run, every time."
-            },
-            {
-              "item": {
-                "label": "end token",
-                "sub": "run 4: the reply looks complete, so the end token wins (81%)",
-                "value": "stop",
-                "tone": "pos"
-              },
-              "caption": "The end token is never shown. It just tells the app to stop the loop."
-            }
-          ]
         }
       ],
       "figure": [
@@ -451,7 +376,7 @@
         {
           "src": "images/next-token-light.svg",
           "darkSrc": "images/next-token-dark.svg",
-          "alt": "How an LLM predicts the next token for \"The pizza is ready\". 1: split into tokens The, space pizza, space is, space ready. 2: look up token IDs, 791, 23317, 374 and 5644 in GPT-4. 3: turn IDs into vectors of numbers, plus position. 4: run the transformer: N identical layers, each with layer norm, self-attention, where ready looks back at every earlier token, layer norm and a feed-forward network; then layer norm and linear plus softmax, giving one score per vocabulary token. Self-attention is the subject of the next chapter. 5: score every possible token, for 42%, to 31%, at 12%, now 6%, and pick one, giving The pizza is ready for. 6: add it to the text and run again, one token at a time. Values are illustrative.",
+          "alt": "How an LLM predicts the next token for \"The pizza is ready\". 1: split into tokens The, space pizza, space is, space ready. 2: look up token IDs, 791, 23317, 374 and 5644 in GPT-4. 3: turn IDs into vectors of numbers; each input vector is the token embedding plus the position embedding. 4: run the transformer on these token plus position embeddings: N identical layers, each with layer norm, self-attention, where ready looks back at every earlier token, layer norm and a feed-forward network; then layer norm and linear plus softmax, giving one score per vocabulary token. Self-attention is the subject of the next chapter. 5: score every possible token, for 42%, to 31%, at 12%, now 6%, and pick one, giving The pizza is ready for. 6: add it to the text and run again, one token at a time. Values are illustrative.",
           "width": 1200,
           "height": 640,
           "caption": "One run in full, from text to the next token. Attention, the highlighted box, is the next chapter."
@@ -463,13 +388,14 @@
       "body": [
         "<mark>GPT stands for <b>G</b>enerative <b>P</b>re-trained <b>T</b>ransformer.</mark>",
         {
-          "ul": [
-            "A <b>transformer</b> is a type of neural network architecture designed to process sequences of information using <b>attention</b>.",
-            "It was introduced in the 2017 paper <b>“Attention Is All You Need”</b>.",
-            "Before transformers, sequence models commonly used architectures such as <b>RNNs</b> and <b>LSTMs</b>, which processed text more sequentially."
-          ]
+          "h": "Before: one word at a time"
         },
-        "In 2017, Google researchers published “Attention Is All You Need”. Their transformer reads all the tokens at once, and attention links any two words directly, however far apart they are."
+        "<b>RNNs</b> and <b>LSTMs</b> read a sentence word by word, carrying a small memory from each word to the next. By the end of a long sentence, early words have faded, and the step-by-step reading is slow to train.",
+        {
+          "h": "The transformer: all at once"
+        },
+        "In 2017, “Attention Is All You Need” introduced the transformer. It reads every word at the same time, and <b>attention</b> links any two words directly, however far apart they are.",
+        "<mark>In training, a transformer processes every word of a text in one pass instead of waiting word by word. GPUs are built for exactly that kind of work, which is what made huge GPT models possible.</mark> Writing an answer still happens one token at a time, as on the previous slide."
       ],
       "viz": [
         {
@@ -1011,7 +937,11 @@
       "body": [
         "Every GPT-style model, from GPT-2 to today's chatbots, follows this plan. Use this slide as a map: click any part on the right to jump to where it's explained.",
         "<mark>Almost all the work happens in the transformer block, repeated many times. Bigger models mostly stack more blocks and make each one wider.</mark>",
-        "GPT-2 stacks 12 blocks, 768 numbers wide. Llama 3 8B stacks 32 blocks, 4,096 wide."
+        "GPT-2 stacks 12 blocks, 768 numbers wide. Llama 3 8B stacks 32 blocks, 4,096 wide.",
+        {
+          "more": "Deep dive: try it live",
+          "text": "<a href=\"https://poloclub.github.io/transformer-explainer/\" target=\"_blank\" rel=\"noopener noreferrer\">Transformer Explainer, by Georgia Tech's Polo Club</a> runs a real GPT-2 model in your browser. Type any text and watch it pass through every part of this picture, down to the next-token probabilities."
+        }
       ],
       "viz": [
         {
