@@ -65,8 +65,8 @@
           "more": "Where do these come from?",
           "text": "The tokenizer and its vocabulary are covered in Tokens; the embedding table and position vectors in Token + position.",
           "goto": {
-            "chapter": "transformer",
-            "slide": 4
+            "chapter": "embeddings",
+            "slide": 9
           },
           "link": "Token + position, in Transformer architecture"
         }

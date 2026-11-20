@@ -94,37 +94,42 @@ const LAYOUTS: readonly { id: Layout; label: string; title: string; icon: string
             <p>The slide follows the video. Change slide and the video jumps to it.</p>
           </details>
           @if (v.marks?.length) {
-            <ol class="marks" aria-label="In this video">
-              @for (m of v.marks; track m.at; let i = $index) {
-                <li>
-                  <button
-                    type="button"
-                    [attr.aria-current]="i === markIndex() ? 'true' : null"
-                    (click)="player()?.jumpTo(m.at)"
-                  >
-                    <span class="at">{{ clock(m.at) }}</span
-                    >{{ m.label }}
-                  </button>
-                </li>
-              }
-            </ol>
+            <details class="how stamps">
+              <summary>In this video · {{ v.marks!.length }} timestamps</summary>
+              <ol class="marks" aria-label="In this video">
+                @for (m of v.marks; track m.at; let i = $index) {
+                  <li>
+                    <button
+                      type="button"
+                      [attr.aria-current]="i === markIndex() ? 'true' : null"
+                      (click)="player()?.jumpTo(m.at)"
+                    >
+                      <span class="at">{{ clock(m.at) }}</span
+                      >{{ m.label }}
+                    </button>
+                  </li>
+                }
+              </ol>
+            </details>
           }
           @if (count() > 1) {
-            <p class="sub">Videos in this chapter</p>
-            <ol class="marks playlist" aria-label="Videos in this chapter">
-              @for (pv of nav.videos(); track pv.src; let n = $index) {
-                <li>
-                  <button
-                    type="button"
-                    [attr.aria-current]="pv === v ? 'true' : null"
-                    (click)="nav.gotoVideo(n)"
-                  >
-                    <span class="at">{{ n + 1 }}</span
-                    >{{ pv.title }}
-                  </button>
-                </li>
-              }
-            </ol>
+            <details class="how stamps">
+              <summary>Videos in this chapter · {{ count() }}</summary>
+              <ol class="marks playlist" aria-label="Videos in this chapter">
+                @for (pv of nav.videos(); track pv.src; let n = $index) {
+                  <li>
+                    <button
+                      type="button"
+                      [attr.aria-current]="pv === v ? 'true' : null"
+                      (click)="nav.gotoVideo(n)"
+                    >
+                      <span class="at">{{ n + 1 }}</span
+                      >{{ pv.title }}
+                    </button>
+                  </li>
+                }
+              </ol>
+            </details>
           }
         </section>
       }
