@@ -8,6 +8,7 @@
   [class.fs]="fullscreen()"
   (pointermove)="wake()"
   (pointerdown)="wake()"
+  (keydown)="onFrameKey($event)"
 >
   <video
     #video
@@ -73,6 +74,10 @@
 
   @if (waiting() && playing()) {
     <span class="spin" role="status" aria-label="Loading"></span>
+  }
+
+  @if (trapHint()) {
+    <div class="toast tip" role="status">Tab stays in the player while it plays · Esc to leave</div>
   }
 
   @if (resumedFrom(); as at) {

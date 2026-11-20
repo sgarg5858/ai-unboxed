@@ -97,6 +97,8 @@ import { ChangeDetectionStrategy, Component, ElementRef, viewChild } from '@angu
         <dd>Slower, faster</dd>
         <dt><kbd>0</kbd>–<kbd>9</kbd></dt>
         <dd>Jump to 0%–90%</dd>
+        <dt><kbd>Tab</kbd> <kbd>Esc</kbd></dt>
+        <dd>While playing, Tab stays in the player's controls; Esc lets it leave</dd>
       </dl>
     </dialog>
   `,

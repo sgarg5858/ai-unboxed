@@ -204,6 +204,9 @@ button:focus-visible {
   -webkit-backdrop-filter: blur(10px);
   font-size: 13.5px;
 }
+.tip {
+  padding: 6px 14px;
+}
 .toast button {
   padding: 5px 12px;
   font-size: 13px;

@@ -79,6 +79,8 @@ export class VideoPlayer {
   /** The "−10 s" bubble; `key` restarts its animation on every press. */
   protected readonly flash = signal<{ dir: 1 | -1; amount: number; key: number } | null>(null);
   protected readonly resumedFrom = signal<number | null>(null);
+  /** "Tab stays in the player…", shown the first time focus wraps around. */
+  protected readonly trapHint = signal(false);
   /** Read-only views for pages that follow the video (see SplitView). */
   readonly time = this.current.asReadonly();
 
@@ -97,6 +99,10 @@ export class VideoPlayer {
   private flashTimer?: ReturnType<typeof setTimeout>;
   private toastTimer?: ReturnType<typeof setTimeout>;
   private lastSaved = 0;
+  private hintTimer?: ReturnType<typeof setTimeout>;
+  /** Esc lets Tab leave the player until the video plays again. */
+  private trapReleased = false;
+  private hintShown = false;
 
   constructor() {
     // A new start time for a video that's already loaded (e.g. switching to Watch from another slidehis part" on another slide).
@@ -109,6 +115,7 @@ export class VideoPlayer {
       clearTimeout(this.wakeTimer);
       clearTimeout(this.flashTimer);
       clearTimeout(this.toastTimer);
+      clearTimeout(this.hintTimer);
     });
   }
 
@@ -239,6 +246,46 @@ export class VideoPlayer {
     return true;
   }
 
+  // ---- focus trap ----------------------------------------------------------------------------
+
+  /**
+   * While the video plays, Tab and Shift+Tab cycle through the player's controls instead of
+   * leaving it. Esc (or pausing) lets focus out again, so it's never a keyboard trap (WCAG 2.1.2).
+   */
+  protected onFrameKey(e: KeyboardEvent) {
+    if (!this.playing() || this.trapReleased) return;
+    if (e.key === 'Escape') {
+      this.trapReleased = true;
+      this.trapHint.set(false);
+      return;
+    }
+    if (e.key !== 'Tab') return;
+    const els = this.focusables();
+    if (!els.length) return;
+    const i = els.indexOf(document.activeElement as HTMLElement);
+    const wrap = e.shiftKey ? i <= 0 : i === -1 || i === els.length - 1;
+    this.wake();
+    if (!wrap) return;
+    e.preventDefault();
+    els[e.shiftKey ? els.length - 1 : 0].focus();
+    if (!this.hintShown) {
+      this.hintShown = true;
+      this.trapHint.set(true);
+      this.hintTimer = setTimeout(() => this.trapHint.set(false), 4000);
+    }
+  }
+
+  /** The player's controls that can take focus right now, in tab order. */
+  private focusables(): HTMLElement[] {
+    const sel = 'button, input, a[href], [tabindex]:not([tabindex="-1"])';
+    return [...this.frame().nativeElement.querySelectorAll<HTMLElement>(sel)].filter(
+      (el) =>
+        !el.hasAttribute('disabled') &&
+        el.getClientRects().length > 0 &&
+        getComputedStyle(el).visibility !== 'hidden',
+    );
+  }
+
   // ---- picture gestures ----------------------------------------------------------------------
 
   /** Double-click: left third skips back, right third skips on, the middle goes full screen. */
@@ -277,6 +324,7 @@ export class VideoPlayer {
   }
 
   protected onPlay() {
+    this.trapReleased = false;
     this.playing.set(true);
     this.started.set(true);
     this.ended.set(false);
