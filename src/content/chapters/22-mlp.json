@@ -696,7 +696,7 @@
           ],
           "goto": {
             "chapter": "block",
-            "slide": 6
+            "slide": 7
           },
           "link": "Mixture of experts, in The transformer block"
         }

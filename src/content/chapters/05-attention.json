@@ -120,11 +120,11 @@
     {
       "src": "videos/attention/attention_heads_cost_position.mp4",
       "title": "Attention 3 · Many heads, and the cost",
-      "description": "Each attention head asks its own question, with its own name tags and backpacks; what heads specialise in; why long prompts are expensive; and how word order is handled.",
+      "description": "Each attention head asks its own question with its own name tags and backpacks; how W_O (768 × 768) mixes the 12 heads' answers back into the token; what heads specialise in; why long prompts are expensive; and how word order is handled.",
       "slides": [7, 8],
       "at": {
         "7": 10,
-        "8": 89
+        "8": 124
       },
       "marks": [
         {
@@ -152,23 +152,31 @@
           "label": "Joining the answers"
         },
         {
-          "at": 72,
+          "at": 65,
+          "label": "W_O: mixing the heads (768 × 768)"
+        },
+        {
+          "at": 87,
+          "label": "Attention's parameters: ≈ 2.36M per layer"
+        },
+        {
+          "at": 107,
           "label": "What heads specialise in"
         },
         {
-          "at": 89,
+          "at": 124,
           "label": "The cost: every word checks every name tag"
         },
         {
-          "at": 98,
+          "at": 132,
           "label": "2× the words, 4× the work"
         },
         {
-          "at": 117,
+          "at": 152,
           "label": "Why long prompts cost more"
         },
         {
-          "at": 131,
+          "at": 166,
           "label": "Word order"
         }
       ]
@@ -566,6 +574,7 @@
           ]
         },
         "The heads' answers are joined, so “it” now knows it's the cat, that it sat, and what came just before.",
+        "Joining isn't quite the end. The 12 answers (64 numbers each) sit side by side as 768 numbers, and a last learned table, <b>W_O</b> (768 × 768), mixes them and writes the result into the token's vector. Think of it as each head's own write-back table, all added together. W_O alone is 589,824 parameters per layer; with W_Q, W_K and W_V, attention holds about 2.36 million.",
         {
           "note": "Picture a team reading the same document, each person looking for something different, who then share their notes.",
           "kind": "analogy"
