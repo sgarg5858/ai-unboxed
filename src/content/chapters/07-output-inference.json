@@ -6,7 +6,7 @@
     {
       "src": "videos/output/kv_cache.mp4",
       "title": "The KV cache",
-      "description": "Why writing each token would mean re-reading the whole text, how saving keys and values fixes it, prefill vs decode, what one layer's cache holds for every head, how grouped-query attention shrinks it, and how prompt caching reuses it.",
+      "description": "Why writing each token would mean re-reading the whole text, how saving keys and values fixes it, prefill vs decode, what one layer's cache holds (W_Q, W_K, W_V are 768 × 64 per head), grouped-query attention, prompt caching, and how long the cache is kept.",
       "marks": [
         {
           "at": 0,
@@ -33,24 +33,32 @@
           "label": "Inside one layer: learned tables, computed Q, K, V"
         },
         {
-          "at": 156,
+          "at": 139,
+          "label": "768 × 64: why each head gets 64"
+        },
+        {
+          "at": 180,
           "label": "12 heads → 768 keys and values per token"
         },
         {
-          "at": 169,
+          "at": 193,
           "label": "GPT-2 and Llama: the totals"
         },
         {
-          "at": 216,
+          "at": 240,
           "label": "Grouped-query attention"
         },
         {
-          "at": 255,
+          "at": 279,
           "label": "Quantization and paging"
         },
         {
-          "at": 277,
+          "at": 301,
           "label": "Prompt caching"
+        },
+        {
+          "at": 364,
+          "label": "How long is the cache kept?"
         }
       ],
       "slides": [4, 4]
@@ -214,18 +222,29 @@
             "<b>Fixes</b>: GQA (fewer key/value heads), storing the cache with fewer bits, and managing it in fixed-size pages, the way a computer manages RAM (PagedAttention, used by vLLM)."
           ]
         },
+        {
+          "h": "What's in the cache, in GPT-2 small"
+        },
+        {
+          "ul": [
+            "<b>W_Q, W_K, W_V</b>: one each per head, <b>768 × 64</b>. They take a token's 768 numbers and give back 64. All 12 heads side by side make one 768 × 768 table each.",
+            "<b>Why 64?</b> The 768-wide vector is split across 12 heads: 768 ÷ 12 = 64. At the end, the 12 heads' outputs are joined back into 768.",
+            "<b>Per token, per layer</b>: 12 heads × 64 = 768 keys and 768 values saved in the cache."
+          ]
+        },
         "Use the sliders to work out the cache size for a typical 8B model, then push the length up to 1M tokens.",
         {
           "note": "It's memoisation: saving results whose inputs don't change. The trade-off is the classic one: more memory for more speed.",
           "kind": "dev"
+        },
+        {
+          "more": "How long is the cache kept?",
+          "text": [
+            "<b>During one request</b>, it lives in GPU memory while the reply is being written, and is freed when the reply ends.",
+            "<b>Across chat turns</b>, each new message resends the whole conversation, so without prompt caching the cache is built again from scratch.",
+            "<b>With prompt caching</b>, providers keep the cache for a matching opening for a few minutes (around 5 by default, longer on request; check your provider's docs). Self-hosted servers such as vLLM keep it until GPU memory runs short."
+          ]
         }
-      ],
-      "code": [
-        "# decode step with cache",
-        "q, k, v = proj(x_new)                 # only the new token",
-        "cache_k = torch.cat([cache_k, k], dim=2)",
-        "cache_v = torch.cat([cache_v, v], dim=2)",
-        "out = attention(q, cache_k, cache_v)"
       ],
       "viz": [
         {

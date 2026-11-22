@@ -316,6 +316,10 @@
       "body": [
         "Many top models replace each layer's single MLP with a group of <b>experts</b>: several separate MLPs, plus a small <b>router</b>. For each token, the router picks the best few experts (often 2, sometimes 8 out of more than 100) and mixes their outputs.",
         {
+          "note": "Think of a hospital with many specialists. Reception (the router) sends each patient (token) to the couple of specialists who fit, not to all of them.",
+          "kind": "analogy"
+        },
+        {
           "ul": [
             "<b>The benefit</b>: the total number of parameters, and so how much the model can know, grows a lot. <mark>But each token only goes through a few experts, so the work per token stays small.</mark>",
             "<b>The cost</b>: every expert has to be kept in GPU memory, even when it's not being used.",

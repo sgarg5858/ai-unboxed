@@ -146,7 +146,7 @@
     {
       "src": "videos/transformer/mlp_layer.mp4",
       "title": "Part 4 · The MLP (feed-forward)",
-      "description": "After attention, each token thinks it over on its own: expand 4× wider, keep the strong signals, shrink back and add. Why the wide middle works like thousands of detectors, and where a model's knowledge lives.",
+      "description": "After attention, each token thinks it over on its own: expand, keep the strong signals, shrink back and add. What expanding looks like in GPT-2, what real detectors respond to, SwiGLU, and mixture of experts explained simply.",
       "slides": [7, 7],
       "at": {
         "7": 0
@@ -161,16 +161,32 @@
           "label": "Expand, keep, shrink"
         },
         {
-          "at": 47,
-          "label": "Why: thousands of detectors"
+          "at": 48,
+          "label": "Expanding, in GPT-2"
         },
         {
-          "at": 75,
+          "at": 71,
+          "label": "Only a few detectors fire"
+        },
+        {
+          "at": 91,
+          "label": "What real detectors respond to"
+        },
+        {
+          "at": 111,
           "label": "Where knowledge lives"
         },
         {
-          "at": 85,
-          "label": "SwiGLU and mixture of experts"
+          "at": 122,
+          "label": "SwiGLU"
+        },
+        {
+          "at": 132,
+          "label": "Mixture of experts"
+        },
+        {
+          "at": 158,
+          "label": "Mixtral: stored vs used"
         }
       ]
     },
@@ -862,14 +878,14 @@
             "chapter": "mlp",
             "slide": 2
           },
-          "link": "Step by step, in The MLP layer"
+          "link": "Vectors in, vectors out, in The MLP layer"
         },
         {
           "more": "What do modern models use?",
           "text": "Llama and most new models use <b>SwiGLU</b>, a version with a gate that decides how much of each signal to let through. <b>Mixture-of-experts</b> models keep many feed-forward networks and send each token to just a few of them.",
           "goto": {
             "chapter": "mlp",
-            "slide": 6
+            "slide": 7
           },
           "link": "SwiGLU, in The MLP layer"
         }

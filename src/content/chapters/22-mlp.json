@@ -4,15 +4,58 @@
   "name": "The MLP layer",
   "videos": [
     {
+      "src": "videos/mlp/mlp_vectors.mp4",
+      "title": "MLP · Vectors in, vectors out",
+      "description": "At the vector level, with no maths: the one vector that comes in from attention, the detectors the MLP holds (a pattern and a write-back each, learned once and fixed), how detecting and writing back work, and what comes out.",
+      "slides": [1, 2],
+      "at": {
+        "1": 0,
+        "2": 14
+      },
+      "marks": [
+        {
+          "at": 0,
+          "label": "Intro"
+        },
+        {
+          "at": 14,
+          "label": "What goes in: one vector"
+        },
+        {
+          "at": 44,
+          "label": "What the MLP holds: detectors"
+        },
+        {
+          "at": 83,
+          "label": "Detecting: do they line up?"
+        },
+        {
+          "at": 111,
+          "label": "Switching off the negatives"
+        },
+        {
+          "at": 120,
+          "label": "Writing back"
+        },
+        {
+          "at": 149,
+          "label": "What comes out"
+        },
+        {
+          "at": 155,
+          "label": "Parameters vs vectors"
+        }
+      ]
+    },
+    {
       "src": "videos/mlp/mlp_step_by_step.mp4",
       "title": "MLP 1 · Step by step",
       "description": "What the MLP does for each token after attention, then its three steps for “it”: expand into detectors, bend with GELU, shrink back and add.",
-      "slides": [1, 4],
+      "slides": [3, 5],
       "at": {
-        "1": 12,
-        "2": 44,
-        "3": 96,
-        "4": 131
+        "3": 44,
+        "4": 96,
+        "5": 131
       },
       "marks": [
         {
@@ -52,12 +95,12 @@
     {
       "src": "videos/mlp/mlp_gelu_swiglu_memory.mp4",
       "title": "MLP 2 · GELU, SwiGLU and memory",
-      "description": "ReLU, GELU and SiLU side by side, the gate in SwiGLU, what the MLP stores as keys and values, where the parameters are, and mixture of experts.",
-      "slides": [5, 7],
+      "description": "ReLU, GELU and SiLU side by side, the gate in SwiGLU, what the MLP stores as keys and values, where the parameters are, and mixture of experts explained simply.",
+      "slides": [6, 8],
       "at": {
-        "5": 11,
-        "6": 54,
-        "7": 97
+        "6": 11,
+        "7": 55,
+        "8": 98
       },
       "marks": [
         {
@@ -73,15 +116,15 @@
           "label": "ReLU and dead neurons"
         },
         {
-          "at": 54,
+          "at": 55,
           "label": "SwiGLU: a gate"
         },
         {
-          "at": 82,
+          "at": 83,
           "label": "Why the middle is narrower"
         },
         {
-          "at": 97,
+          "at": 98,
           "label": "Keys and values"
         },
         {
@@ -89,8 +132,12 @@
           "label": "Where the parameters are"
         },
         {
-          "at": 138,
+          "at": 139,
           "label": "Mixture of experts"
+        },
+        {
+          "at": 165,
+          "label": "Mixtral: stored vs used"
         }
       ]
     }
@@ -192,6 +239,132 @@
         "width": 1200,
         "height": 560,
         "caption": "Attention mixes between tokens; the MLP runs on each token separately, then adds its result back."
+      }
+    },
+    {
+      "title": "Vectors in, vectors out: what the MLP holds",
+      "summary": "The MLP gets one vector per token, compares it with thousands of learned patterns, and adds back what the matching ones write.",
+      "body": [
+        "What goes in is one vector per token: 768 numbers in GPT-2. For “it”, that's the word itself plus what attention blended in from “cat”: a pronoun, an animal, the one that sat.",
+        {
+          "h": "What the MLP holds"
+        },
+        "Its <b>parameters</b>: 3,072 <b>detectors</b> per layer, learned in training and then fixed. Each detector is just two vectors of 768 numbers:",
+        {
+          "ul": [
+            "<b>A pattern</b> 🔍: what it looks for.",
+            "<b>A write-back</b> ✍: what it adds when it fires."
+          ]
+        },
+        {
+          "h": "What happens to “it”"
+        },
+        {
+          "ul": [
+            "<b>Detect:</b> the token's vector is compared with every pattern. If the two line up, that detector fires.",
+            "<b>Keep:</b> negative results are switched off.",
+            "<b>Write back:</b> each firing detector adds its write-back, scaled by how strongly it fired. Together they make one new vector, added to “it”."
+          ]
+        },
+        "<mark>Parameters (the patterns and write-backs) are learned once and then fixed; vectors (the token's own numbers) are new for every token, every time.</mark>",
+        {
+          "note": "For “it”, the detector whose pattern is “a pronoun pointing to an animal” fires, and writes back something like “this is the cat: alive, can get tired”. A detector looking for “a date” stays quiet.",
+          "kind": "example"
+        },
+        {
+          "more": "Show the maths",
+          "text": "Comparing is a dot product of the token's vector with each pattern. The 3,072 patterns are the columns of the first matrix (768 × 3,072), and the write-backs are the rows of the second (3,072 × 768). That's 768 × 3,072 × 2 ≈ 4.7 million weights per layer."
+        }
+      ],
+      "viz": [
+        {
+          "type": "table",
+          "rows": [
+            {
+              "head": "",
+              "cells": [
+                {
+                  "text": "Size"
+                },
+                {
+                  "text": "Changes?"
+                }
+              ]
+            },
+            {
+              "head": "Vector in (“it”)",
+              "cells": [
+                {
+                  "text": "768"
+                },
+                {
+                  "text": "every token",
+                  "tone": "accent"
+                }
+              ]
+            },
+            {
+              "head": "Patterns 🔍",
+              "cells": [
+                {
+                  "text": "3,072 × 768"
+                },
+                {
+                  "text": "fixed",
+                  "tone": "heat"
+                }
+              ]
+            },
+            {
+              "head": "Firing strengths",
+              "cells": [
+                {
+                  "text": "3,072"
+                },
+                {
+                  "text": "every token",
+                  "tone": "accent"
+                }
+              ]
+            },
+            {
+              "head": "Write-backs ✍",
+              "cells": [
+                {
+                  "text": "3,072 × 768"
+                },
+                {
+                  "text": "fixed",
+                  "tone": "heat"
+                }
+              ]
+            },
+            {
+              "head": "Vector out",
+              "cells": [
+                {
+                  "text": "768"
+                },
+                {
+                  "text": "every token",
+                  "tone": "accent"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "caption",
+          "html": "One MLP layer of GPT-2. Orange = parameters, learned once. Blue = vectors, new every time."
+        }
+      ],
+      "figure": {
+        "src": "images/mlp-vectors-light.svg",
+        "darkSrc": "images/mlp-vectors-dark.svg",
+        "alt": "Three panels. In: one vector per token, 768 numbers; for “it” it carries a pronoun, an animal and the one that sat, from attention; it is new for every token. Inside, the MLP’s parameters, learned once and fixed: 3,072 detectors per layer, each a pattern (what it looks for) and a write-back (what it adds). Shown: “pronoun → animal” and “a living thing”, whose patterns line up with “it”, and “a date”, whose pattern doesn’t. The steps: compare with each pattern, keep the ones that fire, add their write-backs. Out: a vector of the same size, now also saying “this is the cat: alive, can get tired”, passed to the next layer. Parameters are learned once; vectors are new for every token, every time.",
+        "width": 1200,
+        "height": 460,
+        "caption": "One vector in, thousands of fixed detectors inside, one richer vector out."
       }
     },
     {
@@ -515,8 +688,12 @@
         },
         "The MLP has two or three big matrices; attention has four smaller ones. Per layer, the MLP holds two thirds of the weights in GPT-2 small, and about 81% in Llama 3 8B.",
         {
-          "more": "Mixture of experts: many MLPs, a few at a time",
-          "text": "Mixture-of-experts models replace each MLP with many smaller ones, the experts, and a router sends each token to just a few. Mixtral 8x7B has 8 experts per layer and uses 2 per token, so it holds about 47 billion parameters but uses about 13 billion for each token.",
+          "more": "Mixture of experts: many MLPs, only a few run",
+          "text": [
+            "Some models split each MLP into several smaller ones, called <b>experts</b> (say 8), plus a small <b>router</b>. For each token, the router picks the 2 experts that fit it best, and only those run.",
+            "Think of a hospital with 8 specialists: reception sends you to the 2 who fit your case, not to all 8. So the model can store a lot, but each token only pays for 2 experts. Mixtral 8x7B stores about 47 billion parameters but uses only about 13 billion for each token.",
+            "The experts aren't neatly “the maths expert” or “the French expert”: the router learns its own way of splitting the work."
+          ],
           "goto": {
             "chapter": "block",
             "slide": 6

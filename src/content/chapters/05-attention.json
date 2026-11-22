@@ -163,7 +163,7 @@
     {
       "src": "videos/output/kv_cache.mp4",
       "title": "The KV cache",
-      "description": "Why writing each token would mean re-reading the whole text, how saving keys and values fixes it, prefill vs decode, what one layer's cache holds for every head, how grouped-query attention shrinks it, and how prompt caching reuses it.",
+      "description": "Why writing each token would mean re-reading the whole text, how saving keys and values fixes it, prefill vs decode, what one layer's cache holds (W_Q, W_K, W_V are 768 × 64 per head), grouped-query attention, prompt caching, and how long the cache is kept.",
       "marks": [
         {
           "at": 0,
@@ -190,24 +190,32 @@
           "label": "Inside one layer: learned tables, computed Q, K, V"
         },
         {
-          "at": 156,
+          "at": 139,
+          "label": "768 × 64: why each head gets 64"
+        },
+        {
+          "at": 180,
           "label": "12 heads → 768 keys and values per token"
         },
         {
-          "at": 169,
+          "at": 193,
           "label": "GPT-2 and Llama: the totals"
         },
         {
-          "at": 216,
+          "at": 240,
           "label": "Grouped-query attention"
         },
         {
-          "at": 255,
+          "at": 279,
           "label": "Quantization and paging"
         },
         {
-          "at": 277,
+          "at": 301,
           "label": "Prompt caching"
+        },
+        {
+          "at": 364,
+          "label": "How long is the cache kept?"
         }
       ],
       "slides": [8, 8],
@@ -463,6 +471,14 @@
             "slide": 4
           },
           "link": "The KV cache, in Output & inference"
+        },
+        {
+          "more": "How long is the cache kept?",
+          "text": [
+            "<b>During one request</b>, it lives in GPU memory while the reply is being written, and is freed when the reply ends.",
+            "<b>Across chat turns</b>, each new message resends the whole conversation, so without prompt caching the cache is built again from scratch.",
+            "<b>With prompt caching</b>, providers keep the cache for a matching opening for a few minutes (around 5 by default, longer on request; check your provider's docs). Self-hosted servers such as vLLM keep it until GPU memory runs short."
+          ]
         }
       ],
       "viz": [
@@ -474,6 +490,14 @@
               "cells": [
                 {
                   "text": "Size"
+                }
+              ]
+            },
+            {
+              "head": "W_Q, W_K, W_V (per head)",
+              "cells": [
+                {
+                  "text": "768 × 64 each · 12 heads"
                 }
               ]
             },
