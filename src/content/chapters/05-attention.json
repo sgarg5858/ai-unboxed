@@ -176,7 +176,7 @@
     {
       "src": "videos/output/kv_cache.mp4",
       "title": "The KV cache",
-      "description": "Why writing each token would mean re-reading the whole text, how saving keys and values fixes it, prefill vs decode, what one layer's cache holds (W_Q, W_K, W_V are 768 × 64 per head), grouped-query attention, prompt caching, and how long the cache is kept.",
+      "description": "Why writing each token would mean re-reading the whole text, how saving keys and values fixes it, prefill vs decode, what one layer's cache holds (W_Q, W_K, W_V are 768 × 64 per head), grouped-query attention, how prompt caching saves and reuses the KV cache, and how long it's kept.",
       "marks": [
         {
           "at": 0,
@@ -224,10 +224,26 @@
         },
         {
           "at": 302,
-          "label": "Prompt caching"
+          "label": "Prompt caching: the problem"
         },
         {
-          "at": 365,
+          "at": 330,
+          "label": "Who keeps it, and what's kept"
+        },
+        {
+          "at": 355,
+          "label": "Matching token by token"
+        },
+        {
+          "at": 369,
+          "label": "Why it must be exact"
+        },
+        {
+          "at": 380,
+          "label": "The payoff, and a tip"
+        },
+        {
+          "at": 392,
           "label": "How long is the cache kept?"
         }
       ],
