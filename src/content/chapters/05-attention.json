@@ -50,12 +50,13 @@
       "src": "videos/attention/attention_step_by_step.mp4",
       "title": "Attention 2 · Query, key and value, simply",
       "description": "Every word brings a name tag (key), a backpack (value) and a question (query). Follow “it” as it finds “cat”, see what's learned (W_Q, W_K, W_V) versus computed (the vectors and dot products), and why keys and values are cached.",
-      "slides": [2, 5],
+      "slides": [2, 6],
       "at": {
         "2": 17,
-        "3": 64,
-        "4": 67,
-        "5": 79
+        "3": 169,
+        "4": 64,
+        "5": 67,
+        "6": 79
       },
       "marks": [
         {
@@ -91,15 +92,27 @@
           "label": "Learned vs computed"
         },
         {
-          "at": 150,
+          "at": 137,
+          "label": "768 × 64: model width and heads"
+        },
+        {
+          "at": 169,
+          "label": "How 768 numbers become 64"
+        },
+        {
+          "at": 197,
+          "label": "Column by column: a tiny example"
+        },
+        {
+          "at": 233,
           "label": "The match is a dot product"
         },
         {
-          "at": 195,
+          "at": 278,
           "label": "Why keys and values are cached"
         },
         {
-          "at": 221,
+          "at": 305,
           "label": "Every layer and head"
         }
       ]
@@ -108,10 +121,10 @@
       "src": "videos/attention/attention_heads_cost_position.mp4",
       "title": "Attention 3 · Many heads, and the cost",
       "description": "Each attention head asks its own question, with its own name tags and backpacks; what heads specialise in; why long prompts are expensive; and how word order is handled.",
-      "slides": [6, 7],
+      "slides": [7, 8],
       "at": {
-        "6": 10,
-        "7": 89
+        "7": 10,
+        "8": 89
       },
       "marks": [
         {
@@ -191,36 +204,36 @@
         },
         {
           "at": 139,
-          "label": "768 × 64: why each head gets 64"
+          "label": "768 × 64: model width and heads"
         },
         {
-          "at": 180,
+          "at": 181,
           "label": "12 heads → 768 keys and values per token"
         },
         {
-          "at": 193,
+          "at": 194,
           "label": "GPT-2 and Llama: the totals"
         },
         {
-          "at": 240,
+          "at": 241,
           "label": "Grouped-query attention"
         },
         {
-          "at": 279,
+          "at": 280,
           "label": "Quantization and paging"
         },
         {
-          "at": 301,
+          "at": 302,
           "label": "Prompt caching"
         },
         {
-          "at": 364,
+          "at": 365,
           "label": "How long is the cache kept?"
         }
       ],
-      "slides": [8, 8],
+      "slides": [9, 9],
       "at": {
-        "8": 0
+        "9": 0
       }
     }
   ],
@@ -285,6 +298,7 @@
           "note": "<b>Learned in training:</b> only the three tables, <code>W_Q</code>, <code>W_K</code> and <code>W_V</code>, one set per head in every layer. They're fixed afterwards. <b>Worked out every time you send text:</b> each token's query, key and value vectors, by multiplying the token's vector by those tables.",
           "kind": "key"
         },
+        "In GPT-2, each table is <b>768 × 64</b>. <b>768</b> is the model's width: the size of every token's vector, the same as its embedding size, chosen by the designers before training. <b>64</b> is that width split across 12 heads (768 ÷ 12).",
         {
           "more": "Show the maths",
           "text": [
@@ -299,6 +313,145 @@
           "name": "qkv-matrices"
         }
       ]
+    },
+    {
+      "title": "How 768 numbers become 64",
+      "summary": "Multiplying a vector by a table: compare the vector with each column, and get one number per column.",
+      "body": [
+        "Each of W_Q, W_K and W_V turns a token's 768 numbers into 64. Here's how that multiplication works, using nothing more than multiplying and adding.",
+        {
+          "h": "The size rule"
+        },
+        "<code>(1 × 768) × (768 × 64) = (1 × 64)</code>. <mark>The inner sizes must match, and the outer sizes are what you get.</mark>",
+        {
+          "h": "Column by column"
+        },
+        {
+          "ul": [
+            "The table has <b>64 columns</b>, and each column is a list of <b>768 numbers</b>, the same length as the token.",
+            "Lay the token's numbers against one column: multiply each pair, then add them all up. That gives <b>one</b> number.",
+            "Do it for all 64 columns, and you get <b>64 numbers</b> out."
+          ]
+        },
+        {
+          "note": "Token [1, 0, 2, 1] and a 4 × 2 table. Column 1 is [1, 0, 0, 1]: 1·1 + 0·0 + 2·0 + 1·1 = 2. Column 2 is [1, 1, 1, 0]: 1·1 + 0·1 + 2·1 + 1·0 = 3. So 4 numbers in, [2, 3] out.",
+          "kind": "example"
+        },
+        "Each column is like one small question about the token, and the 64 answers make up its query, key or value for that head. Each answer is the same “do they line up?” comparison as the matching step: a <b>dot product</b>, done once per column.",
+        {
+          "more": "Where else does this happen?",
+          "text": "All over the model. The MLP's first table is 768 × 3,072, so 768 numbers in and 3,072 out, one per detector. And the very last table turns 768 numbers into one score for every token in the vocabulary."
+        }
+      ],
+      "viz": [
+        {
+          "type": "table",
+          "rows": [
+            {
+              "head": "",
+              "cells": [
+                {
+                  "text": "token"
+                },
+                {
+                  "text": "column 1"
+                },
+                {
+                  "text": "column 2"
+                }
+              ]
+            },
+            {
+              "head": "row 1",
+              "cells": [
+                {
+                  "text": "1",
+                  "tone": "accent"
+                },
+                {
+                  "text": "1"
+                },
+                {
+                  "text": "1"
+                }
+              ]
+            },
+            {
+              "head": "row 2",
+              "cells": [
+                {
+                  "text": "0",
+                  "tone": "accent"
+                },
+                {
+                  "text": "0"
+                },
+                {
+                  "text": "1"
+                }
+              ]
+            },
+            {
+              "head": "row 3",
+              "cells": [
+                {
+                  "text": "2",
+                  "tone": "accent"
+                },
+                {
+                  "text": "0"
+                },
+                {
+                  "text": "1"
+                }
+              ]
+            },
+            {
+              "head": "row 4",
+              "cells": [
+                {
+                  "text": "1",
+                  "tone": "accent"
+                },
+                {
+                  "text": "1"
+                },
+                {
+                  "text": "0"
+                }
+              ]
+            },
+            {
+              "head": "result",
+              "cells": [
+                {
+                  "text": ""
+                },
+                {
+                  "text": "2",
+                  "tone": "heat"
+                },
+                {
+                  "text": "3",
+                  "tone": "heat"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "caption",
+          "html": "Multiply the token by each column row by row, then add down the column: 2 and 3."
+        }
+      ],
+      "figure": {
+        "src": "images/matmul-columns-light.svg",
+        "darkSrc": "images/matmul-columns-dark.svg",
+        "alt": "Left, the size rule: a 1 × 768 token times a 768 × 64 table gives a 1 × 64 result; the inner sizes must match and the outer sizes are what you get. Middle, a tiny example: the token [1, 0, 2, 1] next to a 4 × 2 table. Column 1 is [1, 0, 0, 1]; multiplying pair by pair and adding gives 1·1 + 0·0 + 2·0 + 1·1 = 2. Column 2 gives 3, so the result is [2, 3]: one number per column. Right, GPT-2, one head: 64 columns of 768 numbers each, so 64 comparisons and 64 numbers out; each column asks one small question about the token.",
+        "width": 1200,
+        "height": 430,
+        "caption": "One number per column: that's all a vector-times-table multiplication is."
+      }
     },
     {
       "title": "Step 2: match every question against every name tag",

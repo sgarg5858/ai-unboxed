@@ -34,30 +34,30 @@
         },
         {
           "at": 139,
-          "label": "768 × 64: why each head gets 64"
+          "label": "768 × 64: model width and heads"
         },
         {
-          "at": 180,
+          "at": 181,
           "label": "12 heads → 768 keys and values per token"
         },
         {
-          "at": 193,
+          "at": 194,
           "label": "GPT-2 and Llama: the totals"
         },
         {
-          "at": 240,
+          "at": 241,
           "label": "Grouped-query attention"
         },
         {
-          "at": 279,
+          "at": 280,
           "label": "Quantization and paging"
         },
         {
-          "at": 301,
+          "at": 302,
           "label": "Prompt caching"
         },
         {
-          "at": 364,
+          "at": 365,
           "label": "How long is the cache kept?"
         }
       ],

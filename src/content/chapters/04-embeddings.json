@@ -988,7 +988,7 @@
           "text": "The wave pattern the original Transformer used is covered at the end of the Attention chapter. RoPE, which most modern models use instead, is covered a few slides on, in this chapter.",
           "goto": {
             "chapter": "attention",
-            "slide": 9
+            "slide": 10
           },
           "link": "The wave pattern, in Attention"
         }
