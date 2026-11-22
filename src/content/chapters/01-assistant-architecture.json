@@ -299,7 +299,7 @@
                 "detail": "A store of facts kept across conversations, such as the user's name, preferences or ongoing projects. The conversation manager loads relevant entries into the prompt and saves new ones when the user or model asks. The model itself remembers nothing between calls.",
                 "link": {
                   "chapter": "output",
-                  "slide": 5
+                  "slide": 6
                 }
               },
               "llm": {

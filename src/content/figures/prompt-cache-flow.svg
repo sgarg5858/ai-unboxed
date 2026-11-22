@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 530" role="img" aria-labelledby="t d" font-family="'Schibsted Grotesk', ui-sans-serif, system-ui, sans-serif">
+  <title id="t">Prompt caching, behind the scenes</title>
+  <desc id="d">Three panels. One, where it lives: in the provider’s GPU memory. On an 80 GB H100 serving Llama 3 8B, the weights take about 16 GB, a KV-cache pool of about 56 GB holds both live requests and saved prompt prefixes in blocks of 16 tokens, and a little is working space; if not used for a while it can be offloaded to CPU RAM or SSD and copied back on a hit; when it expires or space is needed it is evicted. Two, how a request finds it: the prompt is cut into blocks, and each block gets a hash of itself plus every block before it. The first two blocks, the shared opening, match saved hashes; the third, your new question, does not. One changed word changes every later hash. The router sends matching prefixes to the same server, where the cache is. Three, how the model uses it: the model only receives the new tokens. In every layer and head, each new token’s query compares with the cached keys plus the new keys, and blends the cached values plus the new values; the new keys and values are appended. The weights are untouched and the result is the same as without caching. A hit skips prefill for the opening, so the reply starts sooner and cached tokens cost less.</desc>
+  <!--theme-->
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arrowhead"/></marker>
+    <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="heatfill"/></marker>
+    <marker id="aa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arrowacc"/></marker>
+  </defs>
+  <rect class="bg" x="0" y="0" width="1200" height="530" rx="18"/>
+  <text x="40" y="52" text-anchor="start" class="ink" font-size="26" font-weight="700">Prompt caching, behind the scenes</text>
+  <text x="40" y="78" text-anchor="start" class="muted" font-size="15">Where the provider keeps the cache, how a request finds it, and how the model uses it.</text>
+  <rect class="card" x="40" y="100" width="360" height="360" rx="10"/>
+  <text x="60" y="130" text-anchor="start" class="accink head" font-size="12">1 · WHERE IT LIVES</text>
+  <rect class="possoft" x="60" y="148" width="320" height="150" rx="10" stroke-width="1.5"/>
+  <text x="76" y="170" text-anchor="start" class="posink" font-size="14" font-weight="700">🖥 GPU memory · e.g. H100, 80 GB</text>
+  <text x="76" y="188" text-anchor="start" class="muted" font-size="12">serving Llama 3 8B</text>
+  <rect class="sunk" x="76" y="198" width="58" height="26" rx="4"/>
+  <text x="105" y="215" text-anchor="middle" class="ink" font-size="10.5" font-weight="700">weights</text>
+  <rect class="pos" x="136.0" y="198" width="23.5" height="26" rx="3" fill-opacity="0.85"/>
+  <rect class="pos" x="161.5" y="198" width="23.5" height="26" rx="3" fill-opacity="0.85"/>
+  <rect class="heatfill" x="187.0" y="198" width="23.5" height="26" rx="3" fill-opacity="0.85"/>
+  <rect class="pos" x="212.5" y="198" width="23.5" height="26" rx="3" fill-opacity="0.85"/>
+  <rect class="pos" x="238.0" y="198" width="23.5" height="26" rx="3" fill-opacity="0.85"/>
+  <rect class="heatfill" x="263.5" y="198" width="23.5" height="26" rx="3" fill-opacity="0.85"/>
+  <rect class="pos" x="289.0" y="198" width="23.5" height="26" rx="3" fill-opacity="0.85"/>
+  <rect class="pos" x="314.5" y="198" width="23.5" height="26" rx="3" fill-opacity="0.85"/>
+  <rect class="card" x="342" y="198" width="22" height="26" rx="4" stroke-width="1"/>
+  <text x="105" y="240" text-anchor="middle" class="muted" font-size="11">16 GB</text>
+  <text x="238" y="240" text-anchor="middle" class="ink" font-size="11.5" font-weight="700">KV cache pool ≈ 56 GB</text>
+  <text x="353" y="240" text-anchor="middle" class="muted" font-size="10">work</text>
+  <rect class="pos" x="76" y="252" width="12" height="12" rx="2"/>
+  <text x="94" y="262" text-anchor="start" class="ink" font-size="12">live requests</text>
+  <rect class="heatfill" x="190" y="252" width="12" height="12" rx="2"/>
+  <text x="208" y="262" text-anchor="start" class="ink" font-size="12">saved prompt prefixes</text>
+  <text x="76" y="286" text-anchor="start" class="muted" font-size="12">blocks of 16 tokens, shared by both</text>
+  <path class="line" d="M220 302 V 324" fill="none" marker-end="url(#a)"/>
+  <text x="232" y="318" text-anchor="start" class="muted" font-size="12">not used for a while</text>
+  <rect class="card" x="60" y="330" width="320" height="52" rx="10" stroke-width="1.5"/>
+  <text x="76" y="352" text-anchor="start" class="ink" font-size="15" font-weight="700">CPU RAM / SSD</text>
+  <text x="76" y="372" text-anchor="start" class="muted" font-size="12.5">offloaded · copied back on a hit</text>
+  <path class="line" d="M220 386 V 404" fill="none" marker-end="url(#a)"/>
+  <text x="232" y="400" text-anchor="start" class="muted" font-size="12">expired, or space needed</text>
+  <rect class="negsoft" x="60" y="408" width="320" height="40" rx="10" stroke-width="1.5"/>
+  <text x="220" y="434" text-anchor="middle" class="negink" font-size="15" font-weight="700">🗑 evicted</text>
+  <rect class="card" x="420" y="100" width="360" height="360" rx="10"/>
+  <text x="440" y="130" text-anchor="start" class="accink head" font-size="12">2 · HOW A REQUEST FINDS IT</text>
+  <rect class="accsoft" x="440" y="150" width="190" height="46" rx="8"/>
+  <text x="535" y="170" text-anchor="middle" class="muted" font-size="11.5">block 1</text>
+  <text x="535" y="187" text-anchor="middle" class="accink" font-size="13" font-weight="600">You are a helpful…</text>
+  <path class="line" d="M634 173 H 652" fill="none" marker-end="url(#a)"/>
+  <text x="660" y="178" text-anchor="start" class="ink mono" font-size="14" font-weight="700">#a1f3</text>
+  <text x="718" y="178" text-anchor="start" class="posink" font-size="14" font-weight="700">✓</text>
+  <rect class="accsoft" x="440" y="212" width="190" height="46" rx="8"/>
+  <text x="535" y="232" text-anchor="middle" class="muted" font-size="11.5">block 2</text>
+  <text x="535" y="249" text-anchor="middle" class="accink" font-size="13" font-weight="600">…support agent, tools</text>
+  <path class="line" d="M634 235 H 652" fill="none" marker-end="url(#a)"/>
+  <text x="660" y="240" text-anchor="start" class="ink mono" font-size="14" font-weight="700">#7c09</text>
+  <text x="718" y="240" text-anchor="start" class="posink" font-size="14" font-weight="700">✓</text>
+  <rect class="heat" x="440" y="274" width="190" height="46" rx="8" stroke-width="1.5"/>
+  <text x="535" y="294" text-anchor="middle" class="muted" font-size="11.5">block 3</text>
+  <text x="535" y="311" text-anchor="middle" class="heatink" font-size="13" font-weight="600">your new question</text>
+  <path class="line" d="M634 297 H 652" fill="none" marker-end="url(#a)"/>
+  <text x="660" y="302" text-anchor="start" class="ink mono" font-size="14" font-weight="700">#e52b</text>
+  <text x="718" y="302" text-anchor="start" class="negink" font-size="14" font-weight="700">✗ new</text>
+  <text x="440" y="354" text-anchor="start" class="muted" font-size="12.5">hash = this block + every block before it</text>
+  <text x="440" y="374" text-anchor="start" class="muted" font-size="12.5">→ one changed word changes every later hash</text>
+  <rect class="sunk" x="440" y="392" width="320" height="52" rx="8"/>
+  <text x="456" y="414" text-anchor="start" class="ink" font-size="13" font-weight="600">🔀 the router sends matching prefixes</text>
+  <text x="456" y="433" text-anchor="start" class="ink" font-size="13" font-weight="600">to the same server (the cache is there)</text>
+  <rect class="possoft" x="800" y="100" width="360" height="360" rx="10" stroke-width="1.5"/>
+  <text x="820" y="130" text-anchor="start" class="posink head" font-size="12">3 · HOW THE MODEL USES IT</text>
+  <text x="820" y="158" text-anchor="start" class="ink" font-size="13" font-weight="600">the model only receives the new tokens:</text>
+  <rect class="heat" x="820" y="168" width="64" height="30" rx="7" stroke-width="1.5"/>
+  <text x="852" y="188" text-anchor="middle" class="heatink" font-size="13" font-weight="700">what</text>
+  <rect class="heat" x="892" y="168" width="64" height="30" rx="7" stroke-width="1.5"/>
+  <text x="924" y="188" text-anchor="middle" class="heatink" font-size="13" font-weight="700">is</text>
+  <rect class="heat" x="964" y="168" width="64" height="30" rx="7" stroke-width="1.5"/>
+  <text x="996" y="188" text-anchor="middle" class="heatink" font-size="13" font-weight="700">my</text>
+  <rect class="heat" x="1036" y="168" width="64" height="30" rx="7" stroke-width="1.5"/>
+  <text x="1068" y="188" text-anchor="middle" class="heatink" font-size="13" font-weight="700">plan?</text>
+  <text x="820" y="226" text-anchor="start" class="ink" font-size="13" font-weight="600">in every layer and head, each new token:</text>
+  <text x="820" y="252" text-anchor="start" class="ink" font-size="13.5">❓ its query compares with</text>
+  <rect class="possoft" x="820" y="262" width="170" height="26" rx="6" stroke-width="1.2"/>
+  <text x="905" y="280" text-anchor="middle" class="posink" font-size="12.5" font-weight="700">🏷 cached keys</text>
+  <text x="1000" y="280" text-anchor="start" class="muted" font-size="15" font-weight="700">+</text>
+  <rect class="heat" x="1014" y="262" width="126" height="26" rx="6" stroke-width="1.2"/>
+  <text x="1077" y="280" text-anchor="middle" class="heatink" font-size="12.5" font-weight="700">🏷 new keys</text>
+  <text x="820" y="312" text-anchor="start" class="ink" font-size="13.5">and blends</text>
+  <rect class="possoft" x="820" y="322" width="170" height="26" rx="6" stroke-width="1.2"/>
+  <text x="905" y="340" text-anchor="middle" class="posink" font-size="12.5" font-weight="700">🎒 cached values</text>
+  <text x="1000" y="340" text-anchor="start" class="muted" font-size="15" font-weight="700">+</text>
+  <rect class="heat" x="1014" y="322" width="126" height="26" rx="6" stroke-width="1.2"/>
+  <text x="1077" y="340" text-anchor="middle" class="heatink" font-size="12.5" font-weight="700">🎒 new values</text>
+  <text x="820" y="376" text-anchor="start" class="ink" font-size="13" font-weight="600">new K and V are appended to the cache</text>
+  <text x="820" y="404" text-anchor="start" class="posink" font-size="13" font-weight="700">🔒 weights untouched</text>
+  <text x="820" y="424" text-anchor="start" class="posink" font-size="13" font-weight="700">same result as without caching</text>
+  <path class="line" d="M404 280 H 416" fill="none" marker-end="url(#a)"/>
+  <path class="line" d="M784 280 H 796" fill="none" marker-end="url(#a)"/>
+  <rect class="sunk" x="40" y="476" width="1120" height="34" rx="8"/>
+  <text x="600" y="498" text-anchor="middle" class="ink" font-size="14" font-weight="600">A hit skips prefill for the opening: the reply starts sooner, and cached tokens cost less.</text>
+</svg>

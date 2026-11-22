@@ -77,7 +77,11 @@
           "label": "How long is the cache kept?"
         }
       ],
-      "slides": [4, 4]
+      "slides": [4, 5],
+      "at": {
+        "4": 0,
+        "5": 302
+      }
     }
   ],
   "slides": [
@@ -277,6 +281,97 @@
           "name": "kv-cache"
         }
       ]
+    },
+    {
+      "title": "Prompt caching, behind the scenes",
+      "summary": "The provider keeps the opening's keys and values in GPU memory, finds them by the exact prefix, and lets the new tokens read them.",
+      "body": [
+        {
+          "h": "1 · Where it lives"
+        },
+        "In the <b>provider's GPU memory</b>: the company running the model (like Anthropic or OpenAI), or your own GPU if you self-host. On an 80 GB H100 serving Llama 3 8B, the weights take about 16 GB and most of the rest is a <b>KV cache pool</b>, shared by live requests and saved prompt prefixes. Unused prefixes can be moved to CPU RAM or SSD, and are dropped when they expire or space runs out.",
+        {
+          "h": "2 · How a request finds it"
+        },
+        "The prompt is cut into blocks (say 16 tokens), and each block gets a <b>hash</b> of itself plus every block before it. Matching hashes mean a matching prefix. A router sends requests with the same prefix to the same server, because that's where the cache is.",
+        {
+          "h": "3 · How the model uses it"
+        },
+        "<mark>The model only receives the new tokens; the cached keys and values are memory its attention layers read directly.</mark> In every layer and head, each new token's query compares with the cached keys plus its own, and blends the cached values plus its own. The new keys and values are appended to the cache.",
+        {
+          "note": "Nothing about the weights changes, and the result is exactly the same as without caching. The opening's keys and values are just read from memory instead of being worked out again.",
+          "kind": "key"
+        },
+        {
+          "more": "Is this how every provider does it?",
+          "text": "Commercial providers don't publish every detail. Open-source serving engines work this way: vLLM's automatic prefix caching shares cached blocks between requests, and SGLang's RadixAttention keeps prefixes in a tree. Tools like LMCache add the CPU and SSD tiers."
+        }
+      ],
+      "viz": [
+        {
+          "type": "table",
+          "rows": [
+            {
+              "head": "",
+              "cells": [
+                {
+                  "text": "Holds"
+                },
+                {
+                  "text": "Speed"
+                }
+              ]
+            },
+            {
+              "head": "GPU memory",
+              "cells": [
+                {
+                  "text": "weights + live and saved KV"
+                },
+                {
+                  "text": "fastest",
+                  "tone": "accent"
+                }
+              ]
+            },
+            {
+              "head": "CPU RAM / SSD",
+              "cells": [
+                {
+                  "text": "offloaded prefixes"
+                },
+                {
+                  "text": "copied back on a hit"
+                }
+              ]
+            },
+            {
+              "head": "Evicted",
+              "cells": [
+                {
+                  "text": "expired or no space"
+                },
+                {
+                  "text": "recomputed next time",
+                  "tone": "heat"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "caption",
+          "html": "Where a saved prompt prefix can be, from fastest to gone."
+        }
+      ],
+      "figure": {
+        "src": "images/prompt-cache-flow-light.svg",
+        "darkSrc": "images/prompt-cache-flow-dark.svg",
+        "alt": "Three panels. One, where it lives: in the provider’s GPU memory. On an 80 GB H100 serving Llama 3 8B, the weights take about 16 GB, a KV-cache pool of about 56 GB holds both live requests and saved prompt prefixes in blocks of 16 tokens, and a little is working space; if not used for a while it can be offloaded to CPU RAM or SSD and copied back on a hit; when it expires or space is needed it is evicted. Two, how a request finds it: the prompt is cut into blocks, and each block gets a hash of itself plus every block before it. The first two blocks, the shared opening, match saved hashes; the third, your new question, does not. One changed word changes every later hash. The router sends matching prefixes to the same server, where the cache is. Three, how the model uses it: the model only receives the new tokens. In every layer and head, each new token’s query compares with the cached keys plus the new keys, and blends the cached values plus the new values; the new keys and values are appended. The weights are untouched and the result is the same as without caching. A hit skips prefill for the opening, so the reply starts sooner and cached tokens cost less.",
+        "width": 1200,
+        "height": 530,
+        "caption": "Where the cache lives, how a request finds it, and how the model reads it."
+      }
     },
     {
       "title": "What the context window really is",
