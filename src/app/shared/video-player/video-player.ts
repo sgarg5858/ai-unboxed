@@ -83,6 +83,7 @@ export class VideoPlayer {
   protected readonly trapHint = signal(false);
   /** Read-only views for pages that follow the video (see SplitView). */
   readonly time = this.current.asReadonly();
+  readonly isPlaying = this.playing.asReadonly();
 
   protected readonly clock = clock;
   protected readonly idle = computed(() => this.playing() && !this.active());
@@ -217,6 +218,24 @@ export class VideoPlayer {
     this.active.set(true);
     clearTimeout(this.wakeTimer);
     this.wakeTimer = setTimeout(() => this.active.set(false), 2600);
+  }
+
+  /** True when keyboard focus is on the player or one of its controls. */
+  hasFocus(): boolean {
+    return this.frame().nativeElement.contains(document.activeElement);
+  }
+
+  /**
+   * Play or pause from the picture or an overlay button, then give the player focus so keys keep
+   * reaching it. Overlay buttons vanish once the video plays, which would drop focus to the page.
+   */
+  protected toggleAndFocus() {
+    this.toggle();
+    this.focusFrame();
+  }
+
+  protected focusFrame() {
+    this.frame().nativeElement.focus({ preventScroll: true });
   }
 
   /** Called by the page for keys pressed anywhere. Returns true if the player used the key. */

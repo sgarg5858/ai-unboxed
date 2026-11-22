@@ -2,6 +2,7 @@
   #frame
   class="player"
   role="region"
+  tabindex="-1"
   [attr.aria-label]="'Video: ' + label()"
   [class.idle]="idle()"
   [class.playing]="playing()"
@@ -16,7 +17,7 @@
     [attr.poster]="poster() ?? null"
     preload="metadata"
     playsinline
-    (click)="toggle()"
+    (click)="toggleAndFocus()"
     (dblclick)="onDouble($event)"
     (loadedmetadata)="onMeta()"
     (durationchange)="onMeta()"
@@ -44,11 +45,11 @@
   @if (failed()) {
     <div class="cover">
       <p class="msg">This video couldn’t be loaded. Check your connection and try again.</p>
-      <button type="button" class="replay" (click)="retry()">Try again</button>
+      <button type="button" class="replay" (click)="retry(); focusFrame()">Try again</button>
     </div>
   } @else if (ended()) {
     <div class="cover end">
-      <button type="button" class="replay" (click)="restart()">
+      <button type="button" class="replay" (click)="restart(); focusFrame()">
         <svg viewBox="0 0 24 24" aria-hidden="true">
           <path d="M4 12a8 8 0 1 0 2.4-5.7" />
           <path d="M4 4v4.5h4.5" />
@@ -63,7 +64,7 @@
       class="big"
       [class.intro]="!started()"
       [attr.aria-label]="started() ? 'Play' : 'Play video: ' + label()"
-      (click)="toggle()"
+      (click)="toggleAndFocus()"
     >
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z" /></svg>
       @if (!started() && duration()) {
@@ -83,7 +84,7 @@
   @if (resumedFrom(); as at) {
     <div class="toast" role="status">
       Picking up at {{ clock(at) }}
-      <button type="button" (click)="restart()">Start over</button>
+      <button type="button" (click)="restart(); focusFrame()">Start over</button>
     </div>
   }
 

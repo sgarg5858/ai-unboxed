@@ -71,7 +71,7 @@ import { ChangeDetectionStrategy, Component, ElementRef, viewChild } from '@angu
       </div>
       <dl>
         <dt><kbd>→</kbd></dt>
-        <dd>Next slide</dd>
+        <dd>Next slide (while a video plays, it skips the video instead)</dd>
         <dt><kbd>←</kbd></dt>
         <dd>Previous slide</dd>
         <dt><kbd>/</kbd> <kbd>⌘K</kbd></dt>
@@ -90,7 +90,7 @@ import { ChangeDetectionStrategy, Component, ElementRef, viewChild } from '@angu
         <dt><kbd>Space</kbd> <kbd>K</kbd></dt>
         <dd>Play or pause</dd>
         <dt><kbd>←</kbd> <kbd>→</kbd></dt>
-        <dd>Back or forward 5 seconds (press again for more)</dd>
+        <dd>Back or forward 5 seconds while the video plays or has focus (press again for more)</dd>
         <dt><kbd>F</kbd> <kbd>M</kbd></dt>
         <dd>Full screen, mute</dd>
         <dt><kbd>&lt;</kbd> <kbd>&gt;</kbd></dt>

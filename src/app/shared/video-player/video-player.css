@@ -11,6 +11,10 @@
   box-shadow: var(--shadow);
   isolation: isolate;
 }
+/* Focused by clicking the picture (tabindex -1, never by Tab): no ring needed. */
+.player:focus {
+  outline: none;
+}
 .player.fs {
   border-radius: 0;
   aspect-ratio: auto;

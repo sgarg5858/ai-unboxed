@@ -244,10 +244,16 @@ export class SplitView {
     }
   }
 
-  /** Keys pressed anywhere on the page; true if the player used it. ←/→ stay for slides. */
+  /**
+   * Keys pressed anywhere on the page; true if the player used it. ←/→ skip the video while it
+   * plays or has focus, and otherwise move between slides.
+   */
   handleKey(e: KeyboardEvent): boolean {
-    if (this.hidden() || e.key === 'ArrowLeft' || e.key === 'ArrowRight') return false;
-    return this.player()?.handleKey(e) ?? false;
+    const p = this.player();
+    if (this.hidden() || !p) return false;
+    const arrow = e.key === 'ArrowLeft' || e.key === 'ArrowRight';
+    if (arrow && !p.isPlaying() && !p.hasFocus()) return false;
+    return p.handleKey(e);
   }
 
   /** After the video turns the slide, bring its top back into view if the reader scrolled past. */
