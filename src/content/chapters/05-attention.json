@@ -6,7 +6,7 @@
     {
       "src": "videos/attention/attention_why.mp4",
       "title": "Attention 1 · Why attention",
-      "description": "Why RNNs, LSTMs and CNNs struggled with long text, how attention lets any word reach any other in one step, and why multi-head causal self-attention works so well.",
+      "description": "Why RNNs struggled with long text, how attention lets any word reach any other in one step, what that costs, and why multi-head causal self-attention works so well.",
       "slides": [1, 1],
       "at": {
         "1": 0
@@ -30,81 +30,84 @@
         },
         {
           "at": 83,
-          "label": "LSTMs: memory with gates"
+          "label": "Later fixes: LSTMs and CNNs"
         },
         {
-          "at": 115,
-          "label": "CNNs: small windows"
-        },
-        {
-          "at": 146,
+          "at": 95,
           "label": "Attention: one step to any word"
         },
         {
-          "at": 191,
+          "at": 140,
           "label": "The price: n²"
         },
         {
-          "at": 202,
+          "at": 151,
           "label": "Why multi-head causal self-attention works"
-        },
-        {
-          "at": 240,
-          "label": "Query, key, value"
         }
       ]
     },
     {
       "src": "videos/attention/attention_step_by_step.mp4",
-      "title": "Attention 2 · How query, key and value work",
-      "description": "No maths: query, key and value as a search engine, the three learned functions that make them, and how “it” matches “cat” and blends in its meaning.",
+      "title": "Attention 2 · Query, key and value, simply",
+      "description": "No maths: every word brings a name tag (key), a backpack (value) and a question (query). Follow “it” as it finds “cat”, then see why keys and values are saved in the KV cache.",
       "slides": [2, 5],
       "at": {
-        "2": 44,
-        "3": 97,
-        "4": 111,
-        "5": 123
+        "2": 17,
+        "3": 64,
+        "4": 67,
+        "5": 79
       },
       "marks": [
         {
           "at": 0,
-          "label": "How attention works"
-        },
-        {
-          "at": 13,
           "label": "Query, key and value"
         },
         {
-          "at": 44,
-          "label": "Three learned functions"
+          "at": 17,
+          "label": "Name tag, backpack, question"
         },
         {
-          "at": 69,
-          "label": "Keys: a label per token"
+          "at": 37,
+          "label": "The query of “it”"
         },
         {
-          "at": 97,
+          "at": 51,
+          "label": "The keys: name tags"
+        },
+        {
+          "at": 64,
           "label": "Matching"
         },
         {
-          "at": 111,
-          "label": "Look back only"
+          "at": 79,
+          "label": "The values: backpacks"
         },
         {
-          "at": 123,
-          "label": "Blending the values"
+          "at": 107,
+          "label": "Every word at once"
+        },
+        {
+          "at": 117,
+          "label": "Where they come from"
+        },
+        {
+          "at": 136,
+          "label": "Why keys and values are cached"
+        },
+        {
+          "at": 163,
+          "label": "Every layer and head"
         }
       ]
     },
     {
       "src": "videos/attention/attention_heads_cost_position.mp4",
-      "title": "Attention 3 · Heads, cost and position",
-      "description": "Why models run many attention heads, how they split the width and what they specialise in; why attention costs n² and the fixes (FlashAttention, GQA, sliding windows); and how waves give attention a sense of word order.",
+      "title": "Attention 3 · Many heads, and the cost",
+      "description": "Each attention head asks its own question, with its own name tags and backpacks; what heads specialise in; why long prompts are expensive; and how word order is handled.",
       "slides": [6, 7],
       "at": {
-        "6": 12,
-        "7": 80,
-        "9": 145
+        "6": 10,
+        "7": 89
       },
       "marks": [
         {
@@ -112,32 +115,36 @@
           "label": "Intro"
         },
         {
-          "at": 12,
-          "label": "Multi-head attention"
+          "at": 10,
+          "label": "One head, one question"
         },
         {
-          "at": 62,
+          "at": 25,
+          "label": "Each head: its own Q, K and V"
+        },
+        {
+          "at": 37,
+          "label": "Head 1 finds “cat”"
+        },
+        {
+          "at": 45,
+          "label": "Heads 2 and 3"
+        },
+        {
+          "at": 56,
+          "label": "Joining the answers"
+        },
+        {
+          "at": 72,
           "label": "What heads specialise in"
         },
         {
-          "at": 80,
+          "at": 89,
           "label": "The cost: n²"
         },
         {
-          "at": 98,
-          "label": "FlashAttention, GQA, sliding windows"
-        },
-        {
-          "at": 145,
-          "label": "Attention ignores word order"
-        },
-        {
-          "at": 166,
-          "label": "Position from waves"
-        },
-        {
-          "at": 205,
-          "label": "Why not just add 5? RoPE"
+          "at": 115,
+          "label": "Word order"
         }
       ]
     },
@@ -189,22 +196,22 @@
         "After the lookup step, each token's vector knows nothing about its neighbours. \"Bank\" has the same vector in \"river bank\" and \"bank account\". To understand text, a token has to look at the words around it.",
         "<b>Attention</b> is how it does that. Each token builds a new vector that takes its context into account, by pulling in information from the other tokens that matter to it.",
         {
-          "h": "Query, key and value"
+          "h": "A question, a name tag and a backpack"
         },
-        "Every token plays three roles at once:",
+        "Every token brings three things:",
         {
           "ul": [
-            "<b>Query</b>: what this token is looking for. Something like \"I'm an adjective; which noun do I describe?\"",
-            "<b>Key</b>: what this token offers, used for matching. \"I'm a noun.\"",
-            "<b>Value</b>: the information this token hands over if it's chosen."
+            "<b>Query</b>, a question ❓: what this token needs to find out. “it” asks: who am I talking about?",
+            "<b>Key</b>, a name tag 🏷: what this token is, so others can find it. “cat” says: an animal.",
+            "<b>Value</b>, a backpack 🎒: what this token knows and hands over if it's picked."
           ]
         },
-        "Each query is compared with every key. <mark>Good matches get big weights, and the token's new vector is a mix of the matching values.</mark>",
+        "Each token checks its question against every other token's name tag. <mark>The better a name tag fits, the more the token takes from that token's backpack.</mark>",
         {
-          "note": "A database lookup returns the one row whose key equals your query. Attention returns a mix of <i>every</i> row, weighted by how well each key matches. Because nothing is all-or-nothing, the model can learn it by making small adjustments.",
+          "note": "Why keep key and value separate? Because what you match on isn't what you get back. Like a search engine: you match on keywords, but you read the page.",
           "kind": "analogy"
         },
-        "The next four slides work through this step by step on \"I am learning artificial\", with real numbers.",
+        "The next four slides follow “it” in “The cat sat on the mat because it” step by step. Each one also shows the maths on a tiny example, if you want it.",
         {
           "more": "Deep dive: attention",
           "text": "For a longer, step-by-step walkthrough of how attention works, read <a href=\"https://learn.ratishfolio.com/llms/attention/\" target=\"_blank\" rel=\"noopener noreferrer\">Attention, on learn.ratishfolio.com</a>."
@@ -222,31 +229,33 @@
         "alt": "Each token vector is multiplied by three learned matrices to make queries, keys and values. Every query is compared with every key to give a grid of scores. Scores for future tokens are masked out. Softmax turns each row into weights that add up to 1, for example \"artificial\" puts 36 percent of its weight on \"learning\". Each token's output is the weighted mix of the value vectors.",
         "width": 1200,
         "height": 620,
-        "caption": "The map for this chapter. The next four slides compute each step with real numbers."
+        "caption": "The map for this chapter. The next four slides walk through each step."
       }
     },
     {
-      "title": "Step 1: make Q, K and V",
-      "summary": "Three learned matrices turn each token's vector into a query, a key and a value.",
+      "title": "Step 1: a question, a name tag and a backpack",
+      "summary": "Three learned transforms turn each token into a query, a key and a value.",
       "body": [
-        "Each token's vector <code>x</code> is multiplied by three different learned matrices, giving three new vectors for each token:",
+        "Every token goes through three learned transforms, <code>W_Q</code>, <code>W_K</code> and <code>W_V</code>. Think of them as three functions, <code>to_query</code>, <code>to_key</code> and <code>to_value</code>. The same three run on every token.",
         {
           "ul": [
-            "<code>Q = x·Wq</code>: the query. What am I looking for?",
-            "<code>K = x·Wk</code>: the key. What do I contain?",
-            "<code>V = x·Wv</code>: the value. What will I hand over if picked?"
+            "<b>Query ❓</b>: “it” asks: who am I talking about? Probably something earlier, and alive.",
+            "<b>Key 🏷</b>: “cat” is labelled an animal, “mat” an object, “sat” an action.",
+            "<b>Value 🎒</b>: what “cat” hands over: an animal, furry, the one that sat down."
           ]
         },
-        "These are ordinary matrix multiplications, the \"many dot products at once\" from <i>The big picture</i>. Nobody designs <code>Wq</code>, <code>Wk</code> and <code>Wv</code> by hand. <mark>Training adjusts them until queries and keys find useful connections.</mark>",
-        "To keep the numbers readable, each token here has 4 numbers (<code>d_model = 4</code>) and each Q, K or V vector has 3 (<code>d_head = 3</code>). Real models use thousands, and 64–128.",
+        "<mark>Nobody writes these transforms. Training tunes them until the right questions find the right name tags.</mark>",
         {
-          "note": "Each row of the Q table is one token's query. Green cells are positive, red cells are negative, and stronger colour means a bigger number.",
-          "kind": "example"
+          "note": "Every layer, and every head inside it, has its own three transforms. So a token gets a different question, name tag and backpack in each one.",
+          "kind": "key"
+        },
+        {
+          "more": "Show the maths",
+          "text": [
+            "Each transform is a matrix multiplication: <code>Q = x·W_Q</code>, <code>K = x·W_K</code>, <code>V = x·W_V</code>, where <code>x</code> is the token's vector.",
+            "The tables on the right use a tiny example, “I am learning artificial”: each token has 4 numbers and each Q, K or V vector has 3. Real models use thousands, and 64–128 per head. Green cells are positive, red cells negative."
+          ]
         }
-      ],
-      "code": [
-        "Wq = nn.Linear(d_model, d_head, bias=False)",
-        "q, k, v = Wq(x), Wk(x), Wv(x)    # each [B, n, d_head]"
       ],
       "viz": [
         {
@@ -256,23 +265,23 @@
       ]
     },
     {
-      "title": "Step 2: score every pair",
-      "summary": "Every query is compared with every key using a dot product. This gives a grid of scores showing how relevant each token is to each other token.",
+      "title": "Step 2: match every question against every name tag",
+      "summary": "Each token checks its question against the name tag of every token. The result is a grid of match scores.",
       "body": [
-        "Now compare every query with every key using a dot product. For 4 tokens, that gives a 4 × 4 grid of scores, written <code>S = Q·Kᵀ</code>. (<code>Kᵀ</code> means K <b>transposed</b>: flipped on its side so the multiplication lines up.)",
-        "Read the grid one row at a time. Row <i>i</i> shows how relevant each token is to token <i>i</i>. A high score means token <i>i</i>'s query matches that token's key well.",
+        "“it” checks its question against every name tag. “cat” fits best, “mat” fits a little, and the rest hardly at all. Each check gives a <b>score</b>.",
+        "Every token does this with every token, so the scores form a grid: one row for each token asking, one column for each name tag.",
         {
-          "h": "Why divide by √d_head?"
-        },
-        "Dot products of long vectors give big numbers. Big scores make the next step (softmax) put almost all the weight on one token, and then the model barely learns. Dividing by the square root of the vector length (here √3) keeps the scores in a sensible range.",
-        {
-          "note": "The grid has one entry for every pair of tokens, so <code>n</code> tokens give <code>n²</code> entries. <mark>Double the length of the text and you get four times the work.</mark> That's where attention's famous <code>O(n²)</code> cost comes from.",
+          "note": "One score for every pair of tokens. <mark>Double the length of the text and you get four times the work.</mark> That's why long prompts are expensive.",
           "kind": "key"
+        },
+        {
+          "more": "Show the maths",
+          "text": [
+            "Each score is a <b>dot product</b> of a query and a key: multiply them number by number and add up. The whole grid is <code>S = Q·Kᵀ</code> (<code>Kᵀ</code> is K flipped on its side so the multiplication lines up).",
+            "The scores are then divided by <code>√d_head</code>, here √3. Long vectors give big scores, and big scores would make the next step put almost all the weight on one token.",
+            "The grid on the right is for “I am learning artificial”. n tokens give n² scores: attention's <code>O(n²)</code> cost."
+          ]
         }
-      ],
-      "code": [
-        "scores = q @ k.transpose(-2, -1)       # [B, n, n]",
-        "scores = scores / math.sqrt(d_head)"
       ],
       "viz": [
         {
@@ -286,9 +295,13 @@
       "summary": "A mask stops each token from looking at later tokens. That's what makes next-token training work.",
       "body": [
         "GPT, Claude, Llama and other chat models are <b>decoder-only</b> models, trained to predict the next token. If a token could see the one after it, predicting it would be too easy: <mark>the model would just copy the answer.</mark>",
-        "So every score above the diagonal, where a token would look at a later token, is set to <code>−∞</code> (minus infinity). In the next step those become exactly 0: no attention to the future. This is called the <b>causal mask</b>.",
+        "So every token can only look at the tokens before it, and itself. “it” can read “cat”'s name tag, but not the tag of whatever comes next. Scores for later tokens are blocked and count as zero. This is called the <b>causal mask</b>.",
         "There's a big bonus. Since no token can see ahead, one pass over a training sentence trains every position at once: position 1 predicts token 2, position 2 predicts token 3, and so on, all at the same time.",
         "<b>Encoder</b> models like BERT, used for sorting text into categories and for search, skip the mask and look both ways. That's great for understanding a finished sentence, but they can't write text one token at a time. Switch the mask on and off to compare.",
+        {
+          "more": "Show the maths",
+          "text": "Every score above the diagonal of the grid, where a token would look at a later one, is set to <code>−∞</code> (minus infinity). In the next step, <code>−∞</code> becomes exactly 0."
+        },
         {
           "more": "If “it” can't see “tired”, when is “it” resolved?",
           "text": [
@@ -296,10 +309,6 @@
             "The later words do the work instead. At <b>“tired”</b>, attention looks back at “it”, “cat” and “mat”, and layer by layer that position works out that the one who's tired is the cat. Every word after it can use that. In a look-both-ways model like BERT, “it” would see “tired” directly."
           ]
         }
-      ],
-      "code": [
-        "mask = torch.triu(torch.ones(n, n), diagonal=1).bool()",
-        "scores = scores.masked_fill(mask, float(\"-inf\"))"
       ],
       "viz": [
         {
@@ -309,24 +318,23 @@
       ]
     },
     {
-      "title": "Step 4: softmax, then mix the values",
-      "summary": "Softmax turns each row of scores into weights that add up to 1. The output is a mix of the values, using those weights.",
+      "title": "Step 4: turn scores into shares, then blend the backpacks",
+      "summary": "Each row of scores becomes shares that add up to 100%. Each token then blends the values using those shares.",
       "body": [
-        "Each row of scores becomes <b>attention weights</b> using <b>softmax</b>: raise <code>e</code> (≈ 2.718) to the power of each score, then divide each result by their total. The weights are all positive and add up to 1, like percentages.",
+        "Each row of scores becomes <b>attention weights</b>: shares that add up to 100%. The best match gets the biggest share, but the others still get a little. This step is called <b>softmax</b>.",
+        "Then each token blends the backpacks using those shares. “it” takes mostly from “cat”'s backpack, a little from “mat”'s and almost nothing from the rest. Now “it” carries the meaning of the cat.",
         {
-          "note": "Scores [2, 1, 0] become e² ≈ 7.39, e¹ ≈ 2.72 and e⁰ = 1, which add up to 11.11. So the weights are 0.67, 0.24 and 0.09. The biggest score gets the most weight, but the others still get some. A masked score of −∞ becomes e<sup>−∞</sup> = 0.",
-          "kind": "example"
-        },
-        "Each token's output is then a weighted sum of all the value vectors: <code>out = softmax(S)·V</code>. If \"artificial\" puts 36% of its weight on \"learning\", then 36% of its new vector comes from the value of \"learning\".",
-        "Pick a query row on the right to see where that token looks and what it gets back.",
-        {
-          "note": "<mark>That's all attention is: <b>compare</b> (Q·K), <b>turn into weights</b> (softmax), <b>mix</b> (·V).</mark> The rest of this chapter is about doing it many times side by side, and doing it fast.",
+          "note": "<mark>That's all attention is: ask a question, match it against every name tag, and blend the backpacks.</mark> The rest of this chapter is about doing it many times side by side, and doing it fast.",
           "kind": "key"
+        },
+        "Pick a query row on the right to see where each token looks in the tiny example.",
+        {
+          "more": "Show the maths",
+          "text": [
+            "Softmax raises <code>e</code> (≈ 2.718) to the power of each score, then divides by the total. Scores [2, 1, 0] become e² ≈ 7.39, e¹ ≈ 2.72 and e⁰ = 1, which add up to 11.11, so the weights are 0.67, 0.24 and 0.09. A blocked score of −∞ becomes e<sup>−∞</sup> = 0.",
+            "The output is a weighted sum of the value vectors: <code>out = softmax(S)·V</code>. If “artificial” puts 36% of its weight on “learning”, 36% of its new vector comes from the value of “learning”."
+          ]
         }
-      ],
-      "code": [
-        "weights = scores.softmax(dim=-1)   # rows sum to 1",
-        "out = weights @ v                  # [B, n, d_head]"
       ],
       "viz": [
         {
@@ -336,24 +344,28 @@
       ]
     },
     {
-      "title": "Multi-head attention",
-      "summary": "Models run many small attention steps side by side, so each one can track a different kind of connection.",
+      "title": "Multi-head attention: many questions at once",
+      "summary": "Models run many attention heads side by side. Each head asks its own question, with its own name tags and backpacks.",
       "body": [
-        "A single attention pattern has to choose where to look. <mark>But a token often needs several kinds of information at once: the previous word, the subject of the sentence, a matching bracket far back in some code.</mark>",
-        "So models run <code>h</code> attention <b>heads</b> side by side, each with its own <code>Wq</code>, <code>Wk</code> and <code>Wv</code>. To keep the cost the same, each head uses smaller vectors: <code>d_head = d_model / h</code>. A model with <code>d_model = 4,096</code> and 32 heads gives each head 128 numbers.",
-        "Each head gives its own output. These are joined end to end and mixed by one more learned matrix, <code>Wo</code>.",
+        "One head asks one question. <mark>But a token often needs several answers at once.</mark>",
+        "So models run many attention <b>heads</b> side by side. Each head has its own three transforms, so in every head a token gets a different question, name tag and backpack. For “it”:",
+        {
+          "ul": [
+            "<b>Head 1</b> asks “who am I?” and takes from “cat”.",
+            "<b>Head 2</b> asks “what did I do?” and takes from “sat”.",
+            "<b>Head 3</b> asks “what came just before me?” and takes from “because”."
+          ]
+        },
+        "The heads' answers are joined, so “it” now knows it's the cat, that it sat, and what came just before.",
         {
           "note": "Picture a team reading the same document, each person looking for something different, who then share their notes.",
           "kind": "analogy"
         },
-        "Researchers who study what happens inside models (<b>interpretability</b>) find heads that specialise. The four patterns on the right are simplified versions of common ones. The first-token pattern is real and has a name, an <b>attention sink</b>: a place where heads put their weight when nothing else is relevant."
-      ],
-      "code": [
-        "# d_model=4096, h=32  ->  d_head=128",
-        "q = q.view(B, n, h, d_head).transpose(1, 2)  # [B, h, n, d_head]",
-        "out = attention(q, k, v)                     # per head",
-        "out = out.transpose(1, 2).reshape(B, n, d_model)",
-        "out = Wo(out)"
+        "Researchers who look inside models find heads that specialise. The four patterns on the right are simplified versions of common ones. The first-token pattern is real and has a name, an <b>attention sink</b>: where heads put their weight when nothing else fits.",
+        {
+          "more": "Show the maths",
+          "text": "To keep the cost the same, each head uses smaller vectors: <code>d_head = d_model / h</code>. A model 4,096 numbers wide with 32 heads gives each head 128. The heads' outputs are joined end to end and mixed by one more learned matrix, <code>W_O</code>."
+        }
       ],
       "viz": [
         {
@@ -363,30 +375,26 @@
       ]
     },
     {
-      "title": "Why attention is expensive, and the fixes",
-      "summary": "Attention's work grows with the square of the text length. A few clever tricks keep it under control.",
+      "title": "Why attention is expensive",
+      "summary": "Attention's work grows with the square of the text length. That's why long prompts cost more.",
       "body": [
-        "The score grid has <code>n²</code> entries for every head in every layer. At 1,000 tokens that's a million scores per head. At a million tokens, it's a trillion. Drag the slider to watch it explode.",
-        "Three common fixes:",
+        "Every token checks its question against every name tag, in every head, in every layer. At 1,000 tokens that's a million scores per head. At a million tokens, it's a trillion. Drag the slider to watch it grow.",
         {
-          "ul": [
-            "<b>FlashAttention</b> gets exactly the same result, but works in small chunks that fit in the GPU's fast built-in memory, so the full grid is never stored. Same maths, much less slow memory access. It's now the default in major frameworks.",
-            "<b>Grouped-query attention (GQA)</b>: several query heads share one set of key and value heads. Quality stays nearly the same, and the KV cache (next slide) gets several times smaller.",
-            "<b>Sliding-window and sparse attention</b>: some layers only look back a fixed distance, or at chosen positions, instead of at everything."
-          ]
+          "note": "<mark>This is why long prompts are expensive.</mark> A 200,000-token prompt needs far more computing and memory than a 2,000-token one.",
+          "kind": "key"
         },
         {
-          "note": "<mark>This is why long prompts are expensive.</mark> Even with these tricks, a 200,000-token prompt needs far more computing and memory than a 2,000-token one.",
-          "kind": "key"
+          "more": "How do models keep it under control?",
+          "text": [
+            "<b>FlashAttention</b> gets exactly the same result, but works in small chunks that fit in the GPU's fast memory, so the full grid is never stored.",
+            "<b>Grouped-query attention (GQA)</b>: several query heads share one set of name tags and backpacks, so the KV cache (next slide) gets several times smaller.",
+            "<b>Sliding-window and sparse attention</b>: some layers only look back a fixed distance, or at chosen positions."
+          ]
         },
         {
           "more": "Deep dive: the KV cache",
           "text": "For a closer look at how the KV cache works and what it costs, read <a href=\"https://learn.ratishfolio.com/llms/kv-cache/\" target=\"_blank\" rel=\"noopener noreferrer\">KV cache, on learn.ratishfolio.com</a>."
         }
-      ],
-      "code": [
-        "# PyTorch picks a fused kernel (e.g. FlashAttention) when it can",
-        "out = F.scaled_dot_product_attention(q, k, v, is_causal=True)"
       ],
       "viz": [
         {
@@ -404,14 +412,14 @@
         },
         {
           "ul": [
-            "<b>Past tokens don't change.</b> A token can't look ahead, so the K and V of “cat” come out the same on every run.",
+            "<b>Past tokens don't change.</b> A token can't look ahead, so the name tag (K) and backpack (V) of “cat” come out the same on every run.",
             "<b>So every layer saves them</b> in its own <b>KV cache</b>: a K and a V for each earlier token, for every head.",
             "<b>Each new token does only its own work:</b> it computes its Q, K and V, saves its K and V, and reuses everyone else's."
           ]
         },
         "<mark>Thanks to the cache, each run after the first works on just one new token, which is why answers can stream out quickly.</mark>",
         {
-          "note": "Q isn't cached: only the newest token is asking, and it asks once.",
+          "note": "Q isn't cached: only the newest token asks a question, and it asks once.",
           "kind": "key"
         },
         {
@@ -506,11 +514,6 @@
           "text": "Token vectors hold small numbers, roughly between −1 and +1. Adding 5,000 for a late position would swamp the word's meaning. Dividing by the text length instead would make position 5 mean different things in short and long texts. Waves avoid both, and need no training."
         },
         "In the heatmap, each row is a position and each column one number: fast-changing columns on the left, slow ones on the right."
-      ],
-      "code": [
-        "# PE[pos, 2i]   = sin(pos / 10000**(2i/d))",
-        "# PE[pos, 2i+1] = cos(pos / 10000**(2i/d))",
-        "x = token_embedding + PE[:n]"
       ],
       "viz": [
         {
