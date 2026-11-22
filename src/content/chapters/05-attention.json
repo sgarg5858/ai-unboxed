@@ -163,7 +163,7 @@
     {
       "src": "videos/output/kv_cache.mp4",
       "title": "The KV cache",
-      "description": "Why writing each token would mean re-reading the whole text, how saving keys and values fixes it, prefill vs decode, what the cache costs in memory, and how models shrink it.",
+      "description": "Why writing each token would mean re-reading the whole text, how saving keys and values fixes it, prefill vs decode, what one layer's cache holds for every head, how grouped-query attention shrinks it, and how prompt caching reuses it.",
       "marks": [
         {
           "at": 0,
@@ -186,11 +186,27 @@
           "label": "The price: memory"
         },
         {
-          "at": 172,
-          "label": "Shrinking the cache: GQA, quantization, paging"
+          "at": 125,
+          "label": "Inside one layer: learned tables, computed Q, K, V"
         },
         {
-          "at": 210,
+          "at": 156,
+          "label": "12 heads → 768 keys and values per token"
+        },
+        {
+          "at": 169,
+          "label": "GPT-2 and Llama: the totals"
+        },
+        {
+          "at": 216,
+          "label": "Grouped-query attention"
+        },
+        {
+          "at": 255,
+          "label": "Quantization and paging"
+        },
+        {
+          "at": 277,
           "label": "Prompt caching"
         }
       ],
