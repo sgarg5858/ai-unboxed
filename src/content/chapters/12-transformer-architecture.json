@@ -146,7 +146,7 @@
     {
       "src": "videos/transformer/mlp_layer.mp4",
       "title": "Part 4 · The MLP (feed-forward)",
-      "description": "After attention, each token thinks it over on its own: expand, keep the strong signals, shrink back and add. What expanding looks like in GPT-2, what real detectors respond to, SwiGLU, and mixture of experts explained simply.",
+      "description": "After attention, each token thinks it over on its own: expand, keep the strong signals, shrink back and add. The two learned detector tables in GPT-2 (768 × 3,072 and 3,072 × 768), what real detectors respond to, where the parameters are, SwiGLU, and mixture of experts explained simply.",
       "slides": [7, 7],
       "at": {
         "7": 0
@@ -165,27 +165,35 @@
           "label": "Expanding, in GPT-2"
         },
         {
-          "at": 71,
+          "at": 54,
+          "label": "The detector table: 768 × 3,072"
+        },
+        {
+          "at": 79,
           "label": "Only a few detectors fire"
         },
         {
-          "at": 91,
+          "at": 93,
+          "label": "The second table: 3,072 × 768"
+        },
+        {
+          "at": 115,
           "label": "What real detectors respond to"
         },
         {
-          "at": 111,
-          "label": "Where knowledge lives"
+          "at": 135,
+          "label": "The MLP's parameters: ⅔ of each layer"
         },
         {
-          "at": 122,
+          "at": 148,
           "label": "SwiGLU"
         },
         {
-          "at": 132,
+          "at": 158,
           "label": "Mixture of experts"
         },
         {
-          "at": 158,
+          "at": 184,
           "label": "Mixtral: stored vs used"
         }
       ]

@@ -244,6 +244,15 @@
             "<b>Across chat turns</b>, each new message resends the whole conversation, so without prompt caching the cache is built again from scratch.",
             "<b>With prompt caching</b>, providers keep the cache for a matching opening for a few minutes (around 5 by default, longer on request; check your provider's docs). Self-hosted servers such as vLLM keep it until GPU memory runs short."
           ]
+        },
+        {
+          "more": "How does prompt caching work?",
+          "text": [
+            "The <b>provider</b>, the company running the model on its GPUs (like Anthropic or OpenAI), or you if you run it yourself, keeps the KV cache for a prompt's opening after the first request.",
+            "What's kept is exactly the <b>keys and values</b> of every token in the opening, in every layer and every head. Not the queries, and not the answer.",
+            "The next request is compared token by token with the saved opening. If it matches from the very first token, the saved keys and values are loaded, and only the new part is processed. Change one word near the start, and nothing after it can be reused, because every later key and value was computed from the words before it.",
+            "The payoff: the reply starts sooner, and cached tokens are billed at a fraction of the normal price. So put what stays the same first, and what changes last."
+          ]
         }
       ],
       "viz": [
