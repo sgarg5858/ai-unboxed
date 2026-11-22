@@ -56,43 +56,43 @@
     },
     {
       "src": "videos/attention/attention_step_by_step.mp4",
-      "title": "Attention 2 · Step by step",
-      "description": "Attention computed by hand on “I am learning artificial”, with the slides' real numbers: queries, keys and values, scores and √d, the causal mask, softmax, and mixing the values.",
+      "title": "Attention 2 · How query, key and value work",
+      "description": "No maths: query, key and value as a search engine, the three learned functions that make them, and how “it” matches “cat” and blends in its meaning.",
       "slides": [2, 5],
       "at": {
-        "2": 14,
-        "3": 58,
-        "4": 117,
-        "5": 161
+        "2": 44,
+        "3": 97,
+        "4": 111,
+        "5": 123
       },
       "marks": [
         {
           "at": 0,
-          "label": "Intro"
+          "label": "How attention works"
         },
         {
-          "at": 14,
-          "label": "1 · Make Q, K and V"
+          "at": 13,
+          "label": "Query, key and value"
         },
         {
-          "at": 58,
-          "label": "2 · Score every pair"
+          "at": 44,
+          "label": "Three learned functions"
         },
         {
-          "at": 85,
-          "label": "Why divide by √d"
+          "at": 69,
+          "label": "Keys: a label per token"
         },
         {
-          "at": 117,
-          "label": "3 · No peeking ahead"
+          "at": 97,
+          "label": "Matching"
         },
         {
-          "at": 161,
-          "label": "4 · Softmax: scores → weights"
+          "at": 111,
+          "label": "Look back only"
         },
         {
-          "at": 205,
-          "label": "5 · Mix the values"
+          "at": 123,
+          "label": "Blending the values"
         }
       ]
     },
