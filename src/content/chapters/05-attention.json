@@ -49,7 +49,7 @@
     {
       "src": "videos/attention/attention_step_by_step.mp4",
       "title": "Attention 2 · Query, key and value, simply",
-      "description": "No maths: every word brings a name tag (key), a backpack (value) and a question (query). Follow “it” as it finds “cat”, then see why keys and values are saved in the KV cache.",
+      "description": "Every word brings a name tag (key), a backpack (value) and a question (query). Follow “it” as it finds “cat”, see what's learned (W_Q, W_K, W_V) versus computed (the vectors and dot products), and why keys and values are cached.",
       "slides": [2, 5],
       "at": {
         "2": 17,
@@ -88,14 +88,18 @@
         },
         {
           "at": 117,
-          "label": "Where they come from"
+          "label": "Learned vs computed"
         },
         {
-          "at": 136,
+          "at": 150,
+          "label": "The match is a dot product"
+        },
+        {
+          "at": 195,
           "label": "Why keys and values are cached"
         },
         {
-          "at": 163,
+          "at": 221,
           "label": "Every layer and head"
         }
       ]
@@ -140,10 +144,18 @@
         },
         {
           "at": 89,
-          "label": "The cost: n²"
+          "label": "The cost: every word checks every name tag"
         },
         {
-          "at": 115,
+          "at": 98,
+          "label": "2× the words, 4× the work"
+        },
+        {
+          "at": 117,
+          "label": "Why long prompts cost more"
+        },
+        {
+          "at": 131,
           "label": "Word order"
         }
       ]
@@ -246,7 +258,7 @@
         },
         "<mark>Nobody writes these transforms. Training tunes them until the right questions find the right name tags.</mark>",
         {
-          "note": "Every layer, and every head inside it, has its own three transforms. So a token gets a different question, name tag and backpack in each one.",
+          "note": "<b>Learned in training:</b> only the three tables, <code>W_Q</code>, <code>W_K</code> and <code>W_V</code>, one set per head in every layer. They're fixed afterwards. <b>Worked out every time you send text:</b> each token's query, key and value vectors, by multiplying the token's vector by those tables.",
           "kind": "key"
         },
         {
@@ -269,6 +281,10 @@
       "summary": "Each token checks its question against the name tag of every token. The result is a grid of match scores.",
       "body": [
         "“it” checks its question against every name tag. “cat” fits best, “mat” fits a little, and the rest hardly at all. Each check gives a <b>score</b>.",
+        {
+          "note": "A query and a key are both lists of numbers. To check the fit, multiply them number by number and add up: a <b>dot product</b>. Say the query of “it” is [2, 1] (a noun, alive). Cat's key [1, 1] gives 2×1 + 1×1 = 3, a strong match. Mat's key [1, 0] gives 2×1 + 1×0 = 2, a weaker one.",
+          "kind": "example"
+        },
         "Every token does this with every token, so the scores form a grid: one row for each token asking, one column for each name tag.",
         {
           "note": "One score for every pair of tokens. <mark>Double the length of the text and you get four times the work.</mark> That's why long prompts are expensive.",
@@ -277,7 +293,7 @@
         {
           "more": "Show the maths",
           "text": [
-            "Each score is a <b>dot product</b> of a query and a key: multiply them number by number and add up. The whole grid is <code>S = Q·Kᵀ</code> (<code>Kᵀ</code> is K flipped on its side so the multiplication lines up).",
+            "The whole grid of scores is <code>S = Q·Kᵀ</code>: every query dotted with every key at once (<code>Kᵀ</code> is K flipped on its side so the multiplication lines up).",
             "The scores are then divided by <code>√d_head</code>, here √3. Long vectors give big scores, and big scores would make the next step put almost all the weight on one token.",
             "The grid on the right is for “I am learning artificial”. n tokens give n² scores: attention's <code>O(n²)</code> cost."
           ]
@@ -378,9 +394,10 @@
       "title": "Why attention is expensive",
       "summary": "Attention's work grows with the square of the text length. That's why long prompts cost more.",
       "body": [
-        "Every token checks its question against every name tag, in every head, in every layer. At 1,000 tokens that's a million scores per head. At a million tokens, it's a trillion. Drag the slider to watch it grow.",
+        "Every token checks its question against the name tag of every token before it. With 10 words that's about 50 checks; with 20 words, about 200. <mark>Double the length of the text and the work goes up four times.</mark> Twice as many tokens are asking, and each has twice as many name tags to check. That's all <b>n²</b> means.",
+        "And it happens in every head, in every layer. Drag the slider to watch it grow.",
         {
-          "note": "<mark>This is why long prompts are expensive.</mark> A 200,000-token prompt needs far more computing and memory than a 2,000-token one.",
+          "note": "This is why long prompts are slower and cost more. A 200,000-token prompt has 100 times the tokens of a 2,000-token one, but roughly 10,000 times the attention work.",
           "kind": "key"
         },
         {
@@ -448,7 +465,7 @@
               "head": "One token, one layer",
               "cells": [
                 {
-                  "text": "K 768 + V 768 = 1,536 numbers"
+                  "text": "K 768 + V 768 = 1,536 numbers (12 heads × 64 each)"
                 }
               ]
             },
