@@ -4,6 +4,80 @@
   "name": "Output & inference",
   "videos": [
     {
+      "src": "videos/output/temperature_context_window.mp4",
+      "title": "Temperature and the context window",
+      "description": "How scores become chances, how the temperature dial sharpens or flattens them (T = 0.2, 1 and 2), how one token is picked, and the context window in architecture terms: the n rows of the token matrix, the three limits on n (trained positions, n² attention, the KV cache), why models are stateless, and why the middle of a long context gets lost.",
+      "slides": [1, 3],
+      "at": {
+        "1": 0,
+        "2": 37,
+        "3": 87,
+        "6": 96
+      },
+      "marks": [
+        {
+          "at": 0,
+          "label": "Two things that shape every reply"
+        },
+        {
+          "at": 12,
+          "label": "Scores become chances"
+        },
+        {
+          "at": 37,
+          "label": "Temperature: a dial"
+        },
+        {
+          "at": 43,
+          "label": "Close to 0: always the top token"
+        },
+        {
+          "at": 53,
+          "label": "T = 1: what the model learned"
+        },
+        {
+          "at": 60,
+          "label": "T = 2: flatter, more variety"
+        },
+        {
+          "at": 73,
+          "label": "Under the hood: scores ÷ T"
+        },
+        {
+          "at": 87,
+          "label": "Picking one token"
+        },
+        {
+          "at": 96,
+          "label": "The context window: n rows"
+        },
+        {
+          "at": 113,
+          "label": "Every row, every layer"
+        },
+        {
+          "at": 128,
+          "label": "Three limits on n"
+        },
+        {
+          "at": 145,
+          "label": "From 1,024 to a million"
+        },
+        {
+          "at": 162,
+          "label": "Stateless: resend every turn"
+        },
+        {
+          "at": 175,
+          "label": "When the chat outgrows the window"
+        },
+        {
+          "at": 184,
+          "label": "Lost in the middle"
+        }
+      ]
+    },
+    {
       "src": "videos/output/kv_cache.mp4",
       "title": "The KV cache",
       "description": "Why writing each token would mean re-reading the whole text, how saving keys and values fixes it, prefill vs decode, what one layer's cache holds (W_Q, W_K, W_V are 768 × 64 per head), grouped-query attention, how prompt caching saves and reuses the KV cache, and how long it's kept.",
