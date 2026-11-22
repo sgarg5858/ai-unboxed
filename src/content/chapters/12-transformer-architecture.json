@@ -703,7 +703,7 @@
               "type": "stages",
               "items": [
                 {
-                  "label": "Read more: Normalisation, in The transformer block →",
+                  "label": "Read more: Normalisation, in Parameters, depth and experts →",
                   "goto": {
                     "chapter": "block",
                     "slide": 2

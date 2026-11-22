@@ -1,7 +1,7 @@
 {
   "$schema": "../schema/chapter.schema.json",
   "id": "block",
-  "name": "The transformer block",
+  "name": "Parameters, depth and experts",
   "videos": [
     {
       "src": "videos/block/block_stream_norm_mlp.mp4",
@@ -50,14 +50,14 @@
     },
     {
       "src": "videos/block/block_params_depth_experts.mp4",
-      "title": "Block 2 · Parameters, depth and experts",
-      "description": "Estimate a model's size from three numbers (12·N·d²), turn parameters into memory (bf16 vs 4-bit), stack N blocks, and see how mixture-of-experts models grow huge while staying cheap per token.",
+      "title": "Block 2 · Parameters, depth and experts --IMP",
+      "description": "Estimate a model's size from three numbers (12·N·d²), turn parameters into memory, see how 4-bit quantization works (simply), stack N blocks, and see how mixture-of-experts models grow huge while staying cheap to run.",
       "slides": [4, 7],
       "at": {
         "4": 10,
         "5": 107,
-        "6": 176,
-        "7": 225
+        "6": 166,
+        "7": 215
       },
       "marks": [
         {
@@ -78,14 +78,30 @@
         },
         {
           "at": 107,
+          "label": "How 4-bit quantization works"
+        },
+        {
+          "at": 126,
+          "label": "A knob with 16 clicks"
+        },
+        {
+          "at": 138,
+          "label": "16 colours per patch"
+        },
+        {
+          "at": 154,
+          "label": "A quarter of the memory"
+        },
+        {
+          "at": 166,
           "label": "Stack it N times"
         },
         {
-          "at": 155,
+          "at": 215,
           "label": "Mixture of experts"
         },
         {
-          "at": 201,
+          "at": 261,
           "label": "Why “expert” is misleading"
         }
       ]
@@ -240,37 +256,52 @@
     },
     {
       "title": "How 4-bit quantization works",
-      "summary": "Quantization stores each weight with less detail, so a model needs a fraction of the memory and stays almost as good.",
+      "summary": "Quantization keeps each weight a little less precise, so the model needs a quarter of the memory and works almost the same.",
       "body": [
-        "Every weight is a number, and storing a number takes space. <b>Quantization</b> stores each weight with less detail, so the whole model needs less memory.",
-        {
-          "note": "Like rounding prices: £4.99 becomes £5.00. You lose a tiny bit of detail, but it's much quicker to write down.",
-          "kind": "analogy"
-        },
-        {
-          "h": "How 4-bit works"
-        },
         {
           "ul": [
-            "A normal (bf16) weight uses <b>16 bits</b>: tens of thousands of possible values.",
-            "A <b>4-bit</b> weight can only be one of <b>16 values</b>. So each weight is rounded to the nearest of 16 marks on a ruler.",
-            "Each small group of weights (say 32) gets <b>its own ruler</b>, sized to fit that group. The spacing between marks is stored once for the whole group."
+            "<b>A model is billions of numbers</b> (its weights). Each one is stored very precisely, and that precision takes up space.",
+            "<b>Quantization means keeping them less precise</b>: roughly the right value, instead of every last digit. The model gets much smaller.",
+            "<b>“4-bit” means each weight can only be one of 16 choices.</b> Think of a smooth volume knob replaced by a knob with 16 clicks: every weight is set to its nearest click.",
+            "<b>The trick: each small group of weights gets its own 16 clicks</b>, spread over just the range that group uses. Weights in a group are similar in size, so the 16 clicks land close to all of them."
           ]
         },
         {
-          "note": "A group whose weights go up to 0.42 gets marks 0.06 apart. 0.42 lands right on mark 7. −0.13 is rounded to mark −2, which means −0.12: off by just 0.01.",
-          "kind": "example"
+          "note": "Like saving a photo with only 16 colours per small patch. The sky patch picks 16 blues, the tree patch picks 16 greens, so the photo still looks right but the file is far smaller.",
+          "kind": "analogy"
         },
-        "<mark>Each weight ends up only a tiny bit off, and the errors mostly cancel out, so the model stays almost as good at a quarter of the memory.</mark> That's how a 7B model fits on a laptop.",
+        "<mark>Every weight is only slightly off, so the model works almost the same at a quarter of the memory.</mark> That's how a 7B model fits on a laptop.",
         {
           "more": "Show the maths",
           "text": [
-            "Scale = the group's largest weight ÷ 7 (here 0.42 ÷ 7 = 0.06). Each weight is stored as round(weight ÷ scale), a whole number from −8 to 7, which fits in 4 bits. To use it, multiply back by the scale.",
+            "Each group's 16 clicks are numbered −8 to 7, which fits in 4 bits. The spacing between clicks (the scale) is the group's largest weight ÷ 7, stored once per group.",
+            "Example: a group whose weights go up to 0.42 gets clicks 0.06 apart. 0.42 is stored as click 7 (7 × 0.06 = 0.42); −0.13 as click −2 (−2 × 0.06 = −0.12). Each weight comes back within 0.02 (see the table).",
             "With one 16-bit scale per 32 weights, that's about 4.5 bits per weight. Methods like GPTQ and AWQ choose the rounding more cleverly, to lose even less quality."
           ]
         }
       ],
       "viz": [
+        {
+          "type": "stat",
+          "items": [
+            {
+              "value": "≈ 14 GB",
+              "label": "7B model, 16 bits"
+            },
+            {
+              "value": "≈ 7 GB",
+              "label": "8 bits"
+            },
+            {
+              "value": "≈ 3.5 GB",
+              "label": "4 bits"
+            }
+          ]
+        },
+        {
+          "type": "caption",
+          "html": "The same model, stored with less detail per weight."
+        },
         {
           "type": "table",
           "rows": [
@@ -349,24 +380,7 @@
         },
         {
           "type": "caption",
-          "html": "One group of weights, marks 0.06 apart: every weight comes back within 0.02."
-        },
-        {
-          "type": "stat",
-          "items": [
-            {
-              "value": "≈ 14 GB",
-              "label": "7B model, bf16"
-            },
-            {
-              "value": "≈ 7 GB",
-              "label": "8-bit"
-            },
-            {
-              "value": "≈ 3.5 GB",
-              "label": "4-bit"
-            }
-          ]
+          "html": "The maths, if you want it: one group of weights, clicks 0.06 apart. Every weight comes back within 0.02."
         }
       ],
       "figure": {
@@ -375,7 +389,7 @@
         "alt": "Left: like rounding a price from £4.99 to £5.00. A 16-bit (bf16) number has about 65,000 possible values, drawn as a ruler with very many fine marks; a 4-bit number has just 16 marks, and each weight is rounded to the nearest one. Right: one group of weights gets its own ruler with marks 0.06 apart, numbered −8 to 7. The weights 0.42, −0.13, 0.08 and −0.22 snap to marks 7, −2, 1 and −4; multiplied back by 0.06 they become 0.42, −0.12, 0.06 and −0.24, each off by at most 0.02. Bottom: a 7B model needs about 14 GB in bf16 and about 3.5 GB at 4 bits; the tiny errors mostly cancel out, so it stays almost as good.",
         "width": 1200,
         "height": 470,
-        "caption": "Round each weight to the nearest of 16 marks; each group of weights gets its own ruler."
+        "caption": "Round each weight to the nearest of 16 clicks; each group of weights gets its own 16."
       }
     },
     {

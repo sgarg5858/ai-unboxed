@@ -60,7 +60,7 @@ export const SECTIONS: readonly SectionContent[] = [
       },
       {
         id: 'block',
-        name: 'The transformer block',
+        name: 'Parameters, depth and experts',
         load: () => json(import('./chapters/06-transformer-block.json')),
       },
       {
