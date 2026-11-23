@@ -2,6 +2,80 @@
   "$schema": "../schema/chapter.schema.json",
   "id": "walkthrough",
   "name": "End to end: one sentence",
+  "videos": [
+    {
+      "src": "videos/walkthrough/one_layer_end_to_end.mp4",
+      "title": "One layer, end to end",
+      "description": "One GPT-2 small layer seen as matrices, following “The cat sat on the mat because it”: the 8 × 768 token matrix X, LayerNorm, Q, K and V for all 12 heads in one multiplication, one head's 8 × 8 grid, the 12 heads joined and mixed by W_O, the two updates to X, the MLP's 8 × 3,072 detour, 12 layers, and the 124M tally.",
+      "slides": [1, 1],
+      "at": {
+        "1": 0,
+        "4": 20
+      },
+      "marks": [
+        {
+          "at": 0,
+          "label": "One layer, as matrices"
+        },
+        {
+          "at": 20,
+          "label": "What flows: the token matrix X"
+        },
+        {
+          "at": 34,
+          "label": "Tables fixed, X updated twice"
+        },
+        {
+          "at": 50,
+          "label": "LayerNorm: tidy each row"
+        },
+        {
+          "at": 61,
+          "label": "Q, K and V: 8 × 768 each"
+        },
+        {
+          "at": 78,
+          "label": "12 heads × 64 columns"
+        },
+        {
+          "at": 105,
+          "label": "One head: the 8 × 8 grid"
+        },
+        {
+          "at": 122,
+          "label": "Blending the values"
+        },
+        {
+          "at": 134,
+          "label": "All 12 heads, then W_O"
+        },
+        {
+          "at": 160,
+          "label": "Update 1: X + attention"
+        },
+        {
+          "at": 176,
+          "label": "The MLP: out to 8 × 3,072 and back"
+        },
+        {
+          "at": 202,
+          "label": "Update 2: X + MLP"
+        },
+        {
+          "at": 209,
+          "label": "Same shape out, 12 layers"
+        },
+        {
+          "at": 234,
+          "label": "Counting to 124M"
+        },
+        {
+          "at": 250,
+          "label": "Recap: the shape chain"
+        }
+      ]
+    }
+  ],
   "slides": [
     {
       "title": "How an LLM turns your words into its next word",
@@ -11,6 +85,10 @@
         "<mark>Every stage turns the same 6 tokens into new numbers. Only the last token's numbers are used to pick the next word.</mark>",
         {
           "note": "To keep every number readable, this is a toy model: each token gets 4 numbers, with made-up names (money, place, action, grammar). GPT-2 uses 768 numbers, and none of them have names. The token IDs are GPT-2's real ones.",
+          "kind": "example"
+        },
+        {
+          "note": "The video follows a different sentence, “The cat sat on the mat because it”, the one used in the Attention and MLP videos. It shows one real GPT-2 small layer with every matrix at its true size.",
           "kind": "example"
         }
       ],
