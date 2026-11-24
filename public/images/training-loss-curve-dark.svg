@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 470" role="img" aria-labelledby="t d" font-family="'Schibsted Grotesk', ui-sans-serif, system-ui, sans-serif">
+  <title id="t">Why −log: the loss curve</title>
+  <desc id="d">A chart of loss against probability. The horizontal axis is the probability the model gave to the right word, from 0 to 1. A dashed curve shows log p: it is 0 at p = 1 and drops below zero, diving steeply as p nears 0. The solid curve, loss = minus log p, is that curve flipped upwards: 0 at p = 1, 0.36 at p = 0.70, 3.00 at p = 0.05, and shooting up towards infinity as p nears 0. At p = 0.0001 the loss is 9.2, off the top of the chart. The minus sign is there because log p is negative for every probability below 1, so flipping it makes the loss a positive score where lower is better.</desc>
+  <style>
+    .bg{fill:#0f1413}.card{fill:#171e1c;stroke:#2c3835}.sunk{fill:#1f2826}
+    .ink{fill:#e4ece9}.muted{fill:#9aa9a4}.onacc{fill:#0f1413}
+    .acc{fill:#4db3d1}.accink{fill:#8fd3e6}.accsoft{fill:#163742}
+    .pos{fill:#3fc4a3}.posink{fill:#3fc4a3}.possoft{fill:#123a30;stroke:#3fc4a3}
+    .neg{fill:#f07d60}.negink{fill:#f07d60}.negsoft{fill:#42221a;stroke:#f07d60}
+    .heat{fill:#3d2e14;stroke:#f0ac40}.heatink{fill:#f0ac40}.heatfill{fill:#f0ac40}
+    .line{stroke:#9aa9a4;fill:none;stroke-width:2}.thin{stroke:#2c3835;fill:none;stroke-width:1.5}
+    .dash{stroke:#4db3d1;fill:none;stroke-width:2;stroke-dasharray:6 5}
+    .sacc{stroke:#4db3d1;fill:none;stroke-width:2.5}.sheat{stroke:#f0ac40;fill:none;stroke-width:2.5}
+    .spos{stroke:#3fc4a3;fill:none;stroke-width:2.5}.sneg{stroke:#f07d60;fill:none;stroke-width:2.5}
+    .edge{stroke:#4db3d1;fill:none;stroke-width:1;opacity:.45}
+    .stream{stroke:#4db3d1;fill:none;stroke-width:14;stroke-linecap:round;opacity:.35}
+    .row{fill:#1f2826}.hit{fill:#163742;stroke:#4db3d1}
+    .mono{font-family:'JetBrains Mono',ui-monospace,Menlo,monospace}
+    .head{font-size:13px;font-weight:700;letter-spacing:.08em}
+    .arrowhead{fill:#9aa9a4}.arrowacc{fill:#4db3d1}
+  </style>
+  <rect class="bg" x="0" y="0" width="1200" height="470" rx="18"/>
+  <text x="40" y="52" class="ink" font-size="26" font-weight="700">Why −log? The loss curve</text>
+  <text x="40" y="78" class="muted" font-size="15">Plot the loss for every probability the model could give the right word.</text>
+  <line class="thin" x1="110" y1="410" x2="760" y2="410" opacity=".5"/>
+  <text x="98" y="415" text-anchor="end" class="muted mono" font-size="12">-5</text>
+  <line class="thin" x1="110" y1="380" x2="760" y2="380" opacity=".5"/>
+  <text x="98" y="385" text-anchor="end" class="muted mono" font-size="12">-4</text>
+  <line class="thin" x1="110" y1="350" x2="760" y2="350" opacity=".5"/>
+  <text x="98" y="355" text-anchor="end" class="muted mono" font-size="12">-3</text>
+  <line class="thin" x1="110" y1="320" x2="760" y2="320" opacity=".5"/>
+  <text x="98" y="325" text-anchor="end" class="muted mono" font-size="12">-2</text>
+  <line class="thin" x1="110" y1="290" x2="760" y2="290" opacity=".5"/>
+  <text x="98" y="295" text-anchor="end" class="muted mono" font-size="12">-1</text>
+  <line class="thin" x1="110" y1="230" x2="760" y2="230" opacity=".5"/>
+  <text x="98" y="235" text-anchor="end" class="muted mono" font-size="12">1</text>
+  <line class="thin" x1="110" y1="200" x2="760" y2="200" opacity=".5"/>
+  <text x="98" y="205" text-anchor="end" class="muted mono" font-size="12">2</text>
+  <line class="thin" x1="110" y1="170" x2="760" y2="170" opacity=".5"/>
+  <text x="98" y="175" text-anchor="end" class="muted mono" font-size="12">3</text>
+  <line class="thin" x1="110" y1="140" x2="760" y2="140" opacity=".5"/>
+  <text x="98" y="145" text-anchor="end" class="muted mono" font-size="12">4</text>
+  <line class="thin" x1="110" y1="110" x2="760" y2="110" opacity=".5"/>
+  <text x="98" y="115" text-anchor="end" class="muted mono" font-size="12">5</text>
+  <line class="thin" x1="272.5" y1="110" x2="272.5" y2="410" opacity=".5"/>
+  <line class="thin" x1="435.0" y1="110" x2="435.0" y2="410" opacity=".5"/>
+  <line class="thin" x1="597.5" y1="110" x2="597.5" y2="410" opacity=".5"/>
+  <line class="thin" x1="760" y1="110" x2="760" y2="410" opacity=".5"/>
+  <text x="98" y="265" text-anchor="end" class="muted mono" font-size="12">0</text>
+  <line class="line" x1="110" y1="260" x2="760" y2="260"/>
+  <line class="line" x1="110" y1="110" x2="110" y2="410"/>
+  <text x="110" y="432" text-anchor="middle" class="muted mono" font-size="12">0</text>
+  <text x="272.5" y="432" text-anchor="middle" class="muted mono" font-size="12">0.25</text>
+  <text x="435.0" y="432" text-anchor="middle" class="muted mono" font-size="12">0.5</text>
+  <text x="597.5" y="432" text-anchor="middle" class="muted mono" font-size="12">0.75</text>
+  <text x="760" y="432" text-anchor="middle" class="muted mono" font-size="12">1</text>
+  <text x="435" y="456" text-anchor="middle" class="muted" font-size="13.5">p = probability given to the right word</text>
+  <polyline class="line" stroke-dasharray="6 5" points="114.4,410.0 114.6,408.3 114.9,406.5 115.2,404.8 115.5,403.0 115.9,401.3 116.2,399.5 116.6,397.8 117.0,396.0 117.4,394.3 117.8,392.5 118.3,390.8 118.8,389.0 119.3,387.3 119.9,385.5 120.5,383.8 121.1,382.0 121.8,380.3 122.5,378.5 123.3,376.8 124.0,375.0 124.9,373.3 125.8,371.5 126.7,369.8 127.7,368.0 128.8,366.3 129.9,364.6 131.1,362.8 132.4,361.1 133.7,359.3 135.2,357.6 136.7,355.8 138.3,354.1 140.0,352.3 141.8,350.6 143.7,348.8 145.7,347.1 147.8,345.3 150.1,343.6 152.5,341.8 155.0,340.1 157.8,338.3 160.6,336.6 163.7,334.8 166.9,333.1 170.3,331.3 173.9,329.6 177.7,327.8 181.8,326.1 186.1,324.3 190.7,322.6 195.5,320.8 200.6,319.1 206.1,317.4 211.8,315.6 218.0,313.9 224.4,312.1 231.3,310.4 238.6,308.6 240.0,308.3 253.0,305.4 266.0,302.8 279.0,300.4 292.0,298.2 305.0,296.1 318.0,294.2 331.0,292.4 344.0,290.6 357.0,289.0 370.0,287.5 383.0,286.0 396.0,284.6 409.0,283.3 422.0,282.0 435.0,280.8 448.0,279.6 461.0,278.5 474.0,277.4 487.0,276.3 500.0,275.3 513.0,274.3 526.0,273.4 539.0,272.5 552.0,271.6 565.0,270.7 578.0,269.9 591.0,269.0 604.0,268.2 617.0,267.5 630.0,266.7 643.0,266.0 656.0,265.2 669.0,264.5 682.0,263.8 695.0,263.2 708.0,262.5 721.0,261.9 734.0,261.2 747.0,260.6 760.0,260.0"/>
+  <polyline class="sacc" stroke-width="3.5" points="114.4,110.0 114.6,111.7 114.9,113.5 115.2,115.2 115.5,117.0 115.9,118.7 116.2,120.5 116.6,122.2 117.0,124.0 117.4,125.7 117.8,127.5 118.3,129.2 118.8,131.0 119.3,132.7 119.9,134.5 120.5,136.2 121.1,138.0 121.8,139.7 122.5,141.5 123.3,143.2 124.0,145.0 124.9,146.7 125.8,148.5 126.7,150.2 127.7,152.0 128.8,153.7 129.9,155.4 131.1,157.2 132.4,158.9 133.7,160.7 135.2,162.4 136.7,164.2 138.3,165.9 140.0,167.7 141.8,169.4 143.7,171.2 145.7,172.9 147.8,174.7 150.1,176.4 152.5,178.2 155.0,179.9 157.8,181.7 160.6,183.4 163.7,185.2 166.9,186.9 170.3,188.7 173.9,190.4 177.7,192.2 181.8,193.9 186.1,195.7 190.7,197.4 195.5,199.2 200.6,200.9 206.1,202.6 211.8,204.4 218.0,206.1 224.4,207.9 231.3,209.6 238.6,211.4 240.0,211.7 253.0,214.6 266.0,217.2 279.0,219.6 292.0,221.8 305.0,223.9 318.0,225.8 331.0,227.6 344.0,229.4 357.0,231.0 370.0,232.5 383.0,234.0 396.0,235.4 409.0,236.7 422.0,238.0 435.0,239.2 448.0,240.4 461.0,241.5 474.0,242.6 487.0,243.7 500.0,244.7 513.0,245.7 526.0,246.6 539.0,247.5 552.0,248.4 565.0,249.3 578.0,250.1 591.0,251.0 604.0,251.8 617.0,252.5 630.0,253.3 643.0,254.0 656.0,254.8 669.0,255.5 682.0,256.2 695.0,256.8 708.0,257.5 721.0,258.1 734.0,258.8 747.0,259.4 760.0,260.0"/>
+  <text x="150" y="128" class="accink" font-size="16" font-weight="700">loss = −log p</text>
+  <text x="150" y="400" class="muted" font-size="15" font-weight="600">log p (below zero)</text>
+  <text x="560" y="300" class="muted" font-size="13">the minus sign flips it up</text>
+  <circle class="neg" cx="142.5" cy="170.1" r="7"/>
+  <text x="156.5" y="164.1" class="negink" font-size="15" font-weight="700">p 0.05 → loss 3.00</text>
+  <circle class="pos" cx="565.0" cy="249.3" r="7"/>
+  <text x="557.0" y="233.3" text-anchor="middle" class="posink" font-size="15" font-weight="700">p 0.70 → 0.36</text>
+  <circle class="acc" cx="760.0" cy="260.0" r="6"/>
+  <rect class="card" x="800" y="110" width="360" height="314" rx="10"/>
+  <text x="824" y="142" class="muted head" font-size="12">READING THE CURVE</text>
+  <text x="824" y="178" class="ink" font-size="15.5" font-weight="700">Sure and right (p = 1): loss 0.</text>
+  <text x="824" y="200" class="muted" font-size="14">It can never go below zero.</text>
+  <text x="824" y="240" class="ink" font-size="15.5" font-weight="700">Unsure (p = 0.70): loss 0.36.</text>
+  <text x="824" y="262" class="muted" font-size="14">A small nudge is enough.</text>
+  <text x="824" y="302" class="negink" font-size="15.5" font-weight="700">Confidently wrong: loss soars.</text>
+  <text x="824" y="324" class="muted" font-size="14">p = 0.0001 gives 9.2, off the chart.</text>
+  <text x="824" y="364" class="ink" font-size="15.5" font-weight="700">Why the minus sign?</text>
+  <text x="824" y="386" class="muted" font-size="14">log p is negative below 1. Flipping it</text>
+  <text x="824" y="404" class="muted" font-size="14">gives a score where lower is better.</text>
+</svg>

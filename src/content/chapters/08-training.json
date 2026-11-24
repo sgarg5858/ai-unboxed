@@ -410,6 +410,7 @@
           ]
         },
         "<mark>Training has one goal: make the average loss, over every position in every batch, as small as possible.</mark> Being confidently wrong is punished the most.",
+        "Why <code>−log</code>? On its own, <code>log p</code> is negative for any probability below 1. The minus sign flips it into a score where 0 is perfect and bigger is worse.",
         "Only the right word's probability is scored. That is enough: the probabilities add up to 1, so pushing “blue” up pushes “banana” down.",
         "Drag the slider to see the loss change.",
         {
@@ -423,14 +424,24 @@
           "name": "cross-entropy"
         }
       ],
-      "figure": {
-        "src": "images/training-loss-light.svg",
-        "darkSrc": "images/training-loss-dark.svg",
-        "alt": "Formula at the top: loss equals minus the log of the probability the model gave to the right answer. Left, a badly tuned model gives “blue” a probability of 0.05 after “The sky is”: loss 3.00, high. Right, a better tuned model gives “blue” 0.70: loss 0.36, low. Being confidently wrong costs the most: a probability of 0.0001 gives a loss of 9.2.",
-        "width": 1200,
-        "height": 430,
-        "caption": "Same prompt, same right answer. Only the probability changes, and the loss follows."
-      }
+      "figure": [
+        {
+          "src": "images/training-loss-light.svg",
+          "darkSrc": "images/training-loss-dark.svg",
+          "alt": "Formula at the top: loss equals minus the log of the probability the model gave to the right answer. Left, a badly tuned model gives “blue” a probability of 0.05 after “The sky is”: loss 3.00, high. Right, a better tuned model gives “blue” 0.70: loss 0.36, low. Being confidently wrong costs the most: a probability of 0.0001 gives a loss of 9.2.",
+          "width": 1200,
+          "height": 430,
+          "caption": "Same prompt, same right answer. Only the probability changes, and the loss follows."
+        },
+        {
+          "src": "images/training-loss-curve-light.svg",
+          "darkSrc": "images/training-loss-curve-dark.svg",
+          "alt": "A chart of loss against the probability the model gave to the right word, from 0 to 1. A dashed curve shows log p: 0 at p = 1, dropping below zero and diving steeply as p nears 0. The solid curve, loss = minus log p, is the same curve flipped upwards: 0 at p = 1, 0.36 at p = 0.70, 3.00 at p = 0.05, and shooting up as p nears 0. At p = 0.0001 the loss is 9.2, off the top of the chart. The minus sign is there because log p is negative for every probability below 1.",
+          "width": 1200,
+          "height": 470,
+          "caption": "The log curve, flipped. Near p = 1 it is almost flat; near 0 it shoots up, which is why confident mistakes cost the most."
+        }
+      ]
     },
     {
       "title": "Backpropagation: who is to blame?",
