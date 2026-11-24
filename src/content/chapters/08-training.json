@@ -111,11 +111,11 @@
       "src": "videos/training/training_trained_model_to_assistant.mp4",
       "title": "Training 3 · From trained model to assistant",
       "description": "Generalising vs overfitting, training vs inference and distributed training, and how post-training turns a base model into an assistant.",
-      "slides": [9, 11],
+      "slides": [9, 10],
       "at": {
         "9": 13,
         "10": 52,
-        "11": 95
+        "12": 95
       },
       "marks": [
         {
@@ -157,6 +157,61 @@
         {
           "at": 128,
           "label": "Knowledge vs behaviour"
+        }
+      ]
+    },
+    {
+      "src": "videos/training/where_weights_live_gpus.mp4",
+      "title": "Training 4 · Where the weights live, and how GPUs share them",
+      "description": "Disk, main memory and GPU memory, why training Llama 2 7B needs about 108 GB, and four ways to share the work: full copies, sharding, strips and stages.",
+      "slides": [11, 11],
+      "at": {
+        "11": 0
+      },
+      "marks": [
+        {
+          "at": 0,
+          "label": "Where do the weights live?"
+        },
+        {
+          "at": 19,
+          "label": "Shelf, desk, hands"
+        },
+        {
+          "at": 48,
+          "label": "Grids of numbers: 13.5 GB"
+        },
+        {
+          "at": 70,
+          "label": "GPU, server, cluster"
+        },
+        {
+          "at": 91,
+          "label": "Does it fit on one GPU?"
+        },
+        {
+          "at": 100,
+          "label": "Training: 16 bytes per weight"
+        },
+        {
+          "at": 124,
+          "label": "Way 1: full copies"
+        },
+        {
+          "at": 147,
+          "label": "Way 2: share it out"
+        },
+        {
+          "at": 168,
+          "label": "Way 3: cut a table into strips"
+        },
+        {
+          "at": 191,
+          "label": "Way 4: split by layers"
+        },
+        {
+          "at": 208,
+          "label": "All of them at once"
         }
       ]
     }
@@ -834,6 +889,37 @@
         "width": 1200,
         "height": 460,
         "caption": "Inference only ever runs the forward pass."
+      }
+    },
+    {
+      "title": "Where the weights live, and how GPUs share them",
+      "summary": "Training needs far more memory than one GPU has, so the work is shared across many GPUs in four ways.",
+      "body": [
+        "A model's weights start as a file on disk. For training, they are copied into <b>GPU memory</b>, right next to the chips that do the maths, because they are read again for every token.",
+        "Llama 2 7B has 6.7 billion weights at 2 bytes each: 13.5 GB. That fits easily on one 80 GB GPU.",
+        "<mark>Training needs about 16 bytes per weight (the weight, its gradient, a precise copy and two optimiser notes), so about 108 GB, more than one GPU can hold.</mark>",
+        "So the work is shared:",
+        {
+          "ul": [
+            "<b>Full copies (data parallel):</b> every GPU takes part of the batch, then they average gradients.",
+            "<b>Share it out (sharded):</b> each GPU stores a quarter and borrows the rest when needed.",
+            "<b>Strips (tensor parallel):</b> one big table is cut into column strips, one per GPU.",
+            "<b>Stages (pipeline parallel):</b> layers are split across GPUs, like an assembly line."
+          ]
+        },
+        "<mark class=\"info\">Big training runs use all four at once: strips inside a server, stages across servers, and many copies of the whole setup.</mark>",
+        {
+          "note": "Like a kitchen: the recipe book goes from the shelf to the desk to the cook's hands. When the book is too big for one cook, the cooks share it.",
+          "kind": "analogy"
+        }
+      ],
+      "figure": {
+        "src": "images/training-gpus-light.svg",
+        "darkSrc": "images/training-gpus-dark.svg",
+        "alt": "Top left, where the weights live: a file on disk, the shelf, is read into main memory, the desk, then copied into GPU memory, the cook's hands, right next to the chips that do the maths. Top right, why one GPU isn't enough, for Llama 2 7B with 6.7 billion weights: running it needs 2 bytes per weight, 13.5 GB, which fits under one GPU's 80 GB. Training needs 16 bytes per weight, about 108 GB, which goes past 80 GB. Bottom, four ways to share the work. Full copies (data parallel): every GPU holds the whole model and takes a quarter of the batch, then they average gradients. Share it out (sharded): each GPU stores one quarter and borrows the rest when needed. Strips (tensor parallel): one big table is cut into column strips, one per GPU, inside one server. Stages (pipeline parallel): GPU 1 runs layers 1 to 8, GPU 2 layers 9 to 16, and so on, like an assembly line.",
+        "width": 1200,
+        "height": 500,
+        "caption": "One GPU can run the model, but not train it. Training shares the work across many."
       }
     },
     {

@@ -375,7 +375,7 @@
                 "detail": "People rate and compare responses: users give thumbs up or down, trained labellers rank pairs of answers, and red-teamers hunt for failures. AI feedback judged against written principles (RLAIF) supplements human labels at scale. The result is preference data for the next round of training.",
                 "link": {
                   "chapter": "training",
-                  "slide": 11
+                  "slide": 12
                 }
               },
               "training": {
