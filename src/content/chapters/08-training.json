@@ -115,7 +115,7 @@
       "at": {
         "9": 13,
         "10": 52,
-        "12": 95
+        "13": 95
       },
       "marks": [
         {
@@ -212,6 +212,65 @@
         {
           "at": 208,
           "label": "All of them at once"
+        }
+      ]
+    },
+    {
+      "src": "videos/training/frontier_distributed_training.mp4",
+      "title": "Training 5 · Training a frontier model",
+      "description": "Why training Llama 3.1 405B takes 16,384 GPUs, how the work is split 8 × 16 × 128, and the five distributed-systems problems that come with scale: network, failures, stragglers, loss spikes and power.",
+      "slides": [12, 12],
+      "at": {
+        "12": 0
+      },
+      "marks": [
+        {
+          "at": 0,
+          "label": "From 7B to 405B"
+        },
+        {
+          "at": 22,
+          "label": "Memory: 80× too much"
+        },
+        {
+          "at": 36,
+          "label": "Time: 3,500 GPU-years"
+        },
+        {
+          "at": 56,
+          "label": "The machine: 16,384 GPUs"
+        },
+        {
+          "at": 74,
+          "label": "Splitting the work: 8 × 16 × 128"
+        },
+        {
+          "at": 124,
+          "label": "The hard part"
+        },
+        {
+          "at": 135,
+          "label": "1 · The network"
+        },
+        {
+          "at": 153,
+          "label": "2 · Failures and checkpoints"
+        },
+        {
+          "at": 182,
+          "label": "3 · Stragglers"
+        },
+        {
+          "at": 196,
+          "label": "4 · Loss spikes"
+        },
+        {
+          "at": 213,
+          "label": "5 · Power"
+        },
+        {
+          "at": 230,
+          "label": "Same loop, whole data centre"
         }
       ]
     }
@@ -920,6 +979,37 @@
         "width": 1200,
         "height": 500,
         "caption": "One GPU can run the model, but not train it. Training shares the work across many."
+      }
+    },
+    {
+      "title": "Training a frontier model: a distributed-systems problem",
+      "summary": "At frontier scale the maths stays the same. The hard part is keeping thousands of GPUs working as one.",
+      "body": [
+        "Meta's Llama 3.1 has 405 billion weights. Training it needs about 6.5 TB of memory and about 31 million GPU hours: roughly 3,500 years on one GPU.",
+        "So Meta used <b>16,384 GPUs</b> in 2,048 servers, splitting the work in several ways at once: tables cut into strips inside each server (× 8), layers split into 16 stages (× 16), and 128 copies of the whole setup (× 128).",
+        "<mark>The training loop is the same as always. The hard part is keeping thousands of GPUs in step.</mark>",
+        {
+          "ul": [
+            "<b>Network:</b> GPUs swap results constantly, so sending overlaps with computing.",
+            "<b>Failures:</b> Meta's run was interrupted 466 times in 54 days, so it saves checkpoints and restarts from the last one.",
+            "<b>Stragglers:</b> one slow GPU makes thousands wait, so slow ones are found and swapped out.",
+            "<b>Loss spikes:</b> if the loss suddenly jumps, go back to a checkpoint and skip the batches that caused it.",
+            "<b>Power:</b> tens of megawatts, with sudden swings when every GPU pauses at once."
+          ]
+        },
+        "<mark class=\"info\">Even so, Meta kept its GPUs doing useful training more than 90% of the time.</mark>",
+        {
+          "more": "Where do these numbers come from?",
+          "text": "Meta's Llama 3 paper (2024): 16,384 H100 GPUs, about 15 trillion tokens, 3.8 × 10²⁵ calculations, and 466 interruptions in a 54-day stretch. The 31 million GPU hours come from the Llama 3.1 model card. The loss-spike fix (rewind and skip batches) is from Google's PaLM paper."
+        }
+      ],
+      "figure": {
+        "src": "images/training-frontier-light.svg",
+        "darkSrc": "images/training-frontier-dark.svg",
+        "alt": "Training Meta's Llama 3.1, with 405 billion weights. Top left, why one GPU can't do it: training needs about 6.5 TB of memory, but one GPU holds 80 GB, 80 times too small; and about 31 million GPU hours, which is about 3,500 years on one GPU or about two and a half months on 16,384. Top right, the machine: 16,384 GPUs in 2,048 servers of 8, joined by one network, reading about 15 trillion tokens. Middle, splitting the work: inside each server the 8 GPUs share every big table, cut into strips; the 126 layers are split into 16 stages, one server each, so 16 servers hold one full copy; and that copy is repeated 128 times, each reading different text. 8 times 16 times 128 is 16,384 GPUs. Bottom, five distributed-systems problems: the network (overlap sending with computing), failures (466 interruptions in 54 days, so save checkpoints and restart), stragglers (one slow GPU makes thousands wait, so swap it out), loss spikes (go back to a checkpoint and skip the bad batches), and power (tens of megawatts, with sudden swings).",
+        "width": 1200,
+        "height": 600,
+        "caption": "Same loop as always, spread across a whole data centre."
       }
     },
     {
