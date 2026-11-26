@@ -14,6 +14,17 @@ const json = (file: Promise<{ default: unknown }>) => file.then((m) => m.default
 
 export const SECTIONS: readonly SectionContent[] = [
   {
+    id: 'roadmap',
+    name: 'Roadmap',
+    chapters: [
+      {
+        id: 'roadmap',
+        name: 'Course roadmap',
+        load: () => json(import('./chapters/23-roadmap.json')),
+      },
+    ],
+  },
+  {
     id: 'assistant',
     name: 'Assistant architecture',
     chapters: [
@@ -180,6 +191,12 @@ export const SECTIONS: readonly SectionContent[] = [
     ],
   },
 ];
+
+/**
+ * Where a new reader lands (the bare URL, and unknown chapter ids). It isn't the first chapter:
+ * the Roadmap comes first in the tabs, but the course itself starts here.
+ */
+export const START_CHAPTER = 'assistant';
 
 /** Every chapter in reading order. URLs and navigation use this flat list. */
 export const CHAPTERS: readonly ChapterRef[] = SECTIONS.flatMap((s) => s.chapters);

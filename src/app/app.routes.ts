@@ -1,9 +1,9 @@
 import { Routes } from '@angular/router';
-import { CHAPTERS } from '../content/course';
+import { START_CHAPTER } from '../content/course';
 import { chapterResolver } from './course/chapter.resolver';
 import { CourseShell } from './course/course-shell/course-shell';
 
-const start = `/${CHAPTERS[0].id}/1`;
+const start = `/${START_CHAPTER}/1`;
 
 /**
  * #/chapterId/slide (1-based). The resolver loads that chapter's content (and its widgets)

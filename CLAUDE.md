@@ -16,6 +16,7 @@ Before calling a task done:
 1. `npm test -- --watch=false` passes.
 2. `npm run build` passes with no new budget warnings.
 3. For UI changes, the slide has been checked in the browser in **both light and dark** themes.
+4. If the task added or changed course content, the roadmap is updated (see **Roadmap** below).
 
 ## Golden rule
 
@@ -30,7 +31,13 @@ Before calling a task done:
 - **Images:** draw the SVG in `src/content/figures/` using the shared class names and a `<!--theme-->` marker, run `npm run figures` to build the light/dark files in `public/images/`, then add a slide-level `figure` (one figure, or a list of them shown in order) (`src`, optional `darkSrc`, `alt`, `width`, `height`, `caption`) with files in `public/images/`. Paths have no leading slash (the base href varies). Provide a light and a dark variant; `SlideFigure` swaps them using `Theme.dark()`, so they follow the site toggle. Prefer SVG and write a real `alt`.
 - **Videos (Watch mode):** up to 3–4 per chapter, each covering a range of slides. Put the file in the chapter's folder, `src/content/videos/<chapter-id>/` (served at `videos/`), and add it to the chapter-level `videos` list: `src: "videos/<chapter-id>/<file>.mp4"`, `title`, optional `description` and `poster`, `slides: [first, last]` (1-based), `at: { "<slide>": seconds }` (where each covered slide's topic starts; a slide listed here counts as covered even outside the range, so one video can cover slides 1, 2 and 6) and **`marks`** (`[{ at: seconds, label }]`, the timestamps). **Every video must have `marks`**, one per section, in the order they play, starting at 0. Watch mode shows the video for the current slide, its timestamps (clickable, and as ticks on the seek bar) and a playlist; opening Watch on a covered slide starts the video at that slide's `at` time. Combined mode (`?mode=combined`) shows the video beside the slide and keeps them in step using `at`, so give every covered slide an `at` time. The mode lives in the URL (`?mode=watch|combined`); without it, and for old `?mode=read` links, the course opens in Combined, where readers can also hide the video. The same file may be listed in more than one chapter; it stays in the folder of the chapter it was made for (a test checks every `src` exists). In Watch, chapters without videos show a "no video yet" page. See ARCHITECTURE.md §8.
 - **Cross-chapter links:** use `goto: { chapter: "<id>", slide: n }` and refer to the chapter by **name** in prose, never by number.
-- **New chapter:** add the JSON file with its `$schema` line, add an entry `{ id, name, load: () => json(import('./chapters/…json')) }` to a section in `src/content/course.ts` (id and name must match the JSON; a test checks), and update the chapter table in `README.md`. Never import chapter JSON statically in app code: it would pull every chapter back into the initial bundle.
+- **New chapter:** add the JSON file with its `$schema` line, add an entry `{ id, name, load: () => json(import('./chapters/…json')) }` to a section in `src/content/course.ts` (id and name must match the JSON; a test checks), update the chapter table in `README.md`, and update the roadmap (below). Never import chapter JSON statically in app code: it would pull every chapter back into the initial bundle.
+- **Roadmap:** `src/content/roadmap.json` is the course's topic checklist, shown in the Roadmap section (first tab). **Whenever you add or change content, update it in the same task:**
+  - A topic the new slide teaches: add `goto: { chapter, slide }` (1-based) pointing at that slide. Without `goto`, the topic shows as "Coming soon".
+  - A new topic that fits no existing entry: add it to the right group. An area that fits no group: add a group and a matching slide to `chapters/23-roadmap.json` (the group's `slide` must point at it).
+  - Moved slides: inserting, deleting or reordering slides shifts slide numbers, so fix every `goto` in `roadmap.json` that points into that chapter. A test checks each link resolves, not that it lands on the right topic.
+  - Tick a topic only when a slide really explains it, not when one sentence mentions it.
+  - Keep the prose in `23-roadmap.json` in step (it names what is still to come); never hard-code counts there, the widget computes them.
 
 ## Angular 21 conventions (follow strictly)
 
@@ -73,6 +80,7 @@ Based on angular.dev's official best-practices guide (`/assets/context/best-prac
 ### Navigation
 
 - The **URL is the only source of truth** for the current slide and the Watch/Combined mode (`?mode=`). Navigate through `CourseNav` (`goto`, `gotoSlide`, `step`). Never store "current slide" in a component.
+- New readers land on `START_CHAPTER` in `course.ts` (Assistant architecture), not on the first chapter: the Roadmap is the first tab but not the starting page. The bare URL and unknown chapter ids redirect there.
 - Routing uses hash URLs (`#/chapterId/slide`, 1-based slide number) so GitHub Pages works without rewrites. The `:chapter/:slide` route's `chapterResolver` loads that chapter's JSON and widget code (via `ChapterStore`) before the shell renders, so `CourseNav.chapter()` is always loaded inside the shell. Other chapters prefetch in the background after the first render.
 
 ### TypeScript

@@ -751,7 +751,8 @@
                   "chunk-size",
                   "hybrid-search",
                   "walkthrough",
-                  "coming-soon"
+                  "coming-soon",
+                  "topic-checklist"
                 ],
                 "description": "Key in src/app/widgets/registry.ts"
               },

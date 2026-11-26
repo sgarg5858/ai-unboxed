@@ -1,7 +1,7 @@
 import Ajv from 'ajv';
 import { WIDGETS } from '../app/widgets/registry';
 import { allBlocks } from '../app/course/blocks-walk';
-import { CHAPTERS, SECTIONS } from './course';
+import { CHAPTERS, SECTIONS, START_CHAPTER } from './course';
 import schema from './schema/chapter.schema.json';
 
 // The app loads chapters on demand; the tests load them all up front.
@@ -22,6 +22,10 @@ describe('course content', () => {
       expect(ok).toBe(true);
     });
   }
+
+  it('starts readers on a real chapter', () => {
+    expect(CHAPTERS.map((c) => c.id)).toContain(START_CHAPTER);
+  });
 
   it('groups every chapter into exactly one section, in reading order', () => {
     expect(SECTIONS.flatMap((x) => x.chapters.map((c) => c.id))).toEqual(CHAPTERS.map((c) => c.id));

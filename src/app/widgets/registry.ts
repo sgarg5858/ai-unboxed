@@ -51,6 +51,7 @@ export const WIDGETS: Record<string, () => Promise<Type<unknown>>> = {
   'hybrid-search': () => import('./rag.widgets').then((m) => m.HybridSearchWidget),
   walkthrough: () => import('./walkthrough.widgets').then((m) => m.WalkthroughWidget),
   'coming-soon': () => import('./soon.widgets').then((m) => m.ComingSoonWidget),
+  'topic-checklist': () => import('./roadmap.widgets').then((m) => m.TopicChecklistWidget),
 };
 
 const loaded = new Map<string, Type<unknown>>();

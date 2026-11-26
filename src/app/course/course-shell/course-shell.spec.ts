@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
-import { CHAPTERS, SECTIONS } from '../../../content/course';
+import { CHAPTERS, SECTIONS, START_CHAPTER } from '../../../content/course';
 import { ChapterStore } from '../chapter-store';
 import { routes } from '../../app.routes';
 import { CourseShell } from './course-shell';
@@ -108,13 +108,14 @@ describe('CourseShell', () => {
   });
 
   it('jumps to a chapter or a slide from the outline', async () => {
-    const { el, router, settle } = await open(`/${SECTIONS[1].chapters[0].id}/1`);
+    const sec = SECTIONS.find((x) => x.chapters.length > 1)!;
+    const { el, router, settle } = await open(`/${sec.chapters[0].id}/1`);
     (el.querySelectorAll('aside .ch')[1] as HTMLButtonElement).click();
     await settle();
-    expect(router.url.split('?')[0]).toBe('/' + SECTIONS[1].chapters[1].id + '/1');
+    expect(router.url.split('?')[0]).toBe('/' + sec.chapters[1].id + '/1');
     (el.querySelectorAll('aside .slides .sbtn')[2] as HTMLButtonElement).click();
     await settle();
-    expect(router.url.split('?')[0]).toBe('/' + SECTIONS[1].chapters[1].id + '/3');
+    expect(router.url.split('?')[0]).toBe('/' + sec.chapters[1].id + '/3');
   });
 
   it('moves to the next slide and across chapters', async () => {
@@ -140,7 +141,7 @@ describe('CourseShell', () => {
 
   it('sends unknown chapters to the start', async () => {
     const { router } = await open('/nope/3');
-    expect(router.url.split('?')[0]).toBe(`/${COURSE[0].id}/1`);
+    expect(router.url.split('?')[0]).toBe(`/${START_CHAPTER}/1`);
   });
 
   it('opens old single-segment links like #assistant at slide 1', async () => {

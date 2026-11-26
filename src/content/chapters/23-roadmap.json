@@ -1,0 +1,88 @@
+{
+  "$schema": "../schema/chapter.schema.json",
+  "id": "roadmap",
+  "name": "Course roadmap",
+  "slides": [
+    {
+      "title": "The roadmap: what this course will cover",
+      "summary": "Every topic the course aims to cover, in six areas, and how far along each area is.",
+      "body": [
+        "This is the checklist for the whole course: the topics you need to understand how modern AI systems are built, from the model itself to the products around it.",
+        {
+          "ul": [
+            "<b>LLM concepts</b>: how the model reads, thinks and writes.",
+            "<b>RAG</b>: letting a model look things up.",
+            "<b>AI system design</b>: serving models quickly and cheaply.",
+            "<b>AI agents</b>: models that use tools and act in steps.",
+            "<b>Evals</b>: measuring whether it actually works.",
+            "<b>AI security</b>: attacks, and how to defend against them."
+          ]
+        },
+        "<mark class=\"info\">A ticked topic links to the slide that teaches it; the rest are marked coming soon.</mark>",
+        "Pick an area on the right to see its topics."
+      ],
+      "viz": [{ "type": "widget", "name": "topic-checklist" }]
+    },
+    {
+      "title": "LLM concepts",
+      "summary": "How a language model reads text, works on it and writes an answer, and the settings that shape what it says.",
+      "body": [
+        "This area covers the model itself: tokens, attention, the transformer, and what happens at each step of writing an answer.",
+        "Most of it is already in the LLM architecture section. Still to come are the prompting topics (few-shot prompting, structured outputs), images and audio as input, and the ways to make models smaller or adapt them: LoRA, QLoRA and distillation.",
+        "Tap a ticked topic to jump to the slide that teaches it."
+      ],
+      "viz": [{ "type": "widget", "name": "topic-checklist", "props": { "group": "llm" } }]
+    },
+    {
+      "title": "RAG",
+      "summary": "Retrieval-augmented generation: finding the right text and giving it to the model before it answers.",
+      "body": [
+        "This area covers every step of a RAG system: cutting documents into chunks, turning them into vectors, searching, reranking, and checking the results.",
+        "The Retrieval-augmented generation chapter covers most of it. Still to come: getting clean text out of PDFs and web pages (document parsing), and parent-child chunking, which searches small chunks but hands the model the bigger section around them."
+      ],
+      "viz": [{ "type": "widget", "name": "topic-checklist", "props": { "group": "rag" } }]
+    },
+    {
+      "title": "AI system design",
+      "summary": "Running models in production: speed, cost, reliability and serving many users at once.",
+      "body": [
+        "A model on its own is not a product. This area covers the engineering around it: which model handles each request, what happens when one fails, how answers stream back quickly, and how to keep the bill under control.",
+        "Caching and the KV cache are covered in Output & inference. Most of this area is still to come."
+      ],
+      "viz": [
+        {
+          "type": "widget",
+          "name": "topic-checklist",
+          "props": { "group": "system-design" }
+        }
+      ]
+    },
+    {
+      "title": "AI agents",
+      "summary": "Models that use tools in a loop: planning, acting, checking their work and remembering.",
+      "body": [
+        "An agent is a model that calls tools, reads the results and decides what to do next, again and again, until the task is done.",
+        "Tool calling is introduced in Assistant architecture, and skills in the AI-assisted engineering section. The rest, from the agent loop to MCP and multi-agent systems, is coming in the AI agents and Tools & MCP sections."
+      ],
+      "viz": [{ "type": "widget", "name": "topic-checklist", "props": { "group": "agents" } }]
+    },
+    {
+      "title": "Evals",
+      "summary": "How to measure whether an AI system gives good answers, and catch it when it gets worse.",
+      "body": [
+        "You can't improve what you can't measure. Evals are tests for AI systems: a set of questions, a way to score the answers, and monitoring once real users arrive.",
+        "The RAG testing slide already covers test sets, faithfulness, answer relevance and LLM judges. Most of this area is coming in the Evals section."
+      ],
+      "viz": [{ "type": "widget", "name": "topic-checklist", "props": { "group": "evals" } }]
+    },
+    {
+      "title": "AI security",
+      "summary": "How AI systems that read untrusted text and use tools get attacked, and how to defend them.",
+      "body": [
+        "Once a model reads untrusted text and can use tools, attackers can talk to it too.",
+        "Prompt injection, jailbreaks, safety classifiers and red-teaming are covered in Assistant architecture, and RAG permissions and poisoning in Retrieval-augmented generation. The engineering side (secrets, sandboxes, audit logs) is coming in the AI security section."
+      ],
+      "viz": [{ "type": "widget", "name": "topic-checklist", "props": { "group": "security" } }]
+    }
+  ]
+}
