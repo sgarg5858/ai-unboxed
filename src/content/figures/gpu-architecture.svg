@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 640" role="img" aria-labelledby="t d" font-family="'Schibsted Grotesk', ui-sans-serif, system-ui, sans-serif">
+  <title id="t">Inside a GPU: where the maths happens</title>
+  <desc id="d">One GPU inside a server, running Llama 3 8B on an NVIDIA H100; numbers are approximate. Left, a server: a CPU that runs the program, main memory as a loading area, a disk that stores files, and 8 GPUs. One GPU is enlarged on the right. It has three parts. First, GPU memory, 80 GB, where the weights live: Llama 3 8B takes 16 GB, the rest is free space. This is the warehouse. Second, the link from GPU memory to the chip, about 3.3 terabytes per second; weights stream across it every time they are used. This is the conveyor belt. Third, the GPU chip itself: a tiny on-chip memory of a few tens of megabytes, and thousands of compute cores doing about 1,000 trillion calculations a second. These are the workers. Below, two stages. Prefill, the whole prompt at once: each weight that arrives is used for all 1,000 prompt tokens, so the cores stay busy; it is compute-bound, the pause before the first word. Decode, one token at a time: each new token needs all 16 GB to cross the link again, about 5 milliseconds of waiting for about 0.02 milliseconds of maths; it is memory-bound and the cores are mostly idle.</desc>
+  <!--theme-->
+  <defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arrowhead"/></marker></defs>
+  <rect class="bg" x="0" y="0" width="1200" height="640" rx="18"/>
+  <text x="40" y="52" class="ink" font-size="26" font-weight="700">Inside a GPU: where the maths happens</text>
+  <text x="40" y="78" class="muted" font-size="15">One NVIDIA H100 running Llama 3 8B. Numbers are approximate.</text>
+
+  <rect class="card" x="40" y="100" width="250" height="340" rx="12"/>
+  <text x="60" y="128" class="muted head">A SERVER</text>
+  <rect class="sunk" x="60" y="142" width="210" height="52" rx="8"/>
+  <text x="76" y="165" class="ink" font-size="15" font-weight="700">CPU</text><text x="76" y="184" class="muted" font-size="12.5">runs the program</text>
+  <rect class="sunk" x="60" y="202" width="210" height="52" rx="8"/>
+  <text x="76" y="225" class="ink" font-size="15" font-weight="700">Main memory</text><text x="76" y="244" class="muted" font-size="12.5">a loading area</text>
+  <rect class="sunk" x="60" y="262" width="210" height="52" rx="8"/>
+  <text x="76" y="285" class="ink" font-size="15" font-weight="700">Disk</text><text x="76" y="304" class="muted" font-size="12.5">stores files</text>
+  <text x="60" y="344" class="ink" font-size="13.5" font-weight="700">8 GPUs</text>
+  <rect class="hit" x="60" y="356" width="44" height="30" rx="5"/><rect class="sunk" x="112" y="356" width="44" height="30" rx="5"/><rect class="sunk" x="164" y="356" width="44" height="30" rx="5"/><rect class="sunk" x="216" y="356" width="44" height="30" rx="5"/><rect class="sunk" x="60" y="394" width="44" height="30" rx="5"/><rect class="sunk" x="112" y="394" width="44" height="30" rx="5"/><rect class="sunk" x="164" y="394" width="44" height="30" rx="5"/><rect class="sunk" x="216" y="394" width="44" height="30" rx="5"/>
+  <path class="dash" d="M104 371 L340 104"/><path class="dash" d="M104 371 L340 436"/>
+
+  <rect class="card" x="340" y="100" width="820" height="340" rx="14"/>
+  <rect class="sacc" x="340" y="100" width="820" height="340" rx="14"/>
+  <text x="362" y="128" class="accink head">ONE GPU</text>
+
+  <rect class="heat" x="365" y="145" width="200" height="270" rx="10"/>
+  <text x="465" y="172" text-anchor="middle" class="ink" font-size="17" font-weight="700">GPU memory</text>
+  <text x="465" y="192" text-anchor="middle" class="muted" font-size="13">80 GB · where weights live</text>
+  <rect class="thin" x="382" y="206" width="166" height="112" rx="8" stroke-dasharray="5 4"/>
+  <text x="465" y="267" text-anchor="middle" class="muted" font-size="13">free space</text>
+  <rect class="heat" x="382" y="328" width="166" height="72" rx="8"/>
+  <text x="465" y="359" text-anchor="middle" class="heatink" font-size="16" font-weight="700">weights · 16 GB</text>
+  <text x="465" y="381" text-anchor="middle" class="muted" font-size="12.5">Llama 3 8B</text>
+
+  <text x="667" y="232" text-anchor="middle" class="ink" font-size="16" font-weight="700">the link</text>
+  <text x="667" y="252" text-anchor="middle" class="accink mono" font-size="13.5" font-weight="600">≈ 3.3 TB per second</text>
+  <rect class="sunk" x="565" y="262" width="205" height="40" rx="4"/>
+  <rect class="heatfill" x="580" y="272" width="20" height="20" rx="4"/><rect class="heatfill" x="610" y="272" width="20" height="20" rx="4"/><rect class="heatfill" x="640" y="272" width="20" height="20" rx="4"/><rect class="heatfill" x="670" y="272" width="20" height="20" rx="4"/><rect class="heatfill" x="700" y="272" width="20" height="20" rx="4"/><rect class="heatfill" x="730" y="272" width="20" height="20" rx="4"/>
+  <line class="line" x1="575" y1="314" x2="760" y2="314" marker-end="url(#a)"/>
+  <text x="667" y="340" text-anchor="middle" class="muted" font-size="12.5">weights stream across</text>
+  <text x="667" y="357" text-anchor="middle" class="muted" font-size="12.5">every time they're used</text>
+
+  <rect class="hit" x="770" y="140" width="368" height="285" rx="12"/>
+  <text x="788" y="166" class="accink head">GPU CHIP</text>
+  <rect class="card" x="788" y="180" width="92" height="225" rx="8"/>
+  <text x="834" y="270" text-anchor="middle" class="ink" font-size="13" font-weight="700">tiny</text>
+  <text x="834" y="288" text-anchor="middle" class="ink" font-size="13" font-weight="700">on-chip</text>
+  <text x="834" y="306" text-anchor="middle" class="ink" font-size="13" font-weight="700">memory</text>
+  <text x="834" y="330" text-anchor="middle" class="muted" font-size="12">tens of MB</text>
+  <rect class="acc" x="900" y="184" width="17" height="17" rx="3"/><rect class="acc" x="922" y="184" width="17" height="17" rx="3"/><rect class="acc" x="944" y="184" width="17" height="17" rx="3"/><rect class="acc" x="966" y="184" width="17" height="17" rx="3"/><rect class="acc" x="988" y="184" width="17" height="17" rx="3"/><rect class="acc" x="1010" y="184" width="17" height="17" rx="3"/><rect class="acc" x="1032" y="184" width="17" height="17" rx="3"/><rect class="acc" x="1054" y="184" width="17" height="17" rx="3"/><rect class="acc" x="1076" y="184" width="17" height="17" rx="3"/><rect class="acc" x="1098" y="184" width="17" height="17" rx="3"/><rect class="acc" x="900" y="206" width="17" height="17" rx="3"/><rect class="acc" x="922" y="206" width="17" height="17" rx="3"/><rect class="acc" x="944" y="206" width="17" height="17" rx="3"/><rect class="acc" x="966" y="206" width="17" height="17" rx="3"/><rect class="acc" x="988" y="206" width="17" height="17" rx="3"/><rect class="acc" x="1010" y="206" width="17" height="17" rx="3"/><rect class="acc" x="1032" y="206" width="17" height="17" rx="3"/><rect class="acc" x="1054" y="206" width="17" height="17" rx="3"/><rect class="acc" x="1076" y="206" width="17" height="17" rx="3"/><rect class="acc" x="1098" y="206" width="17" height="17" rx="3"/><rect class="acc" x="900" y="228" width="17" height="17" rx="3"/><rect class="acc" x="922" y="228" width="17" height="17" rx="3"/><rect class="acc" x="944" y="228" width="17" height="17" rx="3"/><rect class="acc" x="966" y="228" width="17" height="17" rx="3"/><rect class="acc" x="988" y="228" width="17" height="17" rx="3"/><rect class="acc" x="1010" y="228" width="17" height="17" rx="3"/><rect class="acc" x="1032" y="228" width="17" height="17" rx="3"/><rect class="acc" x="1054" y="228" width="17" height="17" rx="3"/><rect class="acc" x="1076" y="228" width="17" height="17" rx="3"/><rect class="acc" x="1098" y="228" width="17" height="17" rx="3"/><rect class="acc" x="900" y="250" width="17" height="17" rx="3"/><rect class="acc" x="922" y="250" width="17" height="17" rx="3"/><rect class="acc" x="944" y="250" width="17" height="17" rx="3"/><rect class="acc" x="966" y="250" width="17" height="17" rx="3"/><rect class="acc" x="988" y="250" width="17" height="17" rx="3"/><rect class="acc" x="1010" y="250" width="17" height="17" rx="3"/><rect class="acc" x="1032" y="250" width="17" height="17" rx="3"/><rect class="acc" x="1054" y="250" width="17" height="17" rx="3"/><rect class="acc" x="1076" y="250" width="17" height="17" rx="3"/><rect class="acc" x="1098" y="250" width="17" height="17" rx="3"/><rect class="acc" x="900" y="272" width="17" height="17" rx="3"/><rect class="acc" x="922" y="272" width="17" height="17" rx="3"/><rect class="acc" x="944" y="272" width="17" height="17" rx="3"/><rect class="acc" x="966" y="272" width="17" height="17" rx="3"/><rect class="acc" x="988" y="272" width="17" height="17" rx="3"/><rect class="acc" x="1010" y="272" width="17" height="17" rx="3"/><rect class="acc" x="1032" y="272" width="17" height="17" rx="3"/><rect class="acc" x="1054" y="272" width="17" height="17" rx="3"/><rect class="acc" x="1076" y="272" width="17" height="17" rx="3"/><rect class="acc" x="1098" y="272" width="17" height="17" rx="3"/><rect class="acc" x="900" y="294" width="17" height="17" rx="3"/><rect class="acc" x="922" y="294" width="17" height="17" rx="3"/><rect class="acc" x="944" y="294" width="17" height="17" rx="3"/><rect class="acc" x="966" y="294" width="17" height="17" rx="3"/><rect class="acc" x="988" y="294" width="17" height="17" rx="3"/><rect class="acc" x="1010" y="294" width="17" height="17" rx="3"/><rect class="acc" x="1032" y="294" width="17" height="17" rx="3"/><rect class="acc" x="1054" y="294" width="17" height="17" rx="3"/><rect class="acc" x="1076" y="294" width="17" height="17" rx="3"/><rect class="acc" x="1098" y="294" width="17" height="17" rx="3"/><rect class="acc" x="900" y="316" width="17" height="17" rx="3"/><rect class="acc" x="922" y="316" width="17" height="17" rx="3"/><rect class="acc" x="944" y="316" width="17" height="17" rx="3"/><rect class="acc" x="966" y="316" width="17" height="17" rx="3"/><rect class="acc" x="988" y="316" width="17" height="17" rx="3"/><rect class="acc" x="1010" y="316" width="17" height="17" rx="3"/><rect class="acc" x="1032" y="316" width="17" height="17" rx="3"/><rect class="acc" x="1054" y="316" width="17" height="17" rx="3"/><rect class="acc" x="1076" y="316" width="17" height="17" rx="3"/><rect class="acc" x="1098" y="316" width="17" height="17" rx="3"/><rect class="acc" x="900" y="338" width="17" height="17" rx="3"/><rect class="acc" x="922" y="338" width="17" height="17" rx="3"/><rect class="acc" x="944" y="338" width="17" height="17" rx="3"/><rect class="acc" x="966" y="338" width="17" height="17" rx="3"/><rect class="acc" x="988" y="338" width="17" height="17" rx="3"/><rect class="acc" x="1010" y="338" width="17" height="17" rx="3"/><rect class="acc" x="1032" y="338" width="17" height="17" rx="3"/><rect class="acc" x="1054" y="338" width="17" height="17" rx="3"/><rect class="acc" x="1076" y="338" width="17" height="17" rx="3"/><rect class="acc" x="1098" y="338" width="17" height="17" rx="3"/>
+  <text x="1007" y="384" text-anchor="middle" class="ink" font-size="15" font-weight="700">compute cores <tspan class="muted" font-weight="500">· thousands</tspan></text>
+  <text x="1007" y="404" text-anchor="middle" class="accink mono" font-size="12.5" font-weight="600">≈ 1,000 trillion calculations/s</text>
+
+  <text x="465" y="464" text-anchor="middle" class="heatink" font-size="14" font-weight="600">the warehouse</text>
+  <text x="667" y="464" text-anchor="middle" class="heatink" font-size="14" font-weight="600">the conveyor belt</text>
+  <text x="954" y="464" text-anchor="middle" class="heatink" font-size="14" font-weight="600">the workers</text>
+
+  <rect class="card" x="40" y="485" width="550" height="132" rx="12"/>
+  <text x="60" y="512" class="heatink head">PREFILL · THE WHOLE PROMPT AT ONCE</text>
+  <text x="60" y="540" class="ink" font-size="15.5" font-weight="700">Each weight that arrives is used for all 1,000 prompt tokens.</text>
+  <text x="60" y="564" class="muted" font-size="14">Compute-bound: the pause before the first word.</text>
+  <text x="60" y="598" class="muted" font-size="12.5">cores busy</text>
+  <rect class="sunk" x="140" y="588" width="420" height="12" rx="6"/>
+  <rect class="heatfill" x="140" y="588" width="400" height="12" rx="6"/>
+
+  <rect class="card" x="610" y="485" width="550" height="132" rx="12"/>
+  <text x="630" y="512" class="accink head">DECODE · ONE TOKEN AT A TIME</text>
+  <text x="630" y="540" class="ink" font-size="15.5" font-weight="700">Each new token needs all 16 GB to cross the link again.</text>
+  <text x="630" y="564" class="muted" font-size="14">Memory-bound: ≈ 5 ms waiting for ≈ 0.02 ms of maths.</text>
+  <text x="630" y="598" class="muted" font-size="12.5">cores busy</text>
+  <rect class="sunk" x="710" y="588" width="420" height="12" rx="6"/>
+  <rect class="acc" x="710" y="588" width="8" height="12" rx="4"/>
+</svg>

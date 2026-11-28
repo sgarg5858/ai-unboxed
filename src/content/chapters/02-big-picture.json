@@ -2,6 +2,52 @@
   "$schema": "../schema/chapter.schema.json",
   "id": "map",
   "name": "The big picture",
+  "videos": [
+    {
+      "src": "videos/map/prefill_decode.mp4",
+      "title": "The big picture 1 · Prefill and decode",
+      "description": "Where the weights, memory and compute cores live on a GPU, and why prefill is compute-bound while decode waits on memory.",
+      "slides": [2, 3],
+      "at": {
+        "2": 0,
+        "3": 17
+      },
+      "marks": [
+        {
+          "at": 0,
+          "label": "Two stages: the pause, then the typing"
+        },
+        {
+          "at": 17,
+          "label": "Where everything lives"
+        },
+        {
+          "at": 47,
+          "label": "Inside one GPU"
+        },
+        {
+          "at": 96,
+          "label": "Prefill: the whole prompt at once"
+        },
+        {
+          "at": 136,
+          "label": "Decode: one token at a time"
+        },
+        {
+          "at": 179,
+          "label": "Same GPU, two different jobs"
+        },
+        {
+          "at": 194,
+          "label": "Batching and the KV cache"
+        },
+        {
+          "at": 221,
+          "label": "Summary"
+        }
+      ]
+    }
+  ],
   "slides": [
     {
       "title": "The whole machine on one screen",
@@ -112,8 +158,8 @@
         },
         {
           "ul": [
-            "<b>Prefill</b>: first the whole prompt is processed, all its tokens at the same time. GPUs are great at doing lots of maths at once, so the limit here is pure calculation speed (<b>compute-bound</b>). It's the short pause before the first word appears.",
-            "<b>Decode</b>: after that, every new token needs its own run through the whole model. Each run does little maths but has to read billions of weights from GPU memory, so the limit is how fast memory can be read (<b>memory-bound</b>). It's the steady word-by-word typing you see. The KV cache (see <i>Output & inference</i>) exists to make this stage cheaper.",
+            "<b>Prefill</b>: first the whole prompt is processed, all its tokens at the same time. GPUs are great at doing lots of maths at once, so the limit here is pure calculation speed (<b>compute-bound</b>). It's the short pause before the first word appears, called the <b>time to first token</b>.",
+            "<b>Decode</b>: after that, every new token needs its own run through the whole model. Each run does little maths but has to read billions of weights from GPU memory, so the limit is how fast memory can be read (<b>memory-bound</b>). It's the steady word-by-word typing you see. Servers answer many people at once (<b>batching</b>), so each read of the weights produces many tokens, and the KV cache (see <i>Output & inference</i>) saves redoing earlier tokens.",
             "<b>Stopping</b>: the loop ends when the model writes a special \"end\" token, or when the app's length limit is reached."
           ]
         },
@@ -478,6 +524,45 @@
           "restartLabel": "Start over"
         }
       ]
+    },
+    {
+      "title": "Inside a GPU: where the maths happens",
+      "summary": "A GPU keeps the model's weights in its own memory and does the maths in thousands of cores on its chip. The link between the two often decides the speed.",
+      "body": [
+        "The model runs on GPUs, inside a server in a data centre. The server also has a CPU, main memory and a disk, but they only run the program and store files. The model's maths happens on the GPUs.",
+        {
+          "h": "Three parts of one GPU"
+        },
+        {
+          "ul": [
+            "<b>GPU memory</b>: 80 GB on an NVIDIA H100. This is where the weights live. Llama 3 8B takes about 16 GB; it's copied in once and stays there.",
+            "<b>Compute cores</b>, on the GPU's main chip: thousands of small calculators working side by side, about 1,000 trillion calculations a second. Next to them is a tiny on-chip memory, only tens of megabytes.",
+            "<b>The link</b> between them: about 3.3 TB a second. The weights don't fit on the chip, so they stream across this link every time they're used."
+          ]
+        },
+        {
+          "note": "Think of a factory. GPU memory is the warehouse, the link is the conveyor belt, and the cores are very fast workers.",
+          "kind": "analogy"
+        },
+        "<mark>For any job, ask one question: are the cores busy calculating, or waiting for the weights to arrive?</mark>",
+        {
+          "h": "Prefill and decode, on this hardware"
+        },
+        {
+          "ul": [
+            "<b>Prefill</b>: each weight that arrives is used for every token in the prompt, so the cores stay busy. That's <b>compute-bound</b>.",
+            "<b>Decode</b>: each new token needs all 16 GB to cross the link again, about 5 ms, for maths that takes about 0.02 ms. The cores mostly wait. That's <b>memory-bound</b>, and it caps one reply at about 200 tokens a second."
+          ]
+        }
+      ],
+      "figure": {
+        "src": "images/gpu-architecture-light.svg",
+        "darkSrc": "images/gpu-architecture-dark.svg",
+        "alt": "One GPU inside a server, running Llama 3 8B on an NVIDIA H100; numbers are approximate. Left, a server: a CPU that runs the program, main memory as a loading area, a disk that stores files, and 8 GPUs. One GPU is enlarged on the right. It has three parts. First, GPU memory, 80 GB, where the weights live: Llama 3 8B takes 16 GB, the rest is free space. This is the warehouse. Second, the link from GPU memory to the chip, about 3.3 terabytes per second; weights stream across it every time they are used. This is the conveyor belt. Third, the GPU chip itself: a tiny on-chip memory of a few tens of megabytes, and thousands of compute cores doing about 1,000 trillion calculations a second. These are the workers. Below, two stages. Prefill, the whole prompt at once: each weight that arrives is used for all 1,000 prompt tokens, so the cores stay busy; it is compute-bound, the pause before the first word. Decode, one token at a time: each new token needs all 16 GB to cross the link again, about 5 milliseconds of waiting for about 0.02 milliseconds of maths; it is memory-bound and the cores are mostly idle.",
+        "width": 1200,
+        "height": 640,
+        "caption": "One GPU: weights in memory, maths in the cores, and a link between them that sets the pace."
+      }
     },
     {
       "title": "A short glossary",
