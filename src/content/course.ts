@@ -40,11 +40,6 @@ export const SECTIONS: readonly SectionContent[] = [
     name: 'LLM architecture',
     chapters: [
       {
-        id: 'map',
-        name: 'How an LLM runs',
-        load: () => json(import('./chapters/02-big-picture.json')),
-      },
-      {
         id: 'tokens',
         name: 'Tokens',
         load: () => json(import('./chapters/03-tokens.json')),
@@ -75,14 +70,19 @@ export const SECTIONS: readonly SectionContent[] = [
         load: () => json(import('./chapters/06-transformer-block.json')),
       },
       {
+        id: 'output',
+        name: 'Output & inference',
+        load: () => json(import('./chapters/07-output-inference.json')),
+      },
+      {
         id: 'walkthrough',
         name: 'End to end: one sentence',
         load: () => json(import('./chapters/14-end-to-end.json')),
       },
       {
-        id: 'output',
-        name: 'Output & inference',
-        load: () => json(import('./chapters/07-output-inference.json')),
+        id: 'map',
+        name: 'How an LLM runs',
+        load: () => json(import('./chapters/02-big-picture.json')),
       },
       {
         id: 'training',

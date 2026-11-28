@@ -127,9 +127,9 @@
   "slides": [
     {
       "title": "The whole machine on one screen",
-      "summary": "An LLM reads some text and guesses what comes next. That is all it does.",
+      "summary": "Putting it all together: an LLM reads some text and guesses what comes next. That is all it does.",
       "body": [
-        "So far we treated the model as one closed box. Now we open it.",
+        "You've now met every part: tokens, embeddings, attention, the MLP and the output. Here they are together on one screen, and next, how they actually run on a GPU.",
         "An LLM does one simple job: it reads some text and guesses the next word.",
         "Give it “The cat sat on the”. It gives every possible next word a score: “mat” scores high, “moon” scores low.",
         "<mark>To write a full answer, it repeats that job: guess one word, add it to the text, guess again.</mark> The next slide shows this loop.",
@@ -224,25 +224,20 @@
       }
     },
     {
-      "title": "Generation is a loop",
-      "summary": "The model only ever predicts one token. Long answers come from running it in a loop and feeding each prediction back in.",
+      "title": "The loop, in two stages",
+      "summary": "You've seen the loop: one token per run, fed back in. On real hardware it has two very different stages, prefill and decode.",
       "body": [
-        "The model can't write a sentence in one go. It predicts just the next token. The program adds that token to the input, and the model runs again on the longer text. This is called <b>autoregressive decoding</b>: each output becomes part of the next input.",
-        "Press <i>Run one step</i> to watch it happen. Each step reads everything so far.",
+        "A quick recap from <i>Transformer architecture</i>: the model writes one token per run, adds it to the text and runs again, until the end token wins. This is <b>autoregressive decoding</b>. Press <i>Run one step</i> to watch it.",
         {
-          "h": "Two stages, with very different costs"
+          "h": "Two stages"
         },
         {
           "ul": [
-            "<b>Prefill</b>: first the whole prompt is processed, all its tokens at the same time. GPUs are great at doing lots of maths at once, so the limit here is pure calculation speed (<b>compute-bound</b>). It's the short pause before the first word appears, called the <b>time to first token</b>.",
-            "<b>Decode</b>: after that, every new token needs its own run through the whole model. Each run does little maths but has to read billions of weights from GPU memory, so the limit is how fast memory can be read (<b>memory-bound</b>). It's the steady word-by-word typing you see. Servers answer many people at once (<b>batching</b>), so each read of the weights produces many tokens, and the KV cache (see <i>Output & inference</i>) saves redoing earlier tokens.",
-            "<b>Stopping</b>: the loop ends when the model writes a special \"end\" token, or when the app's length limit is reached."
+            "<b>Prefill</b>: the whole prompt is processed in one go, all its tokens together. You see it as the short pause before the first word: the <b>time to first token</b>.",
+            "<b>Decode</b>: then one token per run, each waiting for the one before. You see it as the steady word-by-word typing."
           ]
         },
-        {
-          "note": "<mark>Everything an LLM writes, including code, step-by-step reasoning and tool calls, comes out of this loop one token at a time.</mark>",
-          "kind": "key"
-        }
+        "<mark>The two stages use the GPU in completely different ways.</mark> The next two slides show where everything lives on a GPU, and why prefill keeps it busy while decode mostly waits."
       ],
       "viz": [
         {

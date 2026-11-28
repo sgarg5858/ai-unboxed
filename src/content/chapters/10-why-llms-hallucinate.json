@@ -257,7 +257,7 @@
       "title": "Cause 4: one wrong token leads to more",
       "summary": "Text is written one token at a time with no backspace. So an early mistake becomes part of the text, and the model then tries to stay consistent with it.",
       "body": [
-        "Generation is a loop (see <i>How an LLM runs</i>): each token is added to the text and the model continues from there. It never goes back and deletes a sentence. <mark>Once a wrong claim is written, it becomes evidence for what comes next.</mark>",
+        "Generation is a loop (see <i>Transformer architecture</i>): each token is added to the text and the model continues from there. It never goes back and deletes a sentence. <mark>Once a wrong claim is written, it becomes evidence for what comes next.</mark>",
         "Researchers call this <b>hallucination snowballing</b> (Zhang et al., 2023). They asked models questions where the first answer was often wrong, then watched them back it up with more false claims. When asked about those false claims separately, the same models could often spot the mistakes: GPT-3.5, GPT-4 and Llama-2-70B-chat caught 67%, 87% and 94% of them. Changing the generation settings or prompting the model to think step by step didn't make the problem go away.",
         {
           "h": "Other things that make it worse"
