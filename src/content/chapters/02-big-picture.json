@@ -5,11 +5,12 @@
   "slides": [
     {
       "title": "The whole machine on one screen",
-      "summary": "An LLM takes a list of numbers (tokens) and gives a score to every possible next token. The rest of this course explains how.",
+      "summary": "An LLM reads some text and guesses what comes next. That is all it does.",
       "body": [
-        "The <i>Assistant architecture</i> section treated the model as one box in a bigger system. This section opens that box.",
-        "Take away the chat window and a large language model is one huge maths function. You give it a list of whole numbers, one for each piece of text. It gives back a score for every token it knows, showing how likely each one is to come next.",
-        "That's all it does. <mark>To write a whole answer, it runs this function again and again, adding one token each time.</mark> The next slide shows that loop.",
+        "So far we treated the model as one closed box. Now we open it.",
+        "An LLM does one simple job: it reads some text and guesses the next word.",
+        "Give it “The cat sat on the”. It gives every possible next word a score: “mat” scores high, “moon” scores low.",
+        "<mark>To write a full answer, it repeats that job: guess one word, add it to the text, guess again.</mark> The next slide shows this loop.",
         {
           "h": "How to read the shapes"
         },
@@ -22,19 +23,7 @@
             "<code>V</code>, vocabulary size: how many different tokens the model knows. Often 100,000 or more."
           ]
         },
-        {
-          "note": "Think of a tensor of shape <code>[B, n, d]</code> as <code>number[][][]</code> in TypeScript: B texts, each with n tokens, each token a list of d numbers. Libraries store it as one flat array for speed, but this is a good way to picture it.",
-          "kind": "dev"
-        },
         "Click a stage on the right to jump to its chapter."
-      ],
-      "code": [
-        "def forward(ids):                 # ids: [B, n]",
-        "    x = embed(ids) + pos(ids)     # [B, n, d]",
-        "    for block in blocks:          # N times",
-        "        x = block(x)              # attention + MLP",
-        "    logits = unembed(norm(x))     # [B, n, V]",
-        "    return logits"
       ],
       "viz": [
         {
@@ -132,14 +121,6 @@
           "note": "<mark>Everything an LLM writes, including code, step-by-step reasoning and tool calls, comes out of this loop one token at a time.</mark>",
           "kind": "key"
         }
-      ],
-      "code": [
-        "ids = tokenizer.encode(prompt)",
-        "while len(ids) < max_len:",
-        "    logits = model(ids)[-1]        # only the last position",
-        "    next_id = sample(logits)",
-        "    ids.append(next_id)",
-        "    if next_id == EOS: break"
       ],
       "viz": [
         {
@@ -495,47 +476,6 @@
           ],
           "nextLabel": "Run one step",
           "restartLabel": "Start over"
-        }
-      ]
-    },
-    {
-      "title": "Vectors and similarity: the maths you need",
-      "summary": "Almost everything inside an LLM is a list of numbers, called a vector. The most important operation is measuring how similar two vectors are.",
-      "body": [
-        "You need very little maths for this course. These three ideas cover most of it.",
-        {
-          "h": "1. A vector is a list of numbers"
-        },
-        "Pick a few features and you can describe anything with numbers. Describe fruit by <code>[sweetness, crunchiness, sourness]</code>, each from 0 to 1, and an apple might be <code>[0.7, 0.9, 0.3]</code>. That list is a <b>vector</b>, and each slot is a <b>dimension</b>.",
-        {
-          "h": "2. The dot product measures similarity"
-        },
-        "To get the <b>dot product</b> of two vectors, multiply them slot by slot and add up the results. It's big when both vectors are big in the same places, so it works as a similarity score.",
-        {
-          "note": "apple · pear = 0.7×0.8 + 0.9×0.6 + 0.3×0.2 = 0.56 + 0.54 + 0.06 = <b>1.16</b>",
-          "kind": "example"
-        },
-        "<b>Cosine similarity</b> is the dot product adjusted for each vector's length, so only the direction counts, not the size. It goes from −1 (opposite) through 0 (unrelated) to 1 (same direction). Try different pairs on the right.",
-        {
-          "h": "3. A matrix multiply is many dot products at once"
-        },
-        "A <b>matrix</b> is a grid of numbers. Multiplying a vector by a matrix does one dot product per column and gives a new vector. A neural network is mostly long chains of these multiplications, and the numbers in the matrices are learned from data.",
-        {
-          "note": "An LLM describes every token with a vector of thousands of numbers. Nobody decides what those dimensions mean, like we did for fruit; training works them out. <mark>But the key idea, that similar meanings have similar vectors, runs through the whole course.</mark>",
-          "kind": "key"
-        }
-      ],
-      "code": [
-        "def dot(a, b):",
-        "    return sum(x * y for x, y in zip(a, b))",
-        "",
-        "def cosine(a, b):",
-        "    return dot(a, b) / (norm(a) * norm(b))   # norm = length"
-      ],
-      "viz": [
-        {
-          "type": "widget",
-          "name": "fruit-similarity"
         }
       ]
     },

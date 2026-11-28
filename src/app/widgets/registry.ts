@@ -8,7 +8,6 @@ import { Type } from '@angular/core';
  * A widget that takes props declares `readonly props = input<...>()`.
  */
 export const WIDGETS: Record<string, () => Promise<Type<unknown>>> = {
-  'fruit-similarity': () => import('./basics.widgets').then((m) => m.FruitSimilarityWidget),
   'utf8-bytes': () => import('./tokens.widgets').then((m) => m.Utf8BytesWidget),
   'token-cost': () => import('./tokens.widgets').then((m) => m.TokenCostWidget),
   'utf8-byte-table': () => import('./tokens.widgets').then((m) => m.Utf8ByteTableWidget),
