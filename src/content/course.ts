@@ -41,7 +41,7 @@ export const SECTIONS: readonly SectionContent[] = [
     chapters: [
       {
         id: 'map',
-        name: 'The big picture',
+        name: 'How an LLM runs',
         load: () => json(import('./chapters/02-big-picture.json')),
       },
       {

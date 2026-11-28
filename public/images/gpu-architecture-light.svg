@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 640" role="img" aria-labelledby="t d" font-family="'Schibsted Grotesk', ui-sans-serif, system-ui, sans-serif">
   <title id="t">Inside a GPU: where the maths happens</title>
-  <desc id="d">One GPU inside a server, running Llama 3 8B on an NVIDIA H100; numbers are approximate. Left, a server: a CPU that runs the program, main memory as a loading area, a disk that stores files, and 8 GPUs. One GPU is enlarged on the right. It has three parts. First, GPU memory, 80 GB, where the weights live: Llama 3 8B takes 16 GB, the rest is free space. This is the warehouse. Second, the link from GPU memory to the chip, about 3.3 terabytes per second; weights stream across it every time they are used. This is the conveyor belt. Third, the GPU chip itself: a tiny on-chip memory of a few tens of megabytes, and thousands of compute cores doing about 1,000 trillion calculations a second. These are the workers. Below, two stages. Prefill, the whole prompt at once: each weight that arrives is used for all 1,000 prompt tokens, so the cores stay busy; it is compute-bound, the pause before the first word. Decode, one token at a time: each new token needs all 16 GB to cross the link again, about 5 milliseconds of waiting for about 0.02 milliseconds of maths; it is memory-bound and the cores are mostly idle.</desc>
+  <desc id="d">One GPU inside a server, running Llama 3 8B on an NVIDIA H100; numbers are approximate. Left, a server: a CPU that runs the program, main memory as a loading area, a disk that stores files, and 8 GPUs. One GPU is enlarged on the right. It has three parts. First, GPU memory, 80 GB, where the weights live: Llama 3 8B takes 16 GB, the rest is free space. This is the warehouse. Second, the link from GPU memory to the chip, about 3.3 terabytes per second; weights stream across it every time they are used. This is the conveyor belt. Third, the GPU chip itself: a tiny on-chip memory of a few tens of megabytes, and thousands of compute cores doing about 1,000 trillion calculations a second. These are the workers. Below left, how the weights reach the cores: one layer, about 436 MB, is cut into tiles of about 128 by 64 numbers; each tile is copied into on-chip memory one at a time, used by the cores, then replaced by the next, so each run streams all 16 GB across the link. Below right, why the weights are not kept on the chip: on-chip memory (SRAM) needs 6 transistors per bit on costly chip area, so it holds tens of megabytes and is very fast; GPU memory (HBM) needs 1 transistor and 1 capacitor per bit, stacked beside the chip, so it holds 80 GB but is slower to reach.</desc>
   <style>
     .bg{fill:#f6f4ef}.card{fill:#fffdf9;stroke:#e5e0d5}.sunk{fill:#f3f0e9}
     .ink{fill:#1c1b22}.muted{fill:#5b5866}.onacc{fill:#ffffff}
@@ -73,18 +73,30 @@
   <text x="954" y="464" text-anchor="middle" class="heatink" font-size="14" font-weight="600">the workers</text>
 
   <rect class="card" x="40" y="485" width="550" height="132" rx="12"/>
-  <text x="60" y="512" class="heatink head">PREFILL · THE WHOLE PROMPT AT ONCE</text>
-  <text x="60" y="540" class="ink" font-size="15.5" font-weight="700">Each weight that arrives is used for all 1,000 prompt tokens.</text>
-  <text x="60" y="564" class="muted" font-size="14">Compute-bound: the pause before the first word.</text>
-  <text x="60" y="598" class="muted" font-size="12.5">cores busy</text>
-  <rect class="sunk" x="140" y="588" width="420" height="12" rx="6"/>
-  <rect class="heatfill" x="140" y="588" width="400" height="12" rx="6"/>
+  <text x="60" y="512" class="heatink head">HOW THE WEIGHTS REACH THE CORES</text>
+  <rect class="heat" x="60" y="526" width="112" height="46" rx="8"/>
+  <text x="116" y="546" text-anchor="middle" class="heatink" font-size="13" font-weight="700">one layer</text>
+  <text x="116" y="562" text-anchor="middle" class="muted" font-size="11.5">≈ 436 MB</text>
+  <line class="line" x1="175" y1="549" x2="193" y2="549" marker-end="url(#a)"/>
+  <rect class="heat" x="196" y="526" width="112" height="46" rx="8"/>
+  <text x="252" y="546" text-anchor="middle" class="heatink" font-size="13" font-weight="700">cut into tiles</text>
+  <text x="252" y="562" text-anchor="middle" class="muted" font-size="11.5">e.g. 128 × 64</text>
+  <line class="line" x1="311" y1="549" x2="329" y2="549" marker-end="url(#a)"/>
+  <rect class="card" x="332" y="526" width="112" height="46" rx="8"/>
+  <text x="388" y="546" text-anchor="middle" class="ink" font-size="13" font-weight="700">on-chip memory</text>
+  <text x="388" y="562" text-anchor="middle" class="muted" font-size="11.5">one tile at a time</text>
+  <line class="line" x1="447" y1="549" x2="465" y2="549" marker-end="url(#a)"/>
+  <rect class="hit" x="468" y="526" width="102" height="46" rx="8"/>
+  <text x="519" y="546" text-anchor="middle" class="accink" font-size="13" font-weight="700">cores</text>
+  <text x="519" y="562" text-anchor="middle" class="muted" font-size="11.5">use it, then next</text>
+  <text x="60" y="600" class="muted" font-size="13">Each run streams all 16 GB across the link, tile after tile, layer after layer.</text>
 
   <rect class="card" x="610" y="485" width="550" height="132" rx="12"/>
-  <text x="630" y="512" class="accink head">DECODE · ONE TOKEN AT A TIME</text>
-  <text x="630" y="540" class="ink" font-size="15.5" font-weight="700">Each new token needs all 16 GB to cross the link again.</text>
-  <text x="630" y="564" class="muted" font-size="14">Memory-bound: ≈ 5 ms waiting for ≈ 0.02 ms of maths.</text>
-  <text x="630" y="598" class="muted" font-size="12.5">cores busy</text>
-  <rect class="sunk" x="710" y="588" width="420" height="12" rx="6"/>
-  <rect class="acc" x="710" y="588" width="8" height="12" rx="4"/>
+  <text x="630" y="512" class="accink head">WHY NOT KEEP THE WEIGHTS ON THE CHIP?</text>
+  <g><rect class="acc" x="630" y="532" width="13" height="13" rx="3"/><rect class="acc" x="646" y="532" width="13" height="13" rx="3"/><rect class="acc" x="662" y="532" width="13" height="13" rx="3"/><rect class="acc" x="630" y="548" width="13" height="13" rx="3"/><rect class="acc" x="646" y="548" width="13" height="13" rx="3"/><rect class="acc" x="662" y="548" width="13" height="13" rx="3"/></g>
+  <text x="712" y="545" class="ink" font-size="14" font-weight="700">On-chip (SRAM): 6 transistors per bit, on costly chip area</text>
+  <text x="712" y="563" class="accink" font-size="13" font-weight="600">→ tens of MB, very fast</text>
+  <rect class="heatfill" x="630" y="576" width="13" height="13" rx="3"/><circle class="sheat" cx="656" cy="582.5" r="6"/>
+  <text x="712" y="586" class="ink" font-size="14" font-weight="700">GPU memory (HBM): 1 transistor + 1 capacitor, stacked</text>
+  <text x="712" y="604" class="heatink" font-size="13" font-weight="600">→ 80 GB, slower to reach</text>
 </svg>

@@ -50,7 +50,7 @@
         },
         {
           "type": "caption",
-          "html": "A reasoning model adds one step in the middle. Everything else is the generation loop from <i>The big picture</i>."
+          "html": "A reasoning model adds one step in the middle. Everything else is the generation loop from <i>How an LLM runs</i>."
         }
       ],
       "figure": {

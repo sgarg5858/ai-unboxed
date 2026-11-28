@@ -1,16 +1,17 @@
 {
   "$schema": "../schema/chapter.schema.json",
   "id": "map",
-  "name": "The big picture",
+  "name": "How an LLM runs",
   "videos": [
     {
       "src": "videos/map/prefill_decode.mp4",
-      "title": "The big picture 1 · Prefill and decode",
-      "description": "Where the weights, memory and compute cores live on a GPU, and why prefill is compute-bound while decode waits on memory.",
-      "slides": [2, 3],
+      "title": "How an LLM runs · Prefill and decode on a GPU",
+      "description": "Where the weights, memory and compute cores live, how weights stream to the chip in tiles, why they can't stay there, and why prefill is compute-bound while decode waits on memory.",
+      "slides": [2, 4],
       "at": {
         "2": 0,
-        "3": 17
+        "3": 17,
+        "4": 219
       },
       "marks": [
         {
@@ -27,22 +28,34 @@
         },
         {
           "at": 96,
+          "label": "How the weights reach the cores"
+        },
+        {
+          "at": 133,
+          "label": "Why not keep the weights on the chip?"
+        },
+        {
+          "at": 189,
+          "label": "Tiles, layer after layer"
+        },
+        {
+          "at": 219,
           "label": "Prefill: the whole prompt at once"
         },
         {
-          "at": 136,
+          "at": 331,
           "label": "Decode: one token at a time"
         },
         {
-          "at": 179,
+          "at": 416,
           "label": "Same GPU, two different jobs"
         },
         {
-          "at": 194,
+          "at": 432,
           "label": "Batching and the KV cache"
         },
         {
-          "at": 221,
+          "at": 459,
           "label": "Summary"
         }
       ]
@@ -527,7 +540,7 @@
     },
     {
       "title": "Inside a GPU: where the maths happens",
-      "summary": "A GPU keeps the model's weights in its own memory and does the maths in thousands of cores on its chip. The link between the two often decides the speed.",
+      "summary": "A GPU keeps the model's weights in its own memory and does the maths in thousands of cores on its chip. The weights stream between the two, a tile at a time.",
       "body": [
         "The model runs on GPUs, inside a server in a data centre. The server also has a CPU, main memory and a disk, but they only run the program and store files. The model's maths happens on the GPUs.",
         {
@@ -536,32 +549,79 @@
         {
           "ul": [
             "<b>GPU memory</b>: 80 GB on an NVIDIA H100. This is where the weights live. Llama 3 8B takes about 16 GB; it's copied in once and stays there.",
-            "<b>Compute cores</b>, on the GPU's main chip: thousands of small calculators working side by side, about 1,000 trillion calculations a second. Next to them is a tiny on-chip memory, only tens of megabytes.",
-            "<b>The link</b> between them: about 3.3 TB a second. The weights don't fit on the chip, so they stream across this link every time they're used."
+            "<b>Compute cores</b>, on the GPU's main chip: thousands of small calculators working side by side, about 1,000 trillion calculations a second. They can only work on numbers in the tiny <b>on-chip memory</b> next to them: on an H100, a 50 MB cache plus small scratch areas by each group of cores, tens of megabytes in total.",
+            "<b>The link</b> between memory and chip: about 3.3 TB a second."
           ]
         },
         {
           "note": "Think of a factory. GPU memory is the warehouse, the link is the conveyor belt, and the cores are very fast workers.",
           "kind": "analogy"
         },
-        "<mark>For any job, ask one question: are the cores busy calculating, or waiting for the weights to arrive?</mark>",
         {
-          "h": "Prefill and decode, on this hardware"
+          "h": "How the weights reach the cores"
         },
         {
           "ul": [
-            "<b>Prefill</b>: each weight that arrives is used for every token in the prompt, so the cores stay busy. That's <b>compute-bound</b>.",
-            "<b>Decode</b>: each new token needs all 16 GB to cross the link again, about 5 ms, for maths that takes about 0.02 ms. The cores mostly wait. That's <b>memory-bound</b>, and it caps one reply at about 200 tokens a second."
+            "The model runs <b>layer by layer</b>. One layer of Llama 3 8B holds about 218 million weights (its attention and MLP tables), about 436 MB. Not even one layer fits on the chip.",
+            "So each weight table is cut into <b>tiles</b>, often 128 × 64 numbers. A tile is copied across the link into on-chip memory, used by the cores, then overwritten by the next one: tile after tile, table after table, layer after layer."
           ]
-        }
+        },
+        "<mark>Every run through the model streams all 16 GB of weights across the link, one tile at a time.</mark>",
+        {
+          "more": "Why not keep all the weights on the chip?",
+          "text": [
+            "On-chip memory (SRAM) needs about 6 transistors per bit, built on the main chip, the most expensive silicon there is. GPU memory (HBM) stores a bit with 1 transistor and a tiny capacitor, in stacks beside the chip. That's why the chip holds tens of megabytes and GPU memory holds 80 GB.",
+            "Every computer has the same ladder: registers, on-chip cache, GPU or main memory, then disk. Each step is bigger, but slower and further from the cores. Memory can be big, or fast and close, but not both.",
+            "A few companies take the other path. Groq and Cerebras build chips with far more on-chip memory and keep the weights there. Decode is very fast, but a big model needs hundreds of Groq chips, or Cerebras's chip the size of a whole silicon wafer."
+          ]
+        },
+        "<mark>For any job, ask one question: are the cores busy calculating, or waiting for the next tile to arrive?</mark> The next slide answers it for prefill and decode."
       ],
       "figure": {
         "src": "images/gpu-architecture-light.svg",
         "darkSrc": "images/gpu-architecture-dark.svg",
-        "alt": "One GPU inside a server, running Llama 3 8B on an NVIDIA H100; numbers are approximate. Left, a server: a CPU that runs the program, main memory as a loading area, a disk that stores files, and 8 GPUs. One GPU is enlarged on the right. It has three parts. First, GPU memory, 80 GB, where the weights live: Llama 3 8B takes 16 GB, the rest is free space. This is the warehouse. Second, the link from GPU memory to the chip, about 3.3 terabytes per second; weights stream across it every time they are used. This is the conveyor belt. Third, the GPU chip itself: a tiny on-chip memory of a few tens of megabytes, and thousands of compute cores doing about 1,000 trillion calculations a second. These are the workers. Below, two stages. Prefill, the whole prompt at once: each weight that arrives is used for all 1,000 prompt tokens, so the cores stay busy; it is compute-bound, the pause before the first word. Decode, one token at a time: each new token needs all 16 GB to cross the link again, about 5 milliseconds of waiting for about 0.02 milliseconds of maths; it is memory-bound and the cores are mostly idle.",
+        "alt": "One GPU inside a server, running Llama 3 8B on an NVIDIA H100; numbers are approximate. Left, a server: a CPU that runs the program, main memory as a loading area, a disk that stores files, and 8 GPUs. One GPU is enlarged on the right. It has three parts. First, GPU memory, 80 GB, where the weights live: Llama 3 8B takes 16 GB, the rest is free space. This is the warehouse. Second, the link from GPU memory to the chip, about 3.3 terabytes per second; weights stream across it every time they are used. This is the conveyor belt. Third, the GPU chip itself: a tiny on-chip memory of a few tens of megabytes, and thousands of compute cores doing about 1,000 trillion calculations a second. These are the workers. Below left, how the weights reach the cores: one layer, about 436 MB, is cut into tiles of about 128 by 64 numbers; each tile is copied into on-chip memory one at a time, used by the cores, then replaced by the next, so each run streams all 16 GB across the link. Below right, why the weights are not kept on the chip: on-chip memory (SRAM) needs 6 transistors per bit on costly chip area, so it holds tens of megabytes and is very fast; GPU memory (HBM) needs 1 transistor and 1 capacitor per bit, stacked beside the chip, so it holds 80 GB but is slower to reach.",
         "width": 1200,
         "height": 640,
-        "caption": "One GPU: weights in memory, maths in the cores, and a link between them that sets the pace."
+        "caption": "One GPU: weights in memory, maths in the cores, and tiles of weights streaming across the link between them."
+      }
+    },
+    {
+      "title": "Prefill and decode, step by step",
+      "summary": "Prefill multiplies a whole table of prompt tokens by each tile of weights; decode multiplies a single row. Same weights, very different use of the GPU.",
+      "body": [
+        "Each token is a vector of 4,096 numbers. 4,096 is the model's <b>dimension</b>: how many numbers it uses to describe each token.",
+        {
+          "h": "Prefill: the whole prompt at once"
+        },
+        {
+          "ul": [
+            "All the prompt tokens are already known, so nothing has to wait. Say there are 1,000: they're stacked into one table, 1,000 × 4,096.",
+            "In each layer, that table is multiplied by each weight table, for example the 4,096 × 4,096 one that makes the queries. One big multiplication, not 1,000 small ones.",
+            "The work is cut into tiles, and every group of cores takes some at the same time. The result, again 1,000 × 4,096, goes on to the next layer, 32 times in all. Attention works the same way, since every earlier token is already there.",
+            "Each tile of weights crosses the link once and is used 1,000 times while it's on the chip, so the cores never wait. The limit is how fast they calculate: <b>compute-bound</b>. That's about 16 trillion calculations, at least 16 ms: the <b>time to first token</b>."
+          ]
+        },
+        {
+          "h": "Decode: one token at a time"
+        },
+        {
+          "ul": [
+            "Token 1,001 isn't known until it's predicted, and token 1,002 depends on it. So each step has just one new token: a table 1 × 4,096.",
+            "The same weight tables are used, and the work is still shared across the cores, but each gets only a sliver: one row instead of 1,000. Most of the calculating power goes unused.",
+            "Yet every tile of weights must still cross the link: all 16 GB, for one token. The maths takes about 0.02 ms; reading takes about 5 ms. The limit is memory speed: <b>memory-bound</b>, at most about 200 tokens a second."
+          ]
+        },
+        "<mark>Prefill uses each tile of weights 1,000 times; decode uses it once. That single difference makes prefill compute-bound and decode memory-bound.</mark>",
+        "Servers fight decode's waste by <b>batching</b>: answering many people at once, so each tile does work for many tokens per trip. The KV cache (see <i>Output & inference</i>) saves redoing earlier tokens."
+      ],
+      "figure": {
+        "src": "images/prefill-decode-light.svg",
+        "darkSrc": "images/prefill-decode-dark.svg",
+        "alt": "Prefill and decode, step by step, for one layer's query table in Llama 3 8B, whose dimension is 4,096. Top, prefill: the whole prompt of 1,000 tokens is a table of 1,000 by 4,096, multiplied by the 4,096 by 4,096 query weights to give a result of 1,000 by 4,096, cut into tiles. All compute cores are lit. Each tile of weights crosses the link once and is then used 1,000 times on the chip, and every group of cores works at the same time. It is compute-bound: the cores never wait; about 16 trillion calculations, at least 16 milliseconds, the time to first token. Bottom, decode: one new token is a single row, 1 by 4,096, times the same 4,096 by 4,096 weights, giving a single row. The cores are only dimly lit. Every tile still crosses the link, all 16 GB, used for just 1 token; each core gets a sliver of work, 1 row instead of 1,000. It is memory-bound: the cores mostly wait, about 0.02 milliseconds of maths against about 5 milliseconds of reading, at most about 200 tokens a second.",
+        "width": 1200,
+        "height": 600,
+        "caption": "The same weight tiles: used 1,000 times per trip in prefill, once per trip in decode."
       }
     },
     {

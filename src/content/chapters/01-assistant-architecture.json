@@ -256,7 +256,7 @@
         },
         "Click any box for a short explanation and a link to its slide. After this, the <i>LLM architecture</i> section opens up the LLM box itself, from tokens and attention to how models are trained.",
         {
-          "note": "Not sure what a <i>token</i> or a <i>forward pass</i> is? The glossary in <i>The big picture</i> has one-line definitions, and each term is explained fully the first time it matters.",
+          "note": "Not sure what a <i>token</i> or a <i>forward pass</i> is? The glossary in <i>How an LLM runs</i> has one-line definitions, and each term is explained fully the first time it matters.",
           "kind": "dev"
         }
       ],
