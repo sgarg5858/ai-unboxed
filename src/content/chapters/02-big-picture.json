@@ -59,6 +59,69 @@
           "label": "Summary"
         }
       ]
+    },
+    {
+      "src": "videos/map/batching_kv_cache.mp4",
+      "title": "How an LLM runs · Batching and the KV cache",
+      "description": "What the KV cache stores and how big it gets, how one GPU answers many people at once, why their rows never mix, PagedAttention and continuous batching.",
+      "slides": [5, 5],
+      "at": {
+        "5": 0
+      },
+      "marks": [
+        {
+          "at": 0,
+          "label": "Two tools: the KV cache and batching"
+        },
+        {
+          "at": 23,
+          "label": "What the KV cache is"
+        },
+        {
+          "at": 63,
+          "label": "One conversation's cache over time"
+        },
+        {
+          "at": 83,
+          "label": "How big is the cache?"
+        },
+        {
+          "at": 114,
+          "label": "Who owns what in GPU memory"
+        },
+        {
+          "at": 146,
+          "label": "One batched decode step"
+        },
+        {
+          "at": 179,
+          "label": "Why the rows never mix"
+        },
+        {
+          "at": 205,
+          "label": "Attention reads its own cache"
+        },
+        {
+          "at": 242,
+          "label": "PagedAttention"
+        },
+        {
+          "at": 279,
+          "label": "Continuous batching"
+        },
+        {
+          "at": 299,
+          "label": "The limits"
+        },
+        {
+          "at": 327,
+          "label": "Shared system prompts"
+        },
+        {
+          "at": 346,
+          "label": "Summary"
+        }
+      ]
     }
   ],
   "slides": [
@@ -622,6 +685,54 @@
         "width": 1200,
         "height": 600,
         "caption": "The same weight tiles: used 1,000 times per trip in prefill, once per trip in decode."
+      }
+    },
+    {
+      "title": "Batching and the KV cache",
+      "summary": "An inference server keeps one copy of the weights and one KV cache per conversation, and puts one row per person into every decode step. Rows never mix, and attention reads only each person's own cache.",
+      "body": [
+        "Decode leaves most of the GPU waiting (previous slide). Inference servers fix that with two tools: the <b>KV cache</b> and <b>batching</b>, answering many people at once.",
+        {
+          "h": "The KV cache"
+        },
+        {
+          "ul": [
+            "Attention compares each new token's query with the keys of every earlier token, and blends their values. Without a cache, every step would recompute all of them: step 1,000 would redo 1,000 tokens.",
+            "So each token's key and value are saved, in every layer, the first time they're worked out. Prefill writes the whole prompt's; each decode step adds one token's; when the answer ends, the cache is freed.",
+            "Size, for Llama 3 8B: 2 (key and value) × 32 layers × 8 head groups × 128 numbers × 2 bytes ≈ <b>128 KB per token</b>. 1,000 tokens ≈ 128 MB; a full 128,000-token context ≈ 16 GB, as much as the model."
+          ]
+        },
+        {
+          "h": "Many people on one GPU"
+        },
+        {
+          "ul": [
+            "GPU memory holds <b>one copy of the weights</b>, shared by everyone, and <b>one KV cache per conversation</b>. After 16 GB of weights, an 80 GB GPU has room for roughly half a million tokens of cache.",
+            "Each decode step stacks the newest token of every conversation into one table, one row per person (64 people: 64 × 4,096). Each tile of weights crosses the link once and does work for all 64 rows.",
+            "<b>Rows never mix.</b> In a matrix multiplication, each row of the result comes only from the same row of the input, so Ana's row gives Ana's result.",
+            "<b>Attention reads only each row's own cache.</b> The server hands every row its own conversation's keys and values, so conversations of different lengths sit side by side."
+          ]
+        },
+        "<mark>One copy of the weights, one cache per conversation, one row per person: rows share the weights but never each other's numbers.</mark>",
+        {
+          "h": "Keeping track"
+        },
+        {
+          "ul": [
+            "<b>PagedAttention</b> (vLLM) stores caches in small blocks, say 16 tokens each. Each conversation has a block table listing its blocks; a growing conversation gets a new block, and a finished one frees its blocks.",
+            "<b>Continuous batching</b>: the batch changes every step. Finished answers leave at once; new prompts are prefilled and join the next step, so nobody waits for the slowest answer.",
+            "<b>Throughput vs latency</b>: bigger batches give more tokens per second in total, but every cache needs memory, every step reads every cache (64 people × 1,000 tokens = 8 GB, on top of the weights), and very large batches make the cores busy again, so each person's tokens arrive a little slower. Servers pick a balance."
+          ]
+        },
+        "<mark class=\"info\">The one exception to keeping caches apart: when requests start with exactly the same text, like an app's system prompt, that part's cache can be shared, because identical text gives identical keys and values.</mark>"
+      ],
+      "figure": {
+        "src": "images/batching-kv-light.svg",
+        "darkSrc": "images/batching-kv-dark.svg",
+        "alt": "Batching and the KV cache on one GPU running Llama 3 8B for three people, Ana, Ben and Kai. Left, GPU memory of 80 GB: one copy of the 16 GB weights, shared by everyone, then a separate KV cache for each person, of different lengths, and free space with room for about 500,000 tokens of cache, at about 128 KB per token. Middle, one decode step: the newest token of each conversation is stacked into a batch table, one row per person, 64 by 4,096; it is multiplied by a tile of weights that crosses the link once, giving 64 results; row 1 of the result comes only from row 1 of the input. Right, attention: each person's query reads only that person's own cache, at token 50, token 3,000 and token 900; an arrow from Ana's query to Ben's cache is crossed out, because a row never reads another conversation's cache. Bottom, continuous batching over nine steps: Ana and Kai continue every step; Ben's answer ends at step 4 and Ben leaves; a new request is prefilled at step 6 and joins from step 7. PagedAttention keeps each cache in 16-token blocks with one block table per conversation, and identical starting text such as a shared system prompt can share its blocks.",
+        "width": 1200,
+        "height": 600,
+        "caption": "One copy of the weights, one cache per conversation, and one row per person in every step."
       }
     },
     {
